@@ -54,9 +54,9 @@
         const config = {
             baseSpeed: 2,
             speedIncrement: 0.1,
-            baseGap: 160,
-            gapDecrement: 1,
-            minGap: 120,
+            baseGap: 160,        // Increased gap
+            gapDecrement: 1,     // Slower gap reduction
+            minGap: 120,         // Increased minimum gap
             scoreThreshold: 5
         };
 
@@ -66,11 +66,12 @@
             y: 0,
             radius: 10,
             velocity: 0,
-            gravity: 0.5,
-            jump: -10
+            gravity: 0.39,        // Reduced gravity
+            jump: -7            // Reduced jump force
         };
         let pipes = [];
         let gameOver = false;
+        let isPaused = false;
         let currentSpeed = config.baseSpeed;
         let currentGap = config.baseGap;
 
@@ -148,6 +149,18 @@
             ctx.fill();
         }
 
+        function drawPauseScreen() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('PAUSED', canvas.width/2, canvas.height/2 - 20);
+            ctx.font = '20px Arial';
+            ctx.fillText('Press ESC to Resume', canvas.width/2, canvas.height/2 + 20);
+            ctx.textAlign = 'left';
+        }
+
         // Game logic
         function createPipe() {
             const pipeWidth = 50;
@@ -170,10 +183,10 @@
 
         // Event listeners
         function handleInput() {
-            if (!gameOver) {
+            if (!gameOver && !isPaused) {
                 bird.velocity = bird.jump;
                 if (compatibility.supported) sounds.jump.play().catch(() => {});
-            } else {
+            } else if (gameOver) {
                 resetGame();
             }
         }
@@ -182,6 +195,9 @@
             if (e.code === 'Space') {
                 e.preventDefault();
                 handleInput();
+            } else if (e.code === 'Escape') {
+                e.preventDefault();
+                isPaused = !isPaused;
             }
         });
 
@@ -194,7 +210,7 @@
 
         // Game loop functions
         function update() {
-            if (gameOver) return;
+            if (gameOver || isPaused) return;
 
             bird.velocity += bird.gravity;
             bird.y += bird.velocity;
@@ -243,7 +259,7 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+            
             // Draw pipes
             pipes.forEach(pipe => {
                 drawPipe(pipe.x, 0, pipe.width, pipe.top, true);
@@ -269,6 +285,8 @@
                 ctx.font = '20px Arial';
                 ctx.fillText('Press Space or Tap to Restart', canvas.width/2, canvas.height/2 + 20);
                 ctx.textAlign = 'left';
+            } else if (isPaused) {
+                drawPauseScreen();
             }
         }
 
@@ -277,6 +295,7 @@
             bird.velocity = 0;
             pipes = [];
             gameOver = false;
+            isPaused = false;
             currentSpeed = config.baseSpeed;
             currentGap = config.baseGap;
             scoreSystem.current = 0;
