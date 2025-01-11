@@ -1,0 +1,14 @@
+{
+  "id": "stage-3",
+  "name": "Advanced",
+  "settings": {
+    "wordSpeed": 2.0,
+    "wordCount": 10,
+    "shapeSize": 20,
+    "pointsMultiplier": 2.0
+  },
+  "requirements": {
+    "scoreToAdvance": 500,
+    "minAccuracy": 90
+  }
+}

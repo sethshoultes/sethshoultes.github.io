@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Game</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <!-- Game Container -->
+    <div id="game-container">
+        <!-- Game Header -->
+        <header class="game-header">
+            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="timer-display">Time: <span id="timer">60</span>s</div>
+            <div class="stage-display">Stage: <span id="stage">1</span></div>
+        </header>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Word Input -->
+        <div id="word-input" class="word-input hidden">
+            <input type="text" id="word-input-field" autocomplete="off">
+        </div>
+
+        <!-- Game Menu -->
+        <div id="game-menu" class="game-menu">
+            <h1>Typing Game</h1>
+            <div class="menu-buttons">
+                <button id="start-game">Start Game</button>
+                <button id="high-scores">High Scores</button>
+                <button id="settings">Settings</button>
+            </div>
+            <div class="sound-controls">
+                <button id="toggle-sound" class="icon-button">
+                    <span class="sound-icon">🔊</span>
+                </button>
+                <input type="range" id="volume-slider" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over" class="game-over hidden">
+            <h2>Game Over!</h2>
+            <div class="final-score">Score: <span id="final-score">0</span></div>
+            <div class="stats"></div>
+            <button id="restart-game">Play Again</button>
+            <button id="return-menu">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Load Configurations -->
+    <script src="js/utils/config-loader.js"></script>
+    
+    <!-- Core Game Scripts -->
+    <script src="js/core/game.js"></script>
+    <script src="js/core/sprite.js"></script>
+    <script src="js/core/words.js"></script>
+    <script src="js/core/collision.js"></script>
+    <script src="js/core/particle-system.js"></script>
+    
+    <!-- UI Scripts -->
+    <script src="js/ui/menu.js"></script>
+    <script src="js/ui/score.js"></script>
+    <script src="js/ui/transitions.js"></script>
+    
+    <!-- Utils -->
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/stats.js"></script>
+    <script src="js/utils/audio-manager.js"></script>
+    
+    <!-- Main Script -->
+    <script src="js/main.js"></script>
+</body>
+</html>
