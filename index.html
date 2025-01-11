@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="Welcome to my GitHub Portfolio" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <!-- Basic styling -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    nav {
+      background-color: #ecf0f1;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav a {
+      color: #2c3e50;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      font-weight: 600;
+      transition: color 0.2s ease-in-out;
+    }
+
+    nav a:hover {
+      color: #16a085;
+    }
+
+    .content-wrapper {
+      max-width: 1000px;
+      margin: 1.5rem auto;
+      padding: 1rem;
+    }
+
+    .about {
+      margin-bottom: 2rem;
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .project-card {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-card h3 {
+      margin-top: 0;
+    }
+
+    .project-links a {
+      text-decoration: none;
+      color: #2980b9;
+    }
+
+    footer {
+      text-align: center;
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Welcome to My Portfolio</h1>
+  <p>Explore my latest projects and experiments</p>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#projects">Projects</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<div class="content-wrapper">
+  <section id="about" class="about">
+    <h2>About Me</h2>
+    <p>
+      Hi! I’m [Your Name], and I love building practical, engaging tools that help people work and play more efficiently. 
+      Below you’ll find a few of my recent projects. Feel free to explore, and don’t hesitate to reach out if you’d like 
+      to collaborate or have any questions!
+    </p>
+  </section>
+
+  <section id="projects">
+    <h2>My Recent Projects</h2>
+    <div class="projects">
+
+      <!-- AdventureBuildr -->
+      <div class="project-card">
+        <h3>AdventureBuildr</h3>
+        <p>
+          AdventureBuildr is a platform for creating interactive, branching stories and text-based adventures. 
+          It allows authors and gamers alike to easily build, share, and experience dynamic, narrative-driven content.
+        </p>
+        <div class="project-links">
+          <!-- Replace the # with actual links to the project or demo -->
+          <a href="#" target="_blank">Project Link</a> | 
+          <a href="#" target="_blank">GitHub Repo</a>
+        </div>
+      </div>
+
+      <!-- PrettyLinks Chrome Extension -->
+      <div class="project-card">
+        <h3>PrettyLinks Chrome Extension</h3>
+        <p>
+          PrettyLinks is a Chrome Extension that transforms messy URLs into shorter, trackable, and more readable links. 
+          It’s perfect for sharing on social media or in professional documents, giving your links a polished look.
+        </p>
+        <div class="project-links">
+          <a href="#" target="_blank">Chrome Web Store</a> | 
+          <a href="#" target="_blank">GitHub Repo</a>
+        </div>
+      </div>
+
+      <!-- Browser Typing Games -->
+      <div class="project-card">
+        <h3>Browser Typing Games</h3>
+        <p>
+          A collection of web-based typing challenges designed to improve speed and accuracy. 
+          From beginner-friendly lessons to advanced speed tests, these games make practicing typing fun and accessible from any browser.
+        </p>
+        <div class="project-links">
+          <a href="#" target="_blank">Play Now</a> | 
+          <a href="#" target="_blank">GitHub Repo</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="contact" style="margin-top: 2rem;">
+    <h2>Contact Me</h2>
+    <p>
+      Interested in working together, or just want to say hello? 
+      Feel free to reach out via <a href="mailto:your.email@example.com">email</a> or connect with me on 
+      <a href="https://www.linkedin.com/in/YOUR_LINKEDIN/" target="_blank">LinkedIn</a>.
+    </p>
+  </section>
+</div>
+
+<footer>
+  <p>&copy; 2025 [Your Name] • Built with GitHub Pages</p>
+</footer>
+
+</body>
+</html>
