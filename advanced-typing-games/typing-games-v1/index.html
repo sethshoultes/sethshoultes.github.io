@@ -8,13 +8,12 @@
     <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
-    <!-- Game Container -->
     <div id="game-container">
         <!-- Game Header -->
         <header class="game-header">
-            <div class="score-display">Score: <span id="score">0</span></div>
-            <div class="timer-display">Time: <span id="timer">60</span>s</div>
-            <div class="stage-display">Stage: <span id="stage">1</span></div>
+            <div class="score">Score: <span id="score">0</span></div>
+            <div class="timer">Time: <span id="timer">60</span>s</div>
+            <div class="stage">Stage: <span id="stage">1</span></div>
         </header>
 
         <!-- Game Canvas -->
@@ -49,29 +48,49 @@
             <button id="restart-game">Play Again</button>
             <button id="return-menu">Main Menu</button>
         </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-content">
+                <h2>Loading Game...</h2>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Screen -->
+        <div id="error-screen" class="error-screen hidden">
+            <div class="error-content">
+                <h2>Error Loading Game</h2>
+                <p class="error-message"></p>
+                <button onclick="location.reload()">Retry</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Load Configurations -->
-    <script src="js/utils/config-loader.js"></script>
-    
-    <!-- Core Game Scripts -->
-    <script src="js/core/game.js"></script>
-    <script src="js/core/sprite.js"></script>
-    <script src="js/core/words.js"></script>
-    <script src="js/core/collision.js"></script>
-    <script src="js/core/particle-system.js"></script>
-    
-    <!-- UI Scripts -->
-    <script src="js/ui/menu.js"></script>
-    <script src="js/ui/score.js"></script>
-    <script src="js/ui/transitions.js"></script>
-    
     <!-- Utils -->
+    <script src="js/utils/config-loader.js"></script>
+    <script src="js/utils/resource-manager.js"></script>
     <script src="js/utils/storage.js"></script>
     <script src="js/utils/stats.js"></script>
     <script src="js/utils/audio-manager.js"></script>
-    
-    <!-- Main Script -->
+
+    <!-- Core -->
+    <script src="js/core/sprite.js"></script>
+    <script src="js/core/words.js"></script>
+    <script src="js/core/collision.js"></script>
+    <script src="js/core/particles-system.js"></script>
+    <script src="js/core/input-manager.js"></script>
+    <script src="js/core/game.js"></script>
+
+    <!-- UI -->
+    <script src="js/ui/menu.js"></script>
+    <script src="js/ui/score.js"></script>
+    <script src="js/ui/transitions.js"></script>
+    <script src="js/ui/ui-manager.js"></script>
+
+    <!-- Main -->
     <script src="js/main.js"></script>
 </body>
 </html>
