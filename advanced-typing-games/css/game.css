@@ -1,0 +1,36 @@
+.combo-display {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0;
+    z-index: 100;
+}
+
+.combo-display .points {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.combo-display .combo {
+    font-size: 1.5rem;
+    color: #FFC107;
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.word-input input {
+    transition: background-color 0.2s;
+}
+
+.game-over .stats {
+    margin: 1rem 0;
+    font-size: 1.25rem;
+    text-align: left;
+}
