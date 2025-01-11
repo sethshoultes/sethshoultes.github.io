@@ -429,6 +429,25 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
+        .pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .pause-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
         
     </style>
 </head>
@@ -454,15 +473,12 @@
                 </div>
             </div>
         </div>
-
         <!-- Game Canvas -->
         <canvas id="gameCanvas"></canvas>
-
         <!-- Word Input -->
         <div id="word-input" class="word-input hidden">
             <input type="text" id="word-input-field" autocomplete="off">
         </div>
-
         <!-- Game Menu -->
         <div id="game-menu" class="game-menu">
             <h1>TypeRunner</h1>
@@ -474,13 +490,20 @@
                 <button id="settings">Settings</button>
             </div>
         </div>
-
         <div id="game-over" class="game-menu hidden">
             <h2>Game Over!</h2>
             <div class="final-score">Final Score: <span id="final-score">0</span></div>
             <div class="menu-buttons">
                 <button id="restart-game">Play Again</button>
                 <button id="return-menu">Main Menu</button>
+            </div>
+        </div>
+        <div id="pause-overlay" class="game-menu hidden">
+            <h2>Game Paused</h2>
+            <div class="menu-buttons">
+                <button id="resume-game">Resume</button>
+                <button id="restart-paused-game">Restart</button>
+                <button id="exit-to-menu-paused">Exit to Menu</button>
             </div>
         </div>
         <!-- Settings Menu -->
@@ -745,13 +768,17 @@
                 this.wordCache = new WordCache();
                 this.achievements = new AchievementManager();
                 this.difficultyManager = new DifficultyManager();
+                this.isPaused = false;
+                this.isMenuOpen = false;
+                this.pauseSource = null; // 'menu' or 'escape'
+                this.pauseOverlay = null;
+                this.timerInterval = null;
+                this.lastTimerUpdate = null;
                 
-
                 // Then initialize core elements
                 this.canvas = document.getElementById('gameCanvas');
                 this.ctx = this.canvas.getContext('2d');
-                this.debug = this.settings.getSetting('debug');
-
+                this.debug = this.settings.getSetting('debug');    
                 // Game state
                 this.words = [];
                 this.score = 0;
@@ -768,23 +795,18 @@
                     2: { speed: 1.5, wordCount: 15 },
                     3: { speed: 2, wordCount: 20 }
                 };
-
-
                 // Initialize particle system
                 this.particles = new Set();
                 this.particlePool = new ParticlePool(200);
                 this.lastParticleSpawn = 0;
                 this.particleSpawnDelay = 50;
-                this.particlePool = new ParticlePool(200);
-                
+                this.particlePool = new ParticlePool(200);       
                 // Constants
                 this.headerHeight = 60;
-                this.padding = 40;
-                
+                this.padding = 40;     
                 // Player position
                 this.playerX = 0;
                 this.playerY = 0;
-                
                 // Movement state
                 this.movement = {
                     w: false,
@@ -818,10 +840,63 @@
                 ];
 
                 // Initialize systems
+                this.initializePauseSystem();
                 this.initSystems();
                 this.initEventListeners();
             }
             
+            /**
+             * Initializes the pause system by adding event listeners to the ESC key and pause buttons.
+             * The pause system allows the game to be paused and resumed by pressing the ESC key,
+             * and also allows the game to be restarted or exited to the menu from the pause screen.
+             */
+             initializePauseSystem() {
+                // Add ESC key listener
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isActive) {
+                        this.togglePause();
+                    }
+                });
+
+                // Add button listeners
+                document.getElementById('resume-game').addEventListener('click', () => {
+                    this.togglePause();
+                });
+
+                document.getElementById('restart-paused-game').addEventListener('click', () => {
+                    this.togglePause();
+                    this.start();
+                });
+
+                document.getElementById('exit-to-menu-paused').addEventListener('click', () => {
+                    this.cleanupTimer(); // Clean up timer when exiting
+                    this.togglePause();
+                    this.isActive = false;
+                    this.showMenu();
+                });
+            }
+
+            togglePause() {
+                if (!this.isActive) return;
+                
+                this.isPaused = !this.isPaused;
+                const pauseOverlay = document.getElementById('pause-overlay');
+                
+                if (this.isPaused) {
+                    pauseOverlay.classList.remove('hidden');
+                    // Clear the word input if it's visible
+                    const wordInput = document.getElementById('word-input');
+                    if (!wordInput.classList.contains('hidden')) {
+                        wordInput.classList.add('hidden');
+                        document.getElementById('word-input-field').value = '';
+                        this.currentWord = null;
+                    }
+                } else {
+                    pauseOverlay.classList.add('hidden');
+                    // Reset the last timer update when resuming
+                    this.lastTimerUpdate = Date.now();
+                }
+            }
             createParticles(x, y, type = 'movement') {
                 if (!this.settings.getSetting('particles')) return;
 
@@ -929,7 +1004,15 @@
                             document.getElementById('game-menu').classList.remove('hidden');
                         });
                         document.getElementById('menu-toggle').addEventListener('click', () => {
-                            document.getElementById('in-game-menu').classList.toggle('hidden');
+                            const inGameMenu = document.getElementById('in-game-menu');
+                            if (this.isActive) {
+                                if (inGameMenu.classList.contains('hidden')) {
+                                    this.togglePause();
+                                    inGameMenu.classList.remove('hidden');
+                                } else {
+                                    inGameMenu.classList.add('hidden');
+                                }
+                            }
                         });
 
                         document.getElementById('resume-game').addEventListener('click', () => {
@@ -1013,6 +1096,8 @@
             }
 
             start() {
+                this.cleanupTimer(); // Clean up any existing timer
+                this.isPaused = false;
                 this.score = 0;
                 this.timeLeft = 60;
                 this.isActive = true;
@@ -1028,6 +1113,7 @@
                 // Hide menus
                 document.getElementById('game-menu').classList.add('hidden');
                 document.getElementById('game-over').classList.add('hidden');
+                document.getElementById('pause-overlay').classList.add('hidden');
                 
                 // Update UI
                 document.getElementById('score').textContent = '0';
@@ -1072,8 +1158,12 @@
              * Also draws the player, words, and particles to the canvas.
              */
             gameLoop() {
-                if (!this.isActive) return;
-
+                if (!this.isActive || this.isPaused) {
+                    if (this.isActive) {
+                        requestAnimationFrame(() => this.gameLoop());
+                    }
+                    return;
+                }
                 // Use RAF timestamp for timing
                 const currentTime = performance.now();
                 if (!this.lastFrame) this.lastFrame = currentTime;
@@ -1089,8 +1179,6 @@
                     width: 50,
                     height: 50
                 });
-
-
                 // Clear canvas with gradient background
                 const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
                 gradient.addColorStop(0, '#1e3a8a');
@@ -1419,19 +1507,31 @@
             }
 
             startTimer() {
-                const timerInterval = setInterval(() => {
-                    this.timeLeft--;
-                    document.getElementById('timer').textContent = this.timeLeft;
-                    
-                    if (this.timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        this.endGame();
+                this.cleanupTimer(); // Clear any existing interval
+                this.lastTimerUpdate = Date.now();
+                this.timerInterval = setInterval(() => {
+                    if (!this.isPaused) {
+                        const now = Date.now();
+                        const delta = (now - this.lastTimerUpdate) / 1000;
+                        this.lastTimerUpdate = now;
+                        this.timeLeft -= delta;
+                        document.getElementById('timer').textContent = Math.ceil(this.timeLeft); 
+                        if (this.timeLeft <= 0) {
+                            this.cleanupTimer();
+                            this.endGame();
+                        }
                     }
-                }, 1000);
+                }, 100); // Update more frequently for smooth countdown
             }
-
+            cleanupTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
             endGame() {
                 this.isActive = false;
+                this.cleanupTimer();
                 
                 // Save score
                 if (this.score > 0) {
