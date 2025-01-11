@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 to-purple-900 h-screen overflow-hidden">
+    <div class="fixed top-4 right-4 text-white text-2xl font-bold" id="score">Score: 0</div>
+    
+    <div id="gameArea" class="relative h-screen">
+        <div id="player" class="absolute w-12 h-12 bg-yellow-400 rounded-full shadow-lg floating" style="left: 100px; top: 50%"></div>
+        
+        <div id="wordContainer" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+            bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl">
+            <div id="wordToType" class="text-3xl font-bold text-gray-800 mb-4"></div>
+            <input type="text" id="wordInput" 
+                class="w-full p-2 border-2 border-purple-500 rounded-lg focus:outline-none focus:border-purple-700"
+                autocomplete="off">
+            <div id="timer" class="mt-2 text-sm text-gray-600"></div>
+        </div>
+    </div>
+
+    <script>
+        const player = document.getElementById('player');
+        const wordContainer = document.getElementById('wordContainer');
+        const wordToType = document.getElementById('wordToType');
+        const wordInput = document.getElementById('wordInput');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+
+        let score = 0;
+        let playerX = 100;
+        let playerY = window.innerHeight / 2;
+        let gameActive = true;
+        let wordActive = false;
+        let startTime;
+
+        const words = [
+            "algorithm", "javascript", "programming", "developer", "application",
+            "interface", "database", "framework", "variable", "function",
+            "component", "iteration", "recursive", "abstract", "prototype",
+            "synchronous", "asynchronous", "middleware", "deployment", "repository",
+            "quantum", "blockchain", "artificial", "machine", "learning",
+            "neural", "network", "encryption", "protocol", "architecture"
+        ];
+
+        const keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key.toLowerCase())) {
+                keys[e.key.toLowerCase()] = true;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key.toLowerCase())) {
+                keys[e.key.toLowerCase()] = false;
+            }
+        });
+
+        function updatePlayerPosition() {
+            if (!wordActive) {
+                if (keys.w) playerY = Math.max(50, playerY - 5);
+                if (keys.s) playerY = Math.min(window.innerHeight - 50, playerY + 5);
+                if (keys.a) playerX = Math.max(50, playerX - 5);
+                if (keys.d) playerX = Math.min(window.innerWidth - 50, playerX + 5);
+
+                player.style.left = playerX + 'px';
+                player.style.top = playerY + 'px';
+            }
+        }
+
+        function spawnWord() {
+            if (!wordActive && Math.random() < 0.02) {
+                wordActive = true;
+                const randomWord = words[Math.floor(Math.random() * words.length)];
+                wordToType.textContent = randomWord;
+                wordContainer.classList.remove('hidden');
+                wordInput.value = '';
+                wordInput.focus();
+                startTime = Date.now();
+            }
+        }
+
+        wordInput.addEventListener('input', () => {
+            if (wordInput.value === wordToType.textContent) {
+                const timeElapsed = (Date.now() - startTime) / 1000;
+                const pointsEarned = Math.max(10, Math.floor(100 / timeElapsed));
+                score += pointsEarned;
+                scoreElement.textContent = `Score: ${score}`;
+                
+                wordActive = false;
+                wordContainer.classList.add('hidden');
+            }
+        });
+
+        function gameLoop() {
+            if (gameActive) {
+                updatePlayerPosition();
+                spawnWord();
+                
+                if (wordActive) {
+                    const timeElapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                    timerElement.textContent = `Time: ${timeElapsed}s`;
+                }
+                
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caseproof Product Typing Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { overflow: hidden; }
+        .star {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <!-- Logo Space -->
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 text-white text-2xl font-bold z-10">
+        <div class="w-48 h-12 flex items-center justify-center">
+            Game Logo Space
+        </div>
+    </div>
+
+    <!-- Game Stats -->
+    <div class="fixed top-4 right-4 text-white font-bold text-xl z-10">
+        Score: <span id="score">0</span>
+        <br>
+        Time Left: <span id="gameTimer">60</span>s
+        <br>
+        Type Time: <span id="timer">0.00</span>s
+    </div>
+
+    <!-- High Scores -->
+    <div class="fixed top-4 left-4 text-white font-bold text-xl z-10">
+        High Scores:
+        <div id="highScores" class="text-lg"></div>
+    </div>
+    
+    <!-- Word Input -->
+    <div id="wordInput" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden">
+        <input type="text" class="bg-white/80 rounded px-4 py-2 text-blue-900 text-center" autocomplete="off">
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOver" class="fixed inset-0 bg-black/80 hidden items-center justify-center flex-col z-20">
+        <div class="text-white text-4xl mb-8">Game Over!</div>
+        <div class="text-white text-2xl mb-4">Final Score: <span id="finalScore">0</span></div>
+        <button onclick="startGame()" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+            Play Again
+        </button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const gameTimerElement = document.getElementById('gameTimer');
+        const wordInput = document.getElementById('wordInput');
+        const input = wordInput.querySelector('input');
+        const gameOverScreen = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const highScoresElement = document.getElementById('highScores');
+
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Game state
+        let score = 0;
+        let currentWord = null;
+        let typingStartTime = 0;
+        let gameTimeLeft = 60;
+        let gameInterval;
+        let isGameActive = false;
+        
+        // Player state
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 30,
+            speed: 5,
+            moving: {
+                w: false, a: false, s: false, d: false
+            }
+        };
+
+        // Custom word list
+        const wordList = [
+            'caseproof', 'accessally', 'memberpress', 'membermouse', 'wishlistmember',
+            'prettylinks', 'easyaffiliate', 'thirstyaffiliates', 'popupally', 'membercore',
+            'wordpress', 'plugin', 'developer', 'php', 'javascript', 'ai',
+            'artificial intelligence', 'awesome motive', 'aa', 'mp', 'slack', 'database',
+            'internal projects', 'super user', 'customer support', 'tier1', 'tier2', 'tier3'
+        ];
+
+        // High Scores Management
+        function getHighScores() {
+            const scores = JSON.parse(localStorage.getItem('highScores') || '[]');
+            return scores.sort((a, b) => b - a).slice(0, 3);
+        }
+
+        function saveHighScore(score) {
+            const scores = getHighScores();
+            scores.push(score);
+            scores.sort((a, b) => b - a);
+            localStorage.setItem('highScores', JSON.stringify(scores.slice(0, 3)));
+            displayHighScores();
+        }
+
+        function displayHighScores() {
+            const scores = getHighScores();
+            highScoresElement.innerHTML = scores
+                .map((score, index) => `#${index + 1}: ${score}`)
+                .join('<br>');
+        }
+
+        // Floating words
+        const words = [];
+        class FloatingWord {
+            constructor() {
+                this.text = wordList[Math.floor(Math.random() * wordList.length)];
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speed = 1;
+                this.angle = Math.random() * Math.PI * 2;
+            }
+
+            move() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.font = '20px Arial';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        function startGame() {
+            // Reset game state
+            score = 0;
+            gameTimeLeft = 60;
+            words.length = 0;
+            currentWord = null;
+            isGameActive = true;
+            
+            // Initialize words
+            for (let i = 0; i < 10; i++) {
+                words.push(new FloatingWord());
+            }
+
+            // Hide game over screen
+            gameOverScreen.style.display = 'none';
+            
+            // Start game timer
+            gameInterval = setInterval(() => {
+                gameTimeLeft--;
+                gameTimerElement.textContent = gameTimeLeft;
+                
+                if (gameTimeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+
+            scoreElement.textContent = '0';
+            displayHighScores();
+        }
+
+        function endGame() {
+            isGameActive = false;
+            clearInterval(gameInterval);
+            saveHighScore(score);
+            finalScoreElement.textContent = score;
+            gameOverScreen.style.display = 'flex';
+            wordInput.style.display = 'none';
+        }
+
+        // Movement controls
+        document.addEventListener('keydown', (e) => {
+            if (!currentWord && isGameActive) {
+                if (e.key.toLowerCase() in player.moving) {
+                    player.moving[e.key.toLowerCase()] = true;
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key.toLowerCase() in player.moving) {
+                player.moving[e.key.toLowerCase()] = false;
+            }
+        });
+
+        // Word typing
+        input.addEventListener('input', () => {
+            if (currentWord && input.value.toLowerCase() === currentWord.text.toLowerCase()) {
+                const timeElapsed = (Date.now() - typingStartTime) / 1000;
+                const pointsEarned = Math.max(1, Math.floor(10 / timeElapsed));
+                score += pointsEarned;
+                scoreElement.textContent = score;
+                
+                words.splice(words.indexOf(currentWord), 1);
+                words.push(new FloatingWord());
+                
+                currentWord = null;
+                wordInput.style.display = 'none';
+                input.value = '';
+            }
+        });
+
+        // Draw star
+        function drawStar(x, y, size) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath();
+            ctx.fillStyle = 'white';
+            ctx.moveTo(0, -size);
+            for (let i = 0; i < 5; i++) {
+                ctx.rotate(Math.PI / 5);
+                ctx.lineTo(0, -size * 0.4);
+                ctx.rotate(Math.PI / 5);
+                ctx.lineTo(0, -size);
+            }
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Collision detection
+        function checkCollision(word) {
+            const dx = word.x - player.x;
+            const dy = word.y - player.y;
+            return Math.sqrt(dx * dx + dy * dy) < player.size;
+        }
+
+        // Game loop
+        function gameLoop() {
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#1e40af');
+            gradient.addColorStop(1, '#1e3a8a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (isGameActive) {
+                // Move player
+                if (!currentWord) {
+                    if (player.moving.w) player.y -= player.speed;
+                    if (player.moving.s) player.y += player.speed;
+                    if (player.moving.a) player.x -= player.speed;
+                    if (player.moving.d) player.x += player.speed;
+
+                    // Keep player in bounds
+                    player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
+                    player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
+                }
+
+                // Draw and move words
+                words.forEach(word => {
+                    word.move();
+                    word.draw();
+
+                    if (!currentWord && checkCollision(word)) {
+                        currentWord = word;
+                        wordInput.style.display = 'block';
+                        input.focus();
+                        typingStartTime = Date.now();
+                    }
+                });
+
+                // Draw player
+                drawStar(player.x, player.y, player.size);
+
+                // Update timer if typing
+                if (currentWord) {
+                    timerElement.textContent = ((Date.now() - typingStartTime) / 1000).toFixed(2);
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize game
+        displayHighScores();
+        startGame();
+        gameLoop();
+    </script>
+</body>
+</html>
