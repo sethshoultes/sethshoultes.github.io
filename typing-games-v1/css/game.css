@@ -1,0 +1,64 @@
+/* Game Specific Styles */
+.combo-display {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0;
+    z-index: 100;
+}
+
+.combo-display .points {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.combo-display .combo {
+    font-size: 1.5rem;
+    color: #FFC107;
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+/* Game Over Screen */
+.game-over {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 200;
+    color: white;
+}
+
+.game-over h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.game-over .final-score {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.game-over .stats {
+    margin: 1rem 0;
+    font-size: 1.25rem;
+    text-align: left;
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+}

@@ -1,0 +1,14 @@
+{
+  "id": "default",
+  "name": "Default Game",
+  "description": "Standard typing game configuration",
+  "settings": {
+    "timeLimit": 60,
+    "baseScore": 10,
+    "highScoreEnabled": true,
+    "stageProgression": "linear"
+  },
+  "theme": "default",
+  "stages": ["stage-1", "stage-2", "stage-3"],
+  "wordLists": ["default-wordlist"]
+}

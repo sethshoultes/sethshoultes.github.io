@@ -1,0 +1,14 @@
+{
+  "id": "stage-2",
+  "name": "Intermediate",
+  "settings": {
+    "wordSpeed": 1.5,
+    "wordCount": 7,
+    "shapeSize": 25,
+    "pointsMultiplier": 1.5
+  },
+  "requirements": {
+    "scoreToAdvance": 250,
+    "minAccuracy": 85
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "stage-1",
+  "name": "Beginner",
+  "settings": {
+    "wordSpeed": 1.0,
+    "wordCount": 5,
+    "shapeSize": 30,
+    "pointsMultiplier": 1.0
+  },
+  "requirements": {
+    "scoreToAdvance": 100,
+    "minAccuracy": 80
+  }
+}

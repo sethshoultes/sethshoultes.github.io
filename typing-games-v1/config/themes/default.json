@@ -1,0 +1,24 @@
+{
+  "id": "default",
+  "name": "Default Theme",
+  "colors": {
+    "background": {
+      "gradient": {
+        "start": "#1e40af",
+        "end": "#1e3a8a"
+      }
+    },
+    "sprite": "#ffffff",
+    "text": "#ffffff"
+  },
+  "sprites": {
+    "player": {
+      "type": "star",
+      "size": 30
+    }
+  },
+  "fonts": {
+    "main": "Arial",
+    "score": "Arial Bold"
+  }
+}

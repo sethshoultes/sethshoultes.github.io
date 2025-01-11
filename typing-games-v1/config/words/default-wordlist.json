@@ -1,0 +1,29 @@
+{
+  "id": "default-wordlist",
+  "categories": {
+    "basic": [
+      "wordpress",
+      "plugin",
+      "developer",
+      "php",
+      "javascript",
+      "ai",
+      "code",
+      "web",
+      "app",
+      "test"
+    ],
+    "advanced": [
+      "artificial",
+      "intelligence",
+      "development",
+      "programming",
+      "algorithm",
+      "database",
+      "framework",
+      "interface",
+      "component",
+      "function"
+    ]
+  }
+}
