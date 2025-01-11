@@ -389,6 +389,12 @@
             // Game controls
             document.addEventListener('keydown', (e) => this.handleKeyDown(e));
             document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+            // Settings buttons
+            document.getElementById('save-settings').addEventListener('click', () => this.saveSettings());
+            document.getElementById('close-settings').addEventListener('click', () => {
+                document.getElementById('settings-menu').classList.add('hidden');
+                document.getElementById('game-menu').classList.remove('hidden');
+            });
 
             // Menu buttons
             const startBtn = document.getElementById('start-game');
@@ -648,24 +654,68 @@
             }
 
             showSettings() {
+                const settingsMenu = document.getElementById('settings-menu');
+                const gameMenu = document.getElementById('game-menu');
+                
                 // Update settings UI with current values
                 document.getElementById('setting-sound').checked = this.settings.getSetting('sound');
                 document.getElementById('setting-music').checked = this.settings.getSetting('music');
                 document.getElementById('setting-particles').checked = this.settings.getSetting('particles');
                 document.getElementById('setting-difficulty').value = this.settings.getSetting('difficulty');
                 
-                document.getElementById('game-menu').classList.add('hidden');
-                document.getElementById('settings-menu').classList.remove('hidden');
+                gameMenu.classList.add('hidden');
+                settingsMenu.classList.remove('hidden');
             }
 
             saveSettings() {
+                // Save all settings
                 this.settings.updateSetting('sound', document.getElementById('setting-sound').checked);
                 this.settings.updateSetting('music', document.getElementById('setting-music').checked);
                 this.settings.updateSetting('particles', document.getElementById('setting-particles').checked);
                 this.settings.updateSetting('difficulty', document.getElementById('setting-difficulty').value);
                 
+                // Apply settings immediately
+                this.applySettings();
+                
+                // Return to menu
                 document.getElementById('settings-menu').classList.add('hidden');
                 document.getElementById('game-menu').classList.remove('hidden');
+            }
+            applySettings() {
+                // Apply sound settings
+                if (this.settings.getSetting('sound')) {
+                    // Enable sound effects
+                } else {
+                    // Disable sound effects
+                }
+                
+                // Apply music settings
+                if (this.settings.getSetting('music')) {
+                    // Enable music
+                } else {
+                    // Disable music
+                }
+                
+                // Apply particle settings
+                if (this.settings.getSetting('particles')) {
+                    // Enable particles
+                } else {
+                    // Disable particles
+                }
+                
+                // Apply difficulty settings
+                const difficulty = this.settings.getSetting('difficulty');
+                switch(difficulty) {
+                    case 'easy':
+                        this.wordList = this.easyWords;
+                        break;
+                    case 'normal':
+                        this.wordList = this.normalWords;
+                        break;
+                    case 'hard':
+                        this.wordList = this.hardWords;
+                        break;
+                }
             }
         }
 
@@ -694,8 +744,22 @@
             getSetting(key) {
                 return this.settings[key];
             }
-        }
 
+            updateSetting(key, value) {
+                this.settings[key] = value;
+                this.saveSettings();
+            }
+
+            saveSettings() {
+                try {
+                    localStorage.setItem('gameSettings', JSON.stringify(this.settings));
+                    return true;
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                    return false;
+                }
+            }
+        }
         class HighScoreManager {
             constructor() {
                 this.scores = this.loadScores();
