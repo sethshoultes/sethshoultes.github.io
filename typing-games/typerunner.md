@@ -78,10 +78,7 @@ Handles visual effects:
    - Achievement tracking
 
 ### 🔄 In Progress
-1. Sound System
-   - Background music
-   - Effect sounds
-   - Volume controls
+1. Implement progressive difficulty scaling
 
 ### ⏳ Planned Features
 1. Enhanced Graphics
@@ -98,6 +95,12 @@ Handles visual effects:
    - Touch controls
    - Responsive design
    - Mobile-optimized UI
+
+4. Sound System
+   - Background music
+   - Effect sounds
+   - Volume controls
+
 
 ## Usage
 
