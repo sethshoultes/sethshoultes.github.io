@@ -1,5 +1,8 @@
 class Game {
     constructor(resourceManager, storage, scoreUI) {
+        if (!resourceManager) {
+            throw new Error('ResourceManager is required for Game initialization');
+        }
         this.resourceManager = resourceManager;
         this.storage = storage;
         this.scoreUI = scoreUI;
@@ -26,6 +29,9 @@ class Game {
 
     async initSystems() {
         try {
+            // Initialize word manager first to catch any word-related errors
+            this.wordManager = new WordManager(this.resourceManager.getConfig('words'));
+            
             // Initialize canvas
             this.canvas = document.getElementById('gameCanvas');
             if (!this.canvas) throw new Error('Canvas element not found');
@@ -40,7 +46,6 @@ class Game {
                 batchSize: 20
             });
             this.audioManager = new AudioManager(this.resourceManager);
-            this.wordManager = new WordManager(this.resourceManager.getConfig('words'));
             this.stats = new Stats();
             
             // Initialize input system based on device
@@ -57,7 +62,7 @@ class Game {
         } catch (error) {
             console.error('Game initialization error:', error);
             this.handleError(error);
-            return false;
+            throw new Error('Failed to initialize game systems: ' + error.message);
         }
     }
 

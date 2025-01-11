@@ -5,6 +5,12 @@ class ResourceManager {
         this.progress = 0;
         this.loadingScreen = null;
         this.errorScreen = null;
+        this.configs = {
+            games: {},
+            stages: {},
+            themes: {},
+            words: {}
+        };
     }
 
     async init() {
@@ -85,22 +91,40 @@ class ResourceManager {
     }
 
     async loadConfigs() {
-        const configs = ['game', 'stages', 'words', 'theme'];
-        let loaded = 0;
+        try {
+            const configTypes = ['games', 'stages', 'themes', 'words'];
+            const loadPromises = configTypes.map(type => this.loadConfigType(type));
+            await Promise.all(loadPromises);
+            
+            // Validate configs after loading
+            this.validateConfigs();
+        } catch (error) {
+            throw new Error(`Config loading error: ${error.message}`);
+        }
+    }
 
-        for (const config of configs) {
-            try {
-                const response = await fetch(`config/${config}/default.json`);
-                if (!response.ok) throw new Error(`Failed to load ${config} config`);
-                
-                const data = await response.json();
-                this.resources.set(`config_${config}`, data);
-                
-                loaded++;
-                this.updateProgress((loaded / configs.length) * 100);
-            } catch (error) {
-                throw new Error(`Config loading error: ${error.message}`);
+    async loadConfigType(type) {
+        try {
+            const response = await fetch(`config/${type}/default.json`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            const config = await response.json();
+            this.configs[type] = config;
+        } catch (error) {
+            throw new Error(`Failed to load ${type} config: ${error.message}`);
+        }
+    }
+
+    validateConfigs() {
+        // Ensure required configs exist
+        if (!this.configs.games || !this.configs.words) {
+            throw new Error('Missing required game or word configurations');
+        }
+
+        // Validate word categories
+        if (!this.configs.words.categories || Object.keys(this.configs.words.categories).length === 0) {
+            throw new Error('Word categories are missing or empty');
         }
     }
 
@@ -148,8 +172,8 @@ class ResourceManager {
         }
     }
 
-    getConfig(name) {
-        return this.resources.get(`config_${name}`);
+    getConfig(type, id = 'default') {
+        return this.configs[type] || null;
     }
 
     getSound(name) {

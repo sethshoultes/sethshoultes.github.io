@@ -25,23 +25,38 @@ class Word {
 }
 
 class WordManager {
-    constructor(wordConfigs) {
-        this.wordLists = wordConfigs;
-        this.categories = this.flattenCategories();
+    constructor(resourceManager) {
+        if (!resourceManager) {
+            throw new Error('ResourceManager is required for WordManager');
+        }
+        
+        const wordConfig = resourceManager.getConfig('words');
+        if (!wordConfig || !wordConfig.categories) {
+            throw new Error('Invalid word configuration');
+        }
+
+        this.words = this.flattenCategories(wordConfig.categories);
+        if (this.words.length === 0) {
+            throw new Error('No words available in configuration');
+        }
     }
 
-    flattenCategories() {
-        const words = [];
-        Object.values(this.wordLists).forEach(list => {
-            Object.values(list.categories).forEach(category => {
-                words.push(...category);
-            });
-        });
-        return words;
+    flattenCategories(categories) {
+        try {
+            return Object.values(categories)
+                .flat()
+                .filter(word => typeof word === 'string' && word.length > 0);
+        } catch (error) {
+            throw new Error('Failed to process word categories: ' + error.message);
+        }
     }
 
     getRandomWord() {
-        return this.categories[Math.floor(Math.random() * this.categories.length)];
+        if (this.words.length === 0) {
+            throw new Error('No words available');
+        }
+        const index = Math.floor(Math.random() * this.words.length);
+        return this.words[index];
     }
 
     createWord(canvasWidth, canvasHeight, speed) {

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .game-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a237e;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .game-header > div {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 0 20px;
+        }
+
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .word-input {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        .word-input input {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 200px;
+            text-align: center;
+            outline: none;
+        }
+
+        .word-input input.correct {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .word-input input.error {
+            background: rgba(244, 67, 54, 0.2);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .game-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 35, 126, 0.95);
+            z-index: 200;
+        }
+
+        .game-menu h1 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            background: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            min-width: 200px;
+        }
+
+        button:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+        .settings-content, .highscores-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            min-width: 300px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            color: white;
+            font-size: 16px;
+        }
+
+        .setting-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .setting-item select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            background: white;
+            cursor: pointer;
+        }
+
+        .highscores-content {
+            min-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .score-rank {
+            font-weight: bold;
+            color: #4a90e2;
+        }
+        .score-date {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .score-rank {
+            font-weight: bold;
+            color: #4a90e2;
+            width: 40px;
+        }
+
+        .score-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+
+        .stage-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: white;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 150;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="game-header">
+            <div>Score: <span id="score">0</span></div>
+            <div>Time: <span id="timer">60</span>s</div>
+            <div>Stage: <span id="stage">1</span></div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="word-input" class="word-input hidden">
+            <input type="text" id="word-input-field" autocomplete="off">
+        </div>
+
+        <div id="game-menu" class="game-menu">
+            <h1>Typing Game</h1>
+            <div class="menu-buttons">
+                <button id="start-game">Start Game</button>
+                <button id="high-scores">High Scores</button>
+                <button id="settings">Settings</button>
+            </div>
+        </div>
+
+        <div id="game-over" class="game-menu hidden">
+            <h2>Game Over!</h2>
+            <div class="final-score">Final Score: <span id="final-score">0</span></div>
+            <div class="menu-buttons">
+                <button id="restart-game">Play Again</button>
+                <button id="return-menu">Main Menu</button>
+            </div>
+        </div>
+        <!-- Settings Menu -->
+        <div id="settings-menu" class="game-menu hidden">
+            <h2>Settings</h2>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <label>Sound Effects</label>
+                    <input type="checkbox" id="setting-sound" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Music</label>
+                    <input type="checkbox" id="setting-music" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Particle Effects</label>
+                    <input type="checkbox" id="setting-particles" checked>
+                </div>
+                <div class="setting-item">
+                    <label>Difficulty</label>
+                    <select id="setting-difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+            <div class="menu-buttons">
+                <button id="save-settings">Save Settings</button>
+                <button id="close-settings">Back</button>
+            </div>
+        </div>
+
+        <!-- High Scores Menu -->
+        <div id="highscores-menu" class="game-menu hidden">
+            <h2>High Scores</h2>
+            <div id="highscores-list" class="highscores-content">
+                <!-- Scores will be inserted here -->
+            </div>
+            <div class="menu-buttons">
+                <button id="close-highscores">Back to Menu</button>
+            </div>
+        </div>
+         
+    </div>
+
+    <script>
+        class Game {
+            constructor() {
+                // Core elements
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        
+        // Game state
+        this.words = [];
+        this.score = 0;
+        this.timeLeft = 60;
+        this.isActive = false;
+        this.currentWord = null;
+        this.currentStage = 1;
+        
+        // Constants
+        this.headerHeight = 60;
+        this.padding = 40;
+        
+        // Player position
+        this.playerX = 0;
+        this.playerY = 0;
+        
+        // Movement state
+        this.movement = {
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+
+         // Initialize high scores system
+        this.highScores = new HighScoreManager();
+        const highScoresBtn = document.getElementById('high-scores');
+        if (highScoresBtn) {
+            highScoresBtn.addEventListener('click', () => {
+                this.showHighScores();
+            });
+        }
+
+
+        // Word list
+        this.wordList = [
+            'javascript', 'programming', 'computer', 'web', 'game',
+            'development', 'typing', 'practice', 'code', 'learn',
+            'software', 'design', 'interface', 'testing', 'debug'
+        ];
+
+        // Initialize systems
+        this.initSystems();
+        this.initEventListeners();
+    }
+    showHighScores() {
+            document.getElementById('game-menu').classList.add('hidden');
+            const highScoresMenu = document.getElementById('highscores-menu');
+            highScoresMenu.classList.remove('hidden');
+            this.highScores.displayScores(); // Refresh the displayed scores
+        }
+    /**
+     * Initializes the game systems.
+     * 
+     * @throws {Error} If the system initialization fails.
+     */
+    initSystems() {
+        try {
+            // Initialize canvas
+            this.resizeCanvas();
+            
+            // Set initial player position
+            this.playerX = this.canvas.width / 2;
+            this.playerY = this.headerHeight + 60;
+
+            // Initialize managers
+            this.settings = new SettingsManager();
+            this.highScores = new HighScoreManager();
+
+            console.log('Systems initialized successfully');
+        } catch (error) {
+            console.error('Error initializing systems:', error);
+        }
+    }
+
+        /**
+         * Initializes the event listeners for the game.
+         * 
+         * @throws {Error} If an event listener initialization fails.
+         */
+    initEventListeners() {
+        try {
+            // Window events
+            window.addEventListener('resize', () => this.resizeCanvas());
+
+            // Game controls
+            document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+            document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+
+            // Menu buttons
+            const startBtn = document.getElementById('start-game');
+            const restartBtn = document.getElementById('restart-game');
+            const returnBtn = document.getElementById('return-menu');
+            const settingsBtn = document.getElementById('settings');
+            const highScoresBtn = document.getElementById('high-scores');
+
+            if (startBtn) startBtn.addEventListener('click', () => this.start());
+            if (restartBtn) restartBtn.addEventListener('click', () => this.start());
+            if (returnBtn) returnBtn.addEventListener('click', () => this.showMenu());
+            if (settingsBtn) settingsBtn.addEventListener('click', () => this.showSettings());
+            if (highScoresBtn) highScoresBtn.addEventListener('click', () => this.showHighScores());
+
+            // Word input
+            const wordInput = document.getElementById('word-input-field');
+            if (wordInput) {
+                wordInput.addEventListener('input', () => this.checkWord());
+            }
+
+            console.log('Event listeners initialized successfully');
+        } catch (error) {
+            console.error('Error initializing event listeners:', error);
+        }
+    }
+
+    showSettings() {
+        const settingsMenu = document.getElementById('settings-menu');
+        const gameMenu = document.getElementById('game-menu');
+        
+        if (settingsMenu && gameMenu) {
+            gameMenu.classList.add('hidden');
+            settingsMenu.classList.remove('hidden');
+        }
+    }
+
+    showHighScores() {
+        const highScoresMenu = document.getElementById('highscores-menu');
+        const gameMenu = document.getElementById('game-menu');
+        
+        if (highScoresMenu && gameMenu) {
+            this.highScores.displayScores();
+            gameMenu.classList.add('hidden');
+            highScoresMenu.classList.remove('hidden');
+        }
+    }
+
+            init() {
+                // Set canvas size
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+
+                // Initialize player position below header
+                this.playerX = this.canvas.width / 2;
+                this.playerY = this.headerHeight + 60;
+
+                // Set up event listeners
+                document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+                
+                // Menu buttons
+                document.getElementById('start-game').addEventListener('click', () => this.start());
+                document.getElementById('restart-game').addEventListener('click', () => this.start());
+                document.getElementById('return-menu').addEventListener('click', () => this.showMenu());
+                
+                // Word input
+                document.getElementById('word-input-field').addEventListener('input', () => this.checkWord());
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            start() {
+                this.score = 0;
+                this.timeLeft = 60;
+                this.isActive = true;
+                this.words = [];
+                this.currentWord = null;
+                
+                // Reset player position
+                this.playerX = this.canvas.width / 2;
+                this.playerY = this.headerHeight + 60;
+                
+                // Hide menus
+                document.getElementById('game-menu').classList.add('hidden');
+                document.getElementById('game-over').classList.add('hidden');
+                
+                // Update UI
+                document.getElementById('score').textContent = '0';
+                document.getElementById('timer').textContent = '60';
+                
+                // Add initial words
+                for (let i = 0; i < 5; i++) {
+                    this.addWord();
+                }
+
+                // Start game loop and timer
+                this.gameLoop();
+                this.startTimer();
+            }
+
+            addWord() {
+                const word = {
+                    text: this.wordList[Math.floor(Math.random() * this.wordList.length)],
+                    x: this.padding + Math.random() * (this.canvas.width - this.padding * 2),
+                    y: this.headerHeight + this.padding + 
+                       Math.random() * (this.canvas.height - this.headerHeight - this.padding * 2)
+                };
+                this.words.push(word);
+            }
+
+            gameLoop() {
+                if (!this.isActive) return;
+
+                // Clear canvas with gradient background
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                gradient.addColorStop(0, '#1e3a8a');
+                gradient.addColorStop(1, '#2563eb');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Update player position
+                if (!this.currentWord) {
+                    if (this.movement.w) this.playerY -= 5;
+                    if (this.movement.s) this.playerY += 5;
+                    if (this.movement.a) this.playerX -= 5;
+                    if (this.movement.d) this.playerX += 5;
+
+                    // Keep player in bounds and below header
+                    this.playerX = Math.max(this.padding, Math.min(this.canvas.width - this.padding, this.playerX));
+                    this.playerY = Math.max(this.headerHeight + this.padding, 
+                                         Math.min(this.canvas.height - this.padding, this.playerY));
+                }
+
+                // Draw player
+                this.ctx.fillStyle = 'white';
+                this.ctx.beginPath();
+                this.ctx.arc(this.playerX, this.playerY, 20, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Draw words and check collisions
+                this.ctx.font = '20px Arial';
+                this.ctx.fillStyle = 'white';
+                this.words.forEach(word => {
+                    this.ctx.fillText(word.text, word.x, word.y);
+
+                    if (!this.currentWord) {
+                        const dx = word.x - this.playerX;
+                        const dy = word.y - this.playerY;
+                        if (Math.sqrt(dx * dx + dy * dy) < 40) {
+                            this.currentWord = word;
+                            document.getElementById('word-input').classList.remove('hidden');
+                            document.getElementById('word-input-field').value = '';
+                            document.getElementById('word-input-field').focus();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(() => this.gameLoop());
+            }
+
+            handleKeyDown(e) {
+                if (!this.currentWord && e.key.toLowerCase() in this.movement) {
+                    e.preventDefault();
+                    this.movement[e.key.toLowerCase()] = true;
+                }
+            }
+
+            handleKeyUp(e) {
+                if (e.key.toLowerCase() in this.movement) {
+                    e.preventDefault();
+                    this.movement[e.key.toLowerCase()] = false;
+                }
+            }
+
+            checkWord() {
+                if (!this.currentWord) return;
+
+                const input = document.getElementById('word-input-field');
+                const inputWord = input.value.toLowerCase();
+                const targetWord = this.currentWord.text.toLowerCase();
+
+                // Visual feedback
+                if (targetWord.startsWith(inputWord)) {
+                    input.classList.add('correct');
+                    input.classList.remove('error');
+                } else {
+                    input.classList.add('error');
+                    input.classList.remove('correct');
+                }
+
+                if (inputWord === targetWord) {
+                    this.score += 10;
+                    document.getElementById('score').textContent = this.score;
+                    
+                    this.words = this.words.filter(w => w !== this.currentWord);
+                    this.addWord();
+                    
+                    this.currentWord = null;
+                    input.value = '';
+                    input.classList.remove('correct', 'error');
+                    document.getElementById('word-input').classList.add('hidden');
+                }
+            }
+
+            startTimer() {
+                const timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    document.getElementById('timer').textContent = this.timeLeft;
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+
+            endGame() {
+                this.isActive = false;
+                
+                // Save score
+                if (this.score > 0) {
+                    this.highScores.saveScore(this.score);
+                }
+                
+                // Update UI
+                document.getElementById('final-score').textContent = this.score;
+                document.getElementById('game-over').classList.remove('hidden');
+            }
+
+            showMenu() {
+                document.getElementById('game-over').classList.add('hidden');
+                document.getElementById('game-menu').classList.remove('hidden');
+            }
+
+            initializeUIHandlers() {
+                // Settings handlers
+                document.getElementById('settings').addEventListener('click', () => this.showSettings());
+                document.getElementById('save-settings').addEventListener('click', () => this.saveSettings());
+                document.getElementById('close-settings').addEventListener('click', () => {
+                    document.getElementById('settings-menu').classList.add('hidden');
+                    document.getElementById('game-menu').classList.remove('hidden');
+                });
+
+                // High scores handlers
+                document.getElementById('high-scores').addEventListener('click', () => {
+                    this.highScores.displayScores();
+                    document.getElementById('game-menu').classList.add('hidden');
+                    document.getElementById('highscores-menu').classList.remove('hidden');
+                });
+                document.getElementById('close-highscores').addEventListener('click', () => {
+                    document.getElementById('highscores-menu').classList.add('hidden');
+                    document.getElementById('game-menu').classList.remove('hidden');
+                });
+            }
+
+            showSettings() {
+                // Update settings UI with current values
+                document.getElementById('setting-sound').checked = this.settings.getSetting('sound');
+                document.getElementById('setting-music').checked = this.settings.getSetting('music');
+                document.getElementById('setting-particles').checked = this.settings.getSetting('particles');
+                document.getElementById('setting-difficulty').value = this.settings.getSetting('difficulty');
+                
+                document.getElementById('game-menu').classList.add('hidden');
+                document.getElementById('settings-menu').classList.remove('hidden');
+            }
+
+            saveSettings() {
+                this.settings.updateSetting('sound', document.getElementById('setting-sound').checked);
+                this.settings.updateSetting('music', document.getElementById('setting-music').checked);
+                this.settings.updateSetting('particles', document.getElementById('setting-particles').checked);
+                this.settings.updateSetting('difficulty', document.getElementById('setting-difficulty').value);
+                
+                document.getElementById('settings-menu').classList.add('hidden');
+                document.getElementById('game-menu').classList.remove('hidden');
+            }
+        }
+
+        class SettingsManager {
+            constructor() {
+                this.settings = this.loadSettings();
+            }
+
+            loadSettings() {
+                const defaultSettings = {
+                    sound: true,
+                    music: true,
+                    particles: true,
+                    difficulty: 'normal'
+                };
+
+                try {
+                    const saved = localStorage.getItem('gameSettings');
+                    return saved ? JSON.parse(saved) : defaultSettings;
+                } catch (error) {
+                    console.error('Error loading settings:', error);
+                    return defaultSettings;
+                }
+            }
+
+            getSetting(key) {
+                return this.settings[key];
+            }
+        }
+
+        class HighScoreManager {
+            constructor() {
+                this.scores = this.loadScores();
+                this.initializeListeners();
+            }
+
+            initializeListeners() {
+                const closeButton = document.getElementById('close-highscores');
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => this.closeHighScores());
+                }
+            }
+
+            loadScores() {
+                try {
+                    const saved = localStorage.getItem('highScores');
+                    console.log('Loaded scores from storage:', saved);
+                    return saved ? JSON.parse(saved) : [];
+                } catch (error) {
+                    console.error('Error loading high scores:', error);
+                    return [];
+                }
+            }
+
+            saveScore(score) {
+                try {
+                    this.scores.push({
+                        score: score,
+                        date: new Date().toISOString(),
+                        stage: 1 // Update this when stage system is implemented
+                    });
+
+                    // Sort scores in descending order and keep top 10
+                    this.scores.sort((a, b) => b.score - a.score);
+                    this.scores = this.scores.slice(0, 10);
+
+                    localStorage.setItem('highScores', JSON.stringify(this.scores));
+                    console.log('Saved new score:', score);
+                    console.log('Updated scores:', this.scores);
+                } catch (error) {
+                    console.error('Error saving score:', error);
+                }
+            }
+
+            displayScores() {
+                const scoresList = document.getElementById('highscores-list');
+                if (!scoresList) return;
+
+                console.log('Displaying scores:', this.scores);
+
+                if (!this.scores || this.scores.length === 0) {
+                    scoresList.innerHTML = '<div class="score-item">No scores yet!</div>';
+                    return;
+                }
+
+                scoresList.innerHTML = this.scores
+                    .map((score, index) => `
+                        <div class="score-item">
+                            <span class="score-rank">#${index + 1}</span>
+                            <span class="score-value">${score.score} points</span>
+                            <span class="score-date">${new Date(score.date).toLocaleDateString()}</span>
+                        </div>
+                    `)
+                    .join('');
+            }
+
+            closeHighScores() {
+                document.getElementById('highscores-menu').classList.add('hidden');
+                document.getElementById('game-menu').classList.remove('hidden');
+            }
+        }
+
+        // Initialize game when the page is fully loaded
+        window.addEventListener('load', () => {
+            try {
+                console.log('Initializing game...');
+                const game = new Game();
+                // Store game instance globally for debugging
+                window.gameInstance = game;
+                console.log('Game initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize game:', error);
+                // Show error to user
+                const container = document.getElementById('game-container');
+                if (container) {
+                    container.innerHTML += `
+                        <div class="error-message" style="color: white; padding: 20px;">
+                            Error initializing game. Please refresh the page.
+                            <br>
+                            Error details: ${error.message}
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

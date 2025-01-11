@@ -12,7 +12,8 @@ typing-game/
 │   │   ├── sprite.js
 │   │   ├── words.js
 │   │   ├── collision.js
-│   │   └── particle-system.js
+│   │   ├── particle-system.js
+│   │   └── input-manager.js
 │   ├── utils/
 │   │   ├── config-loader.js
 │   │   ├── storage.js
@@ -21,7 +22,8 @@ typing-game/
 │   ├── ui/
 │   │   ├── menu.js
 │   │   ├── score.js
-│   │   └── transitions.js
+│   │   ├── transitions.js
+│   │   └── ui-manager.js
 │   └── main.js
 ├── config/
 │   ├── games/
