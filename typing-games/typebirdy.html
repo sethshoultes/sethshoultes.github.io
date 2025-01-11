@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Typing Game - Flappy Bird</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      display: block;
+      background: #70c5ce;
+    }
+    .word-display {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: black;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .paused {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 36px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="word-display" id="wordDisplay">word</div>
+  <div class="paused" id="pauseDisplay" style="display: none;">Paused</div>
+  <canvas id="gameCanvas"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 480;
+    canvas.height = 640;
+
+    let bird = { x: 50, y: canvas.height / 2, radius: 10, velocity: 0, gravity: 0.5, jump: -10 };
+    let pipes = [];
+    let score = 0;
+    let highScore = localStorage.getItem('highScore') || 0;
+    let gameOver = false;
+    let paused = false;
+    const pipeWidth = 50;
+    const pipeGap = 120;
+
+    const words = ["jump", "type", "flap", "pipe", "sky", "game", "bird", "fly", "keyboard", "gravity"];
+    let currentWord = words[Math.floor(Math.random() * words.length)];
+    let typedWord = "";
+
+    const wordDisplay = document.getElementById('wordDisplay');
+    const pauseDisplay = document.getElementById('pauseDisplay');
+    wordDisplay.textContent = currentWord;
+
+    // Create initial pipes
+    function createPipe() {
+      let topHeight = Math.random() * (canvas.height - pipeGap - 20) + 10;
+      pipes.push({ x: canvas.width, top: topHeight, bottom: topHeight + pipeGap });
+    }
+
+    // Typing input
+    document.addEventListener('keydown', (e) => {
+      if (gameOver) {
+        if (e.code === "Enter") resetGame();
+        return;
+      }
+      if (paused) {
+        if (e.code === "KeyP") togglePause();
+        return;
+      }
+
+      if (e.key === 'Backspace') {
+        typedWord = typedWord.slice(0, -1); // Remove last character
+      } else if (e.key === 'p' || e.key === 'P') {
+        togglePause();
+      } else if (currentWord.startsWith(typedWord + e.key)) {
+        typedWord += e.key;
+        if (typedWord === currentWord) {
+          bird.velocity = bird.jump;
+          typedWord = "";
+          currentWord = words[Math.floor(Math.random() * words.length)];
+          wordDisplay.textContent = currentWord;
+          if (score % 5 === 0 && score > 0) bird.gravity += 0.05; // Difficulty scaling
+        }
+      } else {
+        typedWord = ""; // Reset if mistyped
+      }
+    });
+
+    function togglePause() {
+      paused = !paused;
+      pauseDisplay.style.display = paused ? "block" : "none";
+    }
+
+    function update() {
+      if (gameOver || paused) return;
+
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+
+      for (let i = 0; i < pipes.length; i++) {
+        pipes[i].x -= 2;
+
+        if (
+          (bird.x + bird.radius > pipes[i].x &&
+            bird.x - bird.radius < pipes[i].x + pipeWidth &&
+            (bird.y - bird.radius < pipes[i].top || bird.y + bird.radius > pipes[i].bottom)) ||
+          bird.y + bird.radius > canvas.height ||
+          bird.y - bird.radius < 0
+        ) {
+          gameOver = true;
+          if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('highScore', highScore);
+          }
+        }
+
+        if (pipes[i].x + pipeWidth < 0) {
+          pipes.splice(i, 1);
+          score++;
+        }
+      }
+
+      if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 200) {
+        createPipe();
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'yellow';
+      ctx.beginPath();
+      ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'green';
+      for (let pipe of pipes) {
+        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+        ctx.fillRect(pipe.x, pipe.bottom, pipeWidth, canvas.height - pipe.bottom);
+      }
+
+      ctx.fillStyle = 'black';
+      ctx.font = '20px Arial';
+      ctx.fillText(`Score: ${score}`, 10, 30);
+      ctx.fillText(`High Score: ${highScore}`, 10, 60);
+
+      if (gameOver) {
+        ctx.font = '30px Arial';
+        ctx.fillText('Game Over! Press Enter to Restart', 50, canvas.height / 2);
+      }
+    }
+
+    function resetGame() {
+      bird = { x: 50, y: canvas.height / 2, radius: 10, velocity: 0, gravity: 0.5, jump: -10 };
+      pipes = [];
+      score = 0;
+      gameOver = false;
+      createPipe();
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      wordDisplay.textContent = currentWord;
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    createPipe();
+    gameLoop();
+  </script>
+</body>
+</html>
