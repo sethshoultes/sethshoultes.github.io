@@ -1,0 +1,52 @@
+.wrap {
+    max-width: 1200px;
+    margin: 20px;
+}
+
+.form-table {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.form-table th {
+    width: 200px;
+    padding: 20px;
+}
+
+.form-table td {
+    padding: 15px 20px;
+}
+
+.form-table input[type="number"] {
+    width: 100px;
+}
+
+.wp-color-picker {
+    margin-top: 5px;
+}
+
+#preview-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+#game-preview {
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.notice {
+    margin: 20px 0;
+}
+
+.submit {
+    margin-top: 20px;
+}
