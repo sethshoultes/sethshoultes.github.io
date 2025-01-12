@@ -1,24 +1,32 @@
 (function($) {
     'use strict';
 
+    /**
+     * Initializes the game preview within the #game-preview container.
+     * Removes any existing preview and initializes a new one.
+     */
     function initializePreview() {
         const previewContainer = document.getElementById('game-preview');
-        if (previewContainer && typeof FlappyBirdGame === 'function') {
-            // Clear previous preview if exists
+        if (previewContainer) {
+            // Clear previous preview
             while (previewContainer.firstChild) {
                 previewContainer.removeChild(previewContainer.firstChild);
             }
+            
+            // Initialize new preview
             try {
-                // Initialize preview game instance
                 window.gamePreview = new FlappyBirdGame(previewContainer, true);
             } catch (error) {
-                console.error('Failed to initialize game preview:', error);
+                console.error('Preview initialization failed:', error);
             }
-        } else {
-            console.error('Preview initialization failed: FlappyBirdGame not available or container not found');
         }
     }
 
+    /**
+     * Updates the game preview settings.
+     * Gets the current values from the setting fields and updates the game preview instance with them.
+     * If the preview instance doesn't exist yet, it will be initialized.
+     */
     function updatePreview() {
         const settings = {
             bird_color: $('#bird_color').val(),

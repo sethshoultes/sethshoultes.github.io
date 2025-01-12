@@ -8,6 +8,13 @@ class Flappy_Bird_Game {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_game_assets'));
     }
 
+    /**
+     * Gets the default options for the Flappy Bird game.
+     *
+     * @since 1.0.0
+     *
+     * @return array Array of default options.
+     */
     public static function get_default_options() {
         return array(
             'bird_color' => '#FFE338',
@@ -26,6 +33,13 @@ class Flappy_Bird_Game {
         );
     }
 
+    /**
+     * Enqueues the CSS and JavaScript assets for the Flappy Bird game.
+     *
+     * This function is hooked into `wp_enqueue_scripts`.
+     *
+     * @since 1.0.0
+     */
     public function enqueue_game_assets() {
         wp_enqueue_style(
             'flappy-bird-game',
@@ -49,6 +63,15 @@ class Flappy_Bird_Game {
         );
     }
 
+    /**
+     * Renders the Flappy Bird game.
+     *
+     * This function is used by the [flappy_bird] shortcode.
+     *
+     * @since 1.0.0
+     *
+     * @return string The rendered game HTML.
+     */
     public function render_game() {
         ob_start();
         ?>
