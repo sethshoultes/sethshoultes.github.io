@@ -19,16 +19,45 @@
       color: #fff;
       padding: 1.5rem;
       text-align: center;
+      position: relative;
+      background-image: url('path/to/your/banner-image.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Add overlay for better text readability */
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(44, 62, 80, 0.7);
+      z-index: 1;
     }
 
     header h1 {
       margin: 0;
       font-size: 2rem;
+      position: relative;
+      z-index: 2;
     }
-    /
-    header img {
-      max-width: 100%;
-      height: auto;
+
+    /* Mobile responsiveness */
+    @media screen and (max-width: 768px) {
+      header {
+        min-height: 200px;
+        padding: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
     }
 
     nav {
