@@ -50,3 +50,26 @@
 .submit {
     margin-top: 20px;
 }
+
+#game-preview {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.preview-controls {
+    margin-bottom: 15px;
+}
+
+.preview-controls button {
+    margin-right: 10px;
+}
+
+#preview-game-container {
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

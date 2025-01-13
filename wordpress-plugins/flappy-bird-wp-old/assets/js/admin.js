@@ -71,3 +71,49 @@
         initializePreview();
     });
 })(jQuery);
+
+class FlappyBirdAdmin {
+    initializePreview() {
+        const previewContainer = document.getElementById('game-preview');
+        if (previewContainer) {
+            // Clear existing preview
+            while (previewContainer.firstChild) {
+                previewContainer.removeChild(previewContainer.firstChild);
+            }
+
+            // Add preview controls
+            const controls = document.createElement('div');
+            controls.className = 'preview-controls';
+            controls.innerHTML = `
+                <button id="previewStart" class="button button-primary">Start Preview</button>
+                <button id="previewReset" class="button">Reset Preview</button>
+            `;
+            previewContainer.appendChild(controls);
+
+            // Create game container
+            const gameContainer = document.createElement('div');
+            gameContainer.id = 'preview-game-container';
+            previewContainer.appendChild(gameContainer);
+
+            // Initialize preview game
+            this.previewGame = new FlappyBirdGame(gameContainer, true);
+
+            // Add preview control listeners
+            document.getElementById('previewStart').addEventListener('click', () => {
+                if (!this.previewGame.gameState.started) {
+                    this.previewGame.startGame();
+                    document.getElementById('previewStart').textContent = 'Pause Preview';
+                } else {
+                    this.previewGame.togglePause();
+                    document.getElementById('previewStart').textContent = 
+                        this.previewGame.gameState.paused ? 'Resume Preview' : 'Pause Preview';
+                }
+            });
+
+            document.getElementById('previewReset').addEventListener('click', () => {
+                this.previewGame.resetGame();
+                document.getElementById('previewStart').textContent = 'Start Preview';
+            });
+        }
+    }
+}
