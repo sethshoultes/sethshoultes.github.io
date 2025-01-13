@@ -1,0 +1,9 @@
+.flappy-bird-settings input[type="number"] {
+    width: 100px;
+}
+
+.flappy-bird-settings .description {
+    color: #666;
+    font-style: italic;
+    margin-top: 5px;
+}

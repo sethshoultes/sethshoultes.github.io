@@ -11,9 +11,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Define plugin constants
+define('FLAPPY_BIRD_VERSION', '1.0.0');
+define('FLAPPY_BIRD_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('FLAPPY_BIRD_PLUGIN_URL', plugin_dir_url(__FILE__));
+
 class Simple_Flappy_Bird {
     public function __construct() {
+        // Initialize plugin
         add_action('init', array($this, 'init'));
+        
+        // Load required files
+        require_once FLAPPY_BIRD_PLUGIN_DIR . 'includes/class-flappy-bird-game.php';
+        require_once FLAPPY_BIRD_PLUGIN_DIR . 'includes/class-flappy-bird-admin.php';
+        
+        // Initialize admin if in admin area
+        if (is_admin()) {
+            new Flappy_Bird_Admin();
+        }
     }
 
     public function init() {
@@ -22,38 +37,37 @@ class Simple_Flappy_Bird {
     }
 
     public function enqueue_assets() {
+        // Enqueue styles
         wp_enqueue_style(
             'simple-flappy-bird',
-            plugins_url('style.css', __FILE__),
+            plugins_url('assets/css/style.css', __FILE__),
             array(),
             '1.0'
         );
         
+        // Enqueue scripts
         wp_enqueue_script(
             'simple-flappy-bird',
-            plugins_url('game.js', __FILE__),
-            array(),
+            plugins_url('assets/js/game.js', __FILE__),
+            array('jquery'),
             '1.0',
             true
         );
+    
+        // Pass settings to JavaScript
+        $options = get_option('flappy_bird_options', array());
+        wp_localize_script('simple-flappy-bird', 'flappyBirdSettings', array(
+            'gravity' => isset($options['gravity']) ? floatval($options['gravity']) : 0.5,
+            'jump_force' => isset($options['jump_force']) ? floatval($options['jump_force']) : -7,
+            'pipe_speed' => isset($options['pipe_speed']) ? floatval($options['pipe_speed']) : 3,
+            'pipe_gap' => isset($options['pipe_gap']) ? intval($options['pipe_gap']) : 150,
+            'assets_url' => plugins_url('assets/', __FILE__),
+        ));
     }
 
     public function render_game() {
-        return <<<HTML
-        <div class="flappy-bird-game">
-            <div id="game-screen">
-                <div id="bird"></div>
-                <div id="score">0</div>
-                <div id="start-message">Press Space or Click to Start</div>
-                <div id="game-over" style="display:none;">
-                    <h2>Game Over!</h2>
-                    <p>Score: <span id="final-score">0</span></p>
-                    <p>High Score: <span id="high-score">0</span></p>
-                    <button id="restart-button">Play Again</button>
-                </div>
-            </div>
-        </div>
-HTML;
+        $game = new Flappy_Bird_Game();
+        return $game->render_game();
     }
 }
 
