@@ -1,0 +1,61 @@
+/* Default theme - already defined in style.css */
+
+/* Dark theme */
+.wp-memory-game-container.theme-dark {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.wp-memory-game-container.theme-dark .card {
+    background: #2d2d2d;
+    border: 1px solid #404040;
+}
+
+.wp-memory-game-container.theme-dark .restart-btn {
+    background: #4a4a4a;
+    color: #fff;
+}
+
+/* Kids theme */
+.wp-memory-game-container.theme-kids {
+    background: #ffebee;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.wp-memory-game-container.theme-kids .card {
+    background: #fff;
+    border: 3px solid #ff9999;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.wp-memory-game-container.theme-kids .restart-btn {
+    background: #ff7777;
+    border-radius: 25px;
+    font-size: 1.2em;
+    padding: 12px 24px;
+}
+
+/* Professional theme */
+.wp-memory-game-container.theme-professional {
+    background: #f5f5f5;
+    font-family: 'Arial', sans-serif;
+}
+
+.wp-memory-game-container.theme-professional .card {
+    background: #fff;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wp-memory-game-container.theme-professional .card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.wp-memory-game-container.theme-professional .restart-btn {
+    background: #2196F3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}

@@ -1,5 +1,18 @@
 // Game images from WordPress localized script
-const cardImages = wpMemoryGame.images.flatMap(img => [img, img]); // Duplicate each image
+const gridSizes = {
+  '4x4': 8,  // 16 cards total (8 pairs)
+  '4x5': 10, // 20 cards total (10 pairs)
+  '5x6': 15  // 30 cards total (15 pairs)
+};
+
+// Get number of pairs based on grid size
+const gridSize = wpMemoryGame.options.grid_size || '4x4';
+const numPairs = gridSizes[gridSize];
+
+// Take only the required number of images for the grid size
+const cardImages = wpMemoryGame.images
+  .slice(0, numPairs)
+  .flatMap(img => [img, img]); // Create pairs
 const STORAGE_KEY = 'wpMemoryGameHighScore';
 
 const gameOptions = wpMemoryGame.options;
@@ -57,6 +70,12 @@ function shuffle(array) {
 // Create game board
 function createBoard() {
   const gameBoard = document.getElementById('game-board');
+  
+  // Set grid size CSS
+  const [rows, cols] = gridSize.split('x').map(Number);
+  gameBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  gameBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
   // Create array of objects with images and names, preserving pairs
   const cards = [];
   for (let i = 0; i < cardImages.length; i += 2) {
