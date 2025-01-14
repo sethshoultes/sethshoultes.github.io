@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WP Memory Game
- * Plugin URI: https://example.com/wp-memory-game
+ * Plugin URI: https://wpbuildr.com/wp-memory-game/
  * Description: A memory card matching game with high score tracking and pause functionality
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://example.com
+ * Author: Seth Shoultes
+ * Author URI: https://wpbuildr.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-memory-game
