@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Invaders</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+        #gameContainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background: #000;
+        }
+        #gameHUD {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+        }
+        #currentWord {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #fff;
+        }
+        #gameOverModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        #gameOverModal h2 {
+            color: #ff4444;
+            margin-bottom: 20px;
+        }
+        #gameOverModal .stats {
+            text-align: left;
+            margin: 20px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        #gameOverModal .high-scores {
+            margin: 20px 0;
+        }
+        #gameOverModal .high-scores table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        #gameOverModal .high-scores td {
+            padding: 5px;
+            border-bottom: 1px solid #333;
+        }
+        #gameOverModal input {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 5px 10px;
+            margin: 10px 0;
+            width: 200px;
+            border-radius: 3px;
+        }
+        #gameOverModal button {
+            background: #444;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        #gameOverModal button:hover {
+            background: #666;
+        }
+        .new-high-score {
+            animation: pulse 1s infinite;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="gameHUD">
+            Score: <span id="score">0</span> | 
+            Lives: <span id="lives">♥♥♥</span> | 
+            Level: <span id="level">1</span>
+        </div>
+        <div id="currentWord"></div>
+    </div>
+    
+    <div id="gameOverModal">
+        <h2>Game Over!</h2>
+        <div class="stats"></div>
+        <div id="nameInputContainer" style="display: none;">
+            <p class="new-high-score">New High Score!</p>
+            <input type="text" id="playerName" maxlength="15" placeholder="Enter your name">
+        </div>
+        <div class="high-scores"></div>
+        <div>
+            <button onclick="game.restart()">Try Again</button>
+            <button onclick="game.showMainMenu()">Main Menu</button>
+        </div>
+    </div>
+    <script>
+        class HighScoreManager {
+            constructor() {
+                this.storageKey = 'wordInvadersHighScores';
+                this.maxEntries = 10;
+            }
+
+            getScores() {
+                const scores = localStorage.getItem(this.storageKey);
+                return scores ? JSON.parse(scores) : [];
+            }
+
+            saveScore(scoreData) {
+                let scores = this.getScores();
+                scores.push(scoreData);
+                scores.sort((a, b) => b.score - a.score);
+                if (scores.length > this.maxEntries) {
+                    scores = scores.slice(0, this.maxEntries);
+                }
+                localStorage.setItem(this.storageKey, JSON.stringify(scores));
+            }
+
+            isHighScore(score) {
+                const scores = this.getScores();
+                return scores.length < this.maxEntries || score > scores[scores.length - 1]?.score;
+            }
+
+            getTopScores(limit = 5) {
+                return this.getScores().slice(0, limit);
+            }
+        }
+
+        class PowerUp {
+            constructor(type, x) {
+                this.type = type;
+                this.x = x;
+                this.y = 0;
+                this.speed = 2;
+                this.size = 30;
+                this.pulsePhase = 0;
+            }
+
+            update(deltaTime) {
+                this.y += this.speed;
+                this.pulsePhase = (this.pulsePhase + deltaTime / 500) % (2 * Math.PI);
+            }
+
+            draw(ctx) {
+                const pulseScale = 0.2 * Math.sin(this.pulsePhase) + 1;
+                const size = this.size * pulseScale;
+                
+                ctx.font = `${size}px Arial`;
+                ctx.fillStyle = this.type.color;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.type.symbol, this.x, this.y);
+            }
+        }
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.words = [];
+                this.currentTyping = '';
+                this.score = 0;
+                this.lives = 3;
+                this.level = 1;
+                this.lastSpawn = 0;
+                this.spawnInterval = 3000;
+                this.baseSpeed = 1;
+                
+                // Game statistics
+                this.wordsTyped = 0;
+                this.powerUpsCollected = 0;
+                this.totalKeystrokes = 0;
+                this.accurateKeystrokes = 0;
+                
+                // High score system
+                this.highScoreManager = new HighScoreManager();
+                
+                // Word pools by difficulty
+                this.wordPools = {
+                    1: ['the', 'cat', 'dog', 'run', 'jump'],
+                    2: ['quick', 'brown', 'pizza', 'happy', 'skill'],
+                    3: ['amazing', 'project', 'fantastic', 'computer', 'keyboard']
+                };
+
+                // Power-up system
+                this.powerUps = [];
+                this.activePowerUps = new Set();
+                this.lastPowerUpSpawn = 0;
+                this.powerUpSpawnInterval = 15000;
+                this.shieldActive = false;
+                
+                this.powerUpTypes = {
+                    timeFreeze: {
+                        symbol: '⏸️',
+                        color: '#00ffff',
+                        duration: 5000,
+                        effect: () => {
+                            this.frozenSpeeds = this.words.map(w => w.speed);
+                            this.words.forEach(w => w.speed = 0);
+                            setTimeout(() => {
+                                if (this.frozenSpeeds) {
+                                    this.words.forEach((w, i) => w.speed = this.frozenSpeeds[i]);
+                                    this.frozenSpeeds = null;
+                                    this.activePowerUps.delete('timeFreeze');
+                                }
+                            }, 5000);
+                        }
+                    },
+                    wordClear: {
+                        symbol: '💥',
+                        color: '#ff4444',
+                        duration: 0,
+                        effect: () => {
+                            this.words.forEach(w => this.score += w.text.length * 5);
+                            this.words = [];
+                        }
+                    },
+                    shield: {
+                        symbol: '🛡️',
+                        color: '#44ff44',
+                        duration: 10000,
+                        effect: () => {
+                            this.shieldActive = true;
+                            setTimeout(() => {
+                                this.shieldActive = false;
+                                this.activePowerUps.delete('shield');
+                            }, 10000);
+                        }
+                    }
+                };
+
+                // Bind event listeners
+                document.addEventListener('keydown', this.handleKeyPress.bind(this));
+                
+                // Start game loop
+                this.lastTime = performance.now();
+                requestAnimationFrame(this.gameLoop.bind(this));
+            }
+            handleKeyPress(event) {
+                if (event.key.length === 1) { // Only handle single character keys
+                    this.totalKeystrokes++;
+                    this.currentTyping += event.key;
+                    
+                    // Check if current typing matches any active words
+                    const matchingWord = this.words.find(word => 
+                        word.text.startsWith(this.currentTyping));
+
+                    if (!matchingWord) {
+                        // Reset if no matching word
+                        this.currentTyping = '';
+                    } else if (matchingWord.text === this.currentTyping) {
+                        // Update statistics
+                        this.wordsTyped++;
+                        this.accurateKeystrokes += this.currentTyping.length;
+                        
+                        // Word completed
+                        this.words = this.words.filter(w => w !== matchingWord);
+                        this.score += matchingWord.text.length * 10;
+                        this.updateHUD();
+                        this.currentTyping = '';
+                    }
+
+                    document.getElementById('currentWord').textContent = this.currentTyping;
+                }
+            }
+
+            spawnWord() {
+                const pool = this.wordPools[Math.min(this.level, 3)];
+                const word = {
+                    text: pool[Math.floor(Math.random() * pool.length)],
+                    x: Math.random() * (this.canvas.width - 100),
+                    y: 0,
+                    speed: this.baseSpeed * (1 + this.level * 0.1)
+                };
+                this.words.push(word);
+            }
+
+            spawnPowerUp() {
+                const types = Object.entries(this.powerUpTypes);
+                const [typeId, type] = types[Math.floor(Math.random() * types.length)];
+                const x = Math.random() * (this.canvas.width - 50) + 25;
+                this.powerUps.push(new PowerUp(
+                    { ...type, id: typeId },
+                    x
+                ));
+            }
+
+            checkPowerUpCollision(x, y) {
+                const collisionRadius = 20;
+                return this.powerUps.findIndex(powerUp => {
+                    const dx = powerUp.x - x;
+                    const dy = powerUp.y - y;
+                    return Math.sqrt(dx * dx + dy * dy) < collisionRadius;
+                });
+            }
+
+            updateHUD() {
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('lives').textContent = '♥'.repeat(this.lives);
+                document.getElementById('level').textContent = this.level;
+            }
+
+            updateActivePowerUps() {
+                let status = '';
+                for (const powerUpId of this.activePowerUps) {
+                    const type = this.powerUpTypes[powerUpId];
+                    if (type) {
+                        status += type.symbol + ' ';
+                    }
+                }
+                const statusElem = document.getElementById('powerUpStatus');
+                if (!statusElem) {
+                    const hud = document.getElementById('gameHUD');
+                    const span = document.createElement('span');
+                    span.id = 'powerUpStatus';
+                    hud.appendChild(document.createTextNode(' | Active: '));
+                    hud.appendChild(span);
+                }
+                document.getElementById('powerUpStatus').textContent = status;
+            }
+            gameLoop(timestamp) {
+                const deltaTime = timestamp - this.lastTime;
+                this.lastTime = timestamp;
+
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Spawn new words
+                if (timestamp - this.lastSpawn > this.spawnInterval) {
+                    this.spawnWord();
+                    this.lastSpawn = timestamp;
+                }
+
+                // Update and draw words
+                this.ctx.font = '24px Arial';
+                this.ctx.fillStyle = '#fff';
+
+                for (let i = this.words.length - 1; i >= 0; i--) {
+                    const word = this.words[i];
+                    word.y += word.speed;
+
+                    // Check if word reached bottom
+                    if (word.y > this.canvas.height && !this.shieldActive) {
+                        this.words.splice(i, 1);
+                        this.lives--;
+                        this.updateHUD();
+                        
+                        if (this.lives <= 0) {
+                            this.showGameOver();
+                            return;
+                        }
+                        continue;
+                    }
+
+                    // Draw word
+                    this.ctx.fillStyle = word.text.startsWith(this.currentTyping) ? '#00ff00' : '#fff';
+                    this.ctx.fillText(word.text, word.x, word.y);
+                }
+
+                // Update and draw power-ups
+                for (let i = this.powerUps.length - 1; i >= 0; i--) {
+                    const powerUp = this.powerUps[i];
+                    powerUp.update(deltaTime);
+                    
+                    // Remove if reached bottom
+                    if (powerUp.y > this.canvas.height) {
+                        this.powerUps.splice(i, 1);
+                        continue;
+                    }
+                    
+                    // Check for collection with current typing position
+                    if (this.currentTyping) {
+                        const lastWord = this.words.find(w => w.text.startsWith(this.currentTyping));
+                        if (lastWord) {
+                            const wordX = lastWord.x + this.ctx.measureText(this.currentTyping).width / 2;
+                            const wordY = lastWord.y;
+                            
+                            if (this.checkPowerUpCollision(wordX, wordY) === i) {
+                                // Collect power-up
+                                this.powerUps.splice(i, 1);
+                                this.activePowerUps.add(powerUp.type.id);
+                                powerUp.type.effect();
+                                this.powerUpsCollected++;
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    powerUp.draw(this.ctx);
+                }
+
+                // Spawn new power-ups
+                if (timestamp - this.lastPowerUpSpawn > this.powerUpSpawnInterval) {
+                    if (Math.random() < 0.3) { // 30% chance to spawn
+                        this.spawnPowerUp();
+                    }
+                    this.lastPowerUpSpawn = timestamp;
+                }
+
+                this.updateActivePowerUps();
+
+                // Level progression
+                if (this.score > this.level * 1000) {
+                    this.level++;
+                    this.spawnInterval = Math.max(1000, this.spawnInterval - 200);
+                    this.updateHUD();
+                }
+
+                requestAnimationFrame(this.gameLoop.bind(this));
+            }
+            showGameOver() {
+                const modal = document.getElementById('gameOverModal');
+                const statsDiv = modal.querySelector('.stats');
+                const accuracy = this.totalKeystrokes > 0 
+                    ? Math.round((this.accurateKeystrokes / this.totalKeystrokes) * 100) 
+                    : 0;
+
+                statsDiv.innerHTML = `
+                    <p>Final Score: ${this.score}</p>
+                    <p>Level Reached: ${this.level}</p>
+                    <p>Words Destroyed: ${this.wordsTyped}</p>
+                    <p>Accuracy Rate: ${accuracy}%</p>
+                    <p>Power-ups Used: ${this.powerUpsCollected}</p>
+                `;
+
+                const isHighScore = this.highScoreManager.isHighScore(this.score);
+                const nameInput = document.getElementById('nameInputContainer');
+                nameInput.style.display = isHighScore ? 'block' : 'none';
+
+                if (isHighScore) {
+                    const input = document.getElementById('playerName');
+                    input.value = '';
+                    input.onkeypress = (e) => {
+                        if (e.key === 'Enter' && input.value.trim()) {
+                            this.saveHighScore(input.value.trim());
+                        }
+                    };
+                }
+
+                this.updateHighScoreDisplay();
+                modal.style.display = 'block';
+            }
+
+            saveHighScore(playerName) {
+                const scoreData = {
+                    name: playerName,
+                    score: this.score,
+                    level: this.level,
+                    date: new Date().toLocaleDateString(),
+                    wordsTyped: this.wordsTyped
+                };
+                this.highScoreManager.saveScore(scoreData);
+                this.updateHighScoreDisplay();
+                document.getElementById('nameInputContainer').style.display = 'none';
+            }
+
+            updateHighScoreDisplay() {
+                const highScoresDiv = document.querySelector('.high-scores');
+                const scores = this.highScoreManager.getTopScores();
+                
+                let html = '<h3>High Scores</h3><table>';
+                scores.forEach((score, index) => {
+                    html += `
+                        <tr>
+                            <td>${index + 1}.</td>
+                            <td>${score.name}</td>
+                            <td>${score.score}</td>
+                            <td>Level ${score.level}</td>
+                            <td>${score.date}</td>
+                        </tr>
+                    `;
+                });
+                html += '</table>';
+                highScoresDiv.innerHTML = html;
+            }
+
+            reset() {
+                this.words = [];
+                this.currentTyping = '';
+                this.score = 0;
+                this.lives = 3;
+                this.level = 1;
+                this.lastSpawn = 0;
+                this.spawnInterval = 3000;
+                this.wordsTyped = 0;
+                this.powerUpsCollected = 0;
+                this.totalKeystrokes = 0;
+                this.accurateKeystrokes = 0;
+                this.powerUps = [];
+                this.activePowerUps.clear();
+                this.shieldActive = false;
+                this.updateHUD();
+                document.getElementById('currentWord').textContent = '';
+            }
+
+            restart() {
+                document.getElementById('gameOverModal').style.display = 'none';
+                this.reset();
+            }
+
+            showMainMenu() {
+                // For now, just restart the game
+                this.restart();
+            }
+        }
+
+        // Start game when page loads
+        window.onload = () => new Game();
+    </script>
+</body>
+</html>
