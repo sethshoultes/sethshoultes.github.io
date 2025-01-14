@@ -43,6 +43,8 @@
   border-radius: 8px;
   cursor: pointer;
   position: relative;
+  transform-style: preserve-3d;
+  transition: transform var(--flip-duration) ease;
 }
 
 .wp-memory-game-container .card::before {
@@ -59,6 +61,7 @@
 .wp-memory-game-container .card.flipped::before,
 .wp-memory-game-container .card.matched::before {
   display: none;
+  transform: rotateY(180deg);
 }
 
 .wp-memory-game-container .card img {
@@ -67,6 +70,7 @@
   object-fit: cover;
   border-radius: 8px;
   display: none;
+  transform: rotateY(180deg);
 }
 
 .wp-memory-game-container .card .card-text {

@@ -17,6 +17,8 @@ const STORAGE_KEY = 'wpMemoryGameHighScore';
 
 const gameOptions = wpMemoryGame.options;
 const isCountdown = gameOptions.timer_type === 'countdown';
+const flipDuration = gameOptions.flip_duration || 300;
+const matchDelay = gameOptions.match_delay || 1000;
 
 let moves = 0;
 let timer = isCountdown ? gameOptions.timer_value : 0;
@@ -70,6 +72,7 @@ function shuffle(array) {
 // Create game board
 function createBoard() {
   const gameBoard = document.getElementById('game-board');
+  gameBoard.style.setProperty('--flip-duration', `${flipDuration}ms`);
   
   // Set grid size CSS
   const [rows, cols] = gridSize.split('x').map(Number);
@@ -154,7 +157,7 @@ function checkMatch() {
     setTimeout(() => {
       card1.classList.remove('flipped');
       card2.classList.remove('flipped');
-    }, 1000);
+    }, matchDelay);
   }
 
   flippedCards = [];

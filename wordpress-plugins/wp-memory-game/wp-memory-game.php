@@ -101,6 +101,8 @@ class WP_Memory_Game {
        $timer_value = isset($settings['timer_value']) ? $settings['timer_value'] : 60;
        $grid_size = isset($settings['grid_size']) ? $settings['grid_size'] : '4x4';
        $theme = isset($settings['theme']) ? $settings['theme'] : 'default';
+      $flip_duration = isset($settings['flip_duration']) ? $settings['flip_duration'] : 300;
+      $match_delay = isset($settings['match_delay']) ? $settings['match_delay'] : 1000;
        ?>
        <table class="form-table">
            <tr>
@@ -145,6 +147,40 @@ class WP_Memory_Game {
            </tr>
            <tr>
                <th scope="row">
+                   <label for="flip_duration"><?php esc_html_e('Card Flip Duration (ms)', 'wp-memory-game'); ?></label>
+               </th>
+               <td>
+                   <input type="number" 
+                          id="flip_duration" 
+                          name="memory_game_settings[flip_duration]" 
+                          value="<?php echo esc_attr($flip_duration); ?>" 
+                          min="100" 
+                          max="1000"
+                          step="50" />
+                   <p class="description">
+                       <?php esc_html_e('How long it takes for a card to flip (in milliseconds)', 'wp-memory-game'); ?>
+                   </p>
+               </td>
+           </tr>
+           <tr>
+               <th scope="row">
+                   <label for="match_delay"><?php esc_html_e('Match Delay (ms)', 'wp-memory-game'); ?></label>
+               </th>
+               <td>
+                   <input type="number" 
+                          id="match_delay" 
+                          name="memory_game_settings[match_delay]" 
+                          value="<?php echo esc_attr($match_delay); ?>" 
+                          min="500" 
+                          max="3000"
+                          step="100" />
+                   <p class="description">
+                       <?php esc_html_e('How long to wait before flipping back non-matching cards (in milliseconds)', 'wp-memory-game'); ?>
+                   </p>
+               </td>
+           </tr>
+           <tr>
+               <th scope="row">
                    <label for="theme"><?php esc_html_e('Theme', 'wp-memory-game'); ?></label>
                </th>
                <td>
@@ -173,131 +209,94 @@ class WP_Memory_Game {
        
        $cards = get_post_meta($post->ID, '_memory_game_cards', true) ?: array();
        
+       // Create exactly 8 card slots
+       $cards = array_pad($cards, 8, array('name' => '', 'image' => ''));
+       
        // Ensure WordPress Media Uploader scripts are loaded
        wp_enqueue_media();
-       
        ?>
        <div id="memory-game-cards">
-           <p>
-               <button type="button" class="button" id="add-card">
-                   <?php esc_html_e('Add Card', 'wp-memory-game'); ?>
-               </button>
+           <p class="description">
+               <?php esc_html_e('Upload 8 unique images for your memory game cards. Each image will be used to create a matching pair.', 'wp-memory-game'); ?>
            </p>
-           <div class="card-list">
-               <?php
-               if (!empty($cards)) {
-                   foreach ($cards as $index => $card) {
-                       $this->render_card_fields($index, $card);
-                   }
-               }
-               ?>
+           <div class="card-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px;">
+               <?php for ($i = 0; $i < 8; $i++): ?>
+                   <div class="card-field" style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
+                       <h4><?php printf(esc_html__('Card %d', 'wp-memory-game'), $i + 1); ?></h4>
+                       <div class="image-upload" style="margin: 10px 0;">
+                           <input type="hidden" 
+                                  name="memory_game_cards[<?php echo $i; ?>][image]" 
+                                  value="<?php echo esc_url($cards[$i]['image']); ?>" 
+                                  class="image-url" />
+                           <button type="button" class="button upload-image-button">
+                               <?php echo empty($cards[$i]['image']) ? esc_html__('Upload Image', 'wp-memory-game') : esc_html__('Change Image', 'wp-memory-game'); ?>
+                           </button>
+                           <button type="button" class="button button-link-delete remove-image-button" style="<?php echo empty($cards[$i]['image']) ? 'display: none;' : ''; ?>">
+                               <?php esc_html_e('Remove', 'wp-memory-game'); ?>
+                           </button>
+                       </div>
+                       <div class="image-preview" style="margin-top: 10px; text-align: center;">
+                           <?php if (!empty($cards[$i]['image'])): ?>
+                               <img src="<?php echo esc_url($cards[$i]['image']); ?>" 
+                                    style="max-width: 100%; height: auto; border-radius: 4px;" />
+                           <?php endif; ?>
+                       </div>
+                       <input type="text" 
+                              name="memory_game_cards[<?php echo $i; ?>][name]" 
+                              value="<?php echo esc_attr($cards[$i]['name']); ?>" 
+                              placeholder="<?php esc_attr_e('Card Name (optional)', 'wp-memory-game'); ?>"
+                              class="widefat"
+                              style="margin-top: 10px;" />
+                   </div>
+               <?php endfor; ?>
            </div>
        </div>
 
-       <script type="text/template" id="card-template">
-           <?php $this->render_card_fields('{{index}}', array()); ?>
-       </script>
-
        <script>
        jQuery(document).ready(function($) {
-           var template = $('#card-template').html();
-           var cardCount = $('.card-fields').length;
-          var mediaFrame;
-
-           $('#add-card').on('click', function() {
-               var newCard = template.replace(/{{index}}/g, cardCount++);
-               var $newCard = $(newCard);
-               $('.card-list').append($newCard);
-               initMediaUploader($newCard);
-           });
-
-           $('.card-list').on('click', '.remove-card', function() {
-               $(this).closest('.card-fields').remove();
-           });
-
-           // Initialize media uploader for existing and new cards
-           function initMediaUploader(container) {
-               container.find('.upload-image').off('click').on('click', function(e) {
-                   e.preventDefault();
-                   
-                   var $button = $(this);
-                   var $imageUrl = $button.siblings('.image-url');
-                   var $imagePreview = $button.siblings('.image-preview');
-                   
-                   // If frame already exists, open it
-                   if (mediaFrame) {
-                       mediaFrame.open();
-                       return;
-                   }
-                   
-                   // Create new media frame
-                   mediaFrame = wp.media({
-                       title: '<?php esc_html_e('Select Card Image', 'wp-memory-game'); ?>',
-                       button: {
-                           text: '<?php esc_html_e('Use this image', 'wp-memory-game'); ?>'
-                       },
-                       multiple: false
-                   });
-                   
-                   // When image is selected
-                   mediaFrame.on('select', function() {
-                       var attachment = mediaFrame.state().get('selection').first().toJSON();
-                       $imageUrl.val(attachment.url);
-                       $imagePreview.attr('src', attachment.url).show();
-                   });
-                   
-                   mediaFrame.open();
+           // Handle image upload
+           $('.upload-image-button').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var $field = $button.closest('.card-field');
+               
+               var frame = wp.media({
+                   title: '<?php esc_html_e('Select Card Image', 'wp-memory-game'); ?>',
+                   button: {
+                       text: '<?php esc_html_e('Use this image', 'wp-memory-game'); ?>'
+                   },
+                   multiple: false
                });
-           }
 
-           // Initialize media uploader for existing cards
-           $('.card-fields').each(function() {
-               initMediaUploader($(this));
+               frame.on('select', function() {
+                   var attachment = frame.state().get('selection').first().toJSON();
+                   $field.find('.image-url').val(attachment.url);
+                   $field.find('.image-preview').html(
+                       $('<img>', {
+                           src: attachment.url,
+                           style: 'max-width: 100%; height: auto; border-radius: 4px;'
+                       })
+                   );
+                   $button.text('<?php esc_html_e('Change Image', 'wp-memory-game'); ?>');
+                   $field.find('.remove-image-button').show();
+               });
+
+               frame.open();
+           });
+
+           // Handle image removal
+           $('.remove-image-button').on('click', function(e) {
+               e.preventDefault();
+               var $button = $(this);
+               var $field = $button.closest('.card-field');
+               
+               $field.find('.image-url').val('');
+               $field.find('.image-preview').empty();
+               $field.find('.upload-image-button').text('<?php esc_html_e('Upload Image', 'wp-memory-game'); ?>');
+               $button.hide();
            });
        });
        </script>
-       <?php
-   }
-
-   private function render_card_fields($index, $card) {
-       $image = isset($card['image']) ? $card['image'] : '';
-       $name = isset($card['name']) ? $card['name'] : '';
-       ?>
-       <div class="card-fields" style="margin-bottom: 20px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd;">
-           <p>
-               <label>
-                   <?php esc_html_e('Card Name:', 'wp-memory-game'); ?>
-                   <input type="text" 
-                          name="memory_game_cards[<?php echo esc_attr($index); ?>][name]" 
-                          value="<?php echo esc_attr($name); ?>" 
-                          class="widefat" />
-               </label>
-           </p>
-           <p>
-               <label><?php esc_html_e('Card Image:', 'wp-memory-game'); ?></label><br />
-               <input type="hidden" 
-                      name="memory_game_cards[<?php echo esc_attr($index); ?>][image]" 
-                      value="<?php echo esc_url($image); ?>" 
-                      class="image-url" />
-               <button type="button" class="button upload-image">
-                   <?php esc_html_e('Upload Image', 'wp-memory-game'); ?>
-               </button>
-               <?php if ($image): ?>
-                   <img src="<?php echo esc_url($image); ?>" 
-                        class="image-preview" 
-                        style="max-width: 100px; max-height: 100px; margin-top: 5px; display: block;" />
-               <?php else: ?>
-                   <img src="" 
-                        class="image-preview" 
-                        style="max-width: 100px; max-height: 100px; margin-top: 5px; display: none;" />
-               <?php endif; ?>
-           </p>
-           <p>
-               <button type="button" class="button remove-card">
-                   <?php esc_html_e('Remove Card', 'wp-memory-game'); ?>
-               </button>
-           </p>
-       </div>
        <?php
    }
 
@@ -318,6 +317,8 @@ class WP_Memory_Game {
            $settings = array(
                'timer_type' => sanitize_text_field($_POST['memory_game_settings']['timer_type']),
                'timer_value' => intval($_POST['memory_game_settings']['timer_value']),
+               'flip_duration' => intval($_POST['memory_game_settings']['flip_duration']),
+               'match_delay' => intval($_POST['memory_game_settings']['match_delay']),
                'grid_size' => sanitize_text_field($_POST['memory_game_settings']['grid_size']),
                'theme' => sanitize_text_field($_POST['memory_game_settings']['theme'])
            );
@@ -444,6 +445,8 @@ class WP_Memory_Game {
             $data['options'] = array_merge($data['options'], array(
                 'timer_type' => $settings['timer_type'] ?? 'countdown',
                 'timer_value' => intval($settings['timer_value'] ?? 60),
+               'flip_duration' => intval($settings['flip_duration'] ?? 300),
+               'match_delay' => intval($settings['match_delay'] ?? 1000),
                 'grid_size' => $settings['grid_size'] ?? '4x4',
                 'theme' => $settings['theme'] ?? 'default'
             ));
