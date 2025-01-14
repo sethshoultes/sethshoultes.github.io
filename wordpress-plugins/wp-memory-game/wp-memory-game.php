@@ -172,6 +172,10 @@ class WP_Memory_Game {
        wp_nonce_field('memory_game_cards', 'memory_game_cards_nonce');
        
        $cards = get_post_meta($post->ID, '_memory_game_cards', true) ?: array();
+       
+       // Ensure WordPress Media Uploader scripts are loaded
+       wp_enqueue_media();
+       
        ?>
        <div id="memory-game-cards">
            <p>
@@ -198,10 +202,13 @@ class WP_Memory_Game {
        jQuery(document).ready(function($) {
            var template = $('#card-template').html();
            var cardCount = $('.card-fields').length;
+          var mediaFrame;
 
            $('#add-card').on('click', function() {
                var newCard = template.replace(/{{index}}/g, cardCount++);
-               $('.card-list').append(newCard);
+               var $newCard = $(newCard);
+               $('.card-list').append($newCard);
+               initMediaUploader($newCard);
            });
 
            $('.card-list').on('click', '.remove-card', function() {
@@ -210,25 +217,43 @@ class WP_Memory_Game {
 
            // Initialize media uploader for existing and new cards
            function initMediaUploader(container) {
-               container.find('.upload-image').on('click', function(e) {
+               container.find('.upload-image').off('click').on('click', function(e) {
                    e.preventDefault();
-                   var button = $(this);
-                   var frame = wp.media({
+                   
+                   var $button = $(this);
+                   var $imageUrl = $button.siblings('.image-url');
+                   var $imagePreview = $button.siblings('.image-preview');
+                   
+                   // If frame already exists, open it
+                   if (mediaFrame) {
+                       mediaFrame.open();
+                       return;
+                   }
+                   
+                   // Create new media frame
+                   mediaFrame = wp.media({
                        title: '<?php esc_html_e('Select Card Image', 'wp-memory-game'); ?>',
+                       button: {
+                           text: '<?php esc_html_e('Use this image', 'wp-memory-game'); ?>'
+                       },
                        multiple: false
                    });
-
-                   frame.on('select', function() {
-                       var attachment = frame.state().get('selection').first().toJSON();
-                       button.siblings('.image-url').val(attachment.url);
-                       button.siblings('.image-preview').attr('src', attachment.url).show();
+                   
+                   // When image is selected
+                   mediaFrame.on('select', function() {
+                       var attachment = mediaFrame.state().get('selection').first().toJSON();
+                       $imageUrl.val(attachment.url);
+                       $imagePreview.attr('src', attachment.url).show();
                    });
-
-                   frame.open();
+                   
+                   mediaFrame.open();
                });
            }
 
-           initMediaUploader($('.card-list'));
+           // Initialize media uploader for existing cards
+           $('.card-fields').each(function() {
+               initMediaUploader($(this));
+           });
        });
        </script>
        <?php
@@ -317,16 +342,29 @@ class WP_Memory_Game {
     public function append_game_to_content($content) {
         global $post;
         
-        // Only proceed if we're on a single memory game post
-        if (!is_singular('memory_game') || !is_main_query() || !in_the_loop()) {
+        // Check if we're in the main query and in the loop
+        if (!is_main_query() || !in_the_loop()) {
             return $content;
         }
 
-        // Get the game settings and generate the game HTML
-        $game_content = $this->render_game(array('id' => $post->ID));
+        // Handle memory game post type
+        if (is_singular('memory_game')) {
+            // Get the game settings and generate the game HTML
+            $game_content = $this->render_game(array(
+                'id' => $post->ID,
+                'title' => get_the_title($post->ID)
+            ));
+            
+            // Add the game content after the post content
+            return $content . $game_content;
+        }
 
-        // Add the game content after the post content
-        return wpautop($content) . $game_content;
+        // Handle shortcode in regular posts
+        if (has_shortcode($content, 'memory_game')) {
+            return $content;
+        }
+        
+        return $content;
     }
 
     public function enqueue_assets() {
