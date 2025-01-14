@@ -67,7 +67,8 @@ class WP_Memory_Game {
            'hierarchical'       => false,
            'menu_position'      => null,
            'supports'           => array('title', 'editor', 'thumbnail'),
-           'menu_icon'          => 'dashicons-games'
+           'menu_icon'          => 'dashicons-games',
+           'taxonomies'         => array('post_tag', 'category', 'post_format'),
        );
 
        register_post_type('memory_game', $args);
