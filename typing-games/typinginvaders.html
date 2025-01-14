@@ -217,9 +217,9 @@
                 
                 // Word pools by difficulty
                 this.wordPools = {
-                    1: ['the', 'cat', 'dog', 'run', 'jump'],
-                    2: ['quick', 'brown', 'pizza', 'happy', 'skill'],
-                    3: ['amazing', 'project', 'fantastic', 'computer', 'keyboard']
+                    1: ['the', 'cat', 'dog', 'run', 'eat', 'sleep', 'play', 'ball', 'red', 'blue', 'green', 'yellow','brown', 'white', 'black', 'css', 'php', 'mysql'],
+                    2: ['quick', 'brown', 'pizza', 'happy', 'skill', 'learn', 'study', 'write', 'read', 'book', 'apple', 'orange', 'banana', 'grape', 'melon', 'water', 'drink', 'juice', 'milk', 'coffee', 'jump', 'html', 'java', 'python', 'ruby', 'csharp', 'javascript', 'react', 'angular', 'vue', 'svelte', 'jquery', 'bootstrap', 'tailwind', 'bulma', 'semantic', 'foundation', 'materialize', 'wordpress', 'joomla', 'drupal', 'magento', 'shopify', 'woocommerce', 'prestashop', 'opencart', 'bigcommerce', 'wix', 'squarespace', 'webflow', 'elementor', 'divi', 'beaver', 'brizy', 'gutenberg', 'visualcomposer', 'wpbakery', 'elementor', 'avada', 'enfold', 'divi', 'oceanwp', 'astra', 'generatepress', 'hello', 'flatsome', 'porto', 'woodmart', 'jupiter', 'salient', 'xtheme', 'themify', 'uncode', 'kallyas', 'bridge', 'betheme', 'impreza', 'soledad', 'newspaper', 'jannah', 'sahifa', 'flatsome', 'porto', 'woodmart', 'jupiter', 'salient', 'xtheme', 'themify', 'uncode', 'kallyas', 'bridge', 'betheme', 'impreza', 'soledad', 'newspaper', 'jannah', 'sahifa' ],
+                    3: ['amazing', 'project', 'fantastic', 'computer', 'keyboard', 'monitor', 'internet', 'website', 'developer', 'programming', 'language', 'javascript', 'python', 'java', 'csharp', 'typescript', 'html', 'css', 'php', 'mysql', 'mongodb', 'nodejs', 'express', 'react', 'angular', 'vue', 'svelte', 'jquery', 'bootstrap', 'tailwind', 'bulma', 'semantic', 'foundation', 'materialize', 'wordpress', 'joomla', 'drupal', 'magento', 'shopify', 'woocommerce', 'prestashop', 'opencart', 'bigcommerce', 'wix', 'squarespace', 'webflow', 'elementor', 'divi', 'beaver', 'brizy', 'gutenberg', 'visualcomposer', 'wpbakery', 'elementor', 'avada', 'enfold', 'divi', 'oceanwp', 'astra', 'generatepress', 'hello', 'flatsome', 'porto', 'woodmart', 'jupiter', 'salient', 'xtheme', 'themify', 'uncode', 'kallyas', 'bridge', 'betheme', 'impreza', 'soledad', 'newspaper', 'jannah', 'sahifa', 'flatsome', 'porto', 'woodmart', 'jupiter', 'salient', 'xtheme', 'themify', 'uncode', 'kallyas', 'bridge', 'betheme', 'impreza', 'soledad', 'newspaper', 'jannah', 'sahifa']
                 };
 
                 // Power-up system
@@ -271,6 +271,9 @@
 
                 // Bind event listeners
                 document.addEventListener('keydown', this.handleKeyPress.bind(this));
+
+                // Initialize HUD
+                this.updateHUD();
                 
                 // Start game loop
                 this.lastTime = performance.now();
