@@ -1,4 +1,17 @@
 /* Default theme - already defined in style.css */
+.wp-memory-game-container.theme-default {
+    background: #f0f2f5;
+}
+
+.wp-memory-game-container.theme-default .card {
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.wp-memory-game-container.theme-default .restart-btn {
+    background: #4CAF50;
+    color: white;
+}
 
 /* Dark theme */
 .wp-memory-game-container.theme-dark {

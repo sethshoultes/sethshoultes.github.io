@@ -494,6 +494,13 @@ class WP_Memory_Game {
            'title' => ''
        ), $atts);
 
+       // Get theme setting
+       $theme = 'default';
+       if (!empty($atts['id'])) {
+           $settings = get_post_meta($atts['id'], '_memory_game_settings', true);
+           $theme = isset($settings['theme']) ? $settings['theme'] : 'default';
+       }
+
        if (!empty($atts['id'])) {
            $game = get_post($atts['id']);
            if ($game && 'memory_game' === $game->post_type) {
@@ -507,7 +514,7 @@ class WP_Memory_Game {
 
         ob_start();
         ?>
-        <div class="wp-memory-game-container">
+       <div class="wp-memory-game-container theme-<?php echo esc_attr($theme); ?>">
             <div class="container">
                <h1><?php echo esc_html($atts['title']); ?></h1>
                 <div class="game-info">
