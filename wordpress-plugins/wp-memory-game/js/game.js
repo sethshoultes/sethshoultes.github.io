@@ -1,5 +1,6 @@
 // Game images from WordPress localized script
 const cardImages = wpMemoryGame.images.flatMap(img => [img, img]); // Duplicate each image
+const STORAGE_KEY = 'wpMemoryGameHighScore';
 
 const gameOptions = wpMemoryGame.options;
 const isCountdown = gameOptions.timer_type === 'countdown';
@@ -9,8 +10,28 @@ let timer = isCountdown ? gameOptions.timer_value : 0;
 let timerInterval;
 let flippedCards = [];
 let matchedPairs = 0;
-let highScore = localStorage.getItem('wpMemoryGameHighScore') || Infinity;
+let highScore = (() => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? parseInt(stored, 10) || Infinity : Infinity;
+  } catch (e) {
+    return Infinity;
+  }
+})();
 let isPaused = false;
+
+// Debounce timer updates
+const debounce = (fn, ms) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
+
+const updateTimerDisplay = debounce((value) => {
+  document.getElementById('timer').textContent = value;
+}, 100);
 
 // Update timer label based on type
 function updateTimerLabel() {
@@ -50,20 +71,30 @@ function createBoard() {
   const shuffledCards = shuffle([...cards]);
   
   gameBoard.innerHTML = '';
-  shuffledCards.forEach((cardData) => {
+  shuffledCards.forEach((cardData, index) => {
     const card = document.createElement('div');
     card.className = 'card';
+    card.setAttribute('data-number', index + 1);
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Memory card ${index + 1}`);
     
     const image = document.createElement('img');
     image.src = cardData.image;
+    image.setAttribute('loading', 'lazy');
+    image.setAttribute('alt', '');
     card.appendChild(image);
     
     const text = document.createElement('div');
     text.className = 'card-text';
-    text.textContent = cardData.name;
+    text.textContent = DOMPurify.sanitize(cardData.name);
     card.appendChild(text);
     
     card.addEventListener('click', flipCard);
+    card.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        flipCard.call(card, e);
+      }
+    });
     gameBoard.appendChild(card);
   });
 }

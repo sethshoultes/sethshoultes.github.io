@@ -16,7 +16,14 @@ if (!defined('ABSPATH')) {
 }
 
 class WP_Memory_Game {
+    private $default_image_names;
+
     public function __construct() {
+        $this->default_image_names = array();
+        for ($i = 1; $i <= 8; $i++) {
+            $this->default_image_names[$i] = sprintf(__('Image %d', 'wp-memory-game'), $i);
+        }
+
         add_action('init', array($this, 'init'));
         add_shortcode('memory_game', array($this, 'render_game'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
@@ -124,6 +131,11 @@ class WP_Memory_Game {
         if (!current_user_can('manage_options')) {
             return;
         }
+        
+        // Add nonce field for security
+        if (isset($_POST['_wpnonce']) && !wp_verify_nonce($_POST['_wpnonce'], 'wp_memory_game_options')) {
+            wp_die(__('Security check failed', 'wp-memory-game'));
+        }
 
         wp_enqueue_media();
         ?>
@@ -215,18 +227,7 @@ class WP_Memory_Game {
     public function render_image_field($args) {
         $options = get_option('wp_memory_game_options', array());
         $image_key = 'game_image_' . $args['image_number'];
-        $name_key = 'game_image_name_' . $args['image_number'];
         $image_url = isset($options[$image_key]) ? $options[$image_key] : '';
-        $default_names = array(
-            1 => __('Mike', 'wp-memory-game'),    // Image 1
-            2 => __('Kathryn', 'wp-memory-game'), // Image 2
-            3 => __('Wray', 'wp-memory-game'),    // Image 3
-            4 => __('Seth', 'wp-memory-game'),    // Image 4
-            5 => __('Seth', 'wp-memory-game'),    // Image 5
-            6 => __('Wray', 'wp-memory-game'),    // Image 6
-            7 => __('Kim', 'wp-memory-game'),     // Image 7
-            8 => __('Fel Jun', 'wp-memory-game')  // Image 8
-        );
         ?>
         <div class="image-upload-field">
             <input type="hidden" 
@@ -250,17 +251,7 @@ class WP_Memory_Game {
     public function render_image_name_field($args) {
         $options = get_option('wp_memory_game_options', array());
         $name_key = 'game_image_name_' . $args['image_number'];
-        $default_names = array(
-            1 => __('Nature Scene 1', 'wp-memory-game'),
-            2 => __('Nature Scene 2', 'wp-memory-game'),
-            3 => __('Nature Scene 3', 'wp-memory-game'),
-            4 => __('Nature Scene 4', 'wp-memory-game'),
-            5 => __('Nature Scene 5', 'wp-memory-game'),
-            6 => __('Nature Scene 6', 'wp-memory-game'),
-            7 => __('Nature Scene 7', 'wp-memory-game'),
-            8 => __('Nature Scene 8', 'wp-memory-game')
-        );
-        $image_name = isset($options[$name_key]) ? $options[$name_key] : $default_names[$args['image_number']];
+        $image_name = isset($options[$name_key]) ? $options[$name_key] : $this->default_image_names[$args['image_number']];
         ?>
         <input type="text" 
                name="wp_memory_game_options[<?php echo esc_attr($name_key); ?>]" 
@@ -316,9 +307,17 @@ class WP_Memory_Game {
             );
 
             wp_enqueue_script(
+                'dompurify',
+                'https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js',
+                array(),
+                '3.0.6',
+                true
+            );
+
+            wp_enqueue_script(
                 'wp-memory-game',
                 plugins_url('js/game.js', __FILE__),
-                array(),
+                array('dompurify'),
                 '1.0.0',
                 true
             );
@@ -348,7 +347,7 @@ class WP_Memory_Game {
         
         for ($i = 1; $i <= 8; $i++) {
             $image_key = 'game_image_' . $i;
-            if (!empty($options[$image_key])) {
+            if (!empty($options[$image_key]) && wp_http_validate_url($options[$image_key])) {
                 $images[] = $options[$image_key];
             } else {
                 // Fallback to default image with size parameters
@@ -364,20 +363,10 @@ class WP_Memory_Game {
     private function get_game_image_names() {
         $options = get_option('wp_memory_game_options', array());
         $names = array();
-        $default_names = array(
-            __('Mike', 'wp-memory-game'),    // Image 1
-            __('Kathryn', 'wp-memory-game'), // Image 2
-            __('Wray', 'wp-memory-game'),    // Image 3
-            __('Seth', 'wp-memory-game'),    // Image 4
-            __('Seth', 'wp-memory-game'),    // Image 5
-            __('Wray', 'wp-memory-game'),    // Image 6
-            __('Kim', 'wp-memory-game'),     // Image 7
-            __('Fel Jun', 'wp-memory-game')  // Image 8
-        );
         
         for ($i = 1; $i <= 8; $i++) {
             $name_key = 'game_image_name_' . $i;
-            $names[] = !empty($options[$name_key]) ? $options[$name_key] : $default_names[$i - 1];
+            $names[] = !empty($options[$name_key]) ? $options[$name_key] : $this->default_image_names[$i];
         }
         
         return $names;
