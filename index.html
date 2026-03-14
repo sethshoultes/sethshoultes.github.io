@@ -213,6 +213,36 @@
       line-height: 1.6;
     }
 
+    /* --- COMPANIES --- */
+    .companies-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .company-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .company-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      color: var(--accent);
+    }
+
     /* --- PROJECTS --- */
     .projects-grid {
       display: grid;
@@ -444,6 +474,21 @@
       <h3>Vision &amp; Strategy</h3>
       <p>Identifying opportunities where technology meets market need. From winning the Utah Entrepreneur Challenge to pioneering WordPress event management, I turn bold ideas into shipped products.</p>
     </div>
+  </div>
+</section>
+
+<!-- COMPANIES -->
+<div class="divider"><hr></div>
+<section id="companies">
+  <p class="section-label">Clients &amp; Partners</p>
+  <h2>Companies I Work With</h2>
+  <p>Trusted by leading brands across WordPress, SaaS, and local business.</p>
+  <div class="companies-grid">
+    <a href="https://memberpress.com/" target="_blank" class="company-link">MemberPress</a>
+    <a href="https://prettylinks.com/" target="_blank" class="company-link">PrettyLinks</a>
+    <a href="https://accessally.com/" target="_blank" class="company-link">AccessAlly</a>
+    <a href="https://aplusgaragedoor.com/" target="_blank" class="company-link">A Plus Garage Door</a>
+    <a href="https://garagedoorproservices.com/" target="_blank" class="company-link">Garage Door Pro Services</a>
   </div>
 </section>
 
