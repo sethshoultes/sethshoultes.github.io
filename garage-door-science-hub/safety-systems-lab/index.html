@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Systems Lab — Garage Door Science</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#08090c;--surface:#11131a;--surface2:#181b24;--border:#252833;
+--accent:#f97316;--accent2:#fb923c;--accentDim:#7c2d12;
+--cold:#3b82f6;--beam:#22d3ee;--beamDim:#0e7490;
+--text:#e2e4ea;--text2:#8a8fa0;--text3:#555a6d;
+--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-serif;line-height:1.65;overflow-x:hidden}
+
+.hero{position:relative;min-height:65vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(127,29,29,.12) 0%,var(--bg) 100%)}
+.hero canvas{position:absolute;inset:0;z-index:0}
+.hero-content{position:relative;z-index:2;padding:2rem}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,4.2rem);text-transform:uppercase;letter-spacing:.06em;line-height:1.1;margin-bottom:.4rem}
+.hero h1 .danger{color:var(--danger)}
+.hero h1 .safe{color:var(--success)}
+.hero .sub{font-family:'JetBrains Mono',monospace;font-size:clamp(.65rem,1.2vw,.85rem);color:var(--text2);letter-spacing:.18em;text-transform:uppercase}
+.hero .stat-row{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--danger)}
+.hero .stat-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);letter-spacing:.12em;text-transform:uppercase}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(8,9,12,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+.nav-inner{display:flex;max-width:1300px;margin:0 auto}
+.nav a{display:inline-block;padding:.8rem 1.1rem;color:var(--text2);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .3s}
+.nav a:hover,.nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.section{max-width:1300px;margin:0 auto;padding:4rem 2rem;opacity:0;transform:translateY(25px);transition:opacity .7s,transform .7s}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
+.section-title{font-family:'Oswald',sans-serif;font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.section-desc{color:var(--text2);font-size:1rem;max-width:750px;margin-bottom:2rem}
+
+.canvas-wrap{position:relative;width:100%;height:480px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
+.controls-bar{position:absolute;top:.7rem;right:.7rem;display:flex;gap:.35rem;z-index:5;flex-wrap:wrap;justify-content:flex-end}
+.ctrl-btn{background:rgba(8,9,12,.88);border:1px solid var(--border);color:var(--text);padding:.4rem .75rem;border-radius:4px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;transition:all .2s;white-space:nowrap}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctrl-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ctrl-btn.danger{border-color:var(--danger);color:var(--danger)}
+.ctrl-btn.danger:hover{background:var(--danger);color:#fff}
+.ctrl-btn.danger.active{background:var(--danger);color:#fff}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-top:1.5rem}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;transition:border-color .3s}
+.info-card:hover{border-color:var(--accent)}
+.info-card h3{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.5rem}
+.info-card p{color:var(--text2);font-size:.88rem;line-height:1.55}
+
+.readout{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.2rem 0}
+.readout-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;min-width:110px;flex:1}
+.readout-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.12em}
+.readout-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;margin-top:.15rem}
+.readout-unit{font-size:.65rem;color:var(--text2);font-weight:400}
+
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.warning-box h4{font-family:'Oswald',sans-serif;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.warning-box p{color:var(--text2);font-size:.85rem}
+
+.callout{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);border-left:4px solid var(--beam);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.callout h4{font-family:'Oswald',sans-serif;color:var(--beam);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.callout p{color:var(--text2);font-size:.85rem}
+
+.success-box{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-left:4px solid var(--success);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.success-box h4{font-family:'Oswald',sans-serif;color:var(--success);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.success-box p{color:var(--text2);font-size:.85rem}
+
+.timeline-ul{list-style:none;border-left:2px solid var(--border);padding-left:1.5rem;margin:1.5rem 0}
+.timeline-ul li{position:relative;padding:.8rem 0;color:var(--text2);font-size:.9rem}
+.timeline-ul li::before{content:'';position:absolute;left:-1.65rem;top:1rem;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.timeline-ul li strong{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem}
+.timeline-ul li.highlight::before{background:var(--danger);width:14px;height:14px;left:-1.75rem;top:.9rem}
+.timeline-ul li.highlight{color:var(--text)}
+
+.divider{height:1px;background:var(--border);margin:0}
+.footer{text-align:center;padding:2.5rem 2rem;color:var(--text3);font-size:.75rem;border-top:1px solid var(--border)}
+
+@media(max-width:768px){.section{padding:2.5rem 1rem}.canvas-wrap{height:380px}.info-grid{grid-template-columns:1fr}.readout-item{min-width:90px}.hero .stat-row{gap:1rem}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="hero-content">
+<h1>Garage Door <span class="danger">Safety</span> Systems Lab</h1>
+<div class="sub">Photoelectric · Auto-Reverse · Manual Release · UL 325</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num">~30,000</div><div class="stat-label">Injuries / Year (pre-1993)</div></div>
+<div class="stat"><div class="stat-num" style="color:var(--success)">~85%</div><div class="stat-label">Reduction after mandate</div></div>
+<div class="stat"><div class="stat-num">2 sec</div><div class="stat-label">Max reversal time required</div></div>
+</div>
+</div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+<div class="nav-inner">
+<a href="#photoelectric">Photoelectric Sensors</a>
+<a href="#auto-reverse">Auto-Reverse</a>
+<a href="#manual-release">Manual Release</a>
+<a href="#ul325">UL 325 & History</a>
+<a href="#failure-modes">Failure Modes</a>
+</div>
+</div>
+
+<!-- ═══ SECTION 1: PHOTOELECTRIC SENSORS ═══ -->
+<div class="section" id="photoelectric">
+<div class="section-tag">01 / Detection</div>
+<div class="section-title">Photoelectric Sensor Beam</div>
+<div class="section-desc">Two infrared sensors mounted 4-6 inches above the floor on each side of the garage door opening. One sends an invisible IR beam, the other receives it. If anything breaks the beam while the door is closing, the door immediately reverses.</div>
+
+<div class="canvas-wrap">
+<canvas id="photoCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn" onclick="photoToggleDoor()">Close Door</button>
+<button class="ctrl-btn" onclick="photoAddObstruction()">Add Obstruction</button>
+<button class="ctrl-btn danger" onclick="photoDisableSensor()">Disable Sensor</button>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Beam Status</div><div class="readout-value" id="beamStatus" style="color:var(--success)">CLEAR</div></div>
+<div class="readout-item"><div class="readout-label">Door State</div><div class="readout-value" id="doorState">OPEN</div></div>
+<div class="readout-item"><div class="readout-label">Sensor Aligned</div><div class="readout-value" id="sensorAligned" style="color:var(--success)">YES</div></div>
+<div class="readout-item"><div class="readout-label">Response Time</div><div class="readout-value" id="responseTime">—<span class="readout-unit"> ms</span></div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>How IR Beam Works</h3><p>The sending sensor emits a modulated infrared beam (940nm wavelength) at ~38kHz to distinguish from ambient light. The receiving sensor has a photodiode with a bandpass filter tuned to this frequency. If the received signal drops below threshold, the controller triggers a reversal within 150-250ms. The beam is invisible to humans but can be seen through a phone camera as a faint purple glow.</p></div>
+<div class="info-card"><h3>Mounting Height: 4-6 Inches</h3><p>The sensors mount no higher than 6 inches from the garage floor per UL 325. This height is chosen to detect the smallest expected obstruction — a small child crawling under the door. Below 4 inches, debris and snow accumulation cause false triggers. The sensors must also be within 6 inches of the door plane to ensure the detection zone covers the entire door opening.</p></div>
+<div class="info-card"><h3>Common Issues</h3><p>Misalignment is the #1 cause of sensor problems — bumping a sensor shifts the beam off-target. Sunlight interference can overwhelm the IR receiver, especially in west-facing garages at sunset. Dirty lenses reduce signal strength. Wiring damage from lawnmowers, pets, or rodents can disable the safety circuit entirely. LED indicator lights on each sensor show alignment status.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 2: AUTO-REVERSE ═══ -->
+<div class="section" id="auto-reverse">
+<div class="section-tag">02 / Entrapment Protection</div>
+<div class="section-title">Auto-Reverse Force Testing</div>
+<div class="section-desc">Even without photoelectric sensors, the door opener must have a force-limiting system. If the door encounters more than 15 lbs of resistance during closing (or opening), it must reverse direction within 2 seconds. This is your backup safety system.</div>
+
+<div class="canvas-wrap" style="height:500px">
+<canvas id="forceCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn" onclick="forceCloseDoor()">Close Door</button>
+<button class="ctrl-btn" onclick="forceAddObject()">Place Object</button>
+<button class="ctrl-btn danger" onclick="forceDisableReverse()">Disable Auto-Reverse</button>
+<button class="ctrl-btn" onclick="forceReset()">Reset</button>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Door Force</div><div class="readout-value" id="doorForce">0<span class="readout-unit"> lbs</span></div></div>
+<div class="readout-item"><div class="readout-label">Threshold</div><div class="readout-value" id="forceThresh" style="color:var(--warn)">15<span class="readout-unit"> lbs</span></div></div>
+<div class="readout-item"><div class="readout-label">Door Action</div><div class="readout-value" id="forceAction">IDLE</div></div>
+<div class="readout-item"><div class="readout-label">Safety Status</div><div class="readout-value" id="forceSafety" style="color:var(--success)">ACTIVE</div></div>
+</div>
+
+<div class="callout">
+<h4>🧪 The 2×4 Test (UL 325 Requirement)</h4>
+<p>Place a 2×4 piece of lumber flat on the floor under the door. Close the door. It must reverse upon contact with the 2×4 within 2 seconds and with no more than 15 lbs of force. If it doesn't, the force limit needs adjustment — usually via the "down force" knob on the motor unit. Test monthly. This is your legal compliance check.</p>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>How Force Sensing Works</h3><p>The motor monitors current draw. When the door hits an obstruction, the motor stalls slightly, causing current to spike above a calibrated threshold. The controller interprets this as an obstruction and reverses. Older systems used mechanical clutches; modern openers use electronic current sensing with adjustable sensitivity via "force" or "limit" knobs on the unit.</p></div>
+<div class="info-card"><h3>15-Pound Standard</h3><p>UL 325 specifies the door must reverse when meeting 15 lbf (66.7 N) of resistance. This is roughly the force a small child can resist before injury. The standard was developed through biomechanical testing — it's the maximum force that can be applied to a child's chest/neck area for 2 seconds without causing serious injury. Below this threshold, bruising may occur but not crushing injury.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 3: MANUAL RELEASE ═══ -->
+<div class="section" id="manual-release">
+<div class="section-tag">03 / Emergency Disconnect</div>
+<div class="section-title">Manual Release Mechanism</div>
+<div class="section-desc">The red emergency release cord disconnects the door from the opener, allowing manual operation during power outages or opener failure. Understanding this mechanism could save a life in an entrapment emergency.</div>
+
+<div class="canvas-wrap" style="height:450px">
+<canvas id="releaseCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn" onclick="releasePull()">Pull Red Cord</button>
+<button class="ctrl-btn" onclick="releaseReengage()">Re-engage</button>
+<button class="ctrl-btn" onclick="releaseReset()">Reset View</button>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Trolley State</div><div class="readout-value" id="trolleyState">ENGAGED</div></div>
+<div class="readout-item"><div class="readout-label">Door Control</div><div class="readout-value" id="doorControl">MOTORIZED</div></div>
+<div class="readout-item"><div class="readout-label">Manual Force</div><div class="readout-value" id="manualForce">—<span class="readout-unit"> lbs</span></div></div>
+</div>
+
+<div class="warning-box">
+<h4>⚠ Critical: Door-Down Emergency Release</h4>
+<p>If a spring is broken and you pull the emergency release while the door is UP, the full weight of the door (~130-200 lbs) is released instantly with nothing to counterbalance it. The door will slam down. Always be prepared to control the door's weight when pulling the release with the door up. With a broken spring, consider the door trapped — call a professional.</p>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>How It Works</h3><p>The release cord connects to a spring-loaded lever on the trolley carriage. Pulling the cord rotates the lever, disengaging the trolley from the rail drive (chain, belt, or screw). The trolley stays on the rail but slides freely, so the door can be lifted and lowered by hand. The springs still provide counterbalance — the door should feel light (~8-10 lbs) to lift manually if springs are functional.</p></div>
+<div class="info-card"><h3>Re-Engaging</h3><p>To reconnect: pull the cord toward the motor (not down), or simply activate the opener — the trolley carriage will catch the drive mechanism on the next cycle. Some models have a lock position where the release lever stays disengaged for extended manual use. Always re-engage before relying on the opener's safety features, as manual mode has no auto-reverse protection.</p></div>
+<div class="info-card"><h3>Security Concern</h3><p>The emergency release can be a break-in vulnerability. A wire hook pushed through the top of the door weatherseal can snag the cord and disengage the trolley from outside, allowing the door to be manually lifted. Solutions include a zip-tie on the release arm (breaks during emergency pull but prevents fishing), a shield plate, or simply locking the interior deadbolt.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 4: UL 325 HISTORY ═══ -->
+<div class="section" id="ul325">
+<div class="section-tag">04 / Regulation</div>
+<div class="section-title">UL 325 & The 1993 Federal Mandate</div>
+<div class="section-desc">Before 1993, garage doors killed an average of 2-4 children per year and caused tens of thousands of injuries. The Consumer Product Safety Commission's mandate changed the industry permanently.</div>
+
+<ul class="timeline-ul">
+<li><strong>1969</strong> — UL 325 first published as a voluntary standard for garage door openers. Basic requirements for auto-reverse only. No photoelectric sensor requirement. Adoption was inconsistent.</li>
+<li><strong>1982</strong> — CPSC identifies garage doors as a leading cause of childhood entrapment deaths. Average of 50+ entrapment incidents per year documented, with 2-4 fatalities annually. Most incidents involved children playing under closing doors.</li>
+<li class="highlight"><strong>1991</strong> — After years of lobbying, CPSC mandates UL 325 compliance for ALL residential garage door openers sold in the US. Requires entrapment protection (auto-reverse force limit). Takes effect January 1, 1993.</li>
+<li class="highlight"><strong>1993 (Jan 1)</strong> — Federal mandate takes effect. All new openers MUST include: (1) auto-reverse with max 15 lbf, AND (2) a secondary entrapment protection device — either photoelectric sensors OR door edge sensors. This dual-requirement is key — one system alone isn't enough.</li>
+<li><strong>1998</strong> — UL 325 updated. External entrapment protection (photoelectric sensors) becomes the dominant secondary system. Virtually all new openers ship with photoelectric sensors standard.</li>
+<li><strong>2006</strong> — UL 325 5th Edition adds requirements for monitoring sensor wiring integrity and opener response to cut/shorted sensor wires.</li>
+<li><strong>2011-Present</strong> — Ongoing updates address Wi-Fi connected openers, smartphone control safety requirements, and battery backup systems to maintain safety during power outages.</li>
+</ul>
+
+<div class="warning-box">
+<h4>⚠ Pre-1993 Openers Still in Use</h4>
+<p>Millions of garage door openers installed before 1993 are still operating without photoelectric sensors or compliant auto-reverse. These units are legal to keep using but are not legal to sell. If your opener predates 1993 (brands like old Genie, Sears Craftsman, or early Chamberlain models without sensor wires), it has no secondary entrapment protection. Retrofit sensor kits are available, or replace the opener entirely.</p>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 5: FAILURE MODES ═══ -->
+<div class="section" id="failure-modes">
+<div class="section-tag">05 / What Goes Wrong</div>
+<div class="section-title">Failure Modes & Consequences</div>
+<div class="section-desc">Each safety system can fail independently. See what happens when they do — and why the dual-system requirement exists.</div>
+
+<div class="canvas-wrap" style="height:520px">
+<canvas id="failureCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn" onclick="failureScenario(0)">All Systems Working</button>
+<button class="ctrl-btn danger" onclick="failureScenario(1)">Sensors Bypassed</button>
+<button class="ctrl-btn danger" onclick="failureScenario(2)">Force Limit Failed</button>
+<button class="ctrl-btn danger" onclick="failureScenario(3)">Both Failed</button>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Scenario</div><div class="readout-value" id="failScenario" style="font-size:.9rem">All Systems Working</div></div>
+<div class="readout-item"><div class="readout-label">Beam Sensor</div><div class="readout-value" id="failBeam" style="color:var(--success)">✓ ACTIVE</div></div>
+<div class="readout-item"><div class="readout-label">Force Limit</div><div class="readout-value" id="failForce" style="color:var(--success)">✓ ACTIVE</div></div>
+<div class="readout-item"><div class="readout-label">Outcome</div><div class="readout-value" id="failOutcome" style="color:var(--success)">SAFE</div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Scenario: Sensors Bypassed</h3><p>Common when homeowner disconnects sensors "because they keep blocking the door." The beam sensor is the PRIMARY entrapment protection — it detects obstructions BEFORE contact. Without it, the door relies entirely on the force-limit auto-reverse, which requires physical contact with the obstruction. A child's body may not provide enough resistance for the force sensor to trigger reversal before injury occurs.</p></div>
+<div class="info-card"><h3>Scenario: Force Limit Too High</h3><p>Homeowners sometimes increase the "close force" setting because the door struggles to close (usually a spring or track issue they're compensating for). This defeats the auto-reverse by raising the threshold above 15 lbs — potentially to 30-50+ lbs. Now the door can apply crushing force before reversing. Combined with working sensors, this is survivable. Without sensors, it's potentially fatal.</p></div>
+<div class="info-card"><h3>Scenario: Both Systems Failed</h3><p>This is the worst case — no beam detection AND no force reversal. The door closes with full motor force (potentially 50-100+ lbs) and doesn't stop. This is the scenario that killed children pre-1993. Modern dual-requirement (UL 325) exists specifically to prevent this. Even if one system fails, the other catches it. Both failing simultaneously requires either severe neglect or deliberate tampering.</p></div>
+<div class="info-card"><h3>Prevention</h3><p>Test monthly: (1) Close door, break beam with your foot — door must reverse. (2) Place 2×4 flat under door, close — door must reverse on contact. (3) Pull emergency release — door must disconnect and move freely. (4) Check sensor LED indicators — both should show steady green/amber. (5) Inspect sensor wires for damage. Takes 2 minutes. Do it.</p></div>
+</div>
+</div>
+
+<div class="footer">
+<p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Garage Door Safety Systems Lab</p>
+<p>Photoelectric · Auto-Reverse · Manual Release · UL 325 Compliance</p>
+</div>
+
+<script>
+// ─── UTILS ───
+const sObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:0.05});
+document.querySelectorAll('.section').forEach(s=>sObs.observe(s));
+const navSections=document.querySelectorAll('.section[id]');
+const navLinks=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur='';navSections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id});navLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})},{passive:true});
+
+function fitCanvas(c){
+  const r=c.parentElement.getBoundingClientRect();
+  const w=r.width,h=r.height;
+  if(c.width!==w||c.height!==h){c.width=w;c.height=h}
+  return{w,h};
+}
+
+// ═══════════════════════════
+// HERO - animated warning pattern
+// ═══════════════════════════
+(function(){
+const c=document.getElementById('heroCanvas');const ctx=c.getContext('2d');let t=0;
+(function anim(){requestAnimationFrame(anim);t+=0.01;
+const{w,h}=fitCanvas(c);ctx.clearRect(0,0,w,h);
+// Subtle danger stripes
+ctx.globalAlpha=0.03;
+for(let i=-w;i<w*2;i+=80){
+  const x=i+Math.sin(t)*20;
+  ctx.fillStyle=Math.floor(i/80)%2===0?'#ef4444':'transparent';
+  ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+40,0);ctx.lineTo(x+40-h*0.3,h);ctx.lineTo(x-h*0.3,h);ctx.fill();
+}
+ctx.globalAlpha=1;
+})();
+})();
+
+// ═══════════════════════════
+// SCENE 1: PHOTOELECTRIC SENSORS
+// ═══════════════════════════
+let photoDoorPos=0, photoDoorDir=0, photoObstruction=false, photoSensorDisabled=false, photoBeamBroken=false, photoReversed=false, photoObsX=0;
+const photoC=document.getElementById('photoCanvas');const photoCtx=photoC.getContext('2d');
+
+function drawPhoto(){
+  requestAnimationFrame(drawPhoto);
+  const{w,h}=fitCanvas(photoC);const ctx=photoCtx;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const gx=w*0.1,gy=h*0.06,gw=w*0.8,gh=h*0.88;
+  // Garage walls
+  ctx.fillStyle='#2a2d38';ctx.fillRect(gx,gy,gw,gh);
+  ctx.fillStyle='#222530';ctx.fillRect(gx,gy+gh*0.78,gw,gh*0.22);
+  ctx.strokeStyle='#3a3d48';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx,gy+gh*0.78);ctx.lineTo(gx+gw,gy+gh*0.78);ctx.stroke();
+
+  // Door frame
+  const dx=gx+gw*0.15,dw=gw*0.7,dTop=gy+gh*0.12,dBot=gy+gh*0.77;
+  const doorH=dBot-dTop;
+  ctx.fillStyle='#4a4d58';ctx.fillRect(dx-6,dTop-6,dw+12,doorH+12);
+
+  // Door (moves based on photoDoorPos: 0=open, 1=closed)
+  const doorDrawH=doorH*photoDoorPos;
+  if(doorDrawH>2){
+    ctx.fillStyle='#c8c8cc';ctx.fillRect(dx,dTop,dw,doorDrawH);
+    // Panel lines
+    const panels=4;
+    for(let i=1;i<panels;i++){
+      const ly=dTop+doorDrawH*i/panels;
+      if(ly<dBot){ctx.strokeStyle='#aaaaae';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}
+    }
+    // Bottom edge (the dangerous part)
+    ctx.fillStyle='#888';ctx.fillRect(dx,dTop+doorDrawH-3,dw,4);
+  }
+
+  // Sensors (mounted at ~6" from floor, on each side of door frame)
+  const sensorY=dBot-18;
+  const sensorLX=dx-14, sensorRX=dx+dw+4;
+  // Left sensor (sender) - orange LED
+  ctx.fillStyle='#333';ctx.fillRect(sensorLX,sensorY-8,12,16);
+  ctx.fillStyle=photoSensorDisabled?'#333':photoBeamBroken?'#ef4444':'#22d3ee';
+  ctx.beginPath();ctx.arc(sensorLX+6,sensorY,3,0,Math.PI*2);ctx.fill();
+  // Right sensor (receiver) - green/red LED
+  ctx.fillStyle='#333';ctx.fillRect(sensorRX,sensorY-8,12,16);
+  ctx.fillStyle=photoSensorDisabled?'#333':photoBeamBroken?'#ef4444':'#22c55e';
+  ctx.beginPath();ctx.arc(sensorRX+6,sensorY,3,0,Math.PI*2);ctx.fill();
+
+  // IR BEAM
+  if(!photoSensorDisabled){
+    const beamClear=!photoBeamBroken;
+    ctx.strokeStyle=beamClear?'rgba(34,211,238,0.6)':'rgba(239,68,68,0.3)';
+    ctx.lineWidth=beamClear?2:1;
+    ctx.setLineDash(beamClear?[]:[6,6]);
+    ctx.beginPath();ctx.moveTo(sensorLX+12,sensorY);ctx.lineTo(sensorRX,sensorY);ctx.stroke();
+    ctx.setLineDash([]);
+    // Beam glow
+    if(beamClear){
+      const bg=ctx.createLinearGradient(sensorLX,sensorY-4,sensorRX,sensorY+4);
+      bg.addColorStop(0,'rgba(34,211,238,0.08)');bg.addColorStop(0.5,'rgba(34,211,238,0.04)');bg.addColorStop(1,'rgba(34,211,238,0.08)');
+      ctx.fillStyle=bg;ctx.fillRect(sensorLX+12,sensorY-4,sensorRX-sensorLX-12,8);
+    }
+  } else {
+    // Disabled — X marks
+    ctx.strokeStyle='#ef4444';ctx.lineWidth=2;
+    [sensorLX+6,sensorRX+6].forEach(cx=>{
+      ctx.beginPath();ctx.moveTo(cx-5,sensorY-5);ctx.lineTo(cx+5,sensorY+5);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx+5,sensorY-5);ctx.lineTo(cx-5,sensorY+5);ctx.stroke();
+    });
+  }
+
+  // Labels
+  ctx.fillStyle='#666';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('SENDER',sensorLX+6,sensorY+22);
+  ctx.fillText('RECEIVER',sensorRX+6,sensorY+22);
+  ctx.fillText('IR BEAM (940nm)',dx+dw/2,sensorY+32);
+  ctx.fillText('4-6" FROM FLOOR',dx+dw/2,sensorY+44);
+
+  // Obstruction
+  if(photoObstruction){
+    photoObsX=dx+dw*0.45;
+    const obsY=dBot-30;
+    // Child silhouette (simplified)
+    ctx.fillStyle='#f59e0b';
+    ctx.beginPath();ctx.arc(photoObsX,obsY-28,12,0,Math.PI*2);ctx.fill(); // head
+    ctx.fillRect(photoObsX-8,obsY-16,16,20); // body
+    ctx.fillRect(photoObsX-12,obsY-10,6,18); // arm
+    ctx.fillRect(photoObsX+6,obsY-10,6,18); // arm
+    ctx.font='bold 9px "JetBrains Mono"';ctx.fillStyle='#f59e0b';ctx.textAlign='center';
+    ctx.fillText('OBSTRUCTION',photoObsX,obsY+16);
+
+    // Check if beam is broken by obstruction
+    if(obsY>sensorY-15&&!photoSensorDisabled){
+      photoBeamBroken=true;
+    }
+  }
+
+  // Door physics
+  if(photoDoorDir!==0){
+    if(photoDoorDir>0){ // closing
+      // Check if beam broken should reverse
+      if(photoBeamBroken&&!photoSensorDisabled&&!photoReversed){
+        photoDoorDir=-1; // reverse
+        photoReversed=true;
+        document.getElementById('responseTime').innerHTML='180<span class="readout-unit"> ms</span>';
+      }
+      photoDoorPos=Math.min(1,photoDoorPos+0.008);
+      // Check if door hits obstruction physically
+      if(photoObstruction&&photoDoorPos>0.88){
+        if(!photoSensorDisabled){photoDoorDir=-1;photoReversed=true}
+        else{photoDoorPos=0.88;photoDoorDir=0} // stuck on object, no reverse
+      }
+      if(photoDoorPos>=1){photoDoorDir=0}
+    } else { // opening
+      photoDoorPos=Math.max(0,photoDoorPos-0.012);
+      if(photoDoorPos<=0){photoDoorDir=0;photoReversed=false}
+    }
+  }
+
+  // Update readouts
+  document.getElementById('beamStatus').innerHTML=photoSensorDisabled?'<span style="color:var(--danger)">DISABLED</span>':photoBeamBroken?'<span style="color:var(--danger)">BROKEN</span>':'<span style="color:var(--success)">CLEAR</span>';
+  document.getElementById('doorState').textContent=photoDoorPos<0.02?'OPEN':photoDoorPos>0.98?'CLOSED':photoDoorDir>0?'CLOSING':photoDoorDir<0?'REVERSING':'PARTIAL';
+  document.getElementById('sensorAligned').innerHTML=photoSensorDisabled?'<span style="color:var(--danger)">DISABLED</span>':'<span style="color:var(--success)">YES</span>';
+
+  // Door position indicator
+  ctx.fillStyle='#444';ctx.font='10px "JetBrains Mono"';ctx.textAlign='right';
+  ctx.fillText(Math.round(photoDoorPos*100)+'% closed',dx+dw-5,dTop-10);
+}
+drawPhoto();
+
+function photoToggleDoor(){
+  if(photoDoorPos<0.5){photoDoorDir=1}else{photoDoorDir=-1}
+  photoReversed=false;
+}
+function photoAddObstruction(){
+  photoObstruction=!photoObstruction;
+  if(!photoObstruction){photoBeamBroken=false}
+}
+function photoDisableSensor(){
+  photoSensorDisabled=!photoSensorDisabled;
+  const btn=document.querySelectorAll('#photoelectric .ctrl-btn')[2];
+  if(photoSensorDisabled){btn.classList.add('active');btn.textContent='Sensor Disabled'}
+  else{btn.classList.remove('active');btn.textContent='Disable Sensor';photoBeamBroken=photoObstruction}
+}
+
+// ═══════════════════════════
+// SCENE 2: AUTO-REVERSE FORCE TESTING
+// ═══════════════════════════
+let forceDoorPos=0,forceDoorDir=0,forceObject=false,forceDisabled=false,forceAmount=0,forceHit=false;
+const forceC=document.getElementById('forceCanvas');const forceCtx=forceC.getContext('2d');
+
+function drawForce(){
+  requestAnimationFrame(drawForce);
+  const{w,h}=fitCanvas(forceC);const ctx=forceCtx;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const gx=w*0.08,gy=h*0.04,gw=w*0.55,gh=h*0.92;
+  // Garage
+  ctx.fillStyle='#2a2d38';ctx.fillRect(gx,gy,gw,gh);
+  ctx.fillStyle='#222530';ctx.fillRect(gx,gy+gh*0.78,gw,gh*0.22);
+
+  const dx=gx+gw*0.12,dw=gw*0.76,dTop=gy+gh*0.1,dBot=gy+gh*0.77;
+  const doorH=dBot-dTop;
+  ctx.fillStyle='#4a4d58';ctx.fillRect(dx-5,dTop-5,dw+10,doorH+10);
+
+  // Door
+  const doorDrawH=doorH*forceDoorPos;
+  if(doorDrawH>2){
+    ctx.fillStyle='#c8c8cc';ctx.fillRect(dx,dTop,dw,doorDrawH);
+    for(let i=1;i<4;i++){const ly=dTop+doorDrawH*i/4;if(ly<dBot){ctx.strokeStyle='#aaaaae';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}}
+    ctx.fillStyle=forceHit&&!forceDisabled?'#ef4444':forceHit&&forceDisabled?'#ff6600':'#888';
+    ctx.fillRect(dx,dTop+doorDrawH-3,dw,4);
+  }
+
+  // Object on floor (2×4 lumber)
+  if(forceObject){
+    const objY=dBot-12;
+    ctx.fillStyle='#c4883c';ctx.fillRect(dx+dw*0.2,objY,dw*0.6,10);
+    ctx.strokeStyle='#a06828';ctx.lineWidth=1;ctx.strokeRect(dx+dw*0.2,objY,dw*0.6,10);
+    ctx.fillStyle='#a06828';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('2×4 LUMBER',dx+dw/2,objY+22);
+  }
+
+  // Force gauge (right side)
+  const gaugeX=gx+gw+30,gaugeW=w*0.28,gaugeY=gy+20,gaugeH=h*0.7;
+  ctx.fillStyle='#181b24';ctx.fillRect(gaugeX,gaugeY,gaugeW,gaugeH);
+  ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.strokeRect(gaugeX,gaugeY,gaugeW,gaugeH);
+
+  // Force bar
+  const forcePct=Math.min(1,forceAmount/50);
+  const barH=gaugeH*0.8;
+  const barX=gaugeX+gaugeW*0.3,barW=gaugeW*0.4;
+  const barTop=gaugeY+gaugeH*0.1;
+  ctx.fillStyle='#252833';ctx.fillRect(barX,barTop,barW,barH);
+  // Fill
+  const fillCol=forceAmount<10?'#22c55e':forceAmount<15?'#f59e0b':'#ef4444';
+  const fillH=barH*forcePct;
+  ctx.fillStyle=fillCol;ctx.fillRect(barX,barTop+barH-fillH,barW,fillH);
+  // 15 lb threshold line
+  const threshY=barTop+barH*(1-15/50);
+  ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(barX-10,threshY);ctx.lineTo(barX+barW+10,threshY);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#f59e0b';ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+  ctx.fillText('15 lb LIMIT',barX+barW+14,threshY+3);
+  // Force value
+  ctx.fillStyle=fillCol;ctx.font='bold 20px "Oswald"';ctx.textAlign='center';
+  ctx.fillText(Math.round(forceAmount)+' lbs',gaugeX+gaugeW/2,barTop+barH+30);
+  ctx.fillStyle='#666';ctx.font='9px "JetBrains Mono"';
+  ctx.fillText('DOOR FORCE',gaugeX+gaugeW/2,gaugeY+12);
+
+  // Scale marks
+  ctx.fillStyle='#555';ctx.font='8px "JetBrains Mono"';ctx.textAlign='right';
+  [0,10,20,30,40,50].forEach(v=>{
+    const my=barTop+barH*(1-v/50);
+    ctx.fillRect(barX-6,my,5,1);ctx.fillText(v,barX-10,my+3);
+  });
+
+  // Door physics
+  if(forceDoorDir>0){
+    forceDoorPos=Math.min(1,forceDoorPos+0.006);
+    if(forceObject&&forceDoorPos>0.85){
+      forceHit=true;
+      forceAmount=Math.min(50,forceAmount+0.5);
+      if(forceAmount>=15&&!forceDisabled){
+        forceDoorDir=-1; // REVERSE
+        document.getElementById('forceAction').innerHTML='<span style="color:var(--success)">REVERSING ↑</span>';
+      }
+      if(forceDisabled){
+        forceDoorPos=Math.min(0.95,forceDoorPos);
+        document.getElementById('forceAction').innerHTML='<span style="color:var(--danger)">CRUSHING ⚠</span>';
+      }
+    }
+    if(!forceObject&&forceDoorPos>=1){forceDoorDir=0;document.getElementById('forceAction').textContent='CLOSED'}
+  } else if(forceDoorDir<0){
+    forceDoorPos=Math.max(0,forceDoorPos-0.01);
+    forceAmount=Math.max(0,forceAmount-1);
+    if(forceDoorPos<=0){forceDoorDir=0;forceHit=false;forceAmount=0;document.getElementById('forceAction').textContent='OPEN'}
+  }
+
+  document.getElementById('doorForce').innerHTML=Math.round(forceAmount)+'<span class="readout-unit"> lbs</span>';
+  document.getElementById('doorForce').style.color=forceAmount<10?'var(--success)':forceAmount<15?'var(--warn)':'var(--danger)';
+  document.getElementById('forceSafety').innerHTML=forceDisabled?'<span style="color:var(--danger)">✗ DISABLED</span>':'<span style="color:var(--success)">✓ ACTIVE</span>';
+}
+drawForce();
+
+function forceCloseDoor(){forceDoorDir=1;forceHit=false;forceAmount=0;document.getElementById('forceAction').textContent='CLOSING ↓'}
+function forceAddObject(){forceObject=!forceObject;if(!forceObject){forceHit=false;forceAmount=0}}
+function forceDisableReverse(){
+  forceDisabled=!forceDisabled;
+  const btn=document.querySelectorAll('#auto-reverse .ctrl-btn')[2];
+  if(forceDisabled){btn.classList.add('active');btn.textContent='Auto-Reverse Disabled'}
+  else{btn.classList.remove('active');btn.textContent='Disable Auto-Reverse'}
+}
+function forceReset(){forceDoorPos=0;forceDoorDir=0;forceObject=false;forceHit=false;forceAmount=0;forceDisabled=false;
+  document.getElementById('forceAction').textContent='IDLE';
+  const btn=document.querySelectorAll('#auto-reverse .ctrl-btn')[2];
+  btn.classList.remove('active');btn.textContent='Disable Auto-Reverse';
+}
+
+// ═══════════════════════════
+// SCENE 3: MANUAL RELEASE
+// ═══════════════════════════
+let releaseState='engaged',releaseAnim=0;
+const releaseC=document.getElementById('releaseCanvas');const releaseCtx=releaseC.getContext('2d');
+
+function drawRelease(){
+  requestAnimationFrame(drawRelease);
+  const{w,h}=fitCanvas(releaseC);const ctx=releaseCtx;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const cx=w/2, topY=h*0.08;
+  // Rail (T-shaped, horizontal)
+  ctx.fillStyle='#6a6a75';ctx.fillRect(cx-w*0.38,topY,w*0.76,14);
+  ctx.fillStyle='#888';ctx.fillRect(cx-w*0.38,topY+14,w*0.76,6);
+  ctx.fillStyle='#555';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('OPENER RAIL',cx,topY-5);
+
+  // Chain/belt on rail
+  ctx.strokeStyle='#555';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(cx-w*0.36,topY+7);ctx.lineTo(cx+w*0.36,topY+7);ctx.stroke();
+
+  // Motor (left end)
+  ctx.fillStyle='#4a4d58';ctx.fillRect(cx-w*0.38-30,topY-15,35,45);
+  ctx.fillStyle='#666';ctx.font='8px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('MOTOR',cx-w*0.38-12,topY+40);
+
+  // Trolley carriage
+  const trolleyX=cx+w*0.05;
+  const engaged=releaseState==='engaged';
+  const trolleyColor=engaged?'#f97316':'#888';
+  ctx.fillStyle=trolleyColor;
+  ctx.fillRect(trolleyX-25,topY+22,50,30);
+  // Connection to chain (engaged or not)
+  if(engaged){
+    ctx.fillStyle='#c65d0a';ctx.fillRect(trolleyX-8,topY+14,16,10);
+    ctx.fillStyle='#fff';ctx.font='8px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('LOCKED',trolleyX,topY+40);
+  } else {
+    ctx.strokeStyle='#ef4444';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(trolleyX-8,topY+16);ctx.lineTo(trolleyX+8,topY+16);ctx.stroke();
+    ctx.fillStyle='#ef4444';ctx.font='8px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('FREE',trolleyX,topY+40);
+    // Gap indicator
+    ctx.strokeStyle='#ef4444';ctx.setLineDash([3,3]);
+    ctx.strokeRect(trolleyX-8,topY+12,16,12);ctx.setLineDash([]);
+  }
+
+  // J-ARM from trolley down to door
+  const armBottomY=topY+110;
+  ctx.strokeStyle='#888';ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(trolleyX,topY+52);ctx.lineTo(trolleyX,armBottomY);ctx.stroke();
+  // Bracket
+  ctx.fillStyle='#666';ctx.fillRect(trolleyX-20,armBottomY-2,40,8);
+
+  // Door top section (below bracket)
+  const doorTopY=armBottomY+6;
+  ctx.fillStyle='#c8c8cc';ctx.fillRect(cx-w*0.25,doorTopY,w*0.5,h*0.25);
+  ctx.strokeStyle='#aaa';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(cx-w*0.25,doorTopY+h*0.12);ctx.lineTo(cx+w*0.25,doorTopY+h*0.12);ctx.stroke();
+  ctx.fillStyle='#aaa';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('DOOR (TOP SECTION)',cx,doorTopY+h*0.25+15);
+
+  // ── EMERGENCY RELEASE MECHANISM (the star of the show) ──
+  const releaseY=topY+65;
+  // Release lever on trolley
+  const leverAngle=engaged?0.2:1.2; // rotates when pulled
+  ctx.save();
+  ctx.translate(trolleyX-15,releaseY);
+  ctx.rotate(-leverAngle);
+  ctx.fillStyle='#888';ctx.fillRect(-3,-15,6,18);
+  ctx.restore();
+
+  // RED CORD
+  const cordStartX=trolleyX-15-Math.sin(leverAngle)*10;
+  const cordStartY=releaseY+Math.cos(leverAngle)*8;
+  const cordEndY=h*0.75;
+  const cordSway=engaged?0:Math.sin(Date.now()*0.003)*8;
+  ctx.strokeStyle='#ef4444';ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(cordStartX,cordStartY);
+  ctx.quadraticCurveTo(cordStartX+cordSway,cordStartY+(cordEndY-cordStartY)/2,cordStartX+cordSway*0.5,cordEndY);
+  ctx.stroke();
+  // Handle
+  ctx.fillStyle='#ef4444';
+  ctx.beginPath();ctx.arc(cordStartX+cordSway*0.5,cordEndY+8,8,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 8px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('↓',cordStartX+cordSway*0.5,cordEndY+11);
+
+  // Label
+  ctx.fillStyle='#ef4444';ctx.font='bold 10px "JetBrains Mono"';ctx.textAlign='left';
+  ctx.fillText('RED EMERGENCY',cordStartX+20,cordEndY-5);
+  ctx.fillText('RELEASE CORD',cordStartX+20,cordEndY+8);
+
+  // Status annotations
+  const annotX=w*0.72;
+  ctx.fillStyle='#444';ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+  const annotations=engaged?[
+    {y:topY+30,t:'Trolley LOCKED to chain/belt',c:'#22c55e'},
+    {y:topY+55,t:'Motor controls door movement',c:'#60a5fa'},
+    {y:topY+80,t:'Pull red cord to disconnect',c:'#ef4444'},
+  ]:[
+    {y:topY+30,t:'Trolley DISENGAGED from drive',c:'#ef4444'},
+    {y:topY+55,t:'Door moves freely by hand',c:'#f59e0b'},
+    {y:topY+80,t:'No auto-reverse protection!',c:'#ef4444'},
+    {y:topY+105,t:'Re-engage by running opener',c:'#60a5fa'},
+  ];
+  annotations.forEach(a=>{
+    ctx.fillStyle=a.c;ctx.beginPath();ctx.arc(annotX-8,a.y-3,3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=a.c;ctx.fillText(a.t,annotX,a.y);
+  });
+
+  // Update readouts
+  document.getElementById('trolleyState').innerHTML=engaged?'<span style="color:var(--success)">ENGAGED</span>':'<span style="color:var(--danger)">DISENGAGED</span>';
+  document.getElementById('doorControl').innerHTML=engaged?'MOTORIZED':'<span style="color:var(--warn)">MANUAL</span>';
+  document.getElementById('manualForce').innerHTML=engaged?'—<span class="readout-unit"> lbs</span>':'~10<span class="readout-unit"> lbs to lift</span>';
+}
+drawRelease();
+
+function releasePull(){releaseState='disengaged'}
+function releaseReengage(){releaseState='engaged'}
+function releaseReset(){releaseState='engaged'}
+
+// ═══════════════════════════
+// SCENE 5: FAILURE MODES
+// ═══════════════════════════
+let failMode=0,failDoorPos=0,failDoorDir=0,failHasObject=true,failHit=false;
+const failC=document.getElementById('failureCanvas');const failCtx=failC.getContext('2d');
+
+function drawFailure(){
+  requestAnimationFrame(drawFailure);
+  const{w,h}=fitCanvas(failC);const ctx=failCtx;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const gx=w*0.12,gy=h*0.06,gw=w*0.76,gh=h*0.88;
+  ctx.fillStyle='#2a2d38';ctx.fillRect(gx,gy,gw,gh);
+  ctx.fillStyle='#222530';ctx.fillRect(gx,gy+gh*0.78,gw,gh*0.22);
+
+  const dx=gx+gw*0.18,dw=gw*0.64,dTop=gy+gh*0.12,dBot=gy+gh*0.77;
+  const doorH=dBot-dTop;
+  ctx.fillStyle='#4a4d58';ctx.fillRect(dx-5,dTop-5,dw+10,doorH+10);
+
+  // Door
+  const doorDrawH=doorH*failDoorPos;
+  if(doorDrawH>2){
+    ctx.fillStyle='#c8c8cc';ctx.fillRect(dx,dTop,dw,doorDrawH);
+    for(let i=1;i<4;i++){const ly=dTop+doorDrawH*i/4;if(ly<dBot){ctx.strokeStyle='#aaaaae';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}}
+    const edgeCol=failHit?(failMode===3?'#ff0000':'#ef4444'):'#888';
+    ctx.fillStyle=edgeCol;ctx.fillRect(dx,dTop+doorDrawH-3,dw,4);
+  }
+
+  // Sensors
+  const sensorY=dBot-16;
+  const beamActive=failMode===0||failMode===2;
+  const forceActive=failMode===0||failMode===1;
+
+  // Left sensor
+  ctx.fillStyle='#333';ctx.fillRect(dx-14,sensorY-7,12,14);
+  ctx.fillStyle=beamActive?'#22d3ee':'#555';
+  ctx.beginPath();ctx.arc(dx-8,sensorY,3,0,Math.PI*2);ctx.fill();
+  // Right sensor
+  ctx.fillStyle='#333';ctx.fillRect(dx+dw+2,sensorY-7,12,14);
+  ctx.fillStyle=beamActive?'#22c55e':'#555';
+  ctx.beginPath();ctx.arc(dx+dw+8,sensorY,3,0,Math.PI*2);ctx.fill();
+  // Beam
+  if(beamActive){
+    ctx.strokeStyle='rgba(34,211,238,0.5)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(dx-2,sensorY);ctx.lineTo(dx+dw+2,sensorY);ctx.stroke();
+  }
+  if(!beamActive){
+    ctx.strokeStyle='#ef4444';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(dx-2,sensorY);ctx.lineTo(dx+dw+2,sensorY);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#ef4444';ctx.font='8px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('BEAM DISABLED',dx+dw/2,sensorY+15);
+  }
+
+  // Child figure
+  if(failHasObject){
+    const childX=dx+dw*0.5,childY=dBot-8;
+    ctx.fillStyle='#f59e0b';
+    ctx.beginPath();ctx.arc(childX,childY-38,13,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(childX-9,childY-25,18,22);
+    ctx.fillRect(childX-5,childY-3,4,14);ctx.fillRect(childX+1,childY-3,4,14);
+    if(failHit&&failMode===3){
+      // Danger indicator
+      ctx.fillStyle='rgba(255,0,0,0.3)';ctx.fillRect(dx,dTop+doorDrawH-15,dw,15);
+      ctx.fillStyle='#ff0000';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+      ctx.fillText('⚠ ENTRAPMENT — NO SAFETY RESPONSE',dx+dw/2,dTop+doorDrawH+20);
+    }
+  }
+
+  // Door physics
+  const objPos=0.82;
+  if(failDoorDir>0){
+    failDoorPos=Math.min(1,failDoorPos+0.005);
+    // Beam check
+    if(failHasObject&&failDoorPos>0.7&&beamActive){
+      failDoorDir=-1; // beam reversal
+    }
+    // Physical contact
+    if(failHasObject&&failDoorPos>objPos){
+      failHit=true;
+      if(forceActive){failDoorDir=-1} // force reversal
+      else if(!beamActive){failDoorPos=Math.min(objPos+0.03,failDoorPos)} // pinned
+    }
+    if(!failHasObject&&failDoorPos>=1){failDoorDir=0}
+  } else if(failDoorDir<0){
+    failDoorPos=Math.max(0,failDoorPos-0.01);
+    if(failDoorPos<=0){failDoorDir=0;failHit=false}
+  }
+
+  // Status badges top-right
+  const badgeX=gx+gw-10;
+  ctx.textAlign='right';ctx.font='bold 10px "JetBrains Mono"';
+  ctx.fillStyle=beamActive?'#22c55e':'#ef4444';
+  ctx.fillText(beamActive?'✓ BEAM SENSOR':'✗ BEAM SENSOR',badgeX,gy+20);
+  ctx.fillStyle=forceActive?'#22c55e':'#ef4444';
+  ctx.fillText(forceActive?'✓ FORCE LIMIT':'✗ FORCE LIMIT',badgeX,gy+35);
+
+  // Outcome
+  const outcome=failMode===0?['SAFE — Beam catches obstruction before contact','var(--success)']:
+    failMode===1?['PARTIAL — No beam, force limit catches it on contact','var(--warn)']:
+    failMode===2?['PARTIAL — Beam works, but force limit is backup only','var(--warn)']:
+    ['DANGEROUS — No protection, entrapment risk','var(--danger)'];
+  document.getElementById('failOutcome').innerHTML='<span style="color:'+outcome[1]+';font-size:.85rem">'+outcome[0].split('—')[0]+'</span>';
+}
+drawFailure();
+
+function failureScenario(mode){
+  failMode=mode;failDoorPos=0;failDoorDir=1;failHit=false;
+  const labels=['All Systems Working','Sensors Bypassed','Force Limit Failed','Both Failed'];
+  document.getElementById('failScenario').textContent=labels[mode];
+  document.getElementById('failBeam').innerHTML=(mode===0||mode===2)?'<span style="color:var(--success)">✓ ACTIVE</span>':'<span style="color:var(--danger)">✗ DISABLED</span>';
+  document.getElementById('failForce').innerHTML=(mode===0||mode===1)?'<span style="color:var(--success)">✓ ACTIVE</span>':'<span style="color:var(--danger)">✗ DISABLED</span>';
+}
+</script>
+</body>
+</html>

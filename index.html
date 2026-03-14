@@ -76,6 +76,21 @@
       padding: 10rem 2rem 6rem;
       max-width: 1080px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .hero-text { flex: 1; }
+
+    .hero-photo {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      flex-shrink: 0;
+      border: 4px solid var(--border);
     }
 
     .hero-label {
@@ -355,7 +370,9 @@
 
     /* --- MOBILE --- */
     @media (max-width: 640px) {
-      .hero { padding: 8rem 1.25rem 4rem; }
+      .hero { padding: 8rem 1.25rem 4rem; flex-direction: column-reverse; gap: 2rem; text-align: center; }
+      .hero-photo { width: 180px; height: 180px; }
+      .hero-label { margin-bottom: 1rem; }
       section { padding: 3.5rem 1.25rem; }
       nav .nav-links a { margin-left: 1.25rem; }
       .skills-grid, .projects-grid, .games-grid {
@@ -387,13 +404,16 @@
 
 <!-- HERO -->
 <div class="hero">
-  <span class="hero-label">AI Developer &bull; Product Leader &bull; Visionary</span>
-  <h1>Building tools that empower creators and businesses.</h1>
-  <p>25+ years shipping products, leading teams, and turning ideas into platforms people love — from award-winning WordPress plugins to AI-driven experiences.</p>
-  <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta">
-    Connect on LinkedIn
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-  </a>
+  <div class="hero-text">
+    <span class="hero-label">AI Developer &bull; Product Leader &bull; Visionary</span>
+    <h1>Building tools that empower creators and businesses.</h1>
+    <p>25+ years shipping products, leading teams, and turning ideas into platforms people love — from award-winning WordPress plugins to AI-driven experiences.</p>
+    <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta">
+      Connect on LinkedIn
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+    </a>
+  </div>
+  <img src="seth-shoultes.jpg" alt="Seth Shoultes" class="hero-photo">
 </div>
 
 <!-- SKILLS -->

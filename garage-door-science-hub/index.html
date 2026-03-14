@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garage Door Science Lab — Interactive Experiments</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090d;
+  --surface: #10111a;
+  --surface2: #161824;
+  --border: rgba(55,58,75,0.5);
+  --border-hover: rgba(55,58,75,0.9);
+  --danger: #ff2a2a;
+  --energy: #00e87b;
+  --accent: #f59e0b;
+  --accent2: #3b82f6;
+  --purple: #a855f7;
+  --orange: #ff6b2b;
+  --text: #c8c8d8;
+  --text-dim: #6a6a88;
+  --text-bright: #f0f0ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── GRID BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 100px 24px 60px;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--danger);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: blink 1.2s ease infinite;
+}
+
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  letter-spacing: 0.06em;
+  color: var(--text-bright);
+  line-height: 1.05;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 span {
+  display: block;
+  background: linear-gradient(135deg, var(--accent), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.0rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── CARDS GRID ─── */
+.cards {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-springs::before { background: linear-gradient(90deg, var(--danger), var(--accent)); }
+.card-doors::before { background: linear-gradient(90deg, var(--orange), var(--accent)); }
+.card-catapult::before { background: linear-gradient(90deg, var(--accent2), var(--purple)); }
+.card-trainer::before { background: linear-gradient(90deg, #44FF88, #22CC66); }
+.card-fatigue::before { background: linear-gradient(90deg, var(--accent2), #06b6d4); }
+.card-safety::before { background: linear-gradient(90deg, var(--danger), var(--orange)); }
+
+.card-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.card-icon {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.card h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.0rem;
+  letter-spacing: 0.04em;
+  color: var(--text-bright);
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+
+.card-desc {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.tag-danger { border-color: rgba(255,42,42,0.3); color: var(--danger); }
+.tag-energy { border-color: rgba(0,232,123,0.3); color: var(--energy); }
+.tag-accent { border-color: rgba(245,158,11,0.3); color: var(--accent); }
+.tag-blue { border-color: rgba(59,130,246,0.3); color: var(--accent2); }
+.tag-purple { border-color: rgba(168,85,247,0.3); color: var(--purple); }
+.tag-orange { border-color: rgba(255,107,43,0.3); color: var(--orange); }
+
+.card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  transition: all 0.25s;
+  align-self: flex-start;
+}
+
+.card:hover .card-cta {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.card-cta .arrow {
+  transition: transform 0.25s;
+}
+
+.card:hover .card-cta .arrow {
+  transform: translateX(4px);
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+
+.footer-text a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 680px) {
+  .hero { padding: 70px 20px 40px; }
+  .cards { padding: 16px 16px 60px; gap: 16px; }
+  .card { padding: 24px 20px 22px; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="badge"><span class="dot"></span> A Plus Garage Doors — Educational Series</div>
+  <h1>GARAGE DOOR<span>SCIENCE LAB</span></h1>
+  <p class="hero-sub">Interactive experiments exploring the physics, engineering, and hidden dangers of residential garage door systems.</p>
+</section>
+
+<section class="cards">
+
+  <a class="card card-doors" href="https://sethshoultes.github.io/science-of-garage-doors/" target="_blank" rel="noopener">
+    <div class="card-number">01 / Experiment</div>
+    <div class="card-icon">🏗️</div>
+    <h2>The Science of Garage Doors</h2>
+    <p class="card-desc">A complete interactive 3D explorer covering sectional door mechanics, track systems, spring counterbalance, opener drive types, safety sensors, and maintenance procedures.</p>
+    <div class="card-tags">
+      <span class="tag tag-orange">3D Explorer</span>
+      <span class="tag tag-blue">Interactive</span>
+      <span class="tag tag-accent">Multi-Section</span>
+    </div>
+    <div class="card-cta">Launch Explorer <span class="arrow">&rarr;</span></div>
+  </a>
+
+  <a class="card card-springs" href="https://sethshoultes.github.io/science-of-garage-door-springs/" target="_blank" rel="noopener">
+    <div class="card-number">02 / Experiment</div>
+    <div class="card-icon">🔩</div>
+    <h2>The Science of Garage Door Springs</h2>
+    <p class="card-desc">How torsion springs work, the forces involved, stored energy compared to everyday objects, an interactive winding simulation, and real-world injury case studies.</p>
+    <div class="card-tags">
+      <span class="tag tag-danger">Danger Ratings</span>
+      <span class="tag tag-energy">Energy Comparison</span>
+      <span class="tag tag-accent">Winding Sim</span>
+    </div>
+    <div class="card-cta">Launch Experiment <span class="arrow">&rarr;</span></div>
+  </a>
+
+  <a class="card card-fatigue" href="spring-fatigue-cold-weather/" target="_blank" rel="noopener">
+    <div class="card-number">03 / Experiment</div>
+    <div class="card-icon">🥶</div>
+    <h2>Spring Fatigue &amp; Cold Weather</h2>
+    <p class="card-desc">Why garage door springs snap in cold weather. Explore metal fatigue, crystal structure changes, and the ductile-to-brittle transition with interactive 3D visualizations and real-time temperature simulations.</p>
+    <div class="card-tags">
+      <span class="tag tag-blue">3D Crystal Viz</span>
+      <span class="tag tag-danger">Fatigue Analysis</span>
+      <span class="tag tag-accent">Temperature Sim</span>
+    </div>
+    <div class="card-cta">Launch Experiment <span class="arrow">&rarr;</span></div>
+  </a>
+
+  <a class="card card-safety" href="safety-systems-lab/" target="_blank" rel="noopener">
+    <div class="card-number">04 / Lab</div>
+    <div class="card-icon">🛡️</div>
+    <h2>Safety Systems Lab</h2>
+    <p class="card-desc">Hands-on exploration of garage door safety mechanisms — photo-eye sensors, auto-reverse systems, manual release, and entrapment protection. Test each system with interactive 3D simulations.</p>
+    <div class="card-tags">
+      <span class="tag tag-danger">Safety Critical</span>
+      <span class="tag tag-orange">3D Simulations</span>
+      <span class="tag tag-energy">Interactive Tests</span>
+    </div>
+    <div class="card-cta">Launch Lab <span class="arrow">&rarr;</span></div>
+  </a>
+
+  <a class="card card-trainer" href="https://sethshoultes.github.io/garage-door-trainer/" target="_blank" rel="noopener">
+    <div class="card-number">05 / Training</div>
+    <div class="card-icon">🎓</div>
+    <h2>Installation Training Simulator</h2>
+    <p class="card-desc">Step-by-step 3D training covering all 8 phases of a residential garage door installation — from vertical tracks to opener mounting. Includes tool selection quizzes and scored decision-making.</p>
+    <div class="card-tags">
+      <span class="tag tag-energy">3D Training</span>
+      <span class="tag tag-accent">8 Steps</span>
+      <span class="tag tag-blue">Scored Quizzes</span>
+    </div>
+    <div class="card-cta">Launch Training <span class="arrow">&rarr;</span></div>
+  </a>
+
+  <a class="card card-catapult" href="https://sethshoultes.github.io/spring-powered-catapult/" target="_blank" rel="noopener">
+    <div class="card-number">06 / Experiment</div>
+    <div class="card-icon">💥</div>
+    <h2>Spring-Powered Catapult</h2>
+    <p class="card-desc">A 3D physics simulation demonstrating the destructive energy stored in garage door springs. Wind the spring, choose a projectile, and fire — with real-time telemetry and slow-motion replay.</p>
+    <div class="card-tags">
+      <span class="tag tag-purple">3D Simulation</span>
+      <span class="tag tag-danger">Physics Engine</span>
+      <span class="tag tag-blue">Slow-Mo Replay</span>
+    </div>
+    <div class="card-cta">Launch Simulation <span class="arrow">&rarr;</span></div>
+  </a>
+
+</section>
+
+<footer class="footer">
+  <p class="footer-text">Built by <a href="https://github.com/sethshoultes">A Plus Garage Doors</a> &mdash; Professional garage door service &amp; education</p>
+</footer>
+
+</body>
+</html>
