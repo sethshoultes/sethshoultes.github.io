@@ -294,6 +294,47 @@
 
     .project-card .project-links a:hover { opacity: 0.7; }
 
+    /* --- VIDEOS --- */
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .video-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .video-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .video-card .video-embed {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-card .video-embed iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+    }
+
     /* --- GAMES --- */
     .games-grid {
       display: grid;
@@ -405,6 +446,7 @@
       .hero-label { margin-bottom: 1rem; }
       section { padding: 3.5rem 1.25rem; }
       nav .nav-links a { margin-left: 1.25rem; }
+      .videos-grid { grid-template-columns: 1fr; }
       .skills-grid, .projects-grid, .games-grid {
         grid-template-columns: 1fr;
       }
@@ -426,6 +468,7 @@
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
       <a href="#games">Games</a>
+      <a href="#videos">Videos</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </div>
@@ -582,6 +625,40 @@
       <h3>Speed Typing Adventure</h3>
       <p>Embark on a journey where your typing skills decide your fate!</p>
       <a href="https://adventurebuildr.com/arcade/typing-game.html" target="_blank">Play Now <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<div class="divider"><hr></div>
+<section id="videos">
+  <p class="section-label">Watch</p>
+  <h2>Videos</h2>
+  <p>Presentations, demos, and creative projects.</p>
+  <div class="videos-grid">
+    <div class="video-card">
+      <div class="video-embed">
+        <iframe src="https://www.youtube.com/embed/BU7AiANUVL0" title="AI Done Right: The First Principles Approach" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <h3>AI Done Right: The First Principles Approach</h3>
+    </div>
+    <div class="video-card">
+      <div class="video-embed">
+        <iframe src="https://www.youtube.com/embed/aMkmhg8fMe8" title="The Science of Garage Doors: Pop Art Physics" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <h3>The Science of Garage Doors: Pop Art Physics</h3>
+    </div>
+    <div class="video-card">
+      <div class="video-embed">
+        <iframe src="https://www.youtube.com/embed/hWT0Fga8qvQ" title="The Science of Garage Door Springs: Physics Doesn't Negotiate" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <h3>The Science of Garage Door Springs: Physics Doesn't Negotiate</h3>
+    </div>
+    <div class="video-card">
+      <div class="video-embed">
+        <iframe src="https://www.youtube.com/embed/Od84YIAwrEk" title="Exploring Zion 2024" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <h3>Exploring Zion 2024</h3>
     </div>
   </div>
 </section>
