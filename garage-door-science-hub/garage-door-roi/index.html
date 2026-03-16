@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Garage Door ROI — Garage Door Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#08090c;--surface:#11131a;--surface2:#181b24;--border:#252833;
+--accent:#8b5cf6;--accent2:#a78bfa;--accentDim:#4c1d95;
+--gold:#f59e0b;--goldDim:#92400e;
+--text:#e2e4ea;--text2:#8a8fa0;--text3:#555a6d;
+--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-serif;line-height:1.65;overflow-x:hidden}
+
+.hero{position:relative;min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(139,92,246,.08) 0%,var(--bg) 100%)}
+.hero canvas{position:absolute;inset:0;z-index:0}
+.hero-content{position:relative;z-index:2;padding:2rem}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,4.2rem);text-transform:uppercase;letter-spacing:.06em;line-height:1.1;margin-bottom:.4rem}
+.hero h1 .purple{color:var(--accent)}
+.hero h1 .gold{color:var(--gold)}
+.hero .sub{font-family:'JetBrains Mono',monospace;font-size:clamp(.65rem,1.2vw,.85rem);color:var(--text2);letter-spacing:.18em;text-transform:uppercase}
+.hero .stat-row{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)}
+.hero .stat-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);letter-spacing:.12em;text-transform:uppercase}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(8,9,12,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+.nav-inner{display:flex;max-width:1300px;margin:0 auto}
+.nav a{display:inline-block;padding:.8rem 1.1rem;color:var(--text2);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .3s}
+.nav a:hover,.nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.section{max-width:1300px;margin:0 auto;padding:4rem 2rem;opacity:0;transform:translateY(25px);transition:opacity .7s,transform .7s}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
+.section-title{font-family:'Oswald',sans-serif;font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.section-desc{color:var(--text2);font-size:1rem;max-width:750px;margin-bottom:2rem}
+
+.canvas-wrap{position:relative;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-top:1.5rem}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;transition:border-color .3s}
+.info-card:hover{border-color:var(--accent)}
+.info-card h3{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.5rem}
+.info-card p{color:var(--text2);font-size:.88rem;line-height:1.55}
+
+.readout{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.2rem 0}
+.readout-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;min-width:110px;flex:1}
+.readout-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.12em}
+.readout-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;margin-top:.15rem}
+.readout-unit{font-size:.65rem;color:var(--text2);font-weight:400}
+
+.slider-group{margin:.7rem 0}
+.slider-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer}
+
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin:1.5rem 0}
+.chart-canvas{width:100%;height:300px;display:block}
+.chart-legend{display:flex;gap:1.2rem;margin-top:.8rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+.callout{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.18);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.callout h4{font-family:'Oswald',sans-serif;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.callout p{color:var(--text2);font-size:.85rem}
+
+.gold-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.gold-box h4{font-family:'Oswald',sans-serif;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.gold-box p{color:var(--text2);font-size:.85rem}
+
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.warning-box h4{font-family:'Oswald',sans-serif;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.warning-box p{color:var(--text2);font-size:.85rem}
+
+.big-number{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:700;text-align:center;padding:1.5rem;margin:1.5rem 0;border-radius:8px;border:1px solid var(--border);background:var(--surface)}
+.big-number .label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text2);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
+
+.comparison-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.85rem}
+.comparison-table th{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);padding:.8rem;text-align:left;border-bottom:2px solid var(--border);font-size:.8rem}
+.comparison-table td{padding:.65rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}
+.comparison-table tr:hover td{background:var(--surface)}
+.comparison-table .highlight{color:var(--success);font-weight:600}
+.comparison-table .negative{color:var(--danger)}
+
+.divider{height:1px;background:var(--border);margin:0}
+.footer{text-align:center;padding:2.5rem 2rem;color:var(--text3);font-size:.75rem;border-top:1px solid var(--border)}
+
+@media(max-width:768px){.section{padding:2.5rem 1rem}.info-grid{grid-template-columns:1fr}.readout-item{min-width:90px}.comparison-table{font-size:.75rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="hero-content">
+<h1>New Garage Door <span class="gold">ROI</span></h1>
+<div class="sub">Investment Return · Home Value · Energy Savings · Resale Impact</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num" style="color:var(--gold)">93.3%</div><div class="stat-label">Cost Recouped at Resale</div></div>
+<div class="stat"><div class="stat-num">$200+</div><div class="stat-label">Annual Energy Savings</div></div>
+<div class="stat"><div class="stat-num" style="color:var(--success)">#1</div><div class="stat-label">Home Improvement ROI</div></div>
+</div>
+</div>
+</div>
+
+<div class="nav">
+<div class="nav-inner">
+<a href="#resale">Resale Value</a>
+<a href="#energy-roi">Energy ROI</a>
+<a href="#curb-appeal">Curb Appeal</a>
+<a href="#total-roi">Total ROI Calculator</a>
+<a href="#when-replace">When to Replace</a>
+</div>
+</div>
+
+<!-- ═══ SECTION 1: RESALE VALUE ═══ -->
+<div class="section" id="resale">
+<div class="section-tag">01 / Resale Impact</div>
+<div class="section-title">The #1 Home Improvement for ROI</div>
+<div class="section-desc">According to Remodeling Magazine's annual Cost vs. Value Report, garage door replacement consistently ranks as the highest-ROI home improvement project in the country — ahead of kitchen remodels, siding, and roofing.</div>
+
+<div class="chart-container">
+<canvas class="chart-canvas" id="roiCompareChart" style="height:340px"></canvas>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Cost Recouped at Resale (%)</div>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Avg Door Cost</div><div class="readout-value">$4,302</div></div>
+<div class="readout-item"><div class="readout-label">Value Added</div><div class="readout-value" style="color:var(--success)">$4,014</div></div>
+<div class="readout-item"><div class="readout-label">Cost Recouped</div><div class="readout-value" style="color:var(--gold)">93.3<span class="readout-unit">%</span></div></div>
+<div class="readout-item"><div class="readout-label">Net Cost</div><div class="readout-value" style="color:var(--accent)">$288</div></div>
+</div>
+
+<div class="gold-box">
+<h4>💰 What This Means</h4>
+<p>If you spend $4,302 on a new garage door and sell your home, you'll recoup $4,014 of that investment — a net cost of just $288. Meanwhile, you enjoyed years of improved aesthetics, energy savings, and reliability. No other home improvement project comes close to this return. A minor kitchen remodel recovers ~75%, a new roof ~61%, and a bathroom remodel ~38%.</p>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Why So High?</h3><p>The garage door is the single largest visual element on the front of most homes — accounting for up to 30-40% of the front facade. A worn, dented, or faded door drags down the entire curb impression. Appraisers and buyers notice it immediately. It's high visibility, moderate cost, and dramatic before/after impact — the perfect ROI recipe.</p></div>
+<div class="info-card"><h3>Regional Variation</h3><p>ROI varies by region: Pacific states see 96%+ recoup, while South Atlantic regions average 88-90%. Markets with higher home values and competitive real estate tend to reward garage door upgrades more. In hot markets, a new garage door can actually return MORE than 100% — the curb appeal bump drives bidding above the improvement cost.</p></div>
+<div class="info-card"><h3>Door Style Matters</h3><p>The highest ROI comes from style-appropriate doors. A carriage-house steel door on a craftsman home returns more than a modern flush panel. Conversely, a contemporary aluminum-and-glass door on a mid-century modern home is the right match. The key is cohesion with the home's architecture — not the most expensive door available.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 2: ENERGY ROI ═══ -->
+<div class="section" id="energy-roi">
+<div class="section-tag">02 / Energy Savings</div>
+<div class="section-title">Energy Cost Payback</div>
+<div class="section-desc">The insulation upgrade alone can pay for a significant portion of a new door, especially in extreme climates. Calculate your specific energy ROI based on your conditions.</div>
+
+<div class="slider-group">
+<label>Current Door: <span id="curDoorLabel">Uninsulated Single Steel (R-0)</span></label>
+<input type="range" id="curDoorSlider" min="0" max="2" value="0" step="1" oninput="updateEnergyROI()">
+</div>
+<div class="slider-group">
+<label>New Door: <span id="newDoorLabel">Polyurethane Insulated (R-18)</span></label>
+<input type="range" id="newDoorSlider" min="0" max="2" value="2" step="1" oninput="updateEnergyROI()">
+</div>
+<div class="slider-group">
+<label>Climate Zone: <span id="climateLabel">Hot Summer / Mild Winter (St. George)</span></label>
+<input type="range" id="climateSlider" min="0" max="3" value="1" step="1" oninput="updateEnergyROI()">
+</div>
+<div class="slider-group">
+<label>Door Size: <span id="erSizeLabel">16×7 (2-car)</span></label>
+<input type="range" id="erSizeSlider" min="0" max="2" value="1" step="1" oninput="updateEnergyROI()">
+</div>
+<div class="slider-group">
+<label>Attached Garage: <span id="erAttachedLabel">Yes</span></label>
+<input type="range" id="erAttachedSlider" min="0" max="1" value="1" step="1" oninput="updateEnergyROI()">
+</div>
+
+<div class="chart-container">
+<canvas class="chart-canvas" id="energyPaybackChart" style="height:280px"></canvas>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>Old Door Annual Cost</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div>New Door Annual Cost</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Cumulative Savings</div>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Old Door Cost/Year</div><div class="readout-value" id="erOldCost" style="color:var(--danger)">$385</div></div>
+<div class="readout-item"><div class="readout-label">New Door Cost/Year</div><div class="readout-value" id="erNewCost" style="color:var(--success)">$72</div></div>
+<div class="readout-item"><div class="readout-label">Annual Savings</div><div class="readout-value" id="erSavings" style="color:var(--gold)">$313</div></div>
+<div class="readout-item"><div class="readout-label">10-Year Savings</div><div class="readout-value" id="er10yr" style="color:var(--accent)">$3,130</div></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 3: CURB APPEAL ═══ -->
+<div class="section" id="curb-appeal">
+<div class="section-tag">03 / Visual Impact</div>
+<div class="section-title">Curb Appeal Math</div>
+<div class="section-desc">The garage door is the largest moving object on your home and the most prominent element of the front facade. Its condition sets the tone for how buyers perceive the entire property.</div>
+
+<div class="canvas-wrap" style="height:400px">
+<canvas id="curbCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn active" onclick="setCurbState(0)">Before (Old Door)</button>
+<button class="ctrl-btn" onclick="setCurbState(1)">After (New Door)</button>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Facade Coverage</div><div class="readout-value">30-40<span class="readout-unit">%</span></div></div>
+<div class="readout-item"><div class="readout-label">Buyer First Impression</div><div class="readout-value" id="curbImpression" style="color:var(--danger)">POOR</div></div>
+<div class="readout-item"><div class="readout-label">Days on Market Impact</div><div class="readout-value" id="curbDays">+12<span class="readout-unit"> days</span></div></div>
+<div class="readout-item"><div class="readout-label">Price Impact</div><div class="readout-value" id="curbPrice" style="color:var(--danger)">-2.5<span class="readout-unit">%</span></div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>The 7-Second Rule</h3><p>Real estate studies show buyers form their opinion of a home within 7 seconds of seeing the exterior. The garage door dominates the front view of most homes. A dented, faded, or outdated door creates an instant "this house needs work" impression that's hard to overcome even with a beautiful interior. First impressions anchor all subsequent evaluation.</p></div>
+<div class="info-card"><h3>Photography & Listings</h3><p>In the era of online home shopping, the front-exterior photo is the #1 most viewed image in any listing. The garage door is typically the largest single element in that photo. A modern, clean garage door makes the listing photo pop. Some studies suggest homes with attractive garage doors get 20-30% more listing views online, expanding the buyer pool.</p></div>
+<div class="info-card"><h3>Neighborhood Effect</h3><p>A new garage door raises the standard for the whole street. If your door is the worst on the block, it can subtly depress comps for nearby homes too. Conversely, being the first to upgrade can trigger a cascade of improvements on the street, collectively raising property values. HOAs increasingly mandate garage door standards for this reason.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 4: TOTAL ROI CALCULATOR ═══ -->
+<div class="section" id="total-roi">
+<div class="section-tag">04 / The Full Picture</div>
+<div class="section-title">Total ROI Calculator</div>
+<div class="section-desc">Combine resale value recovery, energy savings, reduced maintenance, insurance benefits, and avoided repair costs into one comprehensive ROI calculation.</div>
+
+<div class="slider-group">
+<label>New Door Cost: <span id="totalCostLabel">$4,000</span></label>
+<input type="range" id="totalCostSlider" min="1500" max="8000" value="4000" step="100" oninput="updateTotalROI()">
+</div>
+<div class="slider-group">
+<label>Home Value: <span id="homeValueLabel">$400,000</span></label>
+<input type="range" id="homeValueSlider" min="150000" max="1000000" value="400000" step="10000" oninput="updateTotalROI()">
+</div>
+<div class="slider-group">
+<label>Years Until Sale: <span id="yearsLabel">5</span></label>
+<input type="range" id="yearsSlider" min="1" max="20" value="5" step="1" oninput="updateTotalROI()">
+</div>
+<div class="slider-group">
+<label>Annual Energy Savings: <span id="energySavLabel">$250</span></label>
+<input type="range" id="energySavSlider" min="50" max="600" value="250" step="10" oninput="updateTotalROI()">
+</div>
+
+<div class="chart-container">
+<canvas class="chart-canvas" id="totalRoiChart" style="height:320px"></canvas>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Resale Recovery</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div>Energy Savings</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Maintenance Avoided</div>
+<div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Insurance Savings</div>
+</div>
+</div>
+
+<div class="big-number">
+<div class="label">Total Return on Investment</div>
+<div id="totalROIpct" style="color:var(--gold)">127%</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Door Investment</div><div class="readout-value" id="trInvest">$4,000</div></div>
+<div class="readout-item"><div class="readout-label">Total Value Gained</div><div class="readout-value" id="trValue" style="color:var(--success)">$5,083</div></div>
+<div class="readout-item"><div class="readout-label">Net Profit</div><div class="readout-value" id="trProfit" style="color:var(--gold)">$1,083</div></div>
+<div class="readout-item"><div class="readout-label">Payback Period</div><div class="readout-value" id="trPayback" style="color:var(--accent)">1.2<span class="readout-unit"> years</span></div></div>
+</div>
+
+<table class="comparison-table">
+<thead><tr><th>Value Category</th><th>Amount</th><th>% of Door Cost</th></tr></thead>
+<tbody id="roiTableBody">
+</tbody>
+</table>
+
+<div class="callout">
+<h4>📊 Why This Beats Most Investments</h4>
+<p id="investCompare">A $4,000 garage door returning $5,083 over 5 years represents a 127% total return — equivalent to a 5.0% annual return. That's competitive with stock market averages, except it's a guaranteed tangible improvement you enjoy daily. Unlike stocks, this return includes the utility value of a functioning, insulated, secure garage door that you use 1,400+ times per year.</p>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 5: WHEN TO REPLACE ═══ -->
+<div class="section" id="when-replace">
+<div class="section-tag">05 / Decision Framework</div>
+<div class="section-title">When to Replace vs Repair</div>
+<div class="section-desc">Not every garage door problem requires a full replacement. Use this decision framework to determine when repair makes sense and when replacement is the smarter financial move.</div>
+
+<div class="canvas-wrap" style="height:520px">
+<canvas id="decisionCanvas"></canvas>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Replace When</h3><p>Door age exceeds 15-20 years. Panels are visibly damaged, warped, or rusted through. The door has no insulation and you want energy efficiency. You're selling within 2-3 years and the door hurts curb appeal. Spring or hardware failures are becoming frequent (2+ per year). The door style is severely outdated (wood-panel 1980s doors, for example).</p></div>
+<div class="info-card"><h3>Repair When</h3><p>Single panel is dented but the rest is sound. Springs need replacement (normal wear item, ~$200-350). Rollers, hinges, or weatherstrip need refresh ($50-150). The opener is failing but the door itself is fine (opener replacement is ~$300-500). The door is less than 10 years old and structurally sound. Cosmetic issues are minor and paintable.</p></div>
+<div class="info-card"><h3>The 50% Rule</h3><p>If the repair cost exceeds 50% of the replacement cost, replace. Example: if a new door is $3,000 and the repair quote is $1,700 (new panels + springs + hardware), you're better off getting a new door with full warranty, better insulation, and fresh aesthetics. The incremental $1,300 buys 15-20 years of new-door performance.</p></div>
+<div class="info-card"><h3>Hidden Repair Costs</h3><p>Old doors accumulate repair costs over time that feel manageable individually but add up: springs ($300) + rollers ($150) + weatherstrip ($100) + panel dent ($200) + opener ($400) = $1,150 in repairs on a door that's still old, uninsulated, and unattractive. That $1,150 was 30-40% of a new door that would have solved everything.</p></div>
+</div>
+
+<div class="warning-box">
+<h4>⚠ Safety Consideration</h4>
+<p>Doors manufactured before 1993 may not have modern safety features (photoelectric sensors, compliant auto-reverse). If your door predates 1993 or has non-functional safety systems, replacement becomes a safety issue, not just a financial one. No ROI calculation matters if the door injures someone.</p>
+</div>
+</div>
+
+<div class="footer">
+<p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">New Garage Door ROI</p>
+<p>Investment Return · Home Value · Energy Savings · Resale Impact</p>
+</div>
+
+<script>
+// ─── UTILS ───
+const sObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:0.05});
+document.querySelectorAll('.section').forEach(s=>sObs.observe(s));
+const navSections=document.querySelectorAll('.section[id]');
+const navLinks=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur='';navSections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id});navLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})},{passive:true});
+function fitCanvas(c){const r=c.parentElement.getBoundingClientRect();if(c.width!==r.width||c.height!==r.height){c.width=r.width;c.height=r.height}return{w:r.width,h:r.height}}
+let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{drawROICompare();updateEnergyROI();updateTotalROI();drawDecision()},200)});
+
+// ═══ HERO ═══
+(function(){
+const c=document.getElementById('heroCanvas');const ctx=c.getContext('2d');let t=0;
+const coins=[];for(let i=0;i<30;i++)coins.push({x:Math.random(),y:Math.random(),r:4+Math.random()*6,vy:0.0002+Math.random()*0.0003,phase:Math.random()*Math.PI*2,hue:40+Math.random()*20});
+(function anim(){requestAnimationFrame(anim);t+=0.01;const{w,h}=fitCanvas(c);ctx.clearRect(0,0,w,h);
+coins.forEach(p=>{p.y+=p.vy;if(p.y>1.05){p.y=-0.05;p.x=Math.random()}
+ctx.fillStyle=`hsla(${p.hue},70%,55%,0.12)`;ctx.beginPath();ctx.arc(p.x*w,p.y*h,p.r,0,Math.PI*2);ctx.fill();
+ctx.fillStyle=`hsla(${p.hue},70%,55%,0.06)`;ctx.beginPath();ctx.arc(p.x*w,p.y*h,p.r*2.5,0,Math.PI*2);ctx.fill()})})()})();
+
+// ═══ SECTION 1: ROI COMPARISON CHART ═══
+function drawROICompare(){
+  const canvas=document.getElementById('roiCompareChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-40;canvas.height=340;
+  const W=canvas.width,H=canvas.height;
+  const pad={t:25,r:30,b:55,l:55};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+
+  const projects=[
+    {name:'Garage Door',cost:4302,value:4014,pct:93.3},
+    {name:'Manufactured Stone',cost:11287,value:10925,pct:96.8},
+    {name:'Minor Kitchen',cost:26790,value:20125,pct:75.1},
+    {name:'Siding (Vinyl)',cost:16348,value:12326,pct:75.4},
+    {name:'New Roofing',cost:30840,value:18784,pct:60.9},
+    {name:'Bath Remodel',cost:24606,value:14919,pct:60.6},
+    {name:'Major Kitchen',cost:79982,value:41424,pct:51.8},
+    {name:'Deck Addition',cost:19856,value:10441,pct:52.6}
+  ];
+  projects.sort((a,b)=>b.pct-a.pct);
+
+  // Grid
+  ctx.strokeStyle='#252833';ctx.lineWidth=0.5;
+  for(let i=0;i<=5;i++){const x=pad.l+(i/5)*pw;ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,pad.t+ph);ctx.stroke()}
+  ctx.fillStyle='#555a6d';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
+  for(let i=0;i<=5;i++)ctx.fillText(Math.round(i*20)+'%',pad.l+(i/5)*pw,pad.t+ph+15);
+
+  // Bars
+  const barH=ph/projects.length-6;
+  projects.forEach((p,i)=>{
+    const y=pad.t+i*(ph/projects.length)+3;
+    const barW=pw*(p.pct/100);
+    const isGarage=p.name==='Garage Door';
+
+    // Bar
+    const col=isGarage?'#f59e0b':p.pct>80?'#22c55e':p.pct>60?'#60a5fa':'#8a8fa0';
+    ctx.fillStyle=col;
+    ctx.fillRect(pad.l,y,barW,barH);
+
+    // Glow for garage door
+    if(isGarage){
+      ctx.fillStyle='rgba(245,158,11,0.1)';
+      ctx.fillRect(pad.l,y-2,barW,barH+4);
+    }
+
+    // Label
+    ctx.fillStyle=isGarage?'#f59e0b':'#ccc';ctx.font=(isGarage?'bold ':'')+' 11px "JetBrains Mono"';ctx.textAlign='right';
+    ctx.fillText(p.name,pad.l-8,y+barH/2+4);
+
+    // Percentage
+    ctx.fillStyle=col;ctx.font='bold 11px "JetBrains Mono"';ctx.textAlign='left';
+    ctx.fillText(p.pct+'%',pad.l+barW+6,y+barH/2+4);
+  });
+
+  ctx.fillStyle='#666';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('Cost Recouped at Resale',pad.l+pw/2,H-10);
+}
+setTimeout(drawROICompare,100);
+
+// ═══ SECTION 2: ENERGY ROI ═══
+function updateEnergyROI(){
+  const curIdx=parseInt(document.getElementById('curDoorSlider').value);
+  const newIdx=parseInt(document.getElementById('newDoorSlider').value);
+  const climIdx=parseInt(document.getElementById('climateSlider').value);
+  const sizeIdx=parseInt(document.getElementById('erSizeSlider').value);
+  const attached=parseInt(document.getElementById('erAttachedSlider').value);
+
+  const doors=[{name:'Uninsulated Single Steel (R-0)',rval:0.5},{name:'Polystyrene Insulated (R-8)',rval:8},{name:'Polyurethane Insulated (R-18)',rval:18}];
+  const climates=[{name:'Mild (Pacific NW)',hdd:4000,cdd:400},{name:'Hot Summer / Mild Winter (St. George)',hdd:2800,cdd:2200},{name:'Cold Winter / Warm Summer (Midwest)',hdd:5500,cdd:1200},{name:'Extreme Cold (Northern US)',hdd:7500,cdd:600}];
+  const sizes=[{name:'8×7 (1-car)',area:56},{name:'16×7 (2-car)',area:112},{name:'18×8 (oversized)',area:144}];
+
+  document.getElementById('curDoorLabel').textContent=doors[curIdx].name;
+  document.getElementById('newDoorLabel').textContent=doors[newIdx].name;
+  document.getElementById('climateLabel').textContent=climates[climIdx].name;
+  document.getElementById('erSizeLabel').textContent=sizes[sizeIdx].name;
+  document.getElementById('erAttachedLabel').textContent=attached?'Yes':'No';
+
+  const area=sizes[sizeIdx].area;
+  const hdd=climates[climIdx].hdd;
+  const cdd=climates[climIdx].cdd;
+  const attMult=attached?1.8:1.0;
+  const energyRate=0.12;
+
+  function annualCost(rVal){
+    const u=1/rVal;
+    const heatBTU=area*u*hdd*24*attMult;
+    const coolBTU=area*u*cdd*24*attMult*0.7;
+    return Math.round((heatBTU+coolBTU)/3412*energyRate);
+  }
+
+  const oldCost=annualCost(doors[curIdx].rval);
+  const newCost=annualCost(doors[newIdx].rval);
+  const savings=Math.max(0,oldCost-newCost);
+
+  document.getElementById('erOldCost').textContent='$'+oldCost;
+  document.getElementById('erNewCost').textContent='$'+newCost;
+  document.getElementById('erSavings').textContent='$'+savings;
+  document.getElementById('er10yr').textContent='$'+(savings*10).toLocaleString();
+
+  drawEnergyPayback(oldCost,newCost,savings);
+}
+
+function drawEnergyPayback(oldCost,newCost,savings){
+  const canvas=document.getElementById('energyPaybackChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-40;canvas.height=280;
+  const W=canvas.width,H=canvas.height;
+  const pad={t:25,r:30,b:40,l:55};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+
+  const years=10;
+  const maxVal=Math.max(oldCost*years,savings*years);
+
+  // Grid
+  ctx.strokeStyle='#252833';ctx.lineWidth=0.5;
+  for(let i=0;i<=5;i++){const y=pad.t+(i/5)*ph;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke()}
+  ctx.fillStyle='#555a6d';ctx.font='10px "JetBrains Mono"';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=Math.round(maxVal*(1-i/5));ctx.fillText('$'+v.toLocaleString(),pad.l-8,pad.t+(i/5)*ph+3)}
+  ctx.textAlign='center';
+  for(let i=0;i<=years;i++)ctx.fillText('Y'+i,pad.l+(i/years)*pw,H-pad.b+15);
+
+  // Cumulative old cost (red area)
+  ctx.fillStyle='rgba(239,68,68,0.15)';ctx.beginPath();ctx.moveTo(pad.l,pad.t+ph);
+  for(let yr=0;yr<=years;yr++){
+    const x=pad.l+(yr/years)*pw;
+    const y=pad.t+ph-ph*(oldCost*yr/maxVal);
+    ctx.lineTo(x,y);
+  }
+  ctx.lineTo(pad.l+pw,pad.t+ph);ctx.fill();
+  // Line
+  ctx.strokeStyle='#ef4444';ctx.lineWidth=2;ctx.beginPath();
+  for(let yr=0;yr<=years;yr++){
+    const x=pad.l+(yr/years)*pw;const y=pad.t+ph-ph*(oldCost*yr/maxVal);
+    yr===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }ctx.stroke();
+
+  // Cumulative new cost (green area)
+  ctx.fillStyle='rgba(34,197,94,0.1)';ctx.beginPath();ctx.moveTo(pad.l,pad.t+ph);
+  for(let yr=0;yr<=years;yr++){
+    const x=pad.l+(yr/years)*pw;
+    const y=pad.t+ph-ph*(newCost*yr/maxVal);
+    ctx.lineTo(x,y);
+  }
+  ctx.lineTo(pad.l+pw,pad.t+ph);ctx.fill();
+  ctx.strokeStyle='#22c55e';ctx.lineWidth=2;ctx.beginPath();
+  for(let yr=0;yr<=years;yr++){
+    const x=pad.l+(yr/years)*pw;const y=pad.t+ph-ph*(newCost*yr/maxVal);
+    yr===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }ctx.stroke();
+
+  // Cumulative savings line (gold)
+  ctx.strokeStyle='#f59e0b';ctx.lineWidth=2.5;ctx.beginPath();
+  for(let yr=0;yr<=years;yr++){
+    const x=pad.l+(yr/years)*pw;const y=pad.t+ph-ph*(savings*yr/maxVal);
+    yr===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }ctx.stroke();
+
+  // Labels
+  ctx.fillStyle='#ef4444';ctx.font='10px "JetBrains Mono"';ctx.textAlign='left';
+  ctx.fillText('Old Door: $'+oldCost+'/yr',pad.l+pw*0.6,pad.t+ph-ph*(oldCost*8/maxVal)-8);
+  ctx.fillStyle='#22c55e';
+  ctx.fillText('New Door: $'+newCost+'/yr',pad.l+pw*0.6,pad.t+ph-ph*(newCost*8/maxVal)-8);
+}
+updateEnergyROI();
+
+// ═══ SECTION 3: CURB APPEAL ═══
+let curbState=0;
+const curbC=document.getElementById('curbCanvas');const curbCtx=curbC.getContext('2d');
+
+function drawCurb(){
+  requestAnimationFrame(drawCurb);
+  const{w,h}=fitCanvas(curbC);const ctx=curbCtx;
+  ctx.clearRect(0,0,w,h);
+  const isBefore=curbState===0;
+
+  // Sky
+  const sky=ctx.createLinearGradient(0,0,0,h*0.55);
+  sky.addColorStop(0,isBefore?'#4a5568':'#4d9de0');
+  sky.addColorStop(1,isBefore?'#718096':'#87ceeb');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,w,h*0.55);
+
+  // Ground
+  ctx.fillStyle=isBefore?'#5a5a5a':'#6a7a6a';ctx.fillRect(0,h*0.55,w,h*0.45);
+  // Driveway
+  ctx.fillStyle=isBefore?'#606060':'#888';
+  ctx.beginPath();
+  ctx.moveTo(w*0.2,h*0.55);ctx.lineTo(w*0.65,h*0.55);ctx.lineTo(w*0.75,h);ctx.lineTo(w*0.1,h);ctx.fill();
+
+  // ── HOUSE ──
+  const hx=w*0.1, hy=h*0.18, hw=w*0.8, hh=h*0.37;
+  // House body
+  ctx.fillStyle=isBefore?'#9a8a7a':'#ddd0c0';ctx.fillRect(hx,hy,hw,hh);
+
+  // Roof
+  ctx.fillStyle=isBefore?'#4a4a4a':'#5a5a5a';
+  ctx.beginPath();ctx.moveTo(hx-15,hy);ctx.lineTo(hx+hw/2,hy-h*0.1);ctx.lineTo(hx+hw+15,hy);ctx.fill();
+  // Roof edge
+  ctx.strokeStyle=isBefore?'#3a3a3a':'#4a4a4a';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(hx-15,hy);ctx.lineTo(hx+hw/2,hy-h*0.1);ctx.lineTo(hx+hw+15,hy);ctx.stroke();
+
+  // ── GARAGE DOOR (left side of house, ~40% of facade) ──
+  const gx=hx+hw*0.04, gy=hy+hh*0.2, gw=hw*0.38, gh=hh*0.8;
+  const gdBottom=gy+gh;
+
+  if(isBefore){
+    // Old faded door
+    ctx.fillStyle='#8a8070';ctx.fillRect(gx,gy,gw,gh);
+    // Panel lines
+    for(let i=1;i<4;i++){ctx.strokeStyle='rgba(0,0,0,0.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx,gy+gh*i/4);ctx.lineTo(gx+gw,gy+gh*i/4);ctx.stroke()}
+    // Dents
+    ctx.fillStyle='rgba(0,0,0,0.08)';
+    ctx.fillRect(gx+gw*0.15,gy+gh*0.35,gw*0.12,gh*0.08);
+    ctx.fillRect(gx+gw*0.55,gy+gh*0.6,gw*0.18,gh*0.06);
+    // Rust at bottom corners
+    ctx.fillStyle='rgba(139,69,19,0.25)';
+    ctx.beginPath();ctx.arc(gx+12,gdBottom-8,10,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(gx+gw-10,gdBottom-6,7,0,Math.PI*2);ctx.fill();
+    // Faded color streaks
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    ctx.fillRect(gx,gy,gw,gh*0.15);
+  } else {
+    // New carriage-house style door
+    ctx.fillStyle='#ece4d4';ctx.fillRect(gx,gy,gw,gh);
+    // Raised panel grid
+    ctx.strokeStyle='#c8b8a0';ctx.lineWidth=2;
+    for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(gx+4,gy+gh*i/4);ctx.lineTo(gx+gw-4,gy+gh*i/4);ctx.stroke()}
+    ctx.beginPath();ctx.moveTo(gx+gw/2,gy+gh*0.25);ctx.lineTo(gx+gw/2,gy+gh);ctx.stroke();
+    // Top panel: row of small rectangular window panes
+    const winCount=4;
+    const winGap=gw*0.04;
+    const totalWinW=gw-winGap*2;
+    const singleWinW=totalWinW/winCount-winGap*(winCount-1)/winCount;
+    const winRowY=gy+gh*0.03, winRowH=gh*0.2;
+    for(let i=0;i<winCount;i++){
+      const wx=gx+winGap+i*(singleWinW+winGap);
+      // Window pane
+      ctx.fillStyle='#a0c4da';ctx.fillRect(wx,winRowY,singleWinW,winRowH);
+      // Frame
+      ctx.strokeStyle='#c8b8a0';ctx.lineWidth=2;ctx.strokeRect(wx,winRowY,singleWinW,winRowH);
+      // Horizontal mullion
+      ctx.beginPath();ctx.moveTo(wx,winRowY+winRowH/2);ctx.lineTo(wx+singleWinW,winRowY+winRowH/2);ctx.stroke();
+    }
+    // Decorative handles
+    ctx.fillStyle='#444';
+    ctx.beginPath();ctx.arc(gx+gw*0.25,gy+gh*0.55,3,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(gx+gw*0.75,gy+gh*0.55,3,0,Math.PI*2);ctx.fill();
+    // Strap hinges (decorative)
+    ctx.strokeStyle='#555';ctx.lineWidth=2;
+    [0.25,0.5,0.75].forEach(py=>{
+      ctx.beginPath();ctx.moveTo(gx+4,gy+gh*py);ctx.lineTo(gx+gw*0.12,gy+gh*py);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(gx+gw-4,gy+gh*py);ctx.lineTo(gx+gw*0.88,gy+gh*py);ctx.stroke();
+    });
+  }
+  // Door frame
+  ctx.strokeStyle=isBefore?'#555':'#888';ctx.lineWidth=isBefore?2:3;
+  ctx.strokeRect(gx-2,gy-2,gw+4,gh+4);
+
+  // ── WINDOWS (RIGHT side of house — never overlap garage) ──
+  const winStartX=hx+hw*0.52; // well right of garage door
+  const winW=hw*0.1, winH=hh*0.28;
+
+  // Two windows on main floor
+  [[winStartX,hy+hh*0.25],[winStartX+hw*0.18,hy+hh*0.25]].forEach(([wx,wy])=>{
+    ctx.fillStyle=isBefore?'#5a7080':'#a0ccee';
+    ctx.fillRect(wx,wy,winW,winH);
+    // Window frame + mullions
+    ctx.strokeStyle='#fff';ctx.lineWidth=isBefore?1:2;
+    ctx.strokeRect(wx,wy,winW,winH);
+    ctx.beginPath();ctx.moveTo(wx+winW/2,wy);ctx.lineTo(wx+winW/2,wy+winH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(wx,wy+winH/2);ctx.lineTo(wx+winW,wy+winH/2);ctx.stroke();
+    // Shutters (after only)
+    if(!isBefore){
+      ctx.fillStyle='#5a7a6a';
+      ctx.fillRect(wx-8,wy,7,winH);
+      ctx.fillRect(wx+winW+1,wy,7,winH);
+    }
+  });
+
+  // Front door (between garage and windows)
+  const fdx=hx+hw*0.44, fdy=hy+hh*0.35, fdw=hw*0.06, fdh=hh*0.65;
+  ctx.fillStyle=isBefore?'#5a4a3a':'#6a3a2a';ctx.fillRect(fdx,fdy,fdw,fdh);
+  ctx.strokeStyle=isBefore?'#4a3a2a':'#8a5a4a';ctx.lineWidth=2;ctx.strokeRect(fdx,fdy,fdw,fdh);
+  // Doorknob
+  ctx.fillStyle=isBefore?'#888':'#daa520';
+  ctx.beginPath();ctx.arc(fdx+fdw*0.75,fdy+fdh*0.55,2.5,0,Math.PI*2);ctx.fill();
+  // Small window in door (after)
+  if(!isBefore){
+    ctx.fillStyle='#a0ccee';ctx.fillRect(fdx+fdw*0.2,fdy+fdh*0.1,fdw*0.6,fdh*0.2);
+  }
+
+  // ── LANDSCAPING ──
+  if(!isBefore){
+    // Bushes (layered half-circles, not full circles)
+    [[hx+hw*0.02,hy+hh],[hx+hw*0.42,hy+hh],[hx+hw*0.88,hy+hh]].forEach(([bx,by])=>{
+      // Multiple overlapping arcs for bush shape
+      ctx.fillStyle='#2a7a3a';
+      ctx.beginPath();ctx.arc(bx,by,16,Math.PI,0);ctx.fill();
+      ctx.fillStyle='#228833';
+      ctx.beginPath();ctx.arc(bx+10,by,13,Math.PI,0);ctx.fill();
+      ctx.fillStyle='#33994a';
+      ctx.beginPath();ctx.arc(bx+5,by,10,Math.PI,0);ctx.fill();
+    });
+    // Small flowers
+    [[hx+hw*0.5,hy+hh-3],[hx+hw*0.92,hy+hh-3]].forEach(([fx,fy])=>{
+      for(let i=0;i<4;i++){
+        ctx.fillStyle=['#e85d75','#f0a030','#d050d0','#e8e040'][i];
+        ctx.beginPath();ctx.arc(fx+i*8,fy,3,0,Math.PI*2);ctx.fill();
+      }
+    });
+  } else {
+    // Patchy dead grass near foundation
+    ctx.fillStyle='rgba(100,90,60,0.3)';
+    ctx.fillRect(hx,hy+hh,hw,6);
+  }
+
+  // Light fixture (after)
+  if(!isBefore){
+    ctx.fillStyle='#daa520';ctx.fillRect(fdx-14,fdy-5,8,12);
+    ctx.fillStyle='rgba(255,220,100,0.15)';
+    ctx.beginPath();ctx.arc(fdx-10,fdy+2,25,0,Math.PI*2);ctx.fill();
+  }
+
+  // Before/After label
+  ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(12,h-38,isBefore?95:85,28);
+  ctx.fillStyle=isBefore?'#ef4444':'#22c55e';ctx.font='bold 14px "Oswald"';ctx.textAlign='left';
+  ctx.fillText(isBefore?'BEFORE':'AFTER',20,h-19);
+
+  document.getElementById('curbImpression').innerHTML=isBefore?'<span style="color:var(--danger)">POOR</span>':'<span style="color:var(--success)">EXCELLENT</span>';
+  document.getElementById('curbDays').innerHTML=isBefore?'+12<span class="readout-unit"> days</span>':'-8<span class="readout-unit"> days</span>';
+  document.getElementById('curbPrice').innerHTML=isBefore?'<span style="color:var(--danger)">-2.5</span><span class="readout-unit">%</span>':'<span style="color:var(--success)">+1.5</span><span class="readout-unit">%</span>';
+}
+drawCurb();
+
+function setCurbState(s){
+  curbState=s;
+  document.querySelectorAll('#curb-appeal .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===s));
+}
+
+// ═══ SECTION 4: TOTAL ROI ═══
+function updateTotalROI(){
+  const doorCost=parseInt(document.getElementById('totalCostSlider').value);
+  const homeValue=parseInt(document.getElementById('homeValueSlider').value);
+  const years=parseInt(document.getElementById('yearsSlider').value);
+  const energySav=parseInt(document.getElementById('energySavSlider').value);
+
+  document.getElementById('totalCostLabel').textContent='$'+doorCost.toLocaleString();
+  document.getElementById('homeValueLabel').textContent='$'+homeValue.toLocaleString();
+  document.getElementById('yearsLabel').textContent=years;
+  document.getElementById('energySavLabel').textContent='$'+energySav;
+
+  // Value components
+  const resaleRecovery=Math.round(doorCost*0.933);
+  const totalEnergy=energySav*years;
+  const maintAvoided=years*85; // ~$85/yr in avoided repairs on old door
+  const insuranceSav=years*35; // ~$35/yr discount for modern door
+
+  const totalValue=resaleRecovery+totalEnergy+maintAvoided+insuranceSav;
+  const netProfit=totalValue-doorCost;
+  const roiPct=Math.round(totalValue/doorCost*100);
+  const annualReturn=Math.round(Math.pow(totalValue/doorCost,1/years)*100-100*10)/10;
+  const payback=totalValue>0?Math.round(doorCost/(energySav+85+35)*10)/10:99;
+
+  document.getElementById('totalROIpct').textContent=roiPct+'%';
+  document.getElementById('totalROIpct').style.color=roiPct>100?'var(--gold)':'var(--accent)';
+  document.getElementById('trInvest').textContent='$'+doorCost.toLocaleString();
+  document.getElementById('trValue').textContent='$'+totalValue.toLocaleString();
+  document.getElementById('trProfit').textContent=(netProfit>=0?'$':'-$')+Math.abs(netProfit).toLocaleString();
+  document.getElementById('trProfit').style.color=netProfit>=0?'var(--gold)':'var(--danger)';
+  document.getElementById('trPayback').innerHTML=payback+'<span class="readout-unit"> years</span>';
+
+  // Table
+  const tbody=document.getElementById('roiTableBody');
+  const rows=[
+    ['Resale Value Recovery (93.3%)','$'+resaleRecovery.toLocaleString(),Math.round(resaleRecovery/doorCost*100)+'%'],
+    ['Cumulative Energy Savings ('+years+'yr)','$'+totalEnergy.toLocaleString(),Math.round(totalEnergy/doorCost*100)+'%'],
+    ['Maintenance Costs Avoided','$'+maintAvoided.toLocaleString(),Math.round(maintAvoided/doorCost*100)+'%'],
+    ['Insurance Savings','$'+insuranceSav.toLocaleString(),Math.round(insuranceSav/doorCost*100)+'%'],
+    ['TOTAL','$'+totalValue.toLocaleString(),roiPct+'%']
+  ];
+  tbody.innerHTML=rows.map((r,i)=>'<tr'+(i===rows.length-1?' style="font-weight:700;color:var(--gold)"':'')+'>'+
+    '<td>'+r[0]+'</td><td class="highlight">'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('');
+
+  // Comparison text
+  document.getElementById('investCompare').textContent=
+    'A $'+doorCost.toLocaleString()+' garage door returning $'+totalValue.toLocaleString()+' over '+years+' years represents a '+roiPct+'% total return — equivalent to a '+annualReturn.toFixed(1)+'% annual return. That\'s '+(annualReturn>7?'above':'competitive with')+' stock market averages, except it\'s a guaranteed tangible improvement you enjoy daily.';
+
+  drawTotalROIChart(doorCost,resaleRecovery,totalEnergy,maintAvoided,insuranceSav);
+}
+
+function drawTotalROIChart(cost,resale,energy,maint,insur){
+  const canvas=document.getElementById('totalRoiChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-40;canvas.height=320;
+  const W=canvas.width,H=canvas.height;
+  const pad={t:30,r:20,b:40,l:20};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+
+  const total=resale+energy+maint+insur;
+  const segments=[
+    {label:'Resale',val:resale,col:'#f59e0b'},
+    {label:'Energy',val:energy,col:'#22c55e'},
+    {label:'Maintenance',val:maint,col:'#8b5cf6'},
+    {label:'Insurance',val:insur,col:'#60a5fa'}
+  ];
+
+  // Stacked bar: Cost vs Return
+  const barW=pw*0.25, gap=pw*0.15;
+  const costX=pad.l+pw*0.2, retX=pad.l+pw*0.6;
+  const maxVal=Math.max(cost,total);
+
+  // Cost bar
+  const costH=ph*(cost/maxVal);
+  ctx.fillStyle='#555';ctx.fillRect(costX-barW/2,pad.t+ph-costH,barW,costH);
+  ctx.fillStyle='#aaa';ctx.font='bold 16px "Oswald"';ctx.textAlign='center';
+  ctx.fillText('$'+cost.toLocaleString(),costX,pad.t+ph-costH-10);
+  ctx.fillStyle='#888';ctx.font='11px "JetBrains Mono"';
+  ctx.fillText('INVESTMENT',costX,pad.t+ph+20);
+
+  // Return stacked bar
+  let stackY=pad.t+ph;
+  segments.forEach(seg=>{
+    const segH=ph*(seg.val/maxVal);
+    stackY-=segH;
+    ctx.fillStyle=seg.col;ctx.fillRect(retX-barW/2,stackY,barW,segH);
+    // Label inside if tall enough
+    if(segH>20){
+      ctx.fillStyle='#fff';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+      ctx.fillText(seg.label,retX,stackY+segH/2+3);
+      ctx.fillText('$'+seg.val.toLocaleString(),retX,stackY+segH/2+15);
+    }
+  });
+  ctx.fillStyle='var(--gold)';ctx.font='bold 16px "Oswald"';ctx.textAlign='center';
+  ctx.fillText('$'+total.toLocaleString(),retX,stackY-10);
+  ctx.fillStyle='#888';ctx.font='11px "JetBrains Mono"';
+  ctx.fillText('TOTAL RETURN',retX,pad.t+ph+20);
+
+  // Arrow showing profit
+  if(total>cost){
+    ctx.strokeStyle='var(--gold)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(costX+barW/2+5,pad.t+ph-costH);ctx.lineTo(retX-barW/2-5,stackY);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='var(--gold)';ctx.font='bold 12px "JetBrains Mono"';
+    ctx.fillText('+$'+(total-cost).toLocaleString()+' PROFIT',(costX+retX)/2,Math.min(pad.t+ph-costH,stackY)-15);
+  }
+}
+updateTotalROI();
+
+// ═══ SECTION 5: DECISION FLOWCHART ═══
+function drawDecision(){
+  const canvas=document.getElementById('decisionCanvas');if(!canvas)return;
+  const{w,h}=fitCanvas(canvas);
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  // Simple two-column layout: questions flow down the left, YES answers go right
+  const qX=w*0.28; // question column center
+  const aX=w*0.72; // answer column center
+  const qW=Math.min(w*0.4,260), aW=Math.min(w*0.4,240);
+  const bH=38, rowGap=80;
+
+  function drawBox(x,y,bw,text,type){
+    const col=type==='q'?'#252a32':type==='replace'?'rgba(245,158,11,0.12)':'rgba(34,197,94,0.12)';
+    const border=type==='q'?'#6a7080':type==='replace'?'#f59e0b':'#22c55e';
+    const textCol=type==='q'?'#ddd':type==='replace'?'#f59e0b':'#22c55e';
+    ctx.fillStyle=col;ctx.strokeStyle=border;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.roundRect(x-bw/2,y-bH/2,bw,bH,6);ctx.fill();ctx.stroke();
+    ctx.fillStyle=textCol;ctx.font=(type==='q'?'11px':'bold 11px')+' "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText(text,x,y+4);
+  }
+
+  function drawLine(x1,y1,x2,y2){
+    ctx.strokeStyle='#6a7080';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    // Arrowhead
+    const a=Math.atan2(y2-y1,x2-x1);
+    ctx.fillStyle='#6a7080';ctx.beginPath();
+    ctx.moveTo(x2,y2);ctx.lineTo(x2-7*Math.cos(a-0.4),y2-7*Math.sin(a-0.4));
+    ctx.lineTo(x2-7*Math.cos(a+0.4),y2-7*Math.sin(a+0.4));ctx.fill();
+  }
+
+  function drawLabel(x,y,text,col){
+    ctx.fillStyle=col||'#666';ctx.font='bold 9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText(text,x,y);
+  }
+
+  // Title
+  ctx.fillStyle='#ccc';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+  ctx.fillText('REPLACE VS REPAIR DECISION TREE',w/2,20);
+
+  // Row 1: Door Age
+  const r1=55;
+  drawBox(qX,r1,qW,'Door Age > 15 Years?','q');
+  // YES → Replace
+  drawLine(qX+qW/2,r1,aX-aW/2,r1);
+  drawLabel(qX+qW/2+(aX-aW/2-qX-qW/2)/2,r1-10,'YES','#66dd66');
+  drawBox(aX,r1,aW,'REPLACE — Age Justifies','replace');
+  // NO → next question
+  drawLine(qX,r1+bH/2,qX,r1+rowGap-bH/2);
+  drawLabel(qX-20,r1+bH/2+16,'NO','#dd6666');
+
+  // Row 2: Repair Cost
+  const r2=r1+rowGap;
+  drawBox(qX,r2,qW,'Repair > 50% of New Door?','q');
+  drawLine(qX+qW/2,r2,aX-aW/2,r2);
+  drawLabel(qX+qW/2+(aX-aW/2-qX-qW/2)/2,r2-10,'YES','#66dd66');
+  drawBox(aX,r2,aW,'REPLACE — 50% Rule','replace');
+  drawLine(qX,r2+bH/2,qX,r2+rowGap-bH/2);
+  drawLabel(qX-20,r2+bH/2+16,'NO','#dd6666');
+
+  // Row 3: Safety
+  const r3=r2+rowGap;
+  drawBox(qX,r3,qW,'Safety Systems Working?','q');
+  drawLine(qX+qW/2,r3,aX-aW/2,r3);
+  drawLabel(qX+qW/2+(aX-aW/2-qX-qW/2)/2,r3-10,'NO','#dd6666');
+  drawBox(aX,r3,aW,'REPLACE — Safety First','replace');
+  drawLine(qX,r3+bH/2,qX,r3+rowGap-bH/2);
+  drawLabel(qX-20,r3+bH/2+16,'YES','#66dd66');
+
+  // Row 4: Selling soon?
+  const r4=r3+rowGap;
+  drawBox(qX,r4,qW,'Selling Within 2 Years?','q');
+  drawLine(qX+qW/2,r4,aX-aW/2,r4);
+  drawLabel(qX+qW/2+(aX-aW/2-qX-qW/2)/2,r4-10,'YES','#66dd66');
+  drawBox(aX,r4,aW,'REPLACE — Max ROI at Sale','replace');
+  drawLine(qX,r4+bH/2,qX,r4+rowGap-bH/2);
+  drawLabel(qX-20,r4+bH/2+16,'NO','#dd6666');
+
+  // Row 5: Final — Repair
+  const r5=r4+rowGap;
+  drawBox(qX,r5,qW,'REPAIR — Extend Current Door','repair');
+
+  // Column headers
+  ctx.fillStyle='#aaa';ctx.font='bold 10px "JetBrains Mono"';ctx.textAlign='center';
+  ctx.fillText('EVALUATION',qX,36);
+  ctx.fillText('RESULT',aX,36);
+}
+setTimeout(drawDecision,200);
+
+</script>
+</body>
+</html>
