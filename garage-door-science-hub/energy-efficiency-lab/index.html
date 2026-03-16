@@ -144,10 +144,10 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;hei
 
 <div class="canvas-wrap" style="height:460px">
 <canvas id="heatCanvas"></canvas>
-<div class="controls-bar">
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:.8rem;flex-wrap:wrap">
 <button class="ctrl-btn" onclick="heatSetSeason('summer')">Summer (105°F)</button>
 <button class="ctrl-btn active" onclick="heatSetSeason('winter')">Winter (30°F)</button>
-</div>
 </div>
 
 <div class="slider-group">
@@ -177,11 +177,11 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;hei
 
 <div class="canvas-wrap" style="height:500px">
 <canvas id="sealCanvas"></canvas>
-<div class="controls-bar">
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:.8rem;flex-wrap:wrap">
 <button class="ctrl-btn active" onclick="sealSetMode('leaks')">Show Leaks</button>
 <button class="ctrl-btn" onclick="sealSetMode('sealed')">Show Sealed</button>
 <button class="ctrl-btn" onclick="sealToggleWind()">Add Wind</button>
-</div>
 </div>
 
 <div class="readout">
@@ -293,6 +293,15 @@ const doorTypes=[
 ];
 const rvC=document.getElementById('rvalueCanvas');const rvCtx=rvC.getContext('2d');
 
+// Particles for R-value scene
+const rvParticles=[];
+for(let i=0;i<60;i++){
+  rvParticles.push({x:0.7+Math.random()*0.25, y:Math.random()*0.6+0.15, vx:0, vy:0, state:'warm', size:4+Math.random()*3, phase:Math.random()*Math.PI*2, age:0});
+}
+function rvResetP(p){
+  p.x=0.65+Math.random()*0.3; p.y=Math.random()*0.55+0.18; p.state='warm'; p.age=0; p.size=4+Math.random()*3; p.vy=(Math.random()-0.5)*0.0006;
+}
+
 function drawRValue(){
   requestAnimationFrame(drawRValue);
   const{w,h}=fitCanvas(rvC);const ctx=rvCtx;const dt=doorTypes[doorType];
@@ -351,23 +360,57 @@ function drawRValue(){
     ctx.fillText('✓ NO THERMAL BRIDGES',doorX+doorW+8,panelTop+36);
   }
 
-  // Heat arrows — flow from warm side (right) through door to cold side (left)
-  const arrowCount=doorType===0?14:doorType===1?6:2;
-  const t2=Date.now()*0.002;
-  for(let i=0;i<arrowCount;i++){
-    const ay=panelTop+panelH*(i+0.5)/arrowCount;
-    const progress=(t2+i*0.4)%2;
-    // Start from interior side, move left through door toward outside
-    const ax=doorX+doorW*0.6-progress*w*0.18;
-    const alpha=Math.max(0,1-progress*0.7);
-    // Bright orange — heat energy escaping
-    ctx.fillStyle=`rgba(255,160,40,${alpha*0.9})`;
-    // Big arrow pointing LEFT
-    ctx.beginPath();ctx.moveTo(ax+10,ay-8);ctx.lineTo(ax-12,ay);ctx.lineTo(ax+10,ay+8);ctx.fill();
-    // Glow trail behind arrow
-    ctx.fillStyle=`rgba(255,120,20,${alpha*0.25})`;
-    ctx.fillRect(ax+10,ay-4,20,8);
-  }
+  // ── HEAT FLOW PARTICLES ──
+  const rVal=dt.rval;
+  const rvWallL=doorX/w, rvWallR=(doorX+doorW)/w;
+  const rvWarmSpd=0.004;
+  const rvWallSpd=rVal===0?0.003:0.0004/(1+rVal*0.12);
+  const rvColdSpd=0.003;
+  const rvBounce=rVal===0?0.02:Math.min(0.35,rVal*0.02);
+
+  rvParticles.forEach(p=>{
+    p.age++;
+    p.y+=p.vy+Math.sin(p.phase+p.age*0.04)*0.0003;
+    if(p.y<0.12||p.y>0.82)p.vy*=-1;
+
+    if(p.state==='warm'){
+      p.vx=-rvWarmSpd*(0.8+Math.random()*0.4);
+      p.x+=p.vx;
+      if(p.x<=rvWallR){
+        if(Math.random()<rvBounce){p.state='bounced';p.vx=rvWarmSpd*0.5}
+        else p.state='in_wall';
+      }
+    } else if(p.state==='in_wall'){
+      p.vx=-rvWallSpd;
+      p.x+=p.vx;
+      if(p.x<=rvWallL) p.state='cold';
+      if(rVal>10&&Math.random()<0.004){p.state='bounced';p.vx=rvWallSpd*2}
+    } else if(p.state==='cold'){
+      p.vx=-rvColdSpd*(0.6+Math.random()*0.4);
+      p.x+=p.vx;
+      if(p.x<-0.02||p.age>350) rvResetP(p);
+    } else { // bounced
+      p.x+=p.vx;p.vx*=0.97;
+      if(Math.abs(p.vx)<0.0002||p.age>250) rvResetP(p);
+    }
+    if(p.x<-0.05||p.x>1.05) rvResetP(p);
+
+    // Draw
+    let col,alpha,sz;
+    if(p.state==='warm'||p.state==='bounced'){
+      col='255,140,40';alpha=p.state==='bounced'?0.35:0.75;sz=p.size;
+    } else if(p.state==='in_wall'){
+      col='255,100,30';alpha=0.35;sz=p.size*0.7;
+    } else {
+      col='255,170,60';alpha=Math.max(0.35,0.8-p.age*0.001);sz=p.size*1.1;
+    }
+    ctx.fillStyle='rgba('+col+','+alpha+')';
+    ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz,0,Math.PI*2);ctx.fill();
+    if(p.state==='warm'||p.state==='cold'){
+      ctx.fillStyle='rgba(255,160,40,'+(p.state==='warm'?0.08:0.06)+')';
+      ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz*2.5,0,Math.PI*2);ctx.fill();
+    }
+  });
 
   // R-value badge
   ctx.fillStyle='rgba(0,0,0,0.7)';const badgeW=120;
@@ -404,7 +447,7 @@ for(let i=0;i<100;i++){
     x:0, y:Math.random()*0.6+0.15,
     vx:0, vy:0,
     state:'warm',
-    size:2+Math.random()*2,
+    size:4+Math.random()*3,
     phase:Math.random()*Math.PI*2,
     age:0
   });
@@ -421,6 +464,7 @@ function resetHeatParticle(p,w,h,wallX,wallW,isWinter){
   p.y=Math.random()*0.65+0.12;
   p.state='warm';
   p.age=0;
+  p.size=4+Math.random()*3;
   p.vy=(Math.random()-0.5)*0.0008;
 }
 
@@ -469,7 +513,7 @@ function drawHeat(){
   // Physics constants
   const warmSpeed=0.004; // always fast on warm side
   const wallSpeed=heatRVal===0?0.003:0.0005/(1+heatRVal*0.15); // crawl through insulation
-  const coldSpeed=0.002; // moderate on cold side (dissipating)
+  const coldSpeed=0.003; // visible speed on cold side
   const bounceChance=heatRVal===0?0.02:Math.min(0.35,heatRVal*0.02); // higher R = more bounces
   const flowSign=isWinter?-1:1; // winter: right-to-left; summer: left-to-right
 
@@ -513,9 +557,9 @@ function drawHeat(){
 
       case 'cold':
         // Moderate speed, dissipating on cold side
-        p.vx=flowSign*coldSpeed*(0.5+Math.random()*0.3);
+        p.vx=flowSign*coldSpeed*(0.7+Math.random()*0.5);
         p.x+=p.vx;
-        p.size*=0.999; // slowly shrink (energy dissipating)
+        p.size*=0.9998; // very slowly shrink
         // Off-screen? Reset
         if(p.x<-0.02||p.x>1.02||p.age>400){
           resetHeatParticle(p,w,h,wallX,wallW,isWinter);
@@ -545,20 +589,20 @@ function drawHeat(){
       sz=p.size;
     } else if(p.state==='in_wall'){
       col='255,100,30'; // dimmer in wall
-      alpha=0.35;
-      sz=p.size*0.7;
-    } else {
-      // cold side — cooler color, fading
-      col='200,120,60';
-      alpha=Math.max(0.15,0.5-p.age*0.001);
+      alpha=0.4;
       sz=p.size*0.8;
+    } else {
+      // cold side — still warm-colored (it's heat that escaped), bright and visible
+      col='255,170,60';
+      alpha=Math.max(0.4,0.85-p.age*0.001);
+      sz=p.size*1.2;
     }
 
     ctx.fillStyle='rgba('+col+','+alpha+')';
     ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz,0,Math.PI*2);ctx.fill();
-    // Glow for warm-side particles
-    if(p.state==='warm'){
-      ctx.fillStyle='rgba(255,160,40,0.1)';
+    // Glow for warm-side AND cold-side particles
+    if(p.state==='warm'||p.state==='cold'){
+      ctx.fillStyle='rgba(255,160,40,'+(p.state==='warm'?0.1:0.08)+')';
       ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz*3,0,Math.PI*2);ctx.fill();
     }
   });
@@ -618,7 +662,7 @@ function heatUpdateInsul(){
 let sealMode='leaks', sealWind=false;
 const sealC=document.getElementById('sealCanvas');const sealCtx=sealC.getContext('2d');
 const leakParticles=[];
-for(let i=0;i<60;i++)leakParticles.push({x:0,y:0,vx:0,vy:0,life:0,source:Math.floor(Math.random()*5),active:false});
+for(let i=0;i<80;i++)leakParticles.push({x:0,y:0,vx:0,vy:0,life:0,maxLife:0,source:0,active:false});
 
 function drawSeal(){
   requestAnimationFrame(drawSeal);
@@ -626,89 +670,138 @@ function drawSeal(){
   ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
 
   const isLeaky=sealMode==='leaks';
-  const windMult=sealWind?3:1;
+  const windMult=sealWind?2.5:1;
 
   // Front view of closed garage door
-  const dx=w*0.2, dy=h*0.1, dw=w*0.6, dh=h*0.75;
+  const dx=w*0.2, dy=h*0.1, dw=w*0.6, dh=h*0.72;
 
   // Wall around door
   ctx.fillStyle='#3a3530';ctx.fillRect(dx-40,dy-20,dw+80,dh+40);
   // Door
   ctx.fillStyle='#c8c8cc';ctx.fillRect(dx,dy,dw,dh);
   // Panels
-  for(let i=1;i<4;i++){const ly=dy+dh*i/4;ctx.strokeStyle='#aaa';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}
+  for(let i=1;i<4;i++){const ly=dy+dh*i/4;ctx.strokeStyle='#b5b5b8';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}
   // Floor
   ctx.fillStyle='#2a2a30';ctx.fillRect(dx-40,dy+dh,dw+80,h-dy-dh);
-  // Floor line
   ctx.strokeStyle='#444';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(dx-40,dy+dh);ctx.lineTo(dx+dw+40,dy+dh);ctx.stroke();
 
-  // Seal points
-  const seals=[
-    {label:'BOTTOM SEAL',x:dx+dw/2,y:dy+dh,w:dw,h:6,dir:'up'},
-    {label:'LEFT SIDE',x:dx,y:dy+dh/2,w:6,h:dh,dir:'right'},
-    {label:'RIGHT SIDE',x:dx+dw,y:dy+dh/2,w:6,h:dh,dir:'left'},
-    {label:'TOP SEAL',x:dx+dw/2,y:dy,w:dw,h:6,dir:'down'},
-    {label:'PANEL JOINTS',x:dx+dw/2,y:dy+dh/2,w:dw*0.8,h:2,dir:'right'}
-  ];
-
-  // Draw seal zones
-  seals.forEach((sl,i)=>{
-    if(isLeaky){
-      // Red gaps
-      ctx.fillStyle='rgba(239,68,68,0.3)';
-      if(sl.dir==='up'||sl.dir==='down')ctx.fillRect(sl.x-sl.w/2,sl.y-3,sl.w,6);
-      else if(sl.dir==='left')ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
-      else if(sl.dir==='right'&&i===1)ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
-    } else {
-      // Green sealed
-      ctx.fillStyle='rgba(34,197,94,0.3)';
-      if(sl.dir==='up'||sl.dir==='down')ctx.fillRect(sl.x-sl.w/2,sl.y-3,sl.w,6);
-      else ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
-    }
-  });
-
-  // Air leak particles
+  // Draw seal/gap zones with clear visual distinction
   if(isLeaky){
-    const spawnRate=sealWind?0.15:0.04;
+    // Gaps highlighted - red dashed outlines showing where seals are missing
+    ctx.strokeStyle='rgba(239,68,68,0.6)';ctx.lineWidth=3;ctx.setLineDash([8,4]);
+    // Bottom
+    ctx.beginPath();ctx.moveTo(dx,dy+dh);ctx.lineTo(dx+dw,dy+dh);ctx.stroke();
+    // Top
+    ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(dx+dw,dy);ctx.stroke();
+    // Left
+    ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(dx,dy+dh);ctx.stroke();
+    // Right
+    ctx.beginPath();ctx.moveTo(dx+dw,dy);ctx.lineTo(dx+dw,dy+dh);ctx.stroke();
+    ctx.setLineDash([]);
+    // Panel joint gaps
+    for(let i=1;i<4;i++){
+      const ly=dy+dh*i/4;
+      ctx.strokeStyle='rgba(239,68,68,0.3)';ctx.lineWidth=2;ctx.setLineDash([4,6]);
+      ctx.beginPath();ctx.moveTo(dx+10,ly);ctx.lineTo(dx+dw-10,ly);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  } else {
+    // Sealed - solid green lines
+    ctx.strokeStyle='rgba(34,197,94,0.5)';ctx.lineWidth=4;
+    ctx.strokeRect(dx-1,dy-1,dw+2,dh+2);
+    // Sealed panel joints
+    for(let i=1;i<4;i++){
+      const ly=dy+dh*i/4;
+      ctx.strokeStyle='rgba(34,197,94,0.3)';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(dx+10,ly);ctx.lineTo(dx+dw-10,ly);ctx.stroke();
+    }
+  }
+
+  // ── AIR LEAK STREAMS ──
+  if(isLeaky){
+    const spawnRate=sealWind?0.08:0.025;
+    // Define specific leak points with flow direction
+    const leakPoints=[
+      // Bottom seal - air flows UP from under the door (most leakage)
+      {x:dx+dw*0.2, y:dy+dh, vx:0, vy:-0.8*windMult, weight:3},
+      {x:dx+dw*0.5, y:dy+dh, vx:0.2*windMult, vy:-0.9*windMult, weight:3},
+      {x:dx+dw*0.8, y:dy+dh, vx:0, vy:-0.7*windMult, weight:3},
+      // Left side seal - air flows RIGHT
+      {x:dx, y:dy+dh*0.3, vx:0.7*windMult, vy:0.1, weight:2},
+      {x:dx, y:dy+dh*0.7, vx:0.6*windMult, vy:-0.1, weight:2},
+      // Right side seal
+      {x:dx+dw, y:dy+dh*0.4, vx:-0.5*windMult, vy:0.1, weight:1},
+      {x:dx+dw, y:dy+dh*0.6, vx:-0.5*windMult, vy:-0.1, weight:1},
+      // Top seal
+      {x:dx+dw*0.3, y:dy, vx:0.1, vy:0.6*windMult, weight:1},
+      {x:dx+dw*0.7, y:dy, vx:-0.1, vy:0.5*windMult, weight:1},
+      // Panel joints (horizontal flow)
+      {x:dx+dw*0.3, y:dy+dh*0.25, vx:0.4*windMult, vy:0, weight:1},
+      {x:dx+dw*0.6, y:dy+dh*0.5, vx:0.4*windMult, vy:0, weight:1},
+      {x:dx+dw*0.4, y:dy+dh*0.75, vx:0.4*windMult, vy:0, weight:1},
+    ];
+
     leakParticles.forEach(p=>{
       if(!p.active&&Math.random()<spawnRate){
-        p.active=true;p.life=0;
-        const src=seals[p.source%5];
-        if(p.source%5===0){p.x=dx+Math.random()*dw;p.y=dy+dh;p.vx=(Math.random()-0.5)*0.5*windMult;p.vy=-1-Math.random()*windMult}
-        else if(p.source%5===1){p.x=dx;p.y=dy+Math.random()*dh;p.vx=1+Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
-        else if(p.source%5===2){p.x=dx+dw;p.y=dy+Math.random()*dh;p.vx=-1-Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
-        else if(p.source%5===3){p.x=dx+Math.random()*dw;p.y=dy;p.vx=(Math.random()-0.5)*0.3;p.vy=1+Math.random()}
-        else{p.x=dx+dw*0.1+Math.random()*dw*0.8;p.y=dy+dh*(0.25*Math.ceil(Math.random()*3));p.vx=0.5+Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
+        // Pick a leak point weighted by importance
+        const totalW=leakPoints.reduce((a,lp)=>a+lp.weight,0);
+        let r=Math.random()*totalW, pick=0;
+        for(let i=0;i<leakPoints.length;i++){r-=leakPoints[i].weight;if(r<=0){pick=i;break}}
+        const lp=leakPoints[pick];
+        p.active=true;
+        p.life=0;
+        p.maxLife=40+Math.random()*30;
+        p.x=lp.x+(Math.random()-0.5)*15;
+        p.y=lp.y+(Math.random()-0.5)*8;
+        p.vx=lp.vx*(0.7+Math.random()*0.6);
+        p.vy=lp.vy*(0.7+Math.random()*0.6);
+        p.source=pick;
       }
       if(p.active){
-        p.x+=p.vx;p.y+=p.vy;p.life++;
-        const alpha=Math.max(0,1-p.life/60);
-        ctx.fillStyle=`rgba(100,180,255,${alpha*0.5})`;
-        ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();
-        if(p.life>60)p.active=false;
+        p.x+=p.vx;p.y+=p.vy;
+        // Add slight turbulence
+        p.vx+=(Math.random()-0.5)*0.05;
+        p.vy+=(Math.random()-0.5)*0.05;
+        p.life++;
+        const t=p.life/p.maxLife;
+        const alpha=t<0.1?t*10:Math.max(0,1-(t-0.1)/0.9); // fade in then out
+
+        // Visible dark blue particle against light door
+        const sz=3+t*2;
+        ctx.fillStyle='rgba(30,100,220,'+alpha*0.7+')';
+        ctx.beginPath();ctx.arc(p.x,p.y,sz,0,Math.PI*2);ctx.fill();
+        // Soft glow
+        ctx.fillStyle='rgba(40,120,240,'+alpha*0.15+')';
+        ctx.beginPath();ctx.arc(p.x,p.y,sz*2.5,0,Math.PI*2);ctx.fill();
+        // Trail from origin
+        if(t<0.5){
+          ctx.strokeStyle='rgba(30,100,220,'+alpha*0.35+')';
+          ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*5,p.y-p.vy*5);ctx.stroke();
+        }
+        if(p.life>p.maxLife)p.active=false;
       }
     });
   }
 
-  // Labels pointing to seal areas
-  ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+  // Labels
+  ctx.font='10px "JetBrains Mono"';ctx.textAlign='left';
   const labelCol=isLeaky?'#ef4444':'#22c55e';
   ctx.fillStyle=labelCol;
-  ctx.fillText('← BOTTOM SEAL'+(isLeaky?' (WORN)':' ✓'),dx+dw+12,dy+dh-5);
-  ctx.fillText('← SIDE SEAL'+(isLeaky?' (GAP)':' ✓'),dx+dw+12,dy+dh/2);
-  ctx.fillText('← TOP SEAL'+(isLeaky?' (MISSING)':' ✓'),dx+dw+12,dy+10);
-  ctx.fillText('← PANEL JOINTS'+(isLeaky?' (NO SEAL)':' ✓'),dx+dw+12,dy+dh/2-30);
+  ctx.fillText('\u2190 BOTTOM SEAL'+(isLeaky?' (WORN)':' \u2713'),dx+dw+12,dy+dh-5);
+  ctx.fillText('\u2190 SIDE SEAL'+(isLeaky?' (GAP)':' \u2713'),dx+dw+12,dy+dh/2);
+  ctx.fillText('\u2190 TOP SEAL'+(isLeaky?' (MISSING)':' \u2713'),dx+dw+12,dy+10);
+  ctx.fillText('\u2190 PANEL JOINTS'+(isLeaky?' (NO SEAL)':' \u2713'),dx+dw+12,dy+dh/2-30);
 
   // Wind indicator
   if(sealWind){
-    ctx.fillStyle='#60a5fa';ctx.font='11px "Oswald"';ctx.textAlign='center';
-    ctx.fillText('💨 WIND 20 MPH →',dx+dw/2,h-15);
-    // Wind arrows
-    for(let i=0;i<5;i++){
-      const ax=dx-30+Math.sin(Date.now()*0.003+i)*10;
-      const ay=dy+dh*(i+0.5)/5;
-      ctx.fillStyle='rgba(96,165,250,0.4)';
-      ctx.beginPath();ctx.moveTo(ax,ay-6);ctx.lineTo(ax+15,ay);ctx.lineTo(ax,ay+6);ctx.fill();
+    ctx.fillStyle='#60a5fa';ctx.font='bold 12px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('\uD83D\uDCA8 WIND 20 MPH \u2192',dx+dw/2,h-12);
+    for(let i=0;i<4;i++){
+      const ax=dx-35+Math.sin(Date.now()*0.003+i)*8;
+      const ay=dy+dh*(i+0.5)/4;
+      ctx.fillStyle='rgba(96,165,250,0.35)';
+      ctx.beginPath();ctx.moveTo(ax,ay-8);ctx.lineTo(ax+14,ay);ctx.lineTo(ax,ay+8);ctx.fill();
     }
   }
 
