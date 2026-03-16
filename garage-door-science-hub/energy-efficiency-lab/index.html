@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Efficiency Lab — Garage Door Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#08090c;--surface:#11131a;--surface2:#181b24;--border:#252833;
+--accent:#10b981;--accent2:#34d399;--accentDim:#064e3b;
+--hot:#ef4444;--warm:#f59e0b;--cool:#3b82f6;--cold:#1e40af;
+--text:#e2e4ea;--text2:#8a8fa0;--text3:#555a6d;
+--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-serif;line-height:1.65;overflow-x:hidden}
+
+.hero{position:relative;min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(16,185,129,.08) 0%,var(--bg) 100%)}
+.hero canvas{position:absolute;inset:0;z-index:0}
+.hero-content{position:relative;z-index:2;padding:2rem}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,4.2rem);text-transform:uppercase;letter-spacing:.06em;line-height:1.1;margin-bottom:.4rem}
+.hero h1 .green{color:var(--accent)}
+.hero .sub{font-family:'JetBrains Mono',monospace;font-size:clamp(.65rem,1.2vw,.85rem);color:var(--text2);letter-spacing:.18em;text-transform:uppercase}
+.hero .stat-row{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)}
+.hero .stat-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);letter-spacing:.12em;text-transform:uppercase}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(8,9,12,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+.nav-inner{display:flex;max-width:1300px;margin:0 auto}
+.nav a{display:inline-block;padding:.8rem 1.1rem;color:var(--text2);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .3s}
+.nav a:hover,.nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.section{max-width:1300px;margin:0 auto;padding:4rem 2rem;opacity:0;transform:translateY(25px);transition:opacity .7s,transform .7s}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
+.section-title{font-family:'Oswald',sans-serif;font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.section-desc{color:var(--text2);font-size:1rem;max-width:750px;margin-bottom:2rem}
+
+.canvas-wrap{position:relative;width:100%;height:480px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
+.controls-bar{position:absolute;top:.7rem;right:.7rem;display:flex;gap:.35rem;z-index:5;flex-wrap:wrap;justify-content:flex-end}
+.ctrl-btn{background:rgba(8,9,12,.88);border:1px solid var(--border);color:var(--text);padding:.4rem .75rem;border-radius:4px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;transition:all .2s;white-space:nowrap}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctrl-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-top:1.5rem}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;transition:border-color .3s}
+.info-card:hover{border-color:var(--accent)}
+.info-card h3{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.5rem}
+.info-card p{color:var(--text2);font-size:.88rem;line-height:1.55}
+
+.readout{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.2rem 0}
+.readout-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;min-width:110px;flex:1}
+.readout-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.12em}
+.readout-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;margin-top:.15rem}
+.readout-unit{font-size:.65rem;color:var(--text2);font-weight:400}
+
+.slider-group{margin:.7rem 0}
+.slider-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer}
+
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin:1.5rem 0}
+.chart-canvas{width:100%;height:280px;display:block}
+.chart-legend{display:flex;gap:1.2rem;margin-top:.8rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+.callout{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.callout h4{font-family:'Oswald',sans-serif;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.callout p{color:var(--text2);font-size:.85rem}
+
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.warning-box h4{font-family:'Oswald',sans-serif;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.warning-box p{color:var(--text2);font-size:.85rem}
+
+.divider{height:1px;background:var(--border);margin:0}
+.footer{text-align:center;padding:2.5rem 2rem;color:var(--text3);font-size:.75rem;border-top:1px solid var(--border)}
+
+@media(max-width:768px){.section{padding:2.5rem 1rem}.canvas-wrap{height:380px}.info-grid{grid-template-columns:1fr}.readout-item{min-width:90px}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="hero-content">
+<h1>Garage Door <span class="green">Energy</span> Efficiency Lab</h1>
+<div class="sub">R-Value · Heat Transfer · Air Sealing · Cost Savings</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num">~25%</div><div class="stat-label">Home heat loss via garage</div></div>
+<div class="stat"><div class="stat-num">R-0 → R-18</div><div class="stat-label">Insulation range available</div></div>
+<div class="stat"><div class="stat-num">$200+</div><div class="stat-label">Annual savings potential</div></div>
+</div>
+</div>
+</div>
+
+<div class="nav">
+<div class="nav-inner">
+<a href="#rvalue">R-Value & Insulation</a>
+<a href="#heatflow">Heat Flow Sim</a>
+<a href="#airsealing">Air Sealing</a>
+<a href="#cost-calc">Cost Calculator</a>
+</div>
+</div>
+
+<!-- ═══ SECTION 1: R-VALUE ═══ -->
+<div class="section" id="rvalue">
+<div class="section-tag">01 / Insulation Science</div>
+<div class="section-title">R-Value & Door Construction</div>
+<div class="section-desc">R-value measures resistance to heat flow. Higher R-value means less energy escaping through the door. The construction method matters far more than the thickness alone.</div>
+
+<div class="canvas-wrap" style="height:500px">
+<canvas id="rvalueCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn active" onclick="setDoorType(0)">Single Steel</button>
+<button class="ctrl-btn" onclick="setDoorType(1)">Polystyrene</button>
+<button class="ctrl-btn" onclick="setDoorType(2)">Polyurethane</button>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Door Type</div><div class="readout-value" id="rvType">Single Steel</div></div>
+<div class="readout-item"><div class="readout-label">R-Value</div><div class="readout-value" id="rvValue" style="color:var(--danger)">0<span class="readout-unit"> (none)</span></div></div>
+<div class="readout-item"><div class="readout-label">Thickness</div><div class="readout-value" id="rvThick">24<span class="readout-unit"> ga steel</span></div></div>
+<div class="readout-item"><div class="readout-label">Heat Loss Rate</div><div class="readout-value" id="rvLoss" style="color:var(--danger)">HIGH</div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Single Steel (R-0)</h3><p>Just a sheet of steel — zero insulation. Acts as a direct thermal bridge between the garage interior and outside air. Steel is an excellent conductor (R-value of ~0.003 per inch). Cheap, light, and common on budget doors. Your garage temperature essentially matches outdoor temperature within a couple hours. Common on builder-grade homes.</p></div>
+<div class="info-card"><h3>Polystyrene Insulated (R-6 to R-9)</h3><p>Rigid foam board (EPS or XPS) glued between two steel skins. The foam does the insulating work, but the steel-to-steel edges at each panel create thermal bridges that bypass the insulation. The glue bond can fail over time, creating air gaps that reduce effective R-value. Decent mid-range option. R-value depends on foam thickness (typically 1.5" to 2").</p></div>
+<div class="info-card"><h3>Polyurethane Injected (R-12 to R-18)</h3><p>Liquid polyurethane is injected between the steel skins and expands to fill every void — no air gaps, no thermal bridges at panel edges. The foam bonds chemically to both steel surfaces, adding structural rigidity (the door is stiffer and quieter). R-value per inch is ~6.5 vs ~4 for polystyrene. This is the premium option and the best thermal performance available in standard residential doors.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 2: HEAT FLOW SIM ═══ -->
+<div class="section" id="heatflow">
+<div class="section-tag">02 / Thermal Dynamics</div>
+<div class="section-title">Heat Flow Simulation</div>
+<div class="section-desc">Watch heat particles flow through different door constructions. Temperature differential drives heat transfer — the bigger the indoor/outdoor difference, the faster energy escapes.</div>
+
+<div class="canvas-wrap" style="height:460px">
+<canvas id="heatCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn" onclick="heatSetSeason('summer')">Summer (105°F)</button>
+<button class="ctrl-btn active" onclick="heatSetSeason('winter')">Winter (30°F)</button>
+</div>
+</div>
+
+<div class="slider-group">
+<label>Door Insulation: <span id="heatInsulLabel">R-0 (Single Steel)</span></label>
+<input type="range" id="heatInsulSlider" min="0" max="18" value="0" step="1" oninput="heatUpdateInsul()">
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Inside Temp</div><div class="readout-value" id="hfInside">68<span class="readout-unit">°F</span></div></div>
+<div class="readout-item"><div class="readout-label">Outside Temp</div><div class="readout-value" id="hfOutside" style="color:var(--cool)">30<span class="readout-unit">°F</span></div></div>
+<div class="readout-item"><div class="readout-label">ΔT</div><div class="readout-value" id="hfDelta">38<span class="readout-unit">°F</span></div></div>
+<div class="readout-item"><div class="readout-label">BTU/hr Loss</div><div class="readout-value" id="hfBTU" style="color:var(--danger)">2,860</div></div>
+</div>
+
+<div class="callout">
+<h4>📐 The Heat Transfer Equation</h4>
+<p>Q = U × A × ΔT, where Q is heat loss (BTU/hr), U is the U-factor (1/R-value), A is door area (ft²), and ΔT is the temperature difference. A typical 16×7 door is 112 ft². At R-0 with a 38°F ΔT, that's 112 × 1.0 × 38 = 4,256 BTU/hr escaping through the door alone. At R-18, it drops to 112 × 0.056 × 38 = 237 BTU/hr — a 94% reduction.</p>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 3: AIR SEALING ═══ -->
+<div class="section" id="airsealing">
+<div class="section-tag">03 / Infiltration</div>
+<div class="section-title">Air Sealing & Weatherstripping</div>
+<div class="section-desc">Even a well-insulated door loses efficiency through air leaks. The gaps around the door perimeter, between panels, and at the bottom seal can account for more heat loss than the door surface itself.</div>
+
+<div class="canvas-wrap" style="height:500px">
+<canvas id="sealCanvas"></canvas>
+<div class="controls-bar">
+<button class="ctrl-btn active" onclick="sealSetMode('leaks')">Show Leaks</button>
+<button class="ctrl-btn" onclick="sealSetMode('sealed')">Show Sealed</button>
+<button class="ctrl-btn" onclick="sealToggleWind()">Add Wind</button>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Seal Condition</div><div class="readout-value" id="sealCond" style="color:var(--warn)">WORN</div></div>
+<div class="readout-item"><div class="readout-label">Air Changes/Hr</div><div class="readout-value" id="sealACH">3.2</div></div>
+<div class="readout-item"><div class="readout-label">Infiltration Loss</div><div class="readout-value" id="sealLoss" style="color:var(--danger)">1,850<span class="readout-unit"> BTU/hr</span></div></div>
+<div class="readout-item"><div class="readout-label">Wind Effect</div><div class="readout-value" id="sealWind">—</div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Bottom Seal (Astragal)</h3><p>The rubber or vinyl strip along the bottom edge. This is the #1 leak point — it must seal against an often-uneven concrete floor. Types include T-style (slots into a retainer), bulb seal (compression), and threshold seals (a raised bar the door presses against). Replace when cracked, brittle, or daylight is visible under the door. Check annually.</p></div>
+<div class="info-card"><h3>Side & Top Weatherstrip</h3><p>PVC or vinyl strips nailed or screwed to the door jamb. They compress against the door face when closed. The top seal bridges the gap between the top panel and the header. These wear out faster on the hinge side because the door flexes during operation. Replace when gaps appear or the material loses its spring-back.</p></div>
+<div class="info-card"><h3>Panel Joints</h3><p>Each horizontal joint between panels is a potential leak path. Insulated doors typically have tongue-and-groove or vinyl compression joints between sections. Single-steel doors often have no inter-panel seal at all — just overlapping steel. Adding foam tape to panel joints on an uninsulated door can reduce infiltration by 15-20%.</p></div>
+<div class="info-card"><h3>Wind Pressure Effect</h3><p>Wind creates positive pressure on the windward side and negative pressure (suction) on the leeward side. A 20 mph wind creates ~1.6 psf of pressure. On a 16×7 door, that's 180 lbs pushing air through every gap. Infiltration rates can triple in windy conditions. This is why sealed garages feel drafty during storms even with the door closed.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 4: COST CALCULATOR ═══ -->
+<div class="section" id="cost-calc">
+<div class="section-tag">04 / Dollar Impact</div>
+<div class="section-title">Energy Cost Calculator</div>
+<div class="section-desc">Calculate the real-world cost difference between door insulation levels based on your climate, energy prices, and garage configuration.</div>
+
+<div class="slider-group">
+<label>Winter Design Temp (°F): <span id="calcWinter">30</span></label>
+<input type="range" id="calcWinterSlider" min="-10" max="50" value="30" oninput="updateCalc()">
+</div>
+<div class="slider-group">
+<label>Summer Design Temp (°F): <span id="calcSummer">95</span></label>
+<input type="range" id="calcSummerSlider" min="75" max="120" value="95" oninput="updateCalc()">
+</div>
+<div class="slider-group">
+<label>Door Size: <span id="calcSize">16×7 (2-car)</span></label>
+<input type="range" id="calcSizeSlider" min="0" max="2" value="1" step="1" oninput="updateCalc()">
+</div>
+<div class="slider-group">
+<label>Energy Cost: <span id="calcEnergy">$0.12/kWh</span></label>
+<input type="range" id="calcEnergySlider" min="5" max="35" value="12" step="1" oninput="updateCalc()">
+</div>
+<div class="slider-group">
+<label>Attached Garage (shared wall): <span id="calcAttached">Yes</span></label>
+<input type="range" id="calcAttachedSlider" min="0" max="1" value="1" step="1" oninput="updateCalc()">
+</div>
+
+<div class="chart-container">
+<canvas class="chart-canvas" id="costChart"></canvas>
+<div class="chart-legend">
+<div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>R-0 (No Insulation)</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div>R-8 (Polystyrene)</div>
+<div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>R-18 (Polyurethane)</div>
+</div>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">R-0 Annual Cost</div><div class="readout-value" id="costR0" style="color:var(--danger)">$385</div></div>
+<div class="readout-item"><div class="readout-label">R-8 Annual Cost</div><div class="readout-value" id="costR8" style="color:var(--warn)">$148</div></div>
+<div class="readout-item"><div class="readout-label">R-18 Annual Cost</div><div class="readout-value" id="costR18" style="color:var(--accent)">$72</div></div>
+<div class="readout-item"><div class="readout-label">Upgrade Savings</div><div class="readout-value" id="costSavings" style="color:var(--accent)">$313<span class="readout-unit">/yr</span></div></div>
+</div>
+
+<div class="callout">
+<h4>💰 Payback Period</h4>
+<p id="paybackText">An insulated door upgrade (R-0 → R-18) typically costs $800-1,200 more than a basic door. At estimated annual savings, the insulation pays for itself in approximately 3-4 years — then saves money every year after. In extreme climates (very hot or very cold), payback can be under 2 years.</p>
+</div>
+
+<div class="warning-box">
+<h4>⚠ The Attached Garage Factor</h4>
+<p>If your garage shares a wall with heated/cooled living space (attached garage), the garage temperature directly impacts your HVAC load through that shared wall. An uninsulated garage door in winter can drop garage temps to near-outdoor levels, making the shared wall a massive heat sink. The door-to-house connection is often the single largest uninsulated surface in the building envelope.</p>
+</div>
+</div>
+
+<div class="footer">
+<p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Garage Door Energy Efficiency Lab</p>
+<p>R-Value · Heat Transfer · Air Sealing · Cost Calculator</p>
+</div>
+
+<script>
+// ─── UTILS ───
+const sObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:0.05});
+document.querySelectorAll('.section').forEach(s=>sObs.observe(s));
+const navSections=document.querySelectorAll('.section[id]');
+const navLinks=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur='';navSections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id});navLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})},{passive:true});
+function fitCanvas(c){const r=c.parentElement.getBoundingClientRect();if(c.width!==r.width||c.height!==r.height){c.width=r.width;c.height=r.height}return{w:r.width,h:r.height}}
+let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>updateCalc(),200)});
+
+// ═══════════════════════════
+// HERO
+// ═══════════════════════════
+(function(){
+const c=document.getElementById('heroCanvas');const ctx=c.getContext('2d');let t=0;
+const particles=[];for(let i=0;i<40;i++)particles.push({x:Math.random(),y:Math.random(),s:Math.random()*3+1,vx:(Math.random()-0.5)*0.0005,vy:-Math.random()*0.0003-0.0001,hue:140+Math.random()*40});
+(function anim(){requestAnimationFrame(anim);t+=0.01;const{w,h}=fitCanvas(c);ctx.clearRect(0,0,w,h);
+particles.forEach(p=>{
+  p.x+=p.vx;p.y+=p.vy;if(p.y<0){p.y=1;p.x=Math.random()}if(p.x<0||p.x>1)p.vx*=-1;
+  ctx.fillStyle=`hsla(${p.hue},60%,50%,0.15)`;ctx.beginPath();ctx.arc(p.x*w,p.y*h,p.s,0,Math.PI*2);ctx.fill();
+});
+})()})();
+
+// ═══════════════════════════
+// SCENE 1: R-VALUE CROSS-SECTION
+// ═══════════════════════════
+let doorType=0; // 0=single, 1=poly, 2=PU
+const doorTypes=[
+  {name:'Single Steel',rval:0,thick:'24 ga steel',layers:[{name:'Steel',h:0.08,color:'#888'}],lossRate:'HIGH',lossCol:'var(--danger)'},
+  {name:'Polystyrene (EPS)',rval:8,thick:'2" panel',layers:[{name:'Steel',h:0.06,color:'#888'},{name:'Polystyrene Foam',h:0.5,color:'#e8e0f0'},{name:'Steel',h:0.06,color:'#888'}],lossRate:'MEDIUM',lossCol:'var(--warn)'},
+  {name:'Polyurethane Injected',rval:18,thick:'2" panel',layers:[{name:'Steel',h:0.06,color:'#888'},{name:'Polyurethane Foam',h:0.5,color:'#f5e6b8'},{name:'Steel',h:0.06,color:'#888'}],lossRate:'LOW',lossCol:'var(--success)'}
+];
+const rvC=document.getElementById('rvalueCanvas');const rvCtx=rvC.getContext('2d');
+
+function drawRValue(){
+  requestAnimationFrame(drawRValue);
+  const{w,h}=fitCanvas(rvC);const ctx=rvCtx;const dt=doorTypes[doorType];
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  // Split view: left = outdoor, right = indoor
+  const doorX=w*0.38, doorW=w*0.24;
+  // Outdoor zone
+  const grad1=ctx.createLinearGradient(0,0,doorX,0);
+  grad1.addColorStop(0,'#1a2a44');grad1.addColorStop(1,'#1e3355');
+  ctx.fillStyle=grad1;ctx.fillRect(0,0,doorX,h);
+  // Indoor zone
+  const grad2=ctx.createLinearGradient(doorX+doorW,0,w,0);
+  grad2.addColorStop(0,'#2a1a15');grad2.addColorStop(1,'#331a10');
+  ctx.fillStyle=grad2;ctx.fillRect(doorX+doorW,0,w-doorX-doorW,h);
+
+  // Labels
+  ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+  ctx.fillStyle='#4488cc';ctx.fillText('OUTSIDE',doorX/2,30);
+  ctx.fillStyle='#cc6644';ctx.fillText('GARAGE INTERIOR',doorX+doorW+(w-doorX-doorW)/2,30);
+  ctx.font='24px "Oswald"';
+  ctx.fillStyle='#5599dd';ctx.fillText('30°F',doorX/2,60);
+  ctx.fillStyle='#dd7744';ctx.fillText('68°F',doorX+doorW+(w-doorX-doorW)/2,60);
+
+  // Door cross-section
+  const panelTop=h*0.12, panelH=h*0.7;
+  ctx.fillStyle='#333';ctx.fillRect(doorX-2,panelTop-4,doorW+4,panelH+8);
+
+  // Draw layers
+  const layers=dt.layers;
+  const totalLayerH=layers.reduce((a,l)=>a+l.h,0);
+  let lx=doorX;
+  layers.forEach(layer=>{
+    const lw=doorW*(layer.h/totalLayerH);
+    ctx.fillStyle=layer.color;ctx.fillRect(lx,panelTop,lw,panelH);
+    // Layer label
+    ctx.save();ctx.translate(lx+lw/2,panelTop+panelH/2);ctx.rotate(-Math.PI/2);
+    ctx.fillStyle='#333';ctx.font='bold 10px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText(layer.name,0,4);ctx.restore();
+    lx+=lw;
+  });
+
+  // Polystyrene thermal bridge indicators
+  if(doorType===1){
+    ctx.fillStyle='rgba(239,68,68,0.3)';
+    ctx.fillRect(doorX,panelTop,doorW,4); // top edge bridge
+    ctx.fillRect(doorX,panelTop+panelH-4,doorW,4); // bottom edge bridge
+    ctx.fillStyle='#ef4444';ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+    ctx.fillText('⚡ THERMAL BRIDGE',doorX+doorW+8,panelTop+8);
+  }
+  // Polyurethane: show complete fill
+  if(doorType===2){
+    ctx.fillStyle='var(--accent)';ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+    ctx.fillText('✓ COMPLETE FILL — NO GAPS',doorX+doorW+8,panelTop+8);
+    ctx.fillText('✓ BONDED TO BOTH SKINS',doorX+doorW+8,panelTop+22);
+    ctx.fillText('✓ NO THERMAL BRIDGES',doorX+doorW+8,panelTop+36);
+  }
+
+  // Heat arrows — flow from warm side (right) through door to cold side (left)
+  const arrowCount=doorType===0?14:doorType===1?6:2;
+  const t2=Date.now()*0.002;
+  for(let i=0;i<arrowCount;i++){
+    const ay=panelTop+panelH*(i+0.5)/arrowCount;
+    const progress=(t2+i*0.4)%2;
+    // Start from interior side, move left through door toward outside
+    const ax=doorX+doorW*0.6-progress*w*0.18;
+    const alpha=Math.max(0,1-progress*0.7);
+    // Bright orange — heat energy escaping
+    ctx.fillStyle=`rgba(255,160,40,${alpha*0.9})`;
+    // Big arrow pointing LEFT
+    ctx.beginPath();ctx.moveTo(ax+10,ay-8);ctx.lineTo(ax-12,ay);ctx.lineTo(ax+10,ay+8);ctx.fill();
+    // Glow trail behind arrow
+    ctx.fillStyle=`rgba(255,120,20,${alpha*0.25})`;
+    ctx.fillRect(ax+10,ay-4,20,8);
+  }
+
+  // R-value badge
+  ctx.fillStyle='rgba(0,0,0,0.7)';const badgeW=120;
+  ctx.fillRect(doorX+doorW/2-badgeW/2,panelTop+panelH+15,badgeW,40);
+  ctx.strokeStyle='#555';ctx.strokeRect(doorX+doorW/2-badgeW/2,panelTop+panelH+15,badgeW,40);
+  ctx.fillStyle=dt.rval===0?'#ef4444':dt.rval<12?'#f59e0b':'#10b981';
+  ctx.font='bold 22px "Oswald"';ctx.textAlign='center';
+  ctx.fillText('R-'+dt.rval,doorX+doorW/2,panelTop+panelH+42);
+
+  // Update readouts
+  document.getElementById('rvType').textContent=dt.name;
+  document.getElementById('rvValue').innerHTML=dt.rval+'<span class="readout-unit"> '+(dt.rval===0?'(none)':'insulation')+'</span>';
+  document.getElementById('rvValue').style.color=dt.rval===0?'var(--danger)':dt.rval<12?'var(--warn)':'var(--success)';
+  document.getElementById('rvThick').innerHTML=dt.thick;
+  document.getElementById('rvLoss').innerHTML='<span style="color:'+dt.lossCol+'">'+dt.lossRate+'</span>';
+}
+drawRValue();
+
+function setDoorType(t){
+  doorType=t;
+  document.querySelectorAll('#rvalue .ctrl-btn').forEach((b,i)=>{b.classList.toggle('active',i===t)});
+}
+
+// ═══════════════════════════
+// SCENE 2: HEAT FLOW PARTICLES
+// ═══════════════════════════
+let heatSeason='winter', heatRVal=0;
+const heatC=document.getElementById('heatCanvas');const heatCtx=heatC.getContext('2d');
+
+// Each particle has a state: 'warm', 'entering', 'in_wall', 'exiting', 'cold', 'bounced'
+const heatParticles=[];
+for(let i=0;i<100;i++){
+  heatParticles.push({
+    x:0, y:Math.random()*0.6+0.15,
+    vx:0, vy:0,
+    state:'warm',
+    size:2+Math.random()*2,
+    phase:Math.random()*Math.PI*2,
+    age:0
+  });
+}
+
+function resetHeatParticle(p,w,h,wallX,wallW,isWinter){
+  // Spawn on the warm side, moving toward the wall
+  const warmSideRight=isWinter; // winter: warm is right (inside)
+  if(warmSideRight){
+    p.x=(wallX+wallW)/w + Math.random()*((w-wallX-wallW)*0.9)/w;
+  } else {
+    p.x=Math.random()*(wallX*0.9)/w;
+  }
+  p.y=Math.random()*0.65+0.12;
+  p.state='warm';
+  p.age=0;
+  p.vy=(Math.random()-0.5)*0.0008;
+}
+
+function drawHeat(){
+  requestAnimationFrame(drawHeat);
+  const{w,h}=fitCanvas(heatC);const ctx=heatCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const isWinter=heatSeason==='winter';
+  const insideT=68, outsideT=isWinter?30:105;
+  const deltaT=Math.abs(insideT-outsideT);
+
+  const wallX=w*0.45, wallW=w*0.1;
+  const wallL=wallX/w, wallR=(wallX+wallW)/w;
+
+  // Background zones
+  ctx.fillStyle=isWinter?'#0f1a2e':'#2e1a0f';ctx.fillRect(0,0,wallX,h);
+  ctx.fillStyle=isWinter?'#2e1a0f':'#0f1a2e';ctx.fillRect(wallX+wallW,0,w-wallX-wallW,h);
+
+  // Wall/door
+  const wallCol=heatRVal===0?'#555':heatRVal<10?'#7a6a5a':'#6a7a5a';
+  ctx.fillStyle=wallCol;ctx.fillRect(wallX,0,wallW,h);
+
+  // Insulation texture
+  if(heatRVal>0){
+    const insulCol=heatRVal<10?'rgba(200,180,220,0.35)':'rgba(200,220,160,0.35)';
+    ctx.fillStyle=insulCol;ctx.fillRect(wallX+3,0,wallW-6,h);
+    ctx.strokeStyle=heatRVal<10?'rgba(180,160,200,0.15)':'rgba(180,200,140,0.15)';
+    ctx.lineWidth=1;
+    for(let y=0;y<h;y+=8){ctx.beginPath();ctx.moveTo(wallX+3,y);ctx.lineTo(wallX+wallW-3,y+6);ctx.stroke()}
+  }
+
+  // Labels
+  ctx.font='bold 13px "Oswald"';ctx.textAlign='center';
+  ctx.fillStyle=isWinter?'#5599dd':'#dd7744';ctx.fillText('OUTSIDE '+outsideT+'°F',wallX/2,25);
+  ctx.fillStyle=isWinter?'#dd7744':'#5599dd';ctx.fillText('INSIDE '+insideT+'°F',wallX+wallW+(w-wallX-wallW)/2,25);
+  // Door label
+  const dlText='R-'+heatRVal+' DOOR';
+  ctx.font='12px "JetBrains Mono"';
+  const dlW=ctx.measureText(dlText).width+16;
+  ctx.fillStyle='rgba(0,0,0,0.75)';
+  ctx.fillRect(wallX+wallW/2-dlW/2,h-24,dlW,20);
+  ctx.fillStyle='#ddd';ctx.textAlign='center';
+  ctx.fillText(dlText,wallX+wallW/2,h-10);
+
+  // Physics constants
+  const warmSpeed=0.004; // always fast on warm side
+  const wallSpeed=heatRVal===0?0.003:0.0005/(1+heatRVal*0.15); // crawl through insulation
+  const coldSpeed=0.002; // moderate on cold side (dissipating)
+  const bounceChance=heatRVal===0?0.02:Math.min(0.35,heatRVal*0.02); // higher R = more bounces
+  const flowSign=isWinter?-1:1; // winter: right-to-left; summer: left-to-right
+
+  // Particle simulation
+  heatParticles.forEach(p=>{
+    p.age++;
+    p.y+=p.vy+Math.sin(p.phase+p.age*0.03)*0.0004;
+    if(p.y<0.08||p.y>0.88)p.vy*=-1;
+
+    switch(p.state){
+      case 'warm':
+        // Fast movement toward the wall
+        p.vx=flowSign*warmSpeed*(0.8+Math.random()*0.4);
+        p.x+=p.vx;
+        // Reached the wall?
+        if((flowSign<0&&p.x<=wallR)||(flowSign>0&&p.x>=wallL)){
+          // Bounce or enter?
+          if(Math.random()<bounceChance){
+            p.state='bounced';
+            p.vx=-flowSign*warmSpeed*0.6;
+          } else {
+            p.state='in_wall';
+          }
+        }
+        break;
+
+      case 'in_wall':
+        // Slow crawl through insulation
+        p.vx=flowSign*wallSpeed;
+        p.x+=p.vx;
+        // Made it through?
+        if((flowSign<0&&p.x<=wallL)||(flowSign>0&&p.x>=wallR)){
+          p.state='cold';
+        }
+        // Additional chance to get stuck/absorbed in high-R walls
+        if(heatRVal>12&&Math.random()<0.005){
+          p.state='bounced';
+          p.vx=-flowSign*wallSpeed*2;
+        }
+        break;
+
+      case 'cold':
+        // Moderate speed, dissipating on cold side
+        p.vx=flowSign*coldSpeed*(0.5+Math.random()*0.3);
+        p.x+=p.vx;
+        p.size*=0.999; // slowly shrink (energy dissipating)
+        // Off-screen? Reset
+        if(p.x<-0.02||p.x>1.02||p.age>400){
+          resetHeatParticle(p,w,h,wallX,wallW,isWinter);
+        }
+        break;
+
+      case 'bounced':
+        // Reflected back into warm side
+        p.x+=p.vx;
+        p.vx*=0.98; // decelerate
+        if(Math.abs(p.vx)<0.0003||p.age>300){
+          resetHeatParticle(p,w,h,wallX,wallW,isWinter);
+        }
+        break;
+    }
+
+    // Went off-screen in any state
+    if(p.x<-0.05||p.x>1.05) resetHeatParticle(p,w,h,wallX,wallW,isWinter);
+
+    // Drawing
+    let col, alpha, sz;
+    const inWallZone=p.x>=wallL&&p.x<=wallR;
+
+    if(p.state==='warm'||p.state==='bounced'){
+      col='255,140,40'; // warm orange
+      alpha=p.state==='bounced'?0.4:0.75;
+      sz=p.size;
+    } else if(p.state==='in_wall'){
+      col='255,100,30'; // dimmer in wall
+      alpha=0.35;
+      sz=p.size*0.7;
+    } else {
+      // cold side — cooler color, fading
+      col='200,120,60';
+      alpha=Math.max(0.15,0.5-p.age*0.001);
+      sz=p.size*0.8;
+    }
+
+    ctx.fillStyle='rgba('+col+','+alpha+')';
+    ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz,0,Math.PI*2);ctx.fill();
+    // Glow for warm-side particles
+    if(p.state==='warm'){
+      ctx.fillStyle='rgba(255,160,40,0.1)';
+      ctx.beginPath();ctx.arc(p.x*w,p.y*h,sz*3,0,Math.PI*2);ctx.fill();
+    }
+  });
+
+  // Direction arrows (subtle, showing flow direction)
+  ctx.globalAlpha=0.15;ctx.fillStyle=isWinter?'#ff9933':'#3399ff';
+  const arrowY=h*0.5;
+  for(let i=0;i<3;i++){
+    const ax=isWinter?wallX+wallW+(w-wallX-wallW)*0.3+i*40:wallX*0.3+i*40;
+    ctx.beginPath();
+    if(isWinter){ctx.moveTo(ax+8,arrowY-10);ctx.lineTo(ax-8,arrowY);ctx.lineTo(ax+8,arrowY+10)}
+    else{ctx.moveTo(ax-8,arrowY-10);ctx.lineTo(ax+8,arrowY);ctx.lineTo(ax-8,arrowY+10)}
+    ctx.fill();
+  }
+  ctx.globalAlpha=1;
+
+  // Wall resistance indicator
+  if(heatRVal>0){
+    ctx.fillStyle='rgba(0,0,0,0.5)';ctx.font='bold 10px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('RESISTANCE',wallX+wallW/2,h/2-8);
+    // Draw tiny X marks for blocked particles
+    const blockMarks=Math.min(8,Math.floor(heatRVal/2.5));
+    ctx.strokeStyle='rgba(255,100,100,0.3)';ctx.lineWidth=1.5;
+    for(let i=0;i<blockMarks;i++){
+      const bx=wallX+wallW/2,by=h*0.3+i*(h*0.4/blockMarks);
+      ctx.beginPath();ctx.moveTo(bx-4,by-4);ctx.lineTo(bx+4,by+4);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(bx+4,by-4);ctx.lineTo(bx-4,by+4);ctx.stroke();
+    }
+  }
+
+  // BTU calculation
+  const area=112;
+  const uFactor=heatRVal===0?1:1/heatRVal;
+  const btu=Math.round(area*uFactor*deltaT);
+  document.getElementById('hfInside').innerHTML=insideT+'<span class="readout-unit">°F</span>';
+  document.getElementById('hfOutside').innerHTML=outsideT+'<span class="readout-unit">°F</span>';
+  document.getElementById('hfOutside').style.color=isWinter?'var(--cool)':'var(--hot)';
+  document.getElementById('hfDelta').innerHTML=deltaT+'<span class="readout-unit">°F</span>';
+  document.getElementById('hfBTU').innerHTML=btu.toLocaleString();
+  document.getElementById('hfBTU').style.color=btu>2000?'var(--danger)':btu>500?'var(--warn)':'var(--success)';
+}
+drawHeat();
+
+function heatSetSeason(s){
+  heatSeason=s;
+  document.querySelectorAll('#heatflow .ctrl-btn').forEach(b=>{b.classList.toggle('active',b.textContent.toLowerCase().includes(s))});
+}
+function heatUpdateInsul(){
+  heatRVal=parseInt(document.getElementById('heatInsulSlider').value);
+  const label=heatRVal===0?'R-0 (Single Steel)':heatRVal<=5?'R-'+heatRVal+' (Minimal)':heatRVal<=10?'R-'+heatRVal+' (Polystyrene)':'R-'+heatRVal+' (Polyurethane)';
+  document.getElementById('heatInsulLabel').textContent=label;
+}
+
+// ═══════════════════════════
+// SCENE 3: AIR SEALING
+// ═══════════════════════════
+let sealMode='leaks', sealWind=false;
+const sealC=document.getElementById('sealCanvas');const sealCtx=sealC.getContext('2d');
+const leakParticles=[];
+for(let i=0;i<60;i++)leakParticles.push({x:0,y:0,vx:0,vy:0,life:0,source:Math.floor(Math.random()*5),active:false});
+
+function drawSeal(){
+  requestAnimationFrame(drawSeal);
+  const{w,h}=fitCanvas(sealC);const ctx=sealCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  const isLeaky=sealMode==='leaks';
+  const windMult=sealWind?3:1;
+
+  // Front view of closed garage door
+  const dx=w*0.2, dy=h*0.1, dw=w*0.6, dh=h*0.75;
+
+  // Wall around door
+  ctx.fillStyle='#3a3530';ctx.fillRect(dx-40,dy-20,dw+80,dh+40);
+  // Door
+  ctx.fillStyle='#c8c8cc';ctx.fillRect(dx,dy,dw,dh);
+  // Panels
+  for(let i=1;i<4;i++){const ly=dy+dh*i/4;ctx.strokeStyle='#aaa';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(dx,ly);ctx.lineTo(dx+dw,ly);ctx.stroke()}
+  // Floor
+  ctx.fillStyle='#2a2a30';ctx.fillRect(dx-40,dy+dh,dw+80,h-dy-dh);
+  // Floor line
+  ctx.strokeStyle='#444';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(dx-40,dy+dh);ctx.lineTo(dx+dw+40,dy+dh);ctx.stroke();
+
+  // Seal points
+  const seals=[
+    {label:'BOTTOM SEAL',x:dx+dw/2,y:dy+dh,w:dw,h:6,dir:'up'},
+    {label:'LEFT SIDE',x:dx,y:dy+dh/2,w:6,h:dh,dir:'right'},
+    {label:'RIGHT SIDE',x:dx+dw,y:dy+dh/2,w:6,h:dh,dir:'left'},
+    {label:'TOP SEAL',x:dx+dw/2,y:dy,w:dw,h:6,dir:'down'},
+    {label:'PANEL JOINTS',x:dx+dw/2,y:dy+dh/2,w:dw*0.8,h:2,dir:'right'}
+  ];
+
+  // Draw seal zones
+  seals.forEach((sl,i)=>{
+    if(isLeaky){
+      // Red gaps
+      ctx.fillStyle='rgba(239,68,68,0.3)';
+      if(sl.dir==='up'||sl.dir==='down')ctx.fillRect(sl.x-sl.w/2,sl.y-3,sl.w,6);
+      else if(sl.dir==='left')ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
+      else if(sl.dir==='right'&&i===1)ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
+    } else {
+      // Green sealed
+      ctx.fillStyle='rgba(34,197,94,0.3)';
+      if(sl.dir==='up'||sl.dir==='down')ctx.fillRect(sl.x-sl.w/2,sl.y-3,sl.w,6);
+      else ctx.fillRect(sl.x-3,sl.y-sl.h/2,6,sl.h);
+    }
+  });
+
+  // Air leak particles
+  if(isLeaky){
+    const spawnRate=sealWind?0.15:0.04;
+    leakParticles.forEach(p=>{
+      if(!p.active&&Math.random()<spawnRate){
+        p.active=true;p.life=0;
+        const src=seals[p.source%5];
+        if(p.source%5===0){p.x=dx+Math.random()*dw;p.y=dy+dh;p.vx=(Math.random()-0.5)*0.5*windMult;p.vy=-1-Math.random()*windMult}
+        else if(p.source%5===1){p.x=dx;p.y=dy+Math.random()*dh;p.vx=1+Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
+        else if(p.source%5===2){p.x=dx+dw;p.y=dy+Math.random()*dh;p.vx=-1-Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
+        else if(p.source%5===3){p.x=dx+Math.random()*dw;p.y=dy;p.vx=(Math.random()-0.5)*0.3;p.vy=1+Math.random()}
+        else{p.x=dx+dw*0.1+Math.random()*dw*0.8;p.y=dy+dh*(0.25*Math.ceil(Math.random()*3));p.vx=0.5+Math.random()*windMult;p.vy=(Math.random()-0.5)*0.3}
+      }
+      if(p.active){
+        p.x+=p.vx;p.y+=p.vy;p.life++;
+        const alpha=Math.max(0,1-p.life/60);
+        ctx.fillStyle=`rgba(100,180,255,${alpha*0.5})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();
+        if(p.life>60)p.active=false;
+      }
+    });
+  }
+
+  // Labels pointing to seal areas
+  ctx.font='9px "JetBrains Mono"';ctx.textAlign='left';
+  const labelCol=isLeaky?'#ef4444':'#22c55e';
+  ctx.fillStyle=labelCol;
+  ctx.fillText('← BOTTOM SEAL'+(isLeaky?' (WORN)':' ✓'),dx+dw+12,dy+dh-5);
+  ctx.fillText('← SIDE SEAL'+(isLeaky?' (GAP)':' ✓'),dx+dw+12,dy+dh/2);
+  ctx.fillText('← TOP SEAL'+(isLeaky?' (MISSING)':' ✓'),dx+dw+12,dy+10);
+  ctx.fillText('← PANEL JOINTS'+(isLeaky?' (NO SEAL)':' ✓'),dx+dw+12,dy+dh/2-30);
+
+  // Wind indicator
+  if(sealWind){
+    ctx.fillStyle='#60a5fa';ctx.font='11px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('💨 WIND 20 MPH →',dx+dw/2,h-15);
+    // Wind arrows
+    for(let i=0;i<5;i++){
+      const ax=dx-30+Math.sin(Date.now()*0.003+i)*10;
+      const ay=dy+dh*(i+0.5)/5;
+      ctx.fillStyle='rgba(96,165,250,0.4)';
+      ctx.beginPath();ctx.moveTo(ax,ay-6);ctx.lineTo(ax+15,ay);ctx.lineTo(ax,ay+6);ctx.fill();
+    }
+  }
+
+  // Update readouts
+  const ach=isLeaky?(sealWind?8.5:3.2):(sealWind?1.8:0.5);
+  const btuLoss=Math.round(ach*350*(sealWind?2:1));
+  document.getElementById('sealCond').innerHTML=isLeaky?'<span style="color:var(--warn)">WORN</span>':'<span style="color:var(--success)">SEALED</span>';
+  document.getElementById('sealACH').textContent=ach.toFixed(1);
+  document.getElementById('sealLoss').innerHTML=btuLoss.toLocaleString()+'<span class="readout-unit"> BTU/hr</span>';
+  document.getElementById('sealLoss').style.color=btuLoss>1500?'var(--danger)':btuLoss>500?'var(--warn)':'var(--success)';
+  document.getElementById('sealWind').innerHTML=sealWind?'<span style="color:var(--cool)">20 mph — 3× infiltration</span>':'—';
+}
+drawSeal();
+
+function sealSetMode(m){
+  sealMode=m;
+  document.querySelectorAll('#airsealing .ctrl-btn').forEach((b,i)=>{if(i<2)b.classList.toggle('active',i===(m==='leaks'?0:1))});
+}
+function sealToggleWind(){
+  sealWind=!sealWind;
+  const btn=document.querySelectorAll('#airsealing .ctrl-btn')[2];
+  btn.classList.toggle('active',sealWind);
+  btn.textContent=sealWind?'Wind Active':'Add Wind';
+}
+
+// ═══════════════════════════
+// SCENE 4: COST CALCULATOR
+// ═══════════════════════════
+function updateCalc(){
+  const winterT=parseInt(document.getElementById('calcWinterSlider').value);
+  const summerT=parseInt(document.getElementById('calcSummerSlider').value);
+  const sizeIdx=parseInt(document.getElementById('calcSizeSlider').value);
+  const energyCost=parseInt(document.getElementById('calcEnergySlider').value)/100;
+  const attached=parseInt(document.getElementById('calcAttachedSlider').value);
+
+  const sizes=[{label:'8×7 (1-car)',area:56},{label:'16×7 (2-car)',area:112},{label:'18×8 (oversized)',area:144}];
+  const size=sizes[sizeIdx];
+  document.getElementById('calcWinter').textContent=winterT;
+  document.getElementById('calcSummer').textContent=summerT;
+  document.getElementById('calcSize').textContent=size.label;
+  document.getElementById('calcEnergy').textContent='$'+(energyCost).toFixed(2)+'/kWh';
+  document.getElementById('calcAttached').textContent=attached?'Yes':'No';
+
+  // Heating degree days estimate (rough)
+  const hdd=Math.max(0,(65-winterT)*150); // heating season days × avg delta
+  const cdd=Math.max(0,(summerT-75)*120); // cooling season
+  const attachedMult=attached?1.8:1.0; // attached garage has bigger impact
+
+  // Annual BTU loss through door for each R-value
+  function annualCost(rVal){
+    const u=rVal===0?1:1/rVal;
+    const heatBTU=size.area*u*hdd*24*attachedMult;
+    const coolBTU=size.area*u*cdd*24*attachedMult*0.7; // AC is ~70% as affected
+    const totalBTU=heatBTU+coolBTU;
+    const kWh=totalBTU/3412;
+    return Math.round(kWh*energyCost);
+  }
+
+  const costR0=annualCost(0.5); // R-0 is ~R-0.5 effective (air films)
+  const costR8=annualCost(8);
+  const costR18=annualCost(18);
+  document.getElementById('costR0').textContent='$'+costR0;
+  document.getElementById('costR8').textContent='$'+costR8;
+  document.getElementById('costR18').textContent='$'+costR18;
+  const savings=costR0-costR18;
+  document.getElementById('costSavings').innerHTML='$'+savings+'<span class="readout-unit">/yr</span>';
+
+  const payback=savings>0?Math.round(1000/savings*10)/10:'∞';
+  document.getElementById('paybackText').textContent=
+    'An insulated door upgrade (R-0 → R-18) typically costs $800-1,200 more than a basic door. '+
+    'At your estimated annual savings of $'+savings+', the insulation pays for itself in approximately '+
+    payback+' years — then saves money every year after.';
+
+  drawCostChart(costR0,costR8,costR18);
+}
+
+function drawCostChart(r0,r8,r18){
+  const canvas=document.getElementById('costChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width-40;canvas.height=280;
+  const W=canvas.width,H=canvas.height;
+  const pad={t:30,r:25,b:40,l:55};
+  const pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='#252833';ctx.lineWidth=0.5;
+  for(let i=0;i<=5;i++){const y=pad.t+(i/5)*ph;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke()}
+
+  const maxCost=Math.max(r0,100);
+  ctx.fillStyle='#555a6d';ctx.font='10px "JetBrains Mono"';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const v=Math.round(maxCost*(1-i/5));ctx.fillText('$'+v,pad.l-8,pad.t+(i/5)*ph+3)}
+  ctx.textAlign='center';ctx.fillText('Annual Energy Cost Through Door',pad.l+pw/2,H-8);
+
+  // Bars
+  const barW=pw*0.2;
+  const bars=[{label:'R-0',val:r0,col:'#ef4444'},{label:'R-8',val:r8,col:'#f59e0b'},{label:'R-18',val:r18,col:'#10b981'}];
+  bars.forEach((b,i)=>{
+    const bx=pad.l+pw*(i+0.5)/3-barW/2;
+    const bh=ph*(b.val/maxCost);
+    const by=pad.t+ph-bh;
+    ctx.fillStyle=b.col;ctx.fillRect(bx,by,barW,bh);
+    // Value label
+    ctx.fillStyle=b.col;ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('$'+b.val,bx+barW/2,by-8);
+    // X label
+    ctx.fillStyle='#888';ctx.font='11px "JetBrains Mono"';
+    ctx.fillText(b.label,bx+barW/2,pad.t+ph+18);
+  });
+
+  // Savings arrow
+  if(r0>r18){
+    const ax1=pad.l+pw*0.5/3,ax2=pad.l+pw*2.5/3;
+    const ay1=pad.t+ph*(1-r0/maxCost),ay2=pad.t+ph*(1-r18/maxCost);
+    ctx.strokeStyle='#10b981';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(ax1+barW/2+5,ay1);ctx.lineTo(ax2-barW/2-5,ay2);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#10b981';ctx.font='bold 11px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('SAVE $'+(r0-r18)+'/yr',(ax1+ax2)/2+barW/2,(ay1+ay2)/2-10);
+  }
+}
+
+// Init
+updateCalc();
+</script>
+</body>
+</html>
