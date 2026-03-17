@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rolling Steel Doors Lab — Garage Door Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#08090c;--surface:#11131a;--surface2:#181b24;--border:#252833;
+--accent:#f97316;--accent2:#fb923c;--accentDim:#7c2d12;
+--steel:#94a3b8;--steelBright:#cbd5e1;
+--text:#e2e4ea;--text2:#8a8fa0;--text3:#555a6d;
+--danger:#ef4444;--success:#22c55e;--warn:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-serif;line-height:1.65;overflow-x:hidden}
+
+.hero{position:relative;min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(148,163,184,.08) 0%,var(--bg) 100%)}
+.hero canvas{position:absolute;inset:0;z-index:0}
+.hero-content{position:relative;z-index:2;padding:2rem}
+.hero h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(2rem,5.5vw,4.2rem);text-transform:uppercase;letter-spacing:.06em;line-height:1.1;margin-bottom:.4rem}
+.hero h1 .steel{color:var(--steel)}
+.hero h1 .orange{color:var(--accent)}
+.hero .sub{font-family:'JetBrains Mono',monospace;font-size:clamp(.65rem,1.2vw,.85rem);color:var(--text2);letter-spacing:.18em;text-transform:uppercase}
+.hero .stat-row{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)}
+.hero .stat-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);letter-spacing:.12em;text-transform:uppercase}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(8,9,12,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+.nav-inner{display:flex;max-width:1300px;margin:0 auto}
+.nav a{display:inline-block;padding:.8rem 1.1rem;color:var(--text2);text-decoration:none;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:2px solid transparent;transition:all .3s}
+.nav a:hover,.nav a.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.section{max-width:1300px;margin:0 auto;padding:4rem 2rem;opacity:0;transform:translateY(25px);transition:opacity .7s,transform .7s}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
+.section-title{font-family:'Oswald',sans-serif;font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.section-desc{color:var(--text2);font-size:1rem;max-width:750px;margin-bottom:2rem}
+
+.canvas-wrap{position:relative;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.canvas-wrap canvas{width:100%!important;height:100%!important;display:block}
+
+.ctrl-btn{background:rgba(8,9,12,.88);border:1px solid var(--border);color:var(--text);padding:.4rem .75rem;border-radius:4px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;transition:all .2s;white-space:nowrap;-webkit-appearance:none;appearance:none;line-height:1.4}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctrl-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;margin-top:1.5rem}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;transition:border-color .3s}
+.info-card:hover{border-color:var(--accent)}
+.info-card h3{font-family:'Oswald',sans-serif;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.5rem}
+.info-card p{color:var(--text2);font-size:.88rem;line-height:1.55}
+
+.readout{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.2rem 0}
+.readout-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.7rem .9rem;min-width:110px;flex:1}
+.readout-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.12em}
+.readout-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:600;margin-top:.15rem}
+.readout-unit{font-size:.65rem;color:var(--text2);font-weight:400}
+
+.callout{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.callout h4{font-family:'Oswald',sans-serif;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.callout p{color:var(--text2);font-size:.85rem}
+
+.warning-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;padding:1.2rem;margin:1.5rem 0}
+.warning-box h4{font-family:'Oswald',sans-serif;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;font-size:.9rem}
+.warning-box p{color:var(--text2);font-size:.85rem}
+
+.comparison-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.85rem}
+.comparison-table th{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);padding:.8rem;text-align:left;border-bottom:2px solid var(--border);font-size:.8rem}
+.comparison-table td{padding:.65rem .8rem;border-bottom:1px solid var(--border);color:var(--text2)}
+.comparison-table tr:hover td{background:var(--surface)}
+.comparison-table .good{color:var(--success)}
+.comparison-table .mid{color:var(--warn)}
+.comparison-table .poor{color:var(--danger)}
+
+.divider{height:1px;background:var(--border);margin:0}
+.footer{text-align:center;padding:2.5rem 2rem;color:var(--text3);font-size:.75rem;border-top:1px solid var(--border)}
+
+@media(max-width:768px){.section{padding:2.5rem 1rem}.info-grid{grid-template-columns:1fr}.readout-item{min-width:90px}.comparison-table{font-size:.75rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="hero-content">
+<h1><span class="steel">Rolling Steel</span> <span class="orange">Doors</span> Lab</h1>
+<div class="sub">Coiling Mechanics · Slat Construction · Fire Rating · Applications</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num">40'×30'</div><div class="stat-label">Max Opening Size</div></div>
+<div class="stat"><div class="stat-num">500K+</div><div class="stat-label">Cycle Life (High-Perf)</div></div>
+<div class="stat"><div class="stat-num">4 hr</div><div class="stat-label">Max Fire Rating</div></div>
+</div>
+</div>
+</div>
+
+<div class="nav">
+<div class="nav-inner">
+<a href="#anatomy">Anatomy</a>
+<a href="#coiling">Coiling Mechanics</a>
+<a href="#slat-types">Slat Types</a>
+<a href="#vs-sectional">vs Sectional</a>
+<a href="#applications">Applications</a>
+</div>
+</div>
+
+<!-- ═══ SECTION 1: ANATOMY ═══ -->
+<div class="section" id="anatomy">
+<div class="section-tag">01 / Components</div>
+<div class="section-title">Rolling Door Anatomy</div>
+<div class="section-desc">A rolling steel door is fundamentally different from a sectional garage door. Instead of hinged panels riding on tracks, it uses interlocking steel slats that coil around a barrel above the opening — like a giant steel window shade.</div>
+
+<div class="canvas-wrap" style="height:520px">
+<canvas id="anatomyCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn active" onclick="setAnatomyView(0)">Full View</button>
+<button class="ctrl-btn" onclick="setAnatomyView(1)">Curtain Detail</button>
+<button class="ctrl-btn" onclick="setAnatomyView(2)">Barrel Detail</button>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Curtain (Slats)</h3><p>The visible "door" — interlocking roll-formed steel slats that create a continuous curtain. Each slat hooks into the one above via a curved interlocking profile. Slats are typically 2-3 inches tall and available in 18-26 gauge galvanized steel, stainless steel, or aluminum. End locks at each slat end prevent lateral separation and add wind resistance.</p></div>
+<div class="info-card"><h3>Barrel (Pipe Shaft)</h3><p>A steel pipe at the top of the opening around which the curtain coils. The barrel houses the torsion spring that counterbalances the curtain's weight. The barrel is supported by bracket plates on each side and concealed by a hood. Barrel diameter depends on door size — larger doors need larger barrels to accommodate the coiled curtain.</p></div>
+<div class="info-card"><h3>Guides</h3><p>Vertical steel channels on each side of the opening that the curtain rides in. Guides keep the curtain aligned and prevent it from swaying. They're typically L-shaped or U-shaped channels bolted to the wall or jamb. The gap between the guide and the slat edge is tight enough to prevent prying but loose enough for smooth operation.</p></div>
+<div class="info-card"><h3>Bottom Bar</h3><p>A heavy steel angle or channel at the bottom of the curtain. It adds rigidity, prevents the curtain from over-traveling, and typically holds the astragal (rubber seal) that seals against the floor. On motorized doors, the bottom bar may include a sensing edge that triggers auto-reverse on contact with an obstruction.</p></div>
+<div class="info-card"><h3>Hood</h3><p>A non-structural sheet metal cover that conceals and protects the barrel, coiled curtain, and spring mechanism. Hoods can be round, flat, or custom-shaped. On exterior installations, the hood prevents weather from degrading the spring and curtain coil. Required by OSHA and UL 325 on power-operated doors to prevent contact with moving parts.</p></div>
+<div class="info-card"><h3>Counterbalance Spring</h3><p>A torsion spring inside the barrel that stores energy as the door closes and releases it to assist opening. Computer-matched to the curtain weight for smooth operation. Spring types include helical torsion (standard), oil-tempered (high-cycle), and motor-driven (springless). High-cycle springs rated for 100,000+ cycles are available for heavy-use applications.</p></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 2: COILING MECHANICS ═══ -->
+<div class="section" id="coiling">
+<div class="section-tag">02 / How It Works</div>
+<div class="section-title">Coiling Mechanism</div>
+<div class="section-desc">Watch how the curtain rolls up and down. The spring-loaded barrel does the heavy lifting — as the door closes, it winds the spring, storing energy. When opening, the spring releases that energy, assisting the motor or manual lift.</div>
+
+<div class="canvas-wrap" style="height:500px">
+<canvas id="coilingCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn" onclick="coilOpen()">Open Door</button>
+<button class="ctrl-btn" onclick="coilClose()">Close Door</button>
+<button class="ctrl-btn" onclick="coilStop()">Stop</button>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Door Position</div><div class="readout-value" id="coilPos">Closed<span class="readout-unit"> (100%)</span></div></div>
+<div class="readout-item"><div class="readout-label">Spring Tension</div><div class="readout-value" id="coilSpring" style="color:var(--accent)">Maximum</div></div>
+<div class="readout-item"><div class="readout-label">Coil Wraps</div><div class="readout-value" id="coilWraps">0</div></div>
+<div class="readout-item"><div class="readout-label">Operation</div><div class="readout-value" id="coilOp">IDLE</div></div>
+</div>
+
+<div class="callout">
+<h4>⚡ Spring Energy</h4>
+<p>The counterbalance spring is under maximum tension when the door is fully closed and minimum tension when fully open. This is the opposite of a sectional door's torsion spring, which is at max tension when the door is closed but for a different reason — the rolling door's spring must help lift the full weight of the curtain from closed position. A 20-foot-wide rolling steel service door curtain can weigh 800+ pounds.</p>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 3: SLAT TYPES ═══ -->
+<div class="section" id="slat-types">
+<div class="section-tag">03 / Construction</div>
+<div class="section-title">Slat Profiles & Types</div>
+<div class="section-desc">The slat profile determines the door's strength, insulation, and appearance. Different applications call for different slat designs — from solid security to perforated ventilation to insulated climate control.</div>
+
+<div class="canvas-wrap" style="height:420px">
+<canvas id="slatCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn active" onclick="setSlatType(0)">Flat Slat</button>
+<button class="ctrl-btn" onclick="setSlatType(1)">Curved Slat</button>
+<button class="ctrl-btn" onclick="setSlatType(2)">Insulated</button>
+<button class="ctrl-btn" onclick="setSlatType(3)">Perforated</button>
+<button class="ctrl-btn" onclick="setSlatType(4)">Grille (Rods/Links)</button>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Profile</div><div class="readout-value" id="slatProfile">Flat Slat</div></div>
+<div class="readout-item"><div class="readout-label">R-Value</div><div class="readout-value" id="slatR">R-0</div></div>
+<div class="readout-item"><div class="readout-label">Wind Rating</div><div class="readout-value" id="slatWind">Standard</div></div>
+<div class="readout-item"><div class="readout-label">Visibility</div><div class="readout-value" id="slatVis">None</div></div>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 4: VS SECTIONAL ═══ -->
+<div class="section" id="vs-sectional">
+<div class="section-tag">04 / Comparison</div>
+<div class="section-title">Rolling Steel vs Sectional Doors</div>
+<div class="section-desc">These are fundamentally different door systems. Each has clear advantages depending on the application. Understanding the trade-offs helps specify the right door for the job.</div>
+
+<table class="comparison-table">
+<thead><tr><th>Feature</th><th>Rolling Steel</th><th>Sectional</th></tr></thead>
+<tbody>
+<tr><td>Opening Size</td><td class="good">Up to 40'W × 30'H</td><td>Up to ~24'W × 18'H</td></tr>
+<tr><td>Ceiling Space</td><td class="good">Minimal — coils above opening</td><td class="poor">Requires full backroom depth</td></tr>
+<tr><td>Security</td><td class="good">Interlocking steel slats</td><td>Moderate — panels can be pried</td></tr>
+<tr><td>Insulation (max)</td><td>R-10 (foam-filled slats)</td><td class="good">R-18 (polyurethane injected)</td></tr>
+<tr><td>Cycle Life</td><td class="good">25K–500K+ cycles</td><td>10K–50K cycles</td></tr>
+<tr><td>Fire Rating</td><td class="good">Up to 4 hours</td><td class="poor">Not typically fire-rated</td></tr>
+<tr><td>Wind Load</td><td class="good">Engineered to spec, missile-rated</td><td>Available but fewer options</td></tr>
+<tr><td>Repair</td><td class="good">Individual slats replaceable</td><td>Whole panels must be replaced</td></tr>
+<tr><td>Residential Use</td><td class="poor">Uncommon — commercial aesthetic</td><td class="good">Standard residential door</td></tr>
+<tr><td>Cost</td><td>Higher — $2K-$15K+</td><td class="good">Lower — $800-$5K</td></tr>
+<tr><td>Noise</td><td class="mid">Louder (metal-on-metal)</td><td class="good">Quieter (nylon rollers)</td></tr>
+<tr><td>Appearance Options</td><td>Limited — industrial aesthetic</td><td class="good">Carriage, modern, traditional</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<h4>🏗️ When to Specify Rolling Steel</h4>
+<p>Choose rolling steel when: the opening exceeds 24' wide, ceiling/backroom space is limited, fire rating is required, security is paramount, high-cycle operation is expected (100+ cycles/day), or when individual slat replacement is important for maintenance. Choose sectional when: residential aesthetics matter, maximum insulation is needed, quiet operation is required, or budget is constrained.</p>
+</div>
+</div>
+<div class="divider"></div>
+
+<!-- ═══ SECTION 5: APPLICATIONS ═══ -->
+<div class="section" id="applications">
+<div class="section-tag">05 / Use Cases</div>
+<div class="section-title">Applications & Configurations</div>
+<div class="section-desc">Rolling steel doors serve vastly different purposes depending on configuration. From fire containment to storefront security to self-storage — each application demands specific features.</div>
+
+<div class="canvas-wrap" style="height:440px">
+<canvas id="appCanvas"></canvas>
+</div>
+<div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="ctrl-btn active" onclick="setApp(0)">Warehouse</button>
+<button class="ctrl-btn" onclick="setApp(1)">Fire Door</button>
+<button class="ctrl-btn" onclick="setApp(2)">Security Grille</button>
+<button class="ctrl-btn" onclick="setApp(3)">Counter Shutter</button>
+<button class="ctrl-btn" onclick="setApp(4)">Self-Storage</button>
+</div>
+
+<div class="readout">
+<div class="readout-item"><div class="readout-label">Application</div><div class="readout-value" id="appName">Warehouse Service Door</div></div>
+<div class="readout-item"><div class="readout-label">Typical Size</div><div class="readout-value" id="appSize">12'×12'</div></div>
+<div class="readout-item"><div class="readout-label">Key Feature</div><div class="readout-value" id="appFeature" style="color:var(--accent)">Durability</div></div>
+</div>
+
+<div class="info-grid">
+<div class="info-card"><h3>Warehouse / Loading Dock</h3><p>The most common application. Service doors at loading docks handle constant traffic from forklifts, trucks, and personnel. High-cycle springs and heavy-gauge slats (18-20ga) are standard. Motor operators with chain hoist backup for power failures. Dock seals around the perimeter for climate control. Sizes range from 8'×8' to 30'×30'+.</p></div>
+<div class="info-card"><h3>Fire-Rated Doors</h3><p>Required by building codes at openings in fire walls, fire barriers, and between building sections. Rated from 45 minutes to 4 hours. Feature fusible links that melt at ~165°F, releasing the door to close by gravity (no motor needed for fire closing). Include a governor to control descent speed. Annual drop testing required per NFPA 80.</p></div>
+<div class="info-card"><h3>Security Grilles</h3><p>Open-pattern curtains made from steel rods connected by links in straight or brick patterns. Provide security while maintaining visibility and airflow. Used in malls, pharmacies, banks, and storefronts. Available in aluminum for lighter-weight applications. Can be custom-etched with logos or decorative patterns.</p></div>
+<div class="info-card"><h3>Counter Shutters</h3><p>Small-scale rolling doors for service windows and counters. Used in concession stands, pharmacies, ticket booths, and pass-through openings. Typically operated by push-up, hand crank, or small motor. Available in steel or aluminum with optional locking bottom bar. Maximum sizes typically around 16'W × 8'H.</p></div>
+<div class="info-card"><h3>Self-Storage Units</h3><p>One of the highest-volume rolling door applications. Each unit gets a dedicated roll-up door — a single facility may have 500+ doors. Sheet doors (corrugated steel) dominate this market due to lower cost. Light-duty springs rated for lower cycles (the door opens maybe once a month). Standard sizes: 5'×5' to 12'×12'. Padlock-compatible latches are essential.</p></div>
+<div class="info-card"><h3>High-Performance / High-Speed</h3><p>Engineered for maximum cycle life (500K+ cycles) and fast operation (3× standard speed). Used in parking garages, distribution centers, and clean rooms. Feature advanced counterbalance systems, vibration isolators, and heavy-duty operators. Some models exceed 1 million cycles with proper maintenance. Opening speeds up to 24"/second vs standard 6-8"/sec.</p></div>
+</div>
+
+<div class="warning-box">
+<h4>⚠ Fire Door Testing Requirement</h4>
+<p>NFPA 80 requires annual drop testing of all fire-rated rolling doors. This means disconnecting the motor, activating the fusible link or release mechanism, and verifying the door closes fully by gravity at a controlled speed. Failure to test annually can void insurance coverage and violate fire code. Many building owners don't know this requirement exists until an inspection or — worse — an actual fire where the door fails to close.</p>
+</div>
+</div>
+
+<div class="footer">
+<p style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Rolling Steel Doors Lab</p>
+<p>Coiling Mechanics · Slat Construction · Fire Rating · Applications</p>
+</div>
+
+<script>
+// ─── UTILS ───
+const sObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')})},{threshold:0.05});
+document.querySelectorAll('.section').forEach(s=>sObs.observe(s));
+const navSections=document.querySelectorAll('.section[id]');
+const navLinks=document.querySelectorAll('.nav a');
+window.addEventListener('scroll',()=>{let cur='';navSections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)cur=s.id});navLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})},{passive:true});
+function fitCanvas(c){const r=c.parentElement.getBoundingClientRect();if(c.width!==r.width||c.height!==r.height){c.width=r.width;c.height=r.height}return{w:r.width,h:r.height}}
+
+// ═══ HERO ═══
+(function(){const c=document.getElementById('heroCanvas');const ctx=c.getContext('2d');let t=0;
+const slats=[];for(let i=0;i<15;i++)slats.push({y:Math.random(),x:0.1+Math.random()*0.8,w:0.3+Math.random()*0.4,speed:0.0003+Math.random()*0.0002,alpha:0.04+Math.random()*0.04});
+(function anim(){requestAnimationFrame(anim);t+=0.01;const{w,h}=fitCanvas(c);ctx.clearRect(0,0,w,h);
+slats.forEach(s=>{s.y-=s.speed;if(s.y<-0.05){s.y=1.05;s.x=0.1+Math.random()*0.8;s.w=0.3+Math.random()*0.4}
+ctx.fillStyle=`rgba(148,163,184,${s.alpha})`;ctx.fillRect(s.x*w,s.y*h,s.w*w,3)})})()})();
+
+// ═══ SECTION 1: ANATOMY ═══
+let anatomyView=0;
+const anaC=document.getElementById('anatomyCanvas');const anaCtx=anaC.getContext('2d');
+
+function drawAnatomy(){
+  requestAnimationFrame(drawAnatomy);
+  const{w,h}=fitCanvas(anaC);const ctx=anaCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  if(anatomyView===0){
+    // Full side-view cross-section
+    const wallL=w*0.15,wallR=w*0.85,wallTop=h*0.12,floorY=h*0.88;
+    const guideW=12;
+    const openW=wallR-wallL;
+
+    // Wall
+    ctx.fillStyle='#3a3530';
+    ctx.fillRect(wallL-40,wallTop,42,floorY-wallTop);
+    ctx.fillRect(wallR-2,wallTop,42,floorY-wallTop);
+    // Floor
+    ctx.fillStyle='#2a2a30';ctx.fillRect(wallL-40,floorY,openW+80,h-floorY);
+
+    // Guides (vertical channels)
+    ctx.fillStyle='#6a6a75';
+    ctx.fillRect(wallL-2,wallTop+40,guideW,floorY-wallTop-40);
+    ctx.fillRect(wallR-guideW+2,wallTop+40,guideW,floorY-wallTop-40);
+
+    // Hood above opening
+    const hoodY=wallTop+10,hoodH=55;
+    ctx.fillStyle='#555560';
+    ctx.beginPath();ctx.moveTo(wallL-10,hoodY+hoodH);ctx.lineTo(wallL-10,hoodY+5);
+    ctx.quadraticCurveTo(wallL-10,hoodY-5,wallL+20,hoodY-5);
+    ctx.lineTo(wallR-20,hoodY-5);ctx.quadraticCurveTo(wallR+10,hoodY-5,wallR+10,hoodY+5);
+    ctx.lineTo(wallR+10,hoodY+hoodH);ctx.fill();
+    ctx.strokeStyle='#6a6a75';ctx.lineWidth=1;ctx.stroke();
+
+    // Barrel (inside hood)
+    const barrelCX=(wallL+wallR)/2,barrelCY=hoodY+hoodH/2+5,barrelR=18;
+    ctx.fillStyle='#7a7a85';ctx.beginPath();ctx.arc(barrelCX,barrelCY,barrelR,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#555';ctx.beginPath();ctx.arc(barrelCX,barrelCY,6,0,Math.PI*2);ctx.fill();
+
+    // Coiled curtain around barrel
+    for(let i=0;i<4;i++){
+      const r=barrelR+3+i*4;
+      ctx.strokeStyle=`rgba(148,163,184,${0.4-i*0.08})`;ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(barrelCX,barrelCY,r,0,Math.PI*2);ctx.stroke();
+    }
+
+    // Curtain (partially down)
+    const curtainTop=hoodY+hoodH;
+    const slatH=8,gap=1;
+    const numSlats=Math.floor((floorY-curtainTop)/(slatH+gap));
+    for(let i=0;i<numSlats;i++){
+      const sy=curtainTop+i*(slatH+gap);
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+      ctx.fillRect(wallL+guideW-2,sy,openW-guideW*2+4,slatH);
+    }
+
+    // Bottom bar
+    const bbY=curtainTop+numSlats*(slatH+gap);
+    ctx.fillStyle='#6a6a70';ctx.fillRect(wallL+5,bbY,openW-10,12);
+    // Astragal
+    ctx.fillStyle='#333';ctx.fillRect(wallL+8,bbY+12,openW-16,5);
+
+    // Labels
+    ctx.fillStyle='#ccc';ctx.font='bold 11px "JetBrains Mono"';ctx.textAlign='left';
+    const labels=[
+      {x:wallR+18,y:hoodY+15,text:'HOOD',line:[wallR+10,hoodY+15]},
+      {x:wallR+18,y:barrelCY,text:'BARREL + SPRING',line:[wallR+10,barrelCY]},
+      {x:wallR+18,y:curtainTop+40,text:'CURTAIN (SLATS)',line:[wallR-guideW+4,curtainTop+40]},
+      {x:wallR+18,y:(curtainTop+floorY)/2,text:'GUIDES',line:[wallR-2,floorY/2+curtainTop/2]},
+      {x:wallR+18,y:bbY+5,text:'BOTTOM BAR',line:[wallR-guideW+4,bbY+5]},
+      {x:wallR+18,y:bbY+18,text:'ASTRAGAL (SEAL)',line:[wallR-guideW+4,bbY+18]},
+    ];
+    labels.forEach(l=>{
+      ctx.fillStyle='#bbb';ctx.fillText(l.text,l.x,l.y+4);
+      ctx.strokeStyle='#555';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(l.line[0],l.line[1]);ctx.lineTo(l.x-4,l.y);ctx.stroke();
+      ctx.fillStyle='#f97316';ctx.beginPath();ctx.arc(l.line[0],l.line[1],3,0,Math.PI*2);ctx.fill();
+    });
+
+    // Title
+    ctx.fillStyle='#888';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('ROLLING STEEL DOOR — FRONT CROSS-SECTION',(wallL+wallR)/2,h-8);
+
+  } else if(anatomyView===1){
+    // Curtain detail - zoomed slat interlocking
+    ctx.fillStyle='#aaa';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('SLAT INTERLOCK DETAIL',w/2,30);
+
+    const cx=w*0.4,startY=h*0.1;
+    for(let i=0;i<6;i++){
+      const sy=startY+i*55;
+      const slatW=w*0.5;
+      // Slat body
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+      ctx.fillRect(cx-slatW/2,sy,slatW,30);
+      // Curved interlock at bottom
+      ctx.fillStyle='#6a6f7a';
+      ctx.beginPath();
+      ctx.moveTo(cx-slatW/2,sy+30);ctx.lineTo(cx+slatW/2,sy+30);
+      ctx.lineTo(cx+slatW/2,sy+38);ctx.quadraticCurveTo(cx+slatW/2-5,sy+42,cx+slatW/2-20,sy+40);
+      ctx.lineTo(cx-slatW/2+20,sy+40);ctx.quadraticCurveTo(cx-slatW/2+5,sy+42,cx-slatW/2,sy+38);
+      ctx.fill();
+      // Top hook
+      ctx.fillStyle='#6a6f7a';
+      ctx.beginPath();
+      ctx.moveTo(cx-slatW/2,sy);ctx.lineTo(cx+slatW/2,sy);
+      ctx.lineTo(cx+slatW/2,sy-6);ctx.quadraticCurveTo(cx+slatW/2-5,sy-9,cx+slatW/2-15,sy-8);
+      ctx.lineTo(cx-slatW/2+15,sy-8);ctx.quadraticCurveTo(cx-slatW/2+5,sy-9,cx-slatW/2,sy-6);
+      ctx.fill();
+      // End lock indicators
+      ctx.fillStyle='#f97316';ctx.fillRect(cx-slatW/2-2,sy+5,4,20);
+      ctx.fillRect(cx+slatW/2-2,sy+5,4,20);
+    }
+    // Labels
+    ctx.fillStyle='#ccc';ctx.font='10px "JetBrains Mono"';ctx.textAlign='left';
+    ctx.fillText('INTERLOCK PROFILE',cx+w*0.28,startY+60);
+    ctx.fillText('END LOCKS',cx+w*0.28,startY+120);
+    ctx.fillStyle='#888';ctx.fillText('(prevent lateral',cx+w*0.28,startY+135);
+    ctx.fillText(' separation)',cx+w*0.28,startY+150);
+
+  } else {
+    // Barrel detail
+    ctx.fillStyle='#aaa';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('BARREL & COUNTERBALANCE DETAIL',w/2,30);
+
+    const cx=w/2,cy=h*0.45,br=60;
+    // Barrel pipe
+    ctx.fillStyle='#7a7a85';ctx.strokeStyle='#999';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cx,cy,br,0,Math.PI*2);ctx.fill();ctx.stroke();
+    // Spring inside (coiled representation)
+    ctx.strokeStyle='#f97316';ctx.lineWidth=3;
+    for(let a=0;a<Math.PI*6;a+=0.08){
+      const r=15+a*3;
+      if(r>br-5)break;
+      const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+      if(a===0)ctx.beginPath();
+      a<0.08?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Center shaft
+    ctx.fillStyle='#555';ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fill();
+
+    // Curtain wraps around barrel
+    for(let i=0;i<5;i++){
+      const r=br+4+i*5;
+      ctx.strokeStyle=`rgba(148,163,184,${0.5-i*0.08})`;ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    }
+
+    // Bracket plates
+    ctx.fillStyle='#555';
+    ctx.fillRect(cx-br-30,cy-8,25,16);
+    ctx.fillRect(cx+br+5,cy-8,25,16);
+
+    // Labels
+    ctx.fillStyle='#ccc';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('TORSION SPRING',cx,cy+br+30);
+    ctx.fillText('(inside barrel)',cx,cy+br+45);
+    ctx.fillText('COILED CURTAIN',cx,cy-br-20);
+    ctx.fillText('BRACKET',cx-br-18,cy+30);
+    ctx.fillText('BRACKET',cx+br+18,cy+30);
+  }
+}
+drawAnatomy();
+function setAnatomyView(v){anatomyView=v;document.querySelectorAll('#anatomy .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===v))}
+
+// ═══ SECTION 2: COILING ANIMATION ═══
+let coilPos=1,coilDir=0; // 0=closed, 1=open, pos 0-1 (0=open,1=closed)
+const coilC=document.getElementById('coilingCanvas');const coilCtx=coilC.getContext('2d');
+
+function drawCoiling(){
+  requestAnimationFrame(drawCoiling);
+  const{w,h}=fitCanvas(coilC);const ctx=coilCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+
+  // Animate
+  if(coilDir!==0){
+    coilPos+=coilDir*0.008;
+    if(coilPos<=0){coilPos=0;coilDir=0}
+    if(coilPos>=1){coilPos=1;coilDir=0}
+  }
+
+  const wallL=w*0.2,wallR=w*0.8,wallTop=h*0.08,floorY=h*0.9;
+  const openH=floorY-wallTop-60;
+  const guideW=10;
+
+  // Walls
+  ctx.fillStyle='#3a3530';
+  ctx.fillRect(wallL-35,wallTop,37,floorY-wallTop);
+  ctx.fillRect(wallR-2,wallTop,37,floorY-wallTop);
+  ctx.fillStyle='#2a2a30';ctx.fillRect(wallL-35,floorY,wallR-wallL+70,h-floorY);
+
+  // Guides
+  ctx.fillStyle='#6a6a75';
+  ctx.fillRect(wallL-2,wallTop+55,guideW,floorY-wallTop-55);
+  ctx.fillRect(wallR-guideW+2,wallTop+55,guideW,floorY-wallTop-55);
+
+  // Hood
+  const hoodY=wallTop+5,hoodH=50;
+  ctx.fillStyle='#555560';
+  ctx.beginPath();ctx.moveTo(wallL-8,hoodY+hoodH);
+  ctx.lineTo(wallL-8,hoodY+5);ctx.quadraticCurveTo(wallL-8,hoodY-3,wallL+15,hoodY-3);
+  ctx.lineTo(wallR-15,hoodY-3);ctx.quadraticCurveTo(wallR+8,hoodY-3,wallR+8,hoodY+5);
+  ctx.lineTo(wallR+8,hoodY+hoodH);ctx.fill();
+
+  // Barrel + coil
+  const bCX=(wallL+wallR)/2,bCY=hoodY+hoodH/2+5,bR=14;
+  ctx.fillStyle='#7a7a85';ctx.beginPath();ctx.arc(bCX,bCY,bR,0,Math.PI*2);ctx.fill();
+  // Coiled curtain wraps (more wraps when more open)
+  const wraps=Math.floor((1-coilPos)*8);
+  for(let i=0;i<wraps;i++){
+    const r=bR+3+i*3.5;
+    ctx.strokeStyle=`rgba(148,163,184,${0.45-i*0.04})`;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(bCX,bCY,r,0,Math.PI*2);ctx.stroke();
+  }
+
+  // Spring tension indicator
+  const springTension=coilPos; // max when closed
+  ctx.strokeStyle=`hsl(${30-springTension*30},80%,${45+springTension*10}%)`;ctx.lineWidth=2;
+  for(let a=0;a<Math.PI*4;a+=0.1){
+    const r=5+a*2;if(r>bR-3)break;
+    const x=bCX+Math.cos(a)*r,y=bCY+Math.sin(a)*r;
+    a<0.1?ctx.beginPath()&&ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }ctx.stroke();
+
+  // Curtain
+  const curtainTop=hoodY+hoodH;
+  const curtainH=openH*coilPos;
+  const slatH=7,gap=1;
+  const numSlats=Math.floor(curtainH/(slatH+gap));
+  for(let i=0;i<numSlats;i++){
+    const sy=curtainTop+i*(slatH+gap);
+    ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+    ctx.fillRect(wallL+guideW-2,sy,wallR-wallL-guideW*2+4,slatH);
+  }
+
+  // Bottom bar
+  if(numSlats>0){
+    const bbY=curtainTop+numSlats*(slatH+gap);
+    ctx.fillStyle='#5a5a60';ctx.fillRect(wallL+5,bbY,wallR-wallL-10,10);
+    ctx.fillStyle='#333';ctx.fillRect(wallL+8,bbY+10,wallR-wallL-16,4);
+  }
+
+  // Update readouts
+  const pct=Math.round(coilPos*100);
+  document.getElementById('coilPos').innerHTML=(pct===0?'Open':pct===100?'Closed':pct+'%')+'<span class="readout-unit"> ('+(100-pct)+'% open)</span>';
+  document.getElementById('coilSpring').textContent=pct>75?'High':pct>40?'Medium':'Low';
+  document.getElementById('coilSpring').style.color=pct>75?'var(--danger)':pct>40?'var(--warn)':'var(--success)';
+  document.getElementById('coilWraps').textContent=wraps;
+  document.getElementById('coilOp').textContent=coilDir<0?'OPENING ↑':coilDir>0?'CLOSING ↓':'IDLE';
+  document.getElementById('coilOp').style.color=coilDir!==0?'var(--accent)':'var(--text2)';
+}
+drawCoiling();
+function coilOpen(){coilDir=-1}
+function coilClose(){coilDir=1}
+function coilStop(){coilDir=0}
+
+// ═══ SECTION 3: SLAT TYPES ═══
+let slatType=0;
+const slatTypes=[
+  {name:'Flat Slat',r:'R-0',wind:'Standard',vis:'None',desc:'Standard roll-formed flat profile. Economical, good security.'},
+  {name:'Curved Slat',r:'R-0',wind:'Enhanced',vis:'None',desc:'Curved profile adds strength. Better wind load resistance.'},
+  {name:'Insulated (Foam-Filled)',r:'R-7 to R-10',wind:'Standard',vis:'None',desc:'Polyurethane injected between steel skins for thermal performance.'},
+  {name:'Perforated Slat',r:'R-0',wind:'Reduced',vis:'Partial (~20%)',desc:'Punched holes allow airflow and limited visibility while maintaining security.'},
+  {name:'Grille (Rods & Links)',r:'R-0',wind:'None',vis:'Full (~80%)',desc:'Open pattern of steel rods and links. Maximum visibility and ventilation.'}
+];
+const slatC=document.getElementById('slatCanvas');const slatCtx=slatC.getContext('2d');
+
+function drawSlats(){
+  requestAnimationFrame(drawSlats);
+  const{w,h}=fitCanvas(slatC);const ctx=slatCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+  const st=slatTypes[slatType];
+
+  const cx=w*0.35,startY=h*0.08,slatW=w*0.45,slatH=38,gap=4;
+
+  // Title
+  ctx.fillStyle='#ccc';ctx.font='bold 13px "Oswald"';ctx.textAlign='center';
+  ctx.fillText(st.name.toUpperCase(),cx,startY);
+
+  for(let i=0;i<8;i++){
+    const sy=startY+20+i*(slatH+gap);
+
+    if(slatType<=2){
+      // Solid slats
+      const curve=slatType===1?6:0;
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+
+      if(slatType===2){
+        // Insulated — outer steel + foam core + inner steel
+        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy,slatW,5); // outer steel
+        ctx.fillStyle='#e8d8a0';ctx.fillRect(cx-slatW/2,sy+5,slatW,slatH-10); // foam
+        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy+slatH-5,slatW,5); // inner steel
+      } else {
+        // Flat or curved
+        ctx.beginPath();
+        if(curve){
+          ctx.moveTo(cx-slatW/2,sy+slatH);ctx.lineTo(cx-slatW/2,sy+curve);
+          ctx.quadraticCurveTo(cx,sy-curve*1.5,cx+slatW/2,sy+curve);
+          ctx.lineTo(cx+slatW/2,sy+slatH);
+        } else {
+          ctx.rect(cx-slatW/2,sy,slatW,slatH);
+        }
+        ctx.fill();
+      }
+
+      // Interlock line
+      ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx-slatW/2,sy+slatH+1);ctx.lineTo(cx+slatW/2,sy+slatH+1);ctx.stroke();
+
+    } else if(slatType===3){
+      // Perforated
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+      ctx.fillRect(cx-slatW/2,sy,slatW,slatH);
+      // Punch holes
+      ctx.fillStyle='#0e1118';
+      for(let j=0;j<Math.floor(slatW/18);j++){
+        for(let k=0;k<2;k++){
+          ctx.beginPath();ctx.arc(cx-slatW/2+12+j*18,sy+10+k*18,4,0,Math.PI*2);ctx.fill();
+        }
+      }
+    } else {
+      // Grille — rods and links
+      if(i%2===0){
+        // Horizontal rod
+        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy+15,slatW,6);
+      }
+      // Vertical links
+      const linkSpacing=30;
+      const offset=i%2===0?0:linkSpacing/2;
+      ctx.fillStyle='#7a7f8a';
+      for(let j=0;j<Math.floor(slatW/linkSpacing)+1;j++){
+        ctx.fillRect(cx-slatW/2+offset+j*linkSpacing,sy,5,slatH);
+      }
+    }
+  }
+
+  // Description panel
+  const descX=cx+slatW/2+30;
+  ctx.fillStyle='#ccc';ctx.font='11px "JetBrains Mono"';ctx.textAlign='left';
+  ctx.fillText('PROFILE: '+st.name,descX,startY+40);
+  ctx.fillStyle='#888';ctx.font='10px "Source Sans Pro"';
+  // Word wrap description
+  const words=st.desc.split(' ');let line='',ly=startY+65;
+  words.forEach(word=>{
+    if(ctx.measureText(line+word).width>w-descX-20){ctx.fillText(line,descX,ly);ly+=16;line=word+' '}
+    else line+=word+' ';
+  });
+  ctx.fillText(line,descX,ly);
+
+  // Specs
+  ly+=30;
+  ctx.fillStyle='#aaa';ctx.font='10px "JetBrains Mono"';
+  ctx.fillText('R-VALUE: '+st.r,descX,ly);ly+=18;
+  ctx.fillText('WIND: '+st.wind,descX,ly);ly+=18;
+  ctx.fillText('VISIBILITY: '+st.vis,descX,ly);
+
+  // Update readouts
+  document.getElementById('slatProfile').textContent=st.name;
+  document.getElementById('slatR').textContent=st.r;
+  document.getElementById('slatWind').textContent=st.wind;
+  document.getElementById('slatVis').textContent=st.vis;
+}
+drawSlats();
+function setSlatType(t){slatType=t;document.querySelectorAll('#slat-types .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===t))}
+
+// ═══ SECTION 5: APPLICATIONS ═══
+let appType=0;
+const apps=[
+  {name:'Warehouse Service Door',size:"12'×12'",feat:'Durability',color:'#6a6a75'},
+  {name:'Fire-Rated Door',size:"10'×10'",feat:'Fire Containment',color:'#ef4444'},
+  {name:'Security Grille',size:"15'×8'",feat:'Visibility + Security',color:'#60a5fa'},
+  {name:'Counter Shutter',size:"8'×4'",feat:'Compact Footprint',color:'#f59e0b'},
+  {name:'Self-Storage Unit',size:"10'×8'",feat:'Low Cost / High Volume',color:'#22c55e'}
+];
+const appC=document.getElementById('appCanvas');const appCtx=appC.getContext('2d');
+
+function drawApp(){
+  requestAnimationFrame(drawApp);
+  const{w,h}=fitCanvas(appC);const ctx=appCtx;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
+  const app=apps[appType];
+
+  // Scene based on application type
+  const cx=w/2,floorY=h*0.82;
+
+  if(appType===0){
+    // Warehouse
+    ctx.fillStyle='#2a2d38';ctx.fillRect(w*0.05,h*0.1,w*0.9,floorY-h*0.1);
+    ctx.fillStyle='#222530';ctx.fillRect(w*0.05,floorY,w*0.9,h-floorY);
+    // Large opening with rolling door
+    const dx=w*0.2,dw=w*0.6,dy=h*0.18,dh=floorY-dy;
+    ctx.fillStyle='#4a4d58';ctx.fillRect(dx-8,dy-8,dw+16,dh+16);
+    // Slats
+    for(let i=0;i<Math.floor(dh/10);i++){
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+      ctx.fillRect(dx,dy+i*10,dw,9);
+    }
+    ctx.fillStyle='#5a5a60';ctx.fillRect(dx,floorY-12,dw,12);
+    // Forklift hint
+    ctx.fillStyle='#f97316';ctx.fillRect(w*0.7,floorY-25,30,25);ctx.fillRect(w*0.68,floorY-40,8,40);
+    ctx.fillStyle='#888';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('LOADING DOCK',cx,h*0.14);
+
+  } else if(appType===1){
+    // Fire door
+    ctx.fillStyle='#2a2020';ctx.fillRect(w*0.05,h*0.1,w*0.9,floorY-h*0.1);
+    ctx.fillStyle='#221818';ctx.fillRect(w*0.05,floorY,w*0.9,h-floorY);
+    const dx=w*0.25,dw=w*0.5,dy=h*0.2,dh=floorY-dy;
+    ctx.fillStyle='#4a3030';ctx.fillRect(dx-8,dy-8,dw+16,dh+16);
+    for(let i=0;i<Math.floor(dh/10);i++){
+      ctx.fillStyle=i%2===0?'#8a4444':'#7a3838';
+      ctx.fillRect(dx,dy+i*10,dw,9);
+    }
+    // Fire rating badge
+    ctx.fillStyle='rgba(239,68,68,0.15)';ctx.fillRect(dx+dw/2-50,dy+dh/2-18,100,36);
+    ctx.strokeStyle='#ef4444';ctx.lineWidth=2;ctx.strokeRect(dx+dw/2-50,dy+dh/2-18,100,36);
+    ctx.fillStyle='#ef4444';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
+    ctx.fillText('3-HOUR RATED',dx+dw/2,dy+dh/2+5);
+    // Fusible link
+    ctx.fillStyle='#ff6644';ctx.beginPath();ctx.arc(dx+dw-20,dy-4,6,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ccc';ctx.font='8px "JetBrains Mono"';ctx.fillText('FUSIBLE LINK',dx+dw-20,dy-16);
+
+  } else if(appType===2){
+    // Security grille (mall)
+    ctx.fillStyle='#2a2d38';ctx.fillRect(w*0.05,h*0.1,w*0.9,floorY-h*0.1);
+    const dx=w*0.2,dw=w*0.6,dy=h*0.2,dh=floorY-dy;
+    ctx.fillStyle='#3a3d48';ctx.fillRect(dx-5,dy-5,dw+10,dh+10);
+    // Grille pattern
+    const rodH=6,linkW=5,spacing=20;
+    for(let i=0;i<Math.floor(dh/(spacing));i++){
+      ctx.fillStyle='#888';ctx.fillRect(dx,dy+i*spacing+spacing/2-rodH/2,dw,rodH);
+    }
+    for(let j=0;j<Math.floor(dw/spacing);j++){
+      ctx.fillStyle='#777';ctx.fillRect(dx+j*spacing+spacing/2-linkW/2,dy,linkW,dh);
+    }
+    // Store interior visible behind
+    ctx.fillStyle='rgba(255,200,100,0.08)';ctx.fillRect(dx,dy,dw,dh);
+    ctx.fillStyle='#888';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('RETAIL STOREFRONT',cx,h*0.14);
+
+  } else if(appType===3){
+    // Counter shutter
+    ctx.fillStyle='#2a2d38';ctx.fillRect(w*0.05,h*0.1,w*0.9,floorY-h*0.1);
+    // Counter
+    const counterY=h*0.55;
+    ctx.fillStyle='#5a4a3a';ctx.fillRect(w*0.15,counterY,w*0.7,12);
+    ctx.fillStyle='#4a3a2a';ctx.fillRect(w*0.15,counterY+12,w*0.7,h*0.15);
+    // Small rolling door above counter
+    const dx=w*0.25,dw=w*0.5,dy=h*0.2,dh=counterY-dy;
+    ctx.fillStyle='#4a4d58';ctx.fillRect(dx-4,dy-4,dw+8,dh+8);
+    for(let i=0;i<Math.floor(dh/8);i++){
+      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
+      ctx.fillRect(dx,dy+i*8,dw,7);
+    }
+    ctx.fillStyle='#888';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('CONCESSION / SERVICE WINDOW',cx,h*0.14);
+
+  } else {
+    // Self-storage
+    ctx.fillStyle='#2a2d38';ctx.fillRect(w*0.02,h*0.1,w*0.96,floorY-h*0.1);
+    ctx.fillStyle='#222530';ctx.fillRect(w*0.02,floorY,w*0.96,h-floorY);
+    // Row of small units
+    const unitW=w*0.18,unitH=(floorY-h*0.2)*0.9;
+    for(let i=0;i<5;i++){
+      const ux=w*0.06+i*(unitW+8),uy=h*0.2;
+      ctx.fillStyle='#3a3d48';ctx.fillRect(ux-3,uy-3,unitW+6,unitH+6);
+      // Corrugated sheet door
+      for(let j=0;j<Math.floor(unitH/12);j++){
+        ctx.fillStyle=j%2===0?(i===2?'#6a9a6a':'#8a8f9a'):(i===2?'#5a8a5a':'#7d828c');
+        ctx.fillRect(ux,uy+j*12,unitW,11);
+      }
+      // Unit number
+      ctx.fillStyle='#ddd';ctx.font='bold 11px "Oswald"';ctx.textAlign='center';
+      ctx.fillText('#'+(101+i),ux+unitW/2,uy-8);
+      // Padlock
+      if(i!==2){
+        ctx.fillStyle='#f59e0b';ctx.fillRect(ux+unitW/2-4,uy+unitH-8,8,8);
+        ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(ux+unitW/2,uy+unitH-10,5,Math.PI,0);ctx.stroke();
+      }
+    }
+    ctx.fillStyle='#888';ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+    ctx.fillText('SELF-STORAGE FACILITY',cx,h*0.14);
+    ctx.fillStyle='#22c55e';ctx.font='8px "JetBrains Mono"';
+    ctx.fillText('▲ UNIT OPEN',w*0.06+2*(unitW+8)+unitW/2,floorY+15);
+  }
+
+  // App label
+  ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(12,h-32,200,22);
+  ctx.fillStyle=app.color;ctx.font='bold 11px "JetBrains Mono"';ctx.textAlign='left';
+  ctx.fillText(app.name.toUpperCase(),18,h-17);
+
+  document.getElementById('appName').textContent=app.name;
+  document.getElementById('appSize').textContent=app.size;
+  document.getElementById('appFeature').textContent=app.feat;
+  document.getElementById('appFeature').style.color=app.color;
+}
+drawApp();
+function setApp(t){appType=t;document.querySelectorAll('#applications .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===t))}
+</script>
+</body>
+</html>
