@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rolling Steel Doors Lab — Garage Door Science</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -112,12 +113,11 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-s
 <div class="section-desc">A rolling steel door is fundamentally different from a sectional garage door. Instead of hinged panels riding on tracks, it uses interlocking steel slats that coil around a barrel above the opening — like a giant steel window shade.</div>
 
 <div class="canvas-wrap" style="height:520px">
-<canvas id="anatomyCanvas"></canvas>
+<div id="anatomy3d" style="width:100%;height:100%"></div>
 </div>
 <div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
-<button class="ctrl-btn active" onclick="setAnatomyView(0)">Full View</button>
-<button class="ctrl-btn" onclick="setAnatomyView(1)">Curtain Detail</button>
-<button class="ctrl-btn" onclick="setAnatomyView(2)">Barrel Detail</button>
+<button class="ctrl-btn active" onclick="setAnatomyView(0)">Assembled</button>
+<button class="ctrl-btn" onclick="setAnatomyView(1)">Exploded</button>
 </div>
 
 <div class="info-grid">
@@ -138,7 +138,7 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-s
 <div class="section-desc">Watch how the curtain rolls up and down. The spring-loaded barrel does the heavy lifting — as the door closes, it winds the spring, storing energy. When opening, the spring releases that energy, assisting the motor or manual lift.</div>
 
 <div class="canvas-wrap" style="height:500px">
-<canvas id="coilingCanvas"></canvas>
+<div id="coiling3d" style="width:100%;height:100%"></div>
 </div>
 <div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
 <button class="ctrl-btn" onclick="coilOpen()">Open Door</button>
@@ -155,7 +155,7 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-s
 
 <div class="callout">
 <h4>⚡ Spring Energy</h4>
-<p>The counterbalance spring is under maximum tension when the door is fully closed and minimum tension when fully open. This is the opposite of a sectional door's torsion spring, which is at max tension when the door is closed but for a different reason — the rolling door's spring must help lift the full weight of the curtain from closed position. A 20-foot-wide rolling steel service door curtain can weigh 800+ pounds.</p>
+<p>The counterbalance spring is under maximum tension when the door is fully closed and minimum tension when fully open — just like a sectional door's torsion spring. Both systems store energy during closing and release it to assist opening. The key difference is the mechanism: a sectional door winds cables around drums to lift panels on tracks, while a rolling door coils the entire curtain directly around the spring-loaded barrel. Because the full curtain weight hangs vertically (no track support), the spring must counterbalance significantly more — a 20-foot-wide rolling steel service door curtain can weigh 800+ pounds.</p>
 </div>
 </div>
 <div class="divider"></div>
@@ -167,7 +167,7 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans Pro',sans-s
 <div class="section-desc">The slat profile determines the door's strength, insulation, and appearance. Different applications call for different slat designs — from solid security to perforated ventilation to insulated climate control.</div>
 
 <div class="canvas-wrap" style="height:420px">
-<canvas id="slatCanvas"></canvas>
+<div id="slat3d" style="width:100%;height:100%"></div>
 </div>
 <div style="display:flex;gap:.35rem;margin-bottom:1rem;flex-wrap:wrap">
 <button class="ctrl-btn active" onclick="setSlatType(0)">Flat Slat</button>
@@ -276,372 +276,395 @@ const slats=[];for(let i=0;i<15;i++)slats.push({y:Math.random(),x:0.1+Math.rando
 slats.forEach(s=>{s.y-=s.speed;if(s.y<-0.05){s.y=1.05;s.x=0.1+Math.random()*0.8;s.w=0.3+Math.random()*0.4}
 ctx.fillStyle=`rgba(148,163,184,${s.alpha})`;ctx.fillRect(s.x*w,s.y*h,s.w*w,3)})})()})();
 
-// ═══ SECTION 1: ANATOMY ═══
-let anatomyView=0;
-const anaC=document.getElementById('anatomyCanvas');const anaCtx=anaC.getContext('2d');
-
-function drawAnatomy(){
-  requestAnimationFrame(drawAnatomy);
-  const{w,h}=fitCanvas(anaC);const ctx=anaCtx;
-  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
-
-  if(anatomyView===0){
-    // Full side-view cross-section
-    const wallL=w*0.15,wallR=w*0.85,wallTop=h*0.12,floorY=h*0.88;
-    const guideW=12;
-    const openW=wallR-wallL;
-
-    // Wall
-    ctx.fillStyle='#3a3530';
-    ctx.fillRect(wallL-40,wallTop,42,floorY-wallTop);
-    ctx.fillRect(wallR-2,wallTop,42,floorY-wallTop);
-    // Floor
-    ctx.fillStyle='#2a2a30';ctx.fillRect(wallL-40,floorY,openW+80,h-floorY);
-
-    // Guides (vertical channels)
-    ctx.fillStyle='#6a6a75';
-    ctx.fillRect(wallL-2,wallTop+40,guideW,floorY-wallTop-40);
-    ctx.fillRect(wallR-guideW+2,wallTop+40,guideW,floorY-wallTop-40);
-
-    // Hood above opening
-    const hoodY=wallTop+10,hoodH=55;
-    ctx.fillStyle='#555560';
-    ctx.beginPath();ctx.moveTo(wallL-10,hoodY+hoodH);ctx.lineTo(wallL-10,hoodY+5);
-    ctx.quadraticCurveTo(wallL-10,hoodY-5,wallL+20,hoodY-5);
-    ctx.lineTo(wallR-20,hoodY-5);ctx.quadraticCurveTo(wallR+10,hoodY-5,wallR+10,hoodY+5);
-    ctx.lineTo(wallR+10,hoodY+hoodH);ctx.fill();
-    ctx.strokeStyle='#6a6a75';ctx.lineWidth=1;ctx.stroke();
-
-    // Barrel (inside hood)
-    const barrelCX=(wallL+wallR)/2,barrelCY=hoodY+hoodH/2+5,barrelR=18;
-    ctx.fillStyle='#7a7a85';ctx.beginPath();ctx.arc(barrelCX,barrelCY,barrelR,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#555';ctx.beginPath();ctx.arc(barrelCX,barrelCY,6,0,Math.PI*2);ctx.fill();
-
-    // Coiled curtain around barrel
-    for(let i=0;i<4;i++){
-      const r=barrelR+3+i*4;
-      ctx.strokeStyle=`rgba(148,163,184,${0.4-i*0.08})`;ctx.lineWidth=3;
-      ctx.beginPath();ctx.arc(barrelCX,barrelCY,r,0,Math.PI*2);ctx.stroke();
-    }
-
-    // Curtain (partially down)
-    const curtainTop=hoodY+hoodH;
-    const slatH=8,gap=1;
-    const numSlats=Math.floor((floorY-curtainTop)/(slatH+gap));
-    for(let i=0;i<numSlats;i++){
-      const sy=curtainTop+i*(slatH+gap);
-      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
-      ctx.fillRect(wallL+guideW-2,sy,openW-guideW*2+4,slatH);
-    }
-
-    // Bottom bar
-    const bbY=curtainTop+numSlats*(slatH+gap);
-    ctx.fillStyle='#6a6a70';ctx.fillRect(wallL+5,bbY,openW-10,12);
-    // Astragal
-    ctx.fillStyle='#333';ctx.fillRect(wallL+8,bbY+12,openW-16,5);
-
-    // Labels
-    ctx.fillStyle='#ccc';ctx.font='bold 11px "JetBrains Mono"';ctx.textAlign='left';
-    const labels=[
-      {x:wallR+18,y:hoodY+15,text:'HOOD',line:[wallR+10,hoodY+15]},
-      {x:wallR+18,y:barrelCY,text:'BARREL + SPRING',line:[wallR+10,barrelCY]},
-      {x:wallR+18,y:curtainTop+40,text:'CURTAIN (SLATS)',line:[wallR-guideW+4,curtainTop+40]},
-      {x:wallR+18,y:(curtainTop+floorY)/2,text:'GUIDES',line:[wallR-2,floorY/2+curtainTop/2]},
-      {x:wallR+18,y:bbY+5,text:'BOTTOM BAR',line:[wallR-guideW+4,bbY+5]},
-      {x:wallR+18,y:bbY+18,text:'ASTRAGAL (SEAL)',line:[wallR-guideW+4,bbY+18]},
-    ];
-    labels.forEach(l=>{
-      ctx.fillStyle='#bbb';ctx.fillText(l.text,l.x,l.y+4);
-      ctx.strokeStyle='#555';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(l.line[0],l.line[1]);ctx.lineTo(l.x-4,l.y);ctx.stroke();
-      ctx.fillStyle='#f97316';ctx.beginPath();ctx.arc(l.line[0],l.line[1],3,0,Math.PI*2);ctx.fill();
-    });
-
-    // Title
-    ctx.fillStyle='#888';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
-    ctx.fillText('ROLLING STEEL DOOR — FRONT CROSS-SECTION',(wallL+wallR)/2,h-8);
-
-  } else if(anatomyView===1){
-    // Curtain detail - zoomed slat interlocking
-    ctx.fillStyle='#aaa';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
-    ctx.fillText('SLAT INTERLOCK DETAIL',w/2,30);
-
-    const cx=w*0.4,startY=h*0.1;
-    for(let i=0;i<6;i++){
-      const sy=startY+i*55;
-      const slatW=w*0.5;
-      // Slat body
-      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
-      ctx.fillRect(cx-slatW/2,sy,slatW,30);
-      // Curved interlock at bottom
-      ctx.fillStyle='#6a6f7a';
-      ctx.beginPath();
-      ctx.moveTo(cx-slatW/2,sy+30);ctx.lineTo(cx+slatW/2,sy+30);
-      ctx.lineTo(cx+slatW/2,sy+38);ctx.quadraticCurveTo(cx+slatW/2-5,sy+42,cx+slatW/2-20,sy+40);
-      ctx.lineTo(cx-slatW/2+20,sy+40);ctx.quadraticCurveTo(cx-slatW/2+5,sy+42,cx-slatW/2,sy+38);
-      ctx.fill();
-      // Top hook
-      ctx.fillStyle='#6a6f7a';
-      ctx.beginPath();
-      ctx.moveTo(cx-slatW/2,sy);ctx.lineTo(cx+slatW/2,sy);
-      ctx.lineTo(cx+slatW/2,sy-6);ctx.quadraticCurveTo(cx+slatW/2-5,sy-9,cx+slatW/2-15,sy-8);
-      ctx.lineTo(cx-slatW/2+15,sy-8);ctx.quadraticCurveTo(cx-slatW/2+5,sy-9,cx-slatW/2,sy-6);
-      ctx.fill();
-      // End lock indicators
-      ctx.fillStyle='#f97316';ctx.fillRect(cx-slatW/2-2,sy+5,4,20);
-      ctx.fillRect(cx+slatW/2-2,sy+5,4,20);
-    }
-    // Labels
-    ctx.fillStyle='#ccc';ctx.font='10px "JetBrains Mono"';ctx.textAlign='left';
-    ctx.fillText('INTERLOCK PROFILE',cx+w*0.28,startY+60);
-    ctx.fillText('END LOCKS',cx+w*0.28,startY+120);
-    ctx.fillStyle='#888';ctx.fillText('(prevent lateral',cx+w*0.28,startY+135);
-    ctx.fillText(' separation)',cx+w*0.28,startY+150);
-
-  } else {
-    // Barrel detail
-    ctx.fillStyle='#aaa';ctx.font='bold 14px "Oswald"';ctx.textAlign='center';
-    ctx.fillText('BARREL & COUNTERBALANCE DETAIL',w/2,30);
-
-    const cx=w/2,cy=h*0.45,br=60;
-    // Barrel pipe
-    ctx.fillStyle='#7a7a85';ctx.strokeStyle='#999';ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(cx,cy,br,0,Math.PI*2);ctx.fill();ctx.stroke();
-    // Spring inside (coiled representation)
-    ctx.strokeStyle='#f97316';ctx.lineWidth=3;
-    for(let a=0;a<Math.PI*6;a+=0.08){
-      const r=15+a*3;
-      if(r>br-5)break;
-      const x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
-      if(a===0)ctx.beginPath();
-      a<0.08?ctx.moveTo(x,y):ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-    // Center shaft
-    ctx.fillStyle='#555';ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fill();
-
-    // Curtain wraps around barrel
-    for(let i=0;i<5;i++){
-      const r=br+4+i*5;
-      ctx.strokeStyle=`rgba(148,163,184,${0.5-i*0.08})`;ctx.lineWidth=4;
-      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
-    }
-
-    // Bracket plates
-    ctx.fillStyle='#555';
-    ctx.fillRect(cx-br-30,cy-8,25,16);
-    ctx.fillRect(cx+br+5,cy-8,25,16);
-
-    // Labels
-    ctx.fillStyle='#ccc';ctx.font='10px "JetBrains Mono"';ctx.textAlign='center';
-    ctx.fillText('TORSION SPRING',cx,cy+br+30);
-    ctx.fillText('(inside barrel)',cx,cy+br+45);
-    ctx.fillText('COILED CURTAIN',cx,cy-br-20);
-    ctx.fillText('BRACKET',cx-br-18,cy+30);
-    ctx.fillText('BRACKET',cx+br+18,cy+30);
-  }
+// ═══ SHARED THREE.JS SETUP ═══
+const M3={
+  steel:new THREE.MeshStandardMaterial({color:0x8a8f9a,metalness:0.6,roughness:0.35}),
+  steelAlt:new THREE.MeshStandardMaterial({color:0x7a7f8a,metalness:0.6,roughness:0.35}),
+  steelDark:new THREE.MeshStandardMaterial({color:0x4a4f5a,metalness:0.5,roughness:0.5}),
+  orange:new THREE.MeshStandardMaterial({color:0xf97316,metalness:0.3,roughness:0.4,emissive:0xf97316,emissiveIntensity:0.15}),
+  foam:new THREE.MeshStandardMaterial({color:0xe8d8a0,roughness:0.9}),
+  rubber:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.9}),
+  hood:new THREE.MeshStandardMaterial({color:0x555560,metalness:0.4,roughness:0.5}),
+  wall:new THREE.MeshStandardMaterial({color:0x3a3530,roughness:0.9}),
+  hoodTrans:new THREE.MeshStandardMaterial({color:0x555560,metalness:0.4,roughness:0.5,transparent:true,opacity:0.6}),
+  spring:new THREE.MeshStandardMaterial({color:0xf97316,metalness:0.4,roughness:0.3,emissive:0xf97316,emissiveIntensity:0.1}),
+  guide:new THREE.MeshStandardMaterial({color:0x6a6a75,metalness:0.5,roughness:0.4}),
+};
+function mk3d(id,camPos,lookAt){
+  const el=document.getElementById(id);if(!el)return null;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(40,el.clientWidth/el.clientHeight,0.1,200);
+  cam.position.set(camPos[0],camPos[1],camPos[2]);
+  cam.lookAt(new THREE.Vector3(lookAt[0],lookAt[1],lookAt[2]));
+  const rnd=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  rnd.setSize(el.clientWidth,el.clientHeight);rnd.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  rnd.toneMapping=THREE.ACESFilmicToneMapping;rnd.toneMappingExposure=1.1;
+  el.appendChild(rnd.domElement);rnd.domElement.style.cursor='grab';
+  const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(4,6,5);scene.add(dl);
+  scene.add(new THREE.AmbientLight(0x404060,0.5));
+  scene.add(new THREE.HemisphereLight(0x8888aa,0x333344,0.25));
+  const grp=new THREE.Group();scene.add(grp);
+  let drag=false,px=0,py=0;
+  rnd.domElement.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;rnd.domElement.style.cursor='grabbing'});
+  const onMove=e=>{if(!drag)return;grp.rotation.y+=(e.clientX-px)*0.007;grp.rotation.x=Math.max(-0.7,Math.min(0.7,grp.rotation.x+(e.clientY-py)*0.005));px=e.clientX;py=e.clientY};
+  const onUp=()=>{drag=false;if(rnd.domElement)rnd.domElement.style.cursor='grab'};
+  window.addEventListener('pointermove',onMove);window.addEventListener('pointerup',onUp);
+  let vis=false;const io=new IntersectionObserver(e=>{vis=e[0].isIntersecting},{threshold:0.02});io.observe(el);
+  const ro=new ResizeObserver(()=>{const w=el.clientWidth,h=el.clientHeight;if(w&&h){cam.aspect=w/h;cam.updateProjectionMatrix();rnd.setSize(w,h)}});ro.observe(el);
+  return{scene,cam,rnd,grp,el,isVis:()=>vis};
 }
-drawAnatomy();
-function setAnatomyView(v){anatomyView=v;document.querySelectorAll('#anatomy .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===v))}
 
-// ═══ SECTION 2: COILING ANIMATION ═══
-let coilPos=1,coilDir=0; // 0=closed, 1=open, pos 0-1 (0=open,1=closed)
-const coilC=document.getElementById('coilingCanvas');const coilCtx=coilC.getContext('2d');
-
-function drawCoiling(){
-  requestAnimationFrame(drawCoiling);
-  const{w,h}=fitCanvas(coilC);const ctx=coilCtx;
-  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
-
-  // Animate
-  if(coilDir!==0){
-    coilPos+=coilDir*0.008;
-    if(coilPos<=0){coilPos=0;coilDir=0}
-    if(coilPos>=1){coilPos=1;coilDir=0}
+// ═══ SECTION 1: ANATOMY (Three.js Exploded View) ═══
+let anatomyView=0, anaExplode=0, anaTargetExplode=0;
+(function(){
+  const S=mk3d('anatomy3d',[0,2,9],[0,2,0]);if(!S)return;
+  const{grp,rnd,cam,scene}=S;
+  const baseCamZ=9, explodeCamZ=13; // camera pulls back slightly when exploding
+  const baseLookY=2, explodeLookY=2.5;
+  const parts=[];
+  function mkBox(w,h,d,mat,pos,name,explodeOffset){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+    m.position.set(pos[0],pos[1],pos[2]);
+    m.userData={base:pos.slice(),offset:explodeOffset,name};
+    grp.add(m);parts.push(m);return m;
   }
+  // Hood (top shell) - smaller offset so it stays in frame
+  mkBox(5.5,0.8,1.2,M3.hoodTrans,[0,4.2,0],'HOOD',[0,1.0,0]);
+  // Barrel (cylinder)
+  const barrel=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,4.8,24),M3.steelDark);
+  barrel.rotation.z=Math.PI/2;barrel.position.set(0,4.0,0);
+  barrel.userData={base:[0,4,0],offset:[0,0.6,1.5],name:'BARREL'};
+  grp.add(barrel);parts.push(barrel);
+  // Spring helix inside barrel
+  const springPts=[];
+  for(let a=0;a<Math.PI*10;a+=0.15){const r=0.22;springPts.push(new THREE.Vector3(Math.cos(a)*r,-2.2+a*0.14,Math.sin(a)*r))}
+  const springCurve=new THREE.CatmullRomCurve3(springPts);
+  const springGeo=new THREE.TubeGeometry(springCurve,80,0.04,8,false);
+  const springMesh=new THREE.Mesh(springGeo,M3.spring);
+  springMesh.position.copy(barrel.position);springMesh.rotation.z=Math.PI/2;
+  springMesh.userData={base:[0,4,0],offset:[0,0.6,3],name:'TORSION SPRING'};
+  grp.add(springMesh);parts.push(springMesh);
+  // Curtain slats
+  const slatCount=22, slatH=0.12, slatGap=0.015;
+  for(let i=0;i<slatCount;i++){
+    const y=3.5-i*(slatH+slatGap);
+    const mat=i%2===0?M3.steel:M3.steelAlt;
+    mkBox(4.6,slatH,0.6,mat,[0,y,0],'CURTAIN',[0,0,1.2]);
+  }
+  // Left guide
+  mkBox(0.15,4.5,0.6,M3.guide,[-2.5,1.8,0],'LEFT GUIDE',[-1.8,0,0]);
+  // Right guide
+  mkBox(0.15,4.5,0.6,M3.guide,[2.5,1.8,0],'RIGHT GUIDE',[1.8,0,0]);
+  // Bottom bar
+  mkBox(4.8,0.2,0.7,M3.steelDark,[0,0.55,0],'BOTTOM BAR',[0,-1.2,0]);
+  // Astragal
+  mkBox(4.6,0.08,0.75,M3.rubber,[0,0.4,0],'ASTRAGAL',[0,-1.8,0]);
 
-  const wallL=w*0.2,wallR=w*0.8,wallTop=h*0.08,floorY=h*0.9;
-  const openH=floorY-wallTop-60;
-  const guideW=10;
+  // Label sprites
+  const labelMap=new Map();
+  function makeLabel(text){
+    const c=document.createElement('canvas');c.width=320;c.height=48;
+    const ctx=c.getContext('2d');ctx.fillStyle='rgba(0,0,0,0.75)';ctx.fillRect(0,0,320,48);
+    ctx.strokeStyle='#f97316';ctx.lineWidth=2;ctx.strokeRect(1,1,318,46);
+    ctx.fillStyle='#f97316';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText(text,160,33);
+    const tex=new THREE.CanvasTexture(c);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+    sp.scale.set(2.5,0.4,1);return sp;
+  }
+  const uniqueNames=['HOOD','BARREL','TORSION SPRING','CURTAIN','LEFT GUIDE','RIGHT GUIDE','BOTTOM BAR','ASTRAGAL'];
+  uniqueNames.forEach(n=>{
+    const sp=makeLabel(n);sp.visible=false;grp.add(sp);labelMap.set(n,sp);
+  });
 
-  // Walls
-  ctx.fillStyle='#3a3530';
-  ctx.fillRect(wallL-35,wallTop,37,floorY-wallTop);
-  ctx.fillRect(wallR-2,wallTop,37,floorY-wallTop);
-  ctx.fillStyle='#2a2a30';ctx.fillRect(wallL-35,floorY,wallR-wallL+70,h-floorY);
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!S.isVis())return;
+    // Smooth lerp explode
+    anaExplode+=(anaTargetExplode-anaExplode)*0.06;
+    // Camera zooms out to keep everything in frame
+    cam.position.z+=(baseCamZ+(explodeCamZ-baseCamZ)*anaExplode-cam.position.z)*0.06;
+    const lookY=baseLookY+(explodeLookY-baseLookY)*anaExplode;
+    cam.lookAt(new THREE.Vector3(0,lookY,0));
+    // Lerp parts
+    parts.forEach(p=>{
+      const b=p.userData.base,o=p.userData.offset;if(!b||!o)return;
+      p.position.x+=(b[0]+o[0]*anaExplode-p.position.x)*0.08;
+      p.position.y+=(b[1]+o[1]*anaExplode-p.position.y)*0.08;
+      p.position.z+=(b[2]+o[2]*anaExplode-p.position.z)*0.08;
+    });
+    // Labels - position based on component type
+    labelMap.forEach((sp,name)=>{
+      const part=parts.find(p=>p.userData.name===name);
+      if(part&&anaExplode>0.15){
+        sp.visible=true;
+        sp.position.copy(part.position);
+        if(name==='LEFT GUIDE'){sp.position.x-=1.2;sp.position.y=part.position.y}
+        else if(name==='RIGHT GUIDE'){sp.position.x+=1.2;sp.position.y=part.position.y}
+        else{sp.position.y+=0.4;sp.position.z+=0.2}
+      }
+      else sp.visible=false;
+    });
+    rnd.render(scene,cam);
+  }
+  animate();
+})();
+function setAnatomyView(v){
+  anatomyView=v;
+  anaTargetExplode=v===0?0:1.0;
+  document.querySelectorAll('#anatomy .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===v));
+}
+
+// ═══ SECTION 2: COILING MECHANISM (Three.js) ═══
+let coilPos=1,coilDir=0; // 1=closed, 0=open
+(function(){
+  const S=mk3d('coiling3d',[4,2,9],[0,1.8,0]);if(!S)return;
+  const{grp,rnd,cam,scene}=S;
+
+  const SLAT_COUNT=36,SLAT_W=4.0,SLAT_H=0.1,SLAT_D=0.45,SLAT_GAP=0.008;
+  const BARREL_R=0.35,BARREL_Y=3.8;
+  const CURTAIN_TOP=BARREL_Y-0.45;
+  const FLOOR_Y=-0.5;
+
+  // Walls - shorter, positioned so floor is at bottom
+  const wallL=new THREE.Mesh(new THREE.BoxGeometry(0.4,4.8,1),M3.wall);wallL.position.set(-2.4,1.6,0);grp.add(wallL);
+  const wallR=new THREE.Mesh(new THREE.BoxGeometry(0.4,4.8,1),M3.wall);wallR.position.set(2.4,1.6,0);grp.add(wallR);
+  const floor=new THREE.Mesh(new THREE.BoxGeometry(6,0.15,2),new THREE.MeshStandardMaterial({color:0x2a2a30,roughness:0.9}));
+  floor.position.set(0,FLOOR_Y,0);grp.add(floor);
 
   // Guides
-  ctx.fillStyle='#6a6a75';
-  ctx.fillRect(wallL-2,wallTop+55,guideW,floorY-wallTop-55);
-  ctx.fillRect(wallR-guideW+2,wallTop+55,guideW,floorY-wallTop-55);
+  const gL=new THREE.Mesh(new THREE.BoxGeometry(0.1,4.2,0.5),M3.guide);gL.position.set(-2.15,1.9,0);grp.add(gL);
+  const gR=new THREE.Mesh(new THREE.BoxGeometry(0.1,4.2,0.5),M3.guide);gR.position.set(2.15,1.9,0);grp.add(gR);
 
   // Hood
-  const hoodY=wallTop+5,hoodH=50;
-  ctx.fillStyle='#555560';
-  ctx.beginPath();ctx.moveTo(wallL-8,hoodY+hoodH);
-  ctx.lineTo(wallL-8,hoodY+5);ctx.quadraticCurveTo(wallL-8,hoodY-3,wallL+15,hoodY-3);
-  ctx.lineTo(wallR-15,hoodY-3);ctx.quadraticCurveTo(wallR+8,hoodY-3,wallR+8,hoodY+5);
-  ctx.lineTo(wallR+8,hoodY+hoodH);ctx.fill();
+  const hood=new THREE.Mesh(new THREE.BoxGeometry(5.0,0.6,1.0),M3.hoodTrans);hood.position.set(0,BARREL_Y+0.1,0);grp.add(hood);
 
-  // Barrel + coil
-  const bCX=(wallL+wallR)/2,bCY=hoodY+hoodH/2+5,bR=14;
-  ctx.fillStyle='#7a7a85';ctx.beginPath();ctx.arc(bCX,bCY,bR,0,Math.PI*2);ctx.fill();
-  // Coiled curtain wraps (more wraps when more open)
-  const wraps=Math.floor((1-coilPos)*8);
-  for(let i=0;i<wraps;i++){
-    const r=bR+3+i*3.5;
-    ctx.strokeStyle=`rgba(148,163,184,${0.45-i*0.04})`;ctx.lineWidth=3;
-    ctx.beginPath();ctx.arc(bCX,bCY,r,0,Math.PI*2);ctx.stroke();
-  }
+  // Barrel
+  const barrelMesh=new THREE.Mesh(new THREE.CylinderGeometry(BARREL_R,BARREL_R,SLAT_W+0.4,24),M3.steelDark);
+  barrelMesh.rotation.z=Math.PI/2;barrelMesh.position.set(0,BARREL_Y,0);grp.add(barrelMesh);
 
-  // Spring tension indicator
-  const springTension=coilPos; // max when closed
-  ctx.strokeStyle=`hsl(${30-springTension*30},80%,${45+springTension*10}%)`;ctx.lineWidth=2;
-  for(let a=0;a<Math.PI*4;a+=0.1){
-    const r=5+a*2;if(r>bR-3)break;
-    const x=bCX+Math.cos(a)*r,y=bCY+Math.sin(a)*r;
-    a<0.1?ctx.beginPath()&&ctx.moveTo(x,y):ctx.lineTo(x,y);
-  }ctx.stroke();
+  // Spring (visible helix)
+  const sPts=[];for(let a=0;a<Math.PI*8;a+=0.2){sPts.push(new THREE.Vector3(Math.cos(a)*0.2,-1.6+a*0.1,Math.sin(a)*0.2))}
+  const sCurve=new THREE.CatmullRomCurve3(sPts);
+  const sMesh=new THREE.Mesh(new THREE.TubeGeometry(sCurve,60,0.03,8,false),M3.spring);
+  sMesh.position.set(0,BARREL_Y,0);sMesh.rotation.z=Math.PI/2;grp.add(sMesh);
 
-  // Curtain
-  const curtainTop=hoodY+hoodH;
-  const curtainH=openH*coilPos;
-  const slatH=7,gap=1;
-  const numSlats=Math.floor(curtainH/(slatH+gap));
-  for(let i=0;i<numSlats;i++){
-    const sy=curtainTop+i*(slatH+gap);
-    ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
-    ctx.fillRect(wallL+guideW-2,sy,wallR-wallL-guideW*2+4,slatH);
+  // Individual slats
+  const slats=[];
+  for(let i=0;i<SLAT_COUNT;i++){
+    const mat=(i%2===0?M3.steel:M3.steelAlt).clone();
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,SLAT_H,SLAT_D),mat);
+    grp.add(mesh);slats.push(mesh);
   }
 
   // Bottom bar
-  if(numSlats>0){
-    const bbY=curtainTop+numSlats*(slatH+gap);
-    ctx.fillStyle='#5a5a60';ctx.fillRect(wallL+5,bbY,wallR-wallL-10,10);
-    ctx.fillStyle='#333';ctx.fillRect(wallL+8,bbY+10,wallR-wallL-16,4);
-  }
+  const bbar=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W+0.15,0.12,SLAT_D+0.08),M3.steelDark);
+  grp.add(bbar);
+  const astragal=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W+0.08,0.05,SLAT_D+0.1),M3.rubber);
+  grp.add(astragal);
 
-  // Update readouts
-  const pct=Math.round(coilPos*100);
-  document.getElementById('coilPos').innerHTML=(pct===0?'Open':pct===100?'Closed':pct+'%')+'<span class="readout-unit"> ('+(100-pct)+'% open)</span>';
-  document.getElementById('coilSpring').textContent=pct>75?'High':pct>40?'Medium':'Low';
-  document.getElementById('coilSpring').style.color=pct>75?'var(--danger)':pct>40?'var(--warn)':'var(--success)';
-  document.getElementById('coilWraps').textContent=wraps;
-  document.getElementById('coilOp').textContent=coilDir<0?'OPENING ↑':coilDir>0?'CLOSING ↓':'IDLE';
-  document.getElementById('coilOp').style.color=coilDir!==0?'var(--accent)':'var(--text2)';
-}
-drawCoiling();
-function coilOpen(){coilDir=-1}
-function coilClose(){coilDir=1}
+  function updateSlats(){
+    const hangCount=Math.round(SLAT_COUNT*coilPos);
+    const coiledCount=SLAT_COUNT-hangCount;
+
+    // Tight Archimedean spiral: radius increases by one slat thickness per full revolution
+    // Each slat subtends an angle based on its arc length at current radius
+    const slatThickness=SLAT_H+0.005; // thickness of each layer
+    const startR=BARREL_R+slatThickness; // first layer right on barrel
+
+    // Pre-calculate coil positions (from last coiled slat inward)
+    const coilAngles=[];
+    let angle=0; // start angle (bottom of barrel, right side)
+    for(let c=0;c<coiledCount;c++){
+      // Current radius: increases smoothly with angle (Archimedean spiral)
+      const r=startR+(angle/(Math.PI*2))*slatThickness;
+      // Arc length this slat occupies at this radius
+      const arcAngle=SLAT_D/r;
+      coilAngles.push({angle,r});
+      angle+=arcAngle+0.02; // small gap between slats in the coil
+    }
+
+    for(let i=0;i<SLAT_COUNT;i++){
+      const mesh=slats[i];
+      if(i<hangCount){
+        // Hanging flat in the opening
+        mesh.position.set(0,CURTAIN_TOP-i*(SLAT_H+SLAT_GAP),0);
+        mesh.rotation.set(0,0,0);
+        mesh.visible=true;
+      } else {
+        // Coiled around barrel — tight spiral, no fins sticking out
+        const ci=i-hangCount;
+        if(ci<coilAngles.length){
+          const ca=coilAngles[ci];
+          // Position on spiral: angle measured from bottom (6 o'clock), going counter-clockwise
+          const a=-Math.PI/2+ca.angle;
+          mesh.position.set(0,BARREL_Y+Math.sin(a)*ca.r,Math.cos(a)*ca.r);
+          // Slat rotation follows the spiral tangent — lay flat against the coil
+          mesh.rotation.set(-a+Math.PI/2,0,0);
+          mesh.visible=true;
+        } else {
+          mesh.visible=false;
+        }
+      }
+    }
+    // Bottom bar follows lowest hanging slat
+    if(hangCount>0){
+      const bbY=CURTAIN_TOP-hangCount*(SLAT_H+SLAT_GAP);
+      bbar.position.set(0,bbY-0.07,0);bbar.rotation.set(0,0,0);bbar.visible=true;
+      astragal.position.set(0,bbY-0.15,0);astragal.rotation.set(0,0,0);astragal.visible=true;
+    } else {
+      bbar.visible=false;astragal.visible=false;
+    }
+  }
+  updateSlats();
+
+  // Spring glow based on tension
+  const springLight=new THREE.PointLight(0xf97316,0,3);springLight.position.set(0,BARREL_Y,0);grp.add(springLight);
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!S.isVis())return;
+    if(coilDir!==0){
+      coilPos+=coilDir*0.006;
+      if(coilPos<=0){coilPos=0;coilDir=0}
+      if(coilPos>=1){coilPos=1;coilDir=0}
+      updateSlats();
+    }
+    // Spring glow intensity based on tension (pos=1 means closed = max tension)
+    springLight.intensity=coilPos*1.5;
+    sMesh.material.emissiveIntensity=coilPos*0.3;
+
+    rnd.render(scene,cam);
+    // Update readouts
+    const pct=Math.round(coilPos*100);
+    const coiledCount=SLAT_COUNT-Math.round(SLAT_COUNT*coilPos);
+    const wraps=coiledCount>0?Math.ceil(coiledCount/8):0;
+    document.getElementById('coilPos').innerHTML=(pct===0?'Open':pct===100?'Closed':pct+'%')+'<span class="readout-unit"> ('+(100-pct)+'% open)</span>';
+    document.getElementById('coilSpring').textContent=pct>75?'High':pct>40?'Medium':'Low';
+    document.getElementById('coilSpring').style.color=pct>75?'var(--danger)':pct>40?'var(--warn)':'var(--success)';
+    document.getElementById('coilWraps').textContent=wraps;
+    document.getElementById('coilOp').textContent=coilDir<0?'OPENING ↑':coilDir>0?'CLOSING ↓':'IDLE';
+    document.getElementById('coilOp').style.color=coilDir!==0?'var(--accent)':'var(--text2)';
+  }
+  animate();
+})();
+function coilOpen(){coilDir=-0.8}
+function coilClose(){coilDir=0.8}
 function coilStop(){coilDir=0}
 
-// ═══ SECTION 3: SLAT TYPES ═══
+// ═══ SECTION 3: SLAT PROFILES (Three.js) ═══
 let slatType=0;
 const slatTypes=[
-  {name:'Flat Slat',r:'R-0',wind:'Standard',vis:'None',desc:'Standard roll-formed flat profile. Economical, good security.'},
-  {name:'Curved Slat',r:'R-0',wind:'Enhanced',vis:'None',desc:'Curved profile adds strength. Better wind load resistance.'},
-  {name:'Insulated (Foam-Filled)',r:'R-7 to R-10',wind:'Standard',vis:'None',desc:'Polyurethane injected between steel skins for thermal performance.'},
-  {name:'Perforated Slat',r:'R-0',wind:'Reduced',vis:'Partial (~20%)',desc:'Punched holes allow airflow and limited visibility while maintaining security.'},
-  {name:'Grille (Rods & Links)',r:'R-0',wind:'None',vis:'Full (~80%)',desc:'Open pattern of steel rods and links. Maximum visibility and ventilation.'}
+  {name:'Flat Slat',r:'R-0',wind:'Standard',vis:'None'},
+  {name:'Curved Slat',r:'R-0',wind:'Enhanced',vis:'None'},
+  {name:'Insulated (Foam-Filled)',r:'R-7 to R-10',wind:'Standard',vis:'None'},
+  {name:'Perforated Slat',r:'R-0',wind:'Reduced',vis:'Partial (~20%)'},
+  {name:'Grille (Rods & Links)',r:'R-0',wind:'None',vis:'Full (~80%)'}
 ];
-const slatC=document.getElementById('slatCanvas');const slatCtx=slatC.getContext('2d');
+(function(){
+  const S=mk3d('slat3d',[0,0,5],[0,0,0]);if(!S)return;
+  const{grp,rnd,cam,scene}=S;
 
-function drawSlats(){
-  requestAnimationFrame(drawSlats);
-  const{w,h}=fitCanvas(slatC);const ctx=slatCtx;
-  ctx.clearRect(0,0,w,h);ctx.fillStyle='#0e1118';ctx.fillRect(0,0,w,h);
-  const st=slatTypes[slatType];
+  function buildSlats(type){
+    while(grp.children.length)grp.remove(grp.children[0]);
+    // Slat proportions: wide across door, visible face height, THIN depth (steel sheet)
+    const SLAT_W=3.5, SLAT_H=0.22, SLAT_DEPTH=0.08, GAP=0.015, COUNT=12;
+    const totalH=COUNT*(SLAT_H+GAP);
 
-  const cx=w*0.35,startY=h*0.08,slatW=w*0.45,slatH=38,gap=4;
+    for(let i=0;i<COUNT;i++){
+      const y=(totalH/2)-i*(SLAT_H+GAP);
+      const mat=i%2===0?M3.steel.clone():M3.steelAlt.clone();
 
-  // Title
-  ctx.fillStyle='#ccc';ctx.font='bold 13px "Oswald"';ctx.textAlign='center';
-  ctx.fillText(st.name.toUpperCase(),cx,startY);
-
-  for(let i=0;i<8;i++){
-    const sy=startY+20+i*(slatH+gap);
-
-    if(slatType<=2){
-      // Solid slats
-      const curve=slatType===1?6:0;
-      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
-
-      if(slatType===2){
-        // Insulated — outer steel + foam core + inner steel
-        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy,slatW,5); // outer steel
-        ctx.fillStyle='#e8d8a0';ctx.fillRect(cx-slatW/2,sy+5,slatW,slatH-10); // foam
-        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy+slatH-5,slatW,5); // inner steel
+      if(type===0){
+        // Flat slat - thin steel strip
+        const m=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,SLAT_H,SLAT_DEPTH),mat);
+        m.position.y=y;grp.add(m);
+        // End locks (small tabs on each end)
+        const el1=new THREE.Mesh(new THREE.BoxGeometry(0.04,SLAT_H*0.6,SLAT_DEPTH+0.02),M3.orange);
+        el1.position.set(-SLAT_W/2+0.02,y,0);grp.add(el1);
+        const el2=new THREE.Mesh(new THREE.BoxGeometry(0.04,SLAT_H*0.6,SLAT_DEPTH+0.02),M3.orange);
+        el2.position.set(SLAT_W/2-0.02,y,0);grp.add(el2);
+        // Interlock lip (curled edge at bottom of each slat)
+        const lip=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,0.025,SLAT_DEPTH*0.6),M3.steelDark);
+        lip.position.set(0,y-SLAT_H/2-0.012,SLAT_DEPTH*0.2);grp.add(lip);
+      } else if(type===1){
+        // Curved slat - has a slight outward bow for strength
+        const shape=new THREE.Shape();
+        const hw=SLAT_W/2;
+        shape.moveTo(-hw,-SLAT_H/2);
+        shape.lineTo(hw,-SLAT_H/2);
+        shape.lineTo(hw,SLAT_H/2);
+        shape.lineTo(-hw,SLAT_H/2);
+        shape.lineTo(-hw,-SLAT_H/2);
+        const geo=new THREE.ExtrudeGeometry(shape,{depth:SLAT_DEPTH,bevelEnabled:false,bevelSize:0});
+        const m=new THREE.Mesh(geo,mat);
+        m.position.set(0,y,-SLAT_DEPTH/2);
+        // Slight rotation to simulate curve when viewed from side
+        grp.add(m);
+        // Curved ridge on front face
+        const ridge=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W-0.1,0.03,0.02),mat.clone());
+        ridge.material.color.setHex(0x9a9faa);
+        ridge.position.set(0,y,SLAT_DEPTH/2+0.01);grp.add(ridge);
+      } else if(type===2){
+        // Insulated - steel / foam / steel sandwich (thicker overall)
+        const insulDepth=0.22; // thicker for foam
+        const skinThick=0.02;
+        // Front steel skin
+        const front=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,SLAT_H,skinThick),M3.steel);
+        front.position.set(0,y,insulDepth/2-skinThick/2);grp.add(front);
+        // Foam core (yellow)
+        const foam=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W-0.01,SLAT_H-0.01,insulDepth-skinThick*2),M3.foam);
+        foam.position.set(0,y,0);grp.add(foam);
+        // Back steel skin
+        const back=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,SLAT_H,skinThick),M3.steel);
+        back.position.set(0,y,-insulDepth/2+skinThick/2);grp.add(back);
+      } else if(type===3){
+        // Perforated - flat slat with punched holes through face
+        const m=new THREE.Mesh(new THREE.BoxGeometry(SLAT_W,SLAT_H,SLAT_DEPTH),mat);
+        m.position.y=y;grp.add(m);
+        // Perforation holes (dark circles on the face, rows)
+        const holeMat=new THREE.MeshStandardMaterial({color:0x0e1118,roughness:1});
+        const holeR=0.035;
+        for(let hx=-SLAT_W/2+0.2;hx<SLAT_W/2-0.1;hx+=0.22){
+          const hole=new THREE.Mesh(new THREE.CylinderGeometry(holeR,holeR,SLAT_DEPTH+0.02,6),holeMat);
+          hole.rotation.x=Math.PI/2; // orient holes through the face (front to back)
+          hole.position.set(hx,y,0);grp.add(hole);
+        }
       } else {
-        // Flat or curved
-        ctx.beginPath();
-        if(curve){
-          ctx.moveTo(cx-slatW/2,sy+slatH);ctx.lineTo(cx-slatW/2,sy+curve);
-          ctx.quadraticCurveTo(cx,sy-curve*1.5,cx+slatW/2,sy+curve);
-          ctx.lineTo(cx+slatW/2,sy+slatH);
-        } else {
-          ctx.rect(cx-slatW/2,sy,slatW,slatH);
+        // Grille - horizontal rods connected by vertical links
+        if(i%2===0){
+          const rod=new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,SLAT_W,10),M3.steel);
+          rod.rotation.z=Math.PI/2;rod.position.y=y;grp.add(rod);
         }
-        ctx.fill();
-      }
-
-      // Interlock line
-      ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(cx-slatW/2,sy+slatH+1);ctx.lineTo(cx+slatW/2,sy+slatH+1);ctx.stroke();
-
-    } else if(slatType===3){
-      // Perforated
-      ctx.fillStyle=i%2===0?'#8a8f9a':'#7d828c';
-      ctx.fillRect(cx-slatW/2,sy,slatW,slatH);
-      // Punch holes
-      ctx.fillStyle='#0e1118';
-      for(let j=0;j<Math.floor(slatW/18);j++){
-        for(let k=0;k<2;k++){
-          ctx.beginPath();ctx.arc(cx-slatW/2+12+j*18,sy+10+k*18,4,0,Math.PI*2);ctx.fill();
+        const spacing=0.4;
+        const offset=i%2===0?0:spacing/2;
+        for(let lx=-SLAT_W/2+offset;lx<=SLAT_W/2;lx+=spacing){
+          const link=new THREE.Mesh(new THREE.BoxGeometry(0.04,SLAT_H+GAP,0.04),M3.steelAlt);
+          link.position.set(lx,y,0);grp.add(link);
         }
-      }
-    } else {
-      // Grille — rods and links
-      if(i%2===0){
-        // Horizontal rod
-        ctx.fillStyle='#8a8f9a';ctx.fillRect(cx-slatW/2,sy+15,slatW,6);
-      }
-      // Vertical links
-      const linkSpacing=30;
-      const offset=i%2===0?0:linkSpacing/2;
-      ctx.fillStyle='#7a7f8a';
-      for(let j=0;j<Math.floor(slatW/linkSpacing)+1;j++){
-        ctx.fillRect(cx-slatW/2+offset+j*linkSpacing,sy,5,slatH);
       }
     }
   }
+  buildSlats(0);
+  window._buildSlats=buildSlats;
 
-  // Description panel
-  const descX=cx+slatW/2+30;
-  ctx.fillStyle='#ccc';ctx.font='11px "JetBrains Mono"';ctx.textAlign='left';
-  ctx.fillText('PROFILE: '+st.name,descX,startY+40);
-  ctx.fillStyle='#888';ctx.font='10px "Source Sans Pro"';
-  // Word wrap description
-  const words=st.desc.split(' ');let line='',ly=startY+65;
-  words.forEach(word=>{
-    if(ctx.measureText(line+word).width>w-descX-20){ctx.fillText(line,descX,ly);ly+=16;line=word+' '}
-    else line+=word+' ';
-  });
-  ctx.fillText(line,descX,ly);
-
-  // Specs
-  ly+=30;
-  ctx.fillStyle='#aaa';ctx.font='10px "JetBrains Mono"';
-  ctx.fillText('R-VALUE: '+st.r,descX,ly);ly+=18;
-  ctx.fillText('WIND: '+st.wind,descX,ly);ly+=18;
-  ctx.fillText('VISIBILITY: '+st.vis,descX,ly);
-
-  // Update readouts
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!S.isVis())return;
+    if(!S.el.matches(':hover'))grp.rotation.y+=0.003;
+    rnd.render(scene,cam);
+  }
+  animate();
+})();
+function setSlatType(t){
+  slatType=t;
+  window._buildSlats(t);
+  const st=slatTypes[t];
   document.getElementById('slatProfile').textContent=st.name;
   document.getElementById('slatR').textContent=st.r;
   document.getElementById('slatWind').textContent=st.wind;
   document.getElementById('slatVis').textContent=st.vis;
+  document.querySelectorAll('#slat-types .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===t));
 }
-drawSlats();
-function setSlatType(t){slatType=t;document.querySelectorAll('#slat-types .ctrl-btn').forEach((b,i)=>b.classList.toggle('active',i===t))}
 
 // ═══ SECTION 5: APPLICATIONS ═══
 let appType=0;
