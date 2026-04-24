@@ -294,6 +294,109 @@
 
     .project-card .project-links a:hover { opacity: 0.7; }
 
+    /* --- FEATURED WRITING (hero card) --- */
+    .featured-writing {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 0;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .featured-writing:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .featured-writing .fw-video {
+      background: #000;
+      position: relative;
+      aspect-ratio: 9 / 16;
+    }
+
+    .featured-writing .fw-video iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .featured-writing .fw-text {
+      padding: 2.25rem 2.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-writing .fw-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .featured-writing .fw-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .featured-writing .fw-subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-writing .fw-meta {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-writing .fw-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--text);
+      color: #fff;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: opacity 0.2s;
+      align-self: flex-start;
+    }
+
+    .featured-writing .fw-cta:hover { opacity: 0.85; }
+
+    .featured-writing .fw-cta svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .featured-writing {
+        grid-template-columns: 1fr;
+      }
+      .featured-writing .fw-video {
+        max-height: 560px;
+      }
+      .featured-writing .fw-text {
+        padding: 1.75rem;
+      }
+    }
+
     /* --- VIDEOS --- */
     .videos-grid {
       display: grid;
@@ -465,6 +568,7 @@
   <div class="nav-inner">
     <a href="#" class="logo">Seth Shoultes</a>
     <div class="nav-links">
+      <a href="#writing">Writing</a>
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
       <a href="#games">Games</a>
@@ -488,6 +592,29 @@
   </div>
   <img src="seth-shoultes.jpg" alt="Seth Shoultes" class="hero-photo">
 </div>
+
+<!-- FEATURED WRITING -->
+<div class="divider"><hr></div>
+<section id="writing">
+  <p class="section-label">Latest Writing</p>
+  <h2>Building in the Age of AI</h2>
+  <p>A project that should have taken a year shipped in four days. A tour of what that actually meant.</p>
+  <a href="/blog/building-in-the-age-of-ai.html" class="featured-writing" style="text-decoration: none;">
+    <div class="fw-video">
+      <iframe src="https://www.youtube.com/embed/OOvcM1Pv2pA" title="Building in the Age of AI — A Four-Day Tour" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="fw-text">
+      <span class="fw-eyebrow">Essay &middot; 9 min read</span>
+      <h3 class="fw-title">What should have been a twelve-month project, shipped in four days.</h3>
+      <p class="fw-subtitle">A live voice agent. A $0.35 article. An editorial team of five &mdash; one human, four AI-assisted. Twenty-six routing partners. Four days. Here's the tour, and what I think it all means.</p>
+      <p class="fw-meta">April 23, 2026</p>
+      <span class="fw-cta">
+        Read the full post
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+      </span>
+    </div>
+  </a>
+</section>
 
 <!-- SKILLS -->
 <div class="divider"><hr></div>
