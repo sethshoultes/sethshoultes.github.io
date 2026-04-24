@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Pattern Held — Seth Shoultes</title>
+  <meta name="description" content="Adding a Custom GPT to the registry cost zero lines of code and one DNS record. That's what the pattern buys." />
+
+  <meta property="og:title" content="The Pattern Held" />
+  <meta property="og:description" content="The eighth surface — ChatGPT's Custom GPT Actions — arrived. The platform was already ready. This is why." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sethshoultes.com/blog/pattern-held.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<article>
+
+  <span class="post-label">Writing</span>
+
+  <h1>The Pattern Held</h1>
+
+  <p class="subtitle">Adding a Custom GPT to the registry cost zero lines of code and one DNS record.</p>
+
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 24, 2026 &middot; 5 min read</p>
+
+  <div class="video-hero">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/odpDrrOZyyM" title="The Pattern Held — The Eighth Surface" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  <p class="video-hero-caption">The 50-second follow-up. Read on for the full essay.</p>
+
+  <div class="post-content">
+
+    <p>I was writing a configuration document — the kind of technical spec you keep internally so you remember exactly how you set something up — and about halfway through, I realized I wasn't doing any work. Not in the sense that matters. I was pasting things that already existed into fields that were already asking for them.</p>
+
+    <p>That's when I stopped and looked at what had actually happened.</p>
+
+    <hr>
+
+    <p>The configuration document was for a Custom GPT. ChatGPT's builder lets you create a named assistant, give it a system prompt, point it at an OpenAPI spec, and publish it to the GPT Store. The assistant calls your API, grounds its responses in what your tools return, and shows up in search results for people who already have ChatGPT open and don't know your site exists.</p>
+
+    <p>The three things ChatGPT's Actions importer actually needs are an operationId on every endpoint, an absolute server URL in the spec, and a privacy policy at a public URL. Then it imports your schema, lists your operations, and starts calling your API.</p>
+
+    <p>Here's what I was looking at when I opened my own spec to check it:</p>
+
+<pre><code>{
+  "openapi": "3.1.0",
+  "servers": [{ "url": "https://garagedoorscience.com" }],
+  ...
+}</code></pre>
+
+    <p>Absolute server. Check.</p>
+
+    <p>Every operation in the spec had an <code>operationId</code> — <code>diagnose</code>, <code>routeByZip</code>, <code>getDoorStyles</code>, <code>getActivePromotions</code>, <code>getInspectionReferencePhotos</code>, <code>retrieveLabContext</code>, <code>costEstimate</code>, <code>submitInspection</code>. Eight tools. All named. All there.</p>
+
+    <p>Privacy policy: <code>https://garagedoorscience.com/privacy</code>. Already live. I'd written it three weeks ago because the <code>/developers</code> portal needed it for the API key sign-up flow.</p>
+
+    <p>The only new thing the whole process required was one DNS TXT record — a domain verification token OpenAI provides when you submit to the Store. I added it to Cloudflare, waited about fifteen minutes for propagation, clicked Verify, and that was it.</p>
+
+    <hr>
+
+    <p>In <a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces</a>, I described the architecture this way: I defined my tools once, as plain TypeScript, and then exposed them through every surface that any kind of agent might try to reach.</p>
+
+    <p>The Custom GPT is the eighth surface. And I didn't touch the registry to add it.</p>
+
+    <p>That's the thing I want to be precise about, because it's easy to say "the pattern worked" in a way that sounds like a marketing line. What I mean specifically is this: the operationIds I added to the OpenAPI spec three weeks ago — I added them because MCP requires named operations to work correctly. The absolute server URL — I made it absolute because Scalar's interactive doc renderer breaks on relative URLs. The privacy policy — I wrote it because the <code>/developers</code> flow required a consent link before issuing API keys.</p>
+
+    <p>Every decision was made for a prior reason. None of them were made in anticipation of the Custom GPT builder. The builder showed up, asked for exactly those things, and they were there.</p>
+
+    <p>That's not luck. It's what happens when you build to a standard rather than to a consumer. OpenAPI 3.1 requires absolute servers and unique operationIds to be a valid spec. I was just trying to have a valid spec. The fact that ChatGPT's importer also reads a valid spec is the whole point of having a standard.</p>
+
+    <hr>
+
+    <p>The configuration itself took about two hours, most of it writing the system prompt. That part is not automatic — it's the only genuinely new work in the whole process. The Custom GPT needs to know which tool to call first when someone describes a symptom (it's <code>diagnose</code>), what to do when someone asks about spring repair (refuse the walkthrough, call <code>routeByZip</code>), and what to say when someone asks about HVAC (not its job, get out cleanly).</p>
+
+    <p>But even there, I was drawing on a document that already existed. The <code>diagnose</code> tool's description field already specified its behavior for unsafe repairs: <code>diyRisk: "unsafe"</code>. I'd written that for the chat interface. I just promoted it into the system prompt.</p>
+
+    <p>The one thing I turned off deliberately was web browsing. The GPT has a <code>retrieveLabContext</code> tool that does grounded retrieval over the actual corpus — ten labs, thirteen articles, twenty-eight videos, the 24-point inspection checklist. Letting it go hunting the open web instead of calling that tool would mean ungrounded answers. The whole point is to route queries through what the site actually knows.</p>
+
+    <p>The rate setup was simple: no user tokens, public tier, 60 requests per minute, 2,000 per day. Sufficient for a conversational assistant. If the GPT ever generates meaningful traffic, I can update the Instructions to pass a <code>gds_live_</code> bearer and move to the pro tier in about thirty seconds.</p>
+
+    <hr>
+
+    <p>There's a version of this where I'd built the first six surfaces for MCP and REST, then built a seventh for <code>/developers</code>, then decided to add Custom GPT support and spent a day building a custom integration. That's the version where every new AI-first consumer costs you a sprint. You build for Claude Desktop, then you build for ChatGPT Actions, then you build for whatever Gemini calls their external tool format, and each one is a distinct project because each one has a different wire protocol and a different shape of authentication and a different way of expressing schemas.</p>
+
+    <p>The OpenAPI spec is the abstraction that makes all of those the same project. Not because OpenAPI is magic, but because it's the common language. When LangChain imports your spec, when Postman auto-generates a collection from it, when the GPT Store importer reads it — they're all doing the same thing. They're consuming a schema that tells them what your tools do and how to call them. You write the schema once. You don't write the integration.</p>
+
+    <p>The surface count is eight now. Probably nine soon — Gemini's function-calling format reads OpenAPI, Grok's tool use is headed in the same direction, and whatever arrives next quarter will almost certainly want a URL and a schema. I'm not going to keep counting in the title.</p>
+
+    <hr>
+
+    <p>The config pack I wrote today is sitting in the repo at <code>docs/custom-gpt/garage-door-doctor.md</code>. It has the system prompt, the conversation starters, the exact Actions setup, and a post-publish checklist for verifying that <code>diagnose</code> is actually being called. Someone on the team could pull it up tomorrow and have the GPT live in under an hour.</p>
+
+    <p>That document exists because the work was already done. It's documentation, not implementation.</p>
+
+    <p>The cost of adding the eighth surface was zero lines of code and one DNS record. That's what the pattern buys.</p>
+
+    <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
+
+  </div>
+
+</article>
+
+<div class="related-posts">
+  <h3>Related reading</h3>
+  <ul>
+    <li><a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces &rarr;</a> <em>— the parent essay this one builds on</em></li>
+    <li><a href="/blog/building-in-the-age-of-ai.html">Building in the Age of AI — A Four-Day Tour &rarr;</a></li>
+    <li><a href="/blog/35-cent-article.html">The $0.35 Article, and the AI Editor Who Refused to Ship It &rarr;</a></li>
+    <li><a href="/blog/twenty-five-years.html">Twenty-Five Years of Building &rarr;</a></li>
+  </ul>
+</div>
+
+<div class="divider"><hr></div>
+<footer>
+  <p>&copy; 2026 Seth Shoultes</p>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
+    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
