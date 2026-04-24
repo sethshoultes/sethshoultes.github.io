@@ -37,7 +37,14 @@
 
   <p class="subtitle">Every major shift in software felt significant at the time. None of them moved the constraint the way this one did.</p>
 
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 23, 2026 &middot; 7 min read</p>
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 30, 2026 &middot; 7 min read</p>
+
+  <div class="video-hero">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/R9bpcDmwTvw" title="Twenty-Five Years of Building, and This Was the First Week That Felt Different" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  <p class="video-hero-caption">The 42-second reflection. Read on for the full essay.</p>
 
   <div class="post-content">
 
@@ -75,6 +82,8 @@
 
     <p>Here's where it gets harder to write, because I don't want to reach for the big claim. I've seen too many big claims. Every new wave of tooling comes with someone saying the constraint has moved, the game has changed, everything is different now. Most of the time they're half-right, which is a way of being mostly wrong.</p>
 
+    <p>Before I get specific about this week, I should mention what preceded it. A few weekends earlier I'd spent two days building ten interactive 3D labs about garage doors — the physics of torsion springs, the geometry of the sectional track, a 3D anatomy of a garage door opener. It was meant as a weekend hobby. When it was done I looked at the labs and asked the only reasonable question: what would it take to build a whole site around these? The answer turned out to be four more days. But the weekend was the first signal. I just didn't read it correctly at the time.</p>
+
     <p>So let me be specific about what actually happened this week.</p>
 
     <p>On Day 2, I made a decision: the separate product I'd been maintaining for our partner A Plus Garage Doors was deprecated. Everything moved to garagedoorscience.com. That decision took ten minutes. Not because it was a small decision — it was an architectural identity shift, the kind that normally involves weeks of deliberation and a migration plan and a deprecation notice and a bunch of careful emails. It took ten minutes because the migration didn't exist anymore as a problem. The code had already been written, the data was already in the right shape, the only thing left was the call itself.</p>
@@ -95,9 +104,19 @@
 
     <p>The 24-point inspection tool — scrollable checklist, AI chat tuned to each item, scored report at the end — would have taken a week to spec out a year ago. This week it took an afternoon. Which means the afternoon wasn't spent writing code. It was spent deciding whether the tool should flag safety items differently from maintenance items, whether the AI should ever advise someone to stop mid-inspection, what to do when the report score is bad enough that the homeowner needs a professional, not a checklist.</p>
 
+    <figure>
+      <img src="images/personal-blog/02-inspection.png" alt="The 24-point inspection page on garagedoorscience.com, with quick diagnostic videos at the top and the full checklist below">
+      <figcaption>The 24-point inspection. An afternoon to build. Every judgment call about what it should flag, when, and how, made in real time.</figcaption>
+    </figure>
+
     <p>Those aren't technical decisions. They're judgment calls. And they came fast — one after another — because the code was never the bottleneck.</p>
 
     <p>The auto-content pipeline on Day 3 is the clearest example. Margaret Stone, the safety editor, flagged three unsourced claims on the first article draft. Correctly. The draft was held. I sourced the claims, ran it again, she passed it, it published. Total cost: $0.35. The thing I spent the most time on that day wasn't the pipeline itself. It was deciding what Margaret should flag, how strict the gate should be, what "sourced" means when you're writing for homeowners rather than academics.</p>
+
+    <figure>
+      <img src="images/personal-blog/04-blog-byline.png" alt="The published auto-generated article How to tell if your garage door is properly balanced, with Maya Harper's byline, April 22 2026, 6 min read, and topic tags">
+      <figcaption>The thirty-five-cent article. Margaret's job was to stop it if it wasn't ready. My job was to decide what her bar should be.</figcaption>
+    </figure>
 
     <p>That's editorial judgment. I've been making editorial judgment calls my whole career. But I've never made them at that pace, with that much downstream consequence, compressed into that short a window.</p>
 

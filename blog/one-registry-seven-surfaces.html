@@ -37,7 +37,14 @@
 
   <p class="subtitle">How to make your site callable by the AI assistants your customers are already using.</p>
 
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 23, 2026 &middot; 7 min read</p>
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 28, 2026 &middot; 7 min read</p>
+
+  <div class="video-hero">
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/vM5i2JSyDPo" title="One Registry, Seven Surfaces — How to Make Your Site Callable by Other AI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  <p class="video-hero-caption">The 49-second tour. Read on for the full pattern.</p>
 
   <div class="post-content">
 
@@ -83,9 +90,19 @@
 
     <p><strong><a href="https://garagedoorscience.com/developers/api"><code>/developers/api</code></a></strong> — Scalar renders the OpenAPI spec as interactive documentation. You can try any tool live from your browser, paste in a bearer token, and see a real response against the live API. I didn't build the docs; I built the spec, and Scalar turned it into the docs.</p>
 
+    <figure>
+      <img src="images/one-registry/developer-api-docs.png" alt="/developers/api page rendered by Scalar with a left sidebar listing all eight tool routes and a main panel showing the Garage Door Science REST API v1.0.0 overview, Download OpenAPI Document button, Server URL, Authentication options, and Client Libraries selector across Shell, Ruby, Node.js, PHP, and Python">
+      <figcaption>/developers/api. Every tool shows up as a POST route on the left. The main panel has a Try-It form that calls the live API. I didn't write any of this — Scalar reads the spec I generated.</figcaption>
+    </figure>
+
     <p><strong><a href="https://garagedoorscience.com/llms.txt"><code>/llms.txt</code></a></strong> — a plaintext file, at the root of the domain, following an emerging convention for AI-crawlable indexes. It lists every URL on the site grouped by section: tools, labs, articles, videos. Crawling agents and LLM training pipelines can parse it without executing JavaScript. It's about forty lines long and took about twenty minutes to write.</p>
 
     <p><strong><a href="https://garagedoorscience.com/brain"><code>/brain</code></a></strong> — this one is different from the other six. <code>/brain</code> is not machine-parseable in a structured sense. It's a narrative. It reads like documentation written for a developer, but I wrote it partly for the AI assistants that another developer might be using when they land there. The architecture diagram shows how the pieces fit together. The surface tables explain what each endpoint returns, who it's for, and what auth it requires. The corpus section explains what the RAG index knows and what it doesn't. If an agent is trying to understand what this site can do before it calls anything, <code>/brain</code> is where it starts.</p>
+
+    <figure>
+      <img src="images/one-registry/brain-architecture.png" alt="The /brain page showing a THE SHAPE architecture diagram — homeowner question flows into Chat/voice (technician) and Tool registry (8 tools, Zod), both feeding into RAG corpus (pgvector on Neon) — 11 labs, 15 articles, 35 videos — and out as grounded response and source URLs, with a Discoverable surfaces section below">
+      <figcaption>/brain. The architecture diagram at the top is the thing a new developer — or another AI — reads first. Below it, every endpoint is documented with what it returns, who it's for, and what auth it requires.</figcaption>
+    </figure>
 
     <p>That's the sharpest line from <a href="/blog/building-in-the-age-of-ai.html">the parent essay</a>, and I'll repeat it here because it's the thing that crystallized for me: I wrote a page documenting the platform <em>for the other AI to read.</em> That is a new category of work. It doesn't fit neatly into "developer documentation" or "marketing copy." It's somewhere in between — human-readable, but written with the assumption that the first reader might not be human at all.</p>
 
