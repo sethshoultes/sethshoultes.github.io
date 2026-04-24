@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Widget That Knows What a Gunshot Sounds Like — Seth Shoultes</title>
+  <meta name="description" content="When to reach for a lookup table and when to reach for an LLM. A design lesson from shipping a diagnostic widget." />
+
+  <meta property="og:title" content="The Widget That Knows What a Gunshot Sounds Like" />
+  <meta property="og:description" content="The instinct when building AI-assisted tools is to reach for the LLM for everything. That's usually wrong. Here's what I did instead." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sethshoultes.com/blog/widget-gunshot.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<article>
+
+  <span class="post-label">Writing</span>
+
+  <h1>The Widget That Knows What a Gunshot Sounds Like</h1>
+
+  <p class="subtitle">When to reach for a lookup table and when to reach for an LLM.</p>
+
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 26, 2026 &middot; 5 min read</p>
+
+  <div class="video-hero">
+    <div class="video-embed">
+      <iframe src="VIDEO_URL_PLACEHOLDER" title="The Widget That Knows What a Gunshot Sounds Like" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  <p class="video-hero-caption">The 50-second lesson. Read on for the full story.</p>
+
+  <div class="post-content">
+
+    <p>It was 10pm. I was testing the contractor embed widget I'd shipped that afternoon &mdash; a small diagnostic tool designed to sit on a partner's website so homeowners can describe a symptom and get a diagnosis without leaving the page. I typed into the free-text field: <em>my garage door sounds like a gunshot.</em></p>
+
+    <p>No match. The widget returned the no-result state: a short message, a list of suggested phrases to try instead. Try again.</p>
+
+    <p>I stared at that for a moment. A garage door that sounds like a gunshot almost certainly has a broken torsion spring. That is the single most urgent thing the whole diagnostic system was built to catch. Spring failures are violent and the injury risk during a DIY repair attempt is real. And the widget had just shrugged at the most specific, most dramatic description of that exact emergency.</p>
+
+    <p>That was a bug. But fixing it forced a design decision I should explain, because the decision generalizes.</p>
+
+    <hr>
+
+    <h2>What the diagnose tool actually is</h2>
+
+    <p>The <code>diagnose</code> function is a structured lookup. Nine canonical symptoms &mdash; things like "won't open," "makes grinding noise," "reverses before closing" &mdash; each with a list of normalized aliases. When someone types "wont close" or "door wont shut," the function does substring matching against those aliases, finds the canonical symptom, and returns the associated likely issues, cost range, and a DIY safety flag. No LLM. Zero cost per call. Microsecond latency.</p>
+
+    <p>That design is intentional, and it's the right design for what it does. Safety-critical output should not depend on how an LLM interprets a string on any given day. When the system flags a symptom as unsafe to repair &mdash; broken springs, frayed cables, anything involving the counterbalance system &mdash; that flag needs to come from a deterministic function. Not from a model that might characterize "my spring snapped" differently than "my spring broke" on two separate calls.</p>
+
+    <p>The problem isn't that the lookup is deterministic. The problem is that "gunshot" isn't in any alias list. The lookup never had a chance.</p>
+
+    <hr>
+
+    <h2>Three things, wired together</h2>
+
+    <p>The fix came in three parts, and each part addresses a different moment in the user's experience.</p>
+
+    <p><strong>Chips first.</strong> The default view of the widget is nine clickable chips &mdash; one per canonical symptom. Click any chip and you get a guaranteed match. No alias matching, no substring search, no possibility of a dead-end. The diagnose problem becomes a multiple-choice question, and the UX does most of the work before the user types anything at all.</p>
+
+    <p><strong>LLM fallback on free text.</strong> Below the chips, there's an escape hatch: "Don't see it? Describe in your own words." That opens a textarea. Submissions through the textarea add a <code>useLlmFallback: true</code> flag to the API call. When the substring match returns nothing &mdash; which is exactly when "gunshot" fails &mdash; a Haiku classification pass runs. It maps the free text to the nearest canonical symptom key. "Sounds like a gunshot" &rarr; <code>banging_noise</code>. Then <code>diagnose</code> runs again with that canonical key and returns a structured result.</p>
+
+    <p>The LLM is in the loop for exactly one job: bridging the gap between how a homeowner describes something and what the lookup function expects. Once it does that translation, it steps back. The downstream output is identical to what a chip click would have returned. Deterministic. Consistent. Cost: roughly $0.00005 per fallback call, and only when the substring match misses, and only when the user opts into text mode.</p>
+
+    <p><strong>ZIP lookup after every match.</strong> Once the widget produces a diagnosis, it appends a ZIP-code field. Submit a ZIP and the <code>routeByZip</code> tool returns the local partner's name, phone number, and booking link. Every successful diagnosis becomes a routing opportunity. For a widget sitting on a contractor's website, that is the whole point of having the widget at all.</p>
+
+    <hr>
+
+    <h2>Why none of the three alone would have been enough</h2>
+
+    <p>This is the part I want to be precise about, because the temptation when building AI-assisted tools is to reach for the LLM first and let it handle everything. That instinct is wrong more often than it's right.</p>
+
+    <p>Just the lookup: fast, cheap, deterministic, and completely blind to colloquial language. "Gunshot" doesn't match anything. "It squeaks when it rains" doesn't match anything. A real homeowner typing a real description into a text field will miss constantly.</p>
+
+    <p>Just the LLM: handles colloquial language fine, but the latency is wrong for a chip click, the cost is wrong at scale, and non-determinism in a safety-critical classification is a problem you can't test your way out of. A model that's confident "spring snapped" maps to <code>broken_spring</code> on 99.9% of calls is still a model that might not on the call where it matters.</p>
+
+    <p>Just routing: you have nothing to route about. <code>routeByZip</code> takes a symptom key as an input. Without a diagnosis, it's just a phone number lookup.</p>
+
+    <p>The widget works because each piece does the job the others couldn't do. The chips eliminate most of the matching problem before it starts. The lookup handles confirmed symptom keys deterministically. The LLM handles the translation step &mdash; the moment where a human describes a mechanical failure in their own words &mdash; and nothing else. Routing closes the loop.</p>
+
+    <hr>
+
+    <p>In <a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces</a>, I described how these tools all live in a single registry and fan out to every surface automatically. The widget is one more consumer of that registry. It calls <code>diagnose</code> and <code>routeByZip</code> the same way the chat interface does, the same way the Custom GPT does, the same way any agent calling <code>/api/v1/diagnose</code> over REST does.</p>
+
+    <p>What's new here isn't the tools. It's the shape of the UX around them &mdash; the decision about which kind of logic to put where. That decision is the part that doesn't appear in any registry.</p>
+
+    <p>The right shape of an AI-assisted tool, most of the time, is not "LLM everywhere." It's a few deterministic structures with an LLM slotted in exactly where humans do human things: describing something they're observing, asking something they can't quite name, reaching for the word that fits how it felt, not how it's cataloged.</p>
+
+    <p>The LLM is the last tool I reached for, not the first. That's usually the right order.</p>
+
+    <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
+
+  </div>
+
+</article>
+
+<div class="related-posts">
+  <h3>Related reading</h3>
+  <ul>
+    <li><a href="/blog/pattern-held.html">The Pattern Held &rarr;</a></li>
+    <li><a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces &rarr;</a></li>
+    <li><a href="/blog/building-in-the-age-of-ai.html">Building in the Age of AI &rarr;</a></li>
+    <li><a href="/blog/35-cent-article.html">The $0.35 Article &rarr;</a></li>
+    <li><a href="/blog/twenty-five-years.html">Twenty-Five Years of Building &rarr;</a></li>
+  </ul>
+</div>
+
+<div class="divider"><hr></div>
+<footer>
+  <p>&copy; 2026 Seth Shoultes</p>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
+    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
