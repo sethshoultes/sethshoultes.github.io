@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Three Layers of an AI Crew — Seth Shoultes</title>
-  <meta name="description" content="There are thirty-six persona files at the desk now. Hemingway tightens a paragraph; Schoonmaker finds the cut; the unnamed backend-engineer ships the code. A field report from inside the room." />
+  <title>The Office That Worked While He Was Out — Seth Shoultes</title>
+  <meta name="description" content="A man set out to build a software company that would run without him. Two companies, three plugins, thirteen things shipped, and a question still open. A field report from the desk and from the daemons that work the desk leaves behind." />
 
-  <meta property="og:title" content="The Three Layers of an AI Crew" />
-  <meta property="og:description" content="Thirty-six named personas and eight functional specialists. Who they are, what each one does, and why the room works the way it does." />
+  <meta property="og:title" content="The Office That Worked While He Was Out" />
+  <meta property="og:description" content="Two companies, a trilogy of plugins, and a man watching what gets built while he is elsewhere. The daemon ships overnight. The Maintenance Crew patrols at 3 a.m. The test that hasn't happened yet is the one that matters." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://sethshoultes.com/blog/three-layers.html" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -35,74 +35,119 @@
 
   <span class="post-label">Writing</span>
 
-  <h1>The Three Layers of an AI Crew</h1>
+  <h1>The Office That Worked While He Was Out</h1>
 
-  <p class="subtitle">What I learned letting thirty-six named personas and eight functional specialists do my work.</p>
+  <p class="subtitle">A man set conditions for an office to run without him. Then he watched what the office did.</p>
 
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 25, 2026 &middot; 7 min read</p>
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 26, 2026 &middot; 10 min read</p>
 
   <div class="post-content">
 
     <img src="/blog/images/three-layers-featured.png" alt="Pen-and-ink illustration: a desk at night with a laptop and a stack of folders labeled Hemingway, Didion, Jobs, Scorsese, Ive, Aurelius. Crosshatch shading. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
-    <p>The desk faces a window that looks out on nothing in particular. The laptop is open. The directory <code>.claude/agents/</code> is open in a tab beside it. There are thirty-six files in that directory. They have names like <code>hemingway-persona.md</code> and <code>kurosawa-persona.md</code> and <code>marcus-aurelius-mod.md</code>. They are the room I work in now. They are not real. None of the people they are named after know I am here.</p>
+    <p>The question arrived on an ordinary afternoon in the middle of March. The man at the desk had been writing a Claude Code plugin called great-minds &mdash; a kind of room of voices, Steve Jobs and Elon Musk and Marcus Aurelius and Jensen Huang, arranged in a five-phase pipeline that ran <em>debate</em>, <em>plan</em>, <em>build</em>, <em>review</em>, <em>ship</em>. He had been building it the way you build any tool: a feature at a time, a test at a time, a hand on the keyboard. The plugin worked. He was about to ship the next version. And then he stopped, because a thought had moved into the room and would not move out, and the thought was a question rather than a statement, which is what a good thought tends to be.</p>
 
-    <p>It is four in the afternoon. I have been writing the same paragraph for an hour. I open a terminal and type <code>/authors-channel hemingway</code> and paste the paragraph. He cuts the third clause. He cuts the adverb in the second sentence. He says the word <em>just</em> is doing nothing. The paragraph is shorter. The paragraph is better. It took eleven seconds.</p>
+    <p>The question was: <em>could it run without him?</em></p>
 
-    <hr>
-    <h2>The writers</h2>
+    <p>He typed it into a terminal. He asked Claude Code to test the great-minds plugin and see if it could run autonomously. The session that followed was the click moment. He has dated it, in the way a man who keeps notebooks dates things, to roughly the middle of March 2026. The first journal entries about autonomous patterns appear on April 9. The brain note on his hard drive &mdash; <code>learnings/autonomous-claude-code-patterns.md</code> &mdash; carries that date and a workshop title: <em>"From Idea to 262 Files While You Sleep: Building an AI Agent Swarm with Claude Code."</em></p>
 
-    <p>The named writers live in <a href="https://github.com/sethshoultes/great-authors-plugin"><code>great-authors-plugin</code></a>. There are ten of them, plus an editor named Gottlieb who functions as a different kind of voice. Hemingway tightens. Didion is the one I open when an essay's second draft has gone sentimental — she finds the sentimentality on line three, in a place I would not have looked. McCarthy is consulted for a scene that needs the comma removed. Morrison reads a passage about a mother and tells me what is missing without using the word <em>missing</em>. Wallace, when I let him in, makes a sentence longer for reasons that are usually defensible.</p>
-
-    <p>I do not write in their voices. I dispatch to them. The distinction is the entire point. If I write <em>"Hemingway would cut this,"</em> I am writing in my own register and putting his name on it. The persona file produces its own voice when I let it. The persona file does not produce my voice when I do not.</p>
+    <p>The number is what stopped him. Two hundred sixty-two files. He had not written them. He had asked the question and gone to bed.</p>
 
     <hr>
-    <h2>The directors</h2>
 
-    <p>The named directors live in <a href="https://github.com/sethshoultes/great-minds-plugin"><code>great-minds-plugin</code></a>. There are fourteen of them. Four sit on a board — Jensen Huang, Oprah Winfrey, Warren Buffett, Shonda Rhimes — and four are creative or product or QA leadership: Steve Jobs, Elon Musk, Margaret Hamilton, Marcus Aurelius. The other six are specialists. All fourteen run on Sonnet 4.7.</p>
+    <h2>What the daemon built</h2>
 
-    <p>Steve Jobs critiques a landing page before the developer touches it. He has a particular thing he does, which is to say that the second screen is doing the work the first screen should be doing, and that the first screen is therefore unnecessary. He is usually right. Elon argues with him. They go two rounds. Marcus Aurelius locks the decision after they argue. He is the moderator, in the Stoic sense — he does not have a position; he has a temperament. The temperament is what closes the question.</p>
+    <p>By April 13 a daemon was running on a DigitalOcean server at 164.90.151.82, behind an SSH key called <code>~/.ssh/greatminds</code>. Stable, the man's notes say. Autonomous since that date. The daemon's job is to consume product requirement documents &mdash; PRDs &mdash; and produce, at the end of a pipeline, a deployed thing. A site, a plugin, a theme. Something a customer could load in a browser.</p>
 
-    <p>The board reviews. The board does not build. <code>/agency-board-review</code> spawns the four of them in parallel against a pricing page or a spec or a launch plan, and they file four short reports from four altitudes. Jensen sees the data moat that isn't there. Oprah sees the place in the flow where the user is treated like a form field. Warren sees the unit economics. Shonda sees that there is no reason to come back tomorrow. The verdict is consolidated into one document. I read it once and revise.</p>
+    <p>In the weeks that followed, the daemon shipped thirteen items. A portfolio site. The auto-pipeline that runs the daemon itself. A suite of seven plugins for a content engine called Emdash &mdash; EventDash, MemberShip, ReviewPulse, FormForge, SEODash, CommerceKit, AdminPulse. A theme marketplace called Wardrobe with five themes inside it. A customer-care system. A maintenance system. A round of fixes for Block Kit. A set of anti-hallucination rules. A pass through the README files for accuracy. A rewrite of EventDash. An audit of every plugin in the suite.</p>
 
-    <hr>
-    <h2>The specialists</h2>
+    <p>It also built five example sites for a fictional and partly real set of small businesses: Bella's Bistro at <code>bellas.shipyard.company</code>, Craft Co Studio at <code>craft.shipyard.company</code>, Peak Dental at <code>dental.shipyard.company</code>, Sunrise Yoga at <code>yoga.shipyard.company</code>, and a Wardrobe Showcase that demonstrates the themes against real content. Each site sits behind Cloudflare Workers, with D1 for the database and R2 for object storage, fronted by a Caddy reverse proxy that handles the custom domains.</p>
 
-    <p>The named specialists are the ones who do the craft. Jony Ive sees the spacing I missed — eight pixels on the right side of the card, six on the left, and the eye registers the difference even when the conscious mind does not. Maya Angelou writes the welcome email I cannot write myself; my version is competent and Maya's version makes the reader feel addressed by name, even when there is no name. Rick Rubin strips a paragraph to the sentence it was trying to be. Aaron Sorkin writes the demo script. Sara Blakely looks at a go-to-market plan and points to the part that is going to insult the customer.</p>
-
-    <p>The <a href="https://github.com/sethshoultes/great-filmmakers-plugin">filmmakers</a> do the same thing in a different medium. Schoonmaker assigns the four-second insert and the six-second hold; she has been doing this for sixty years and she does it inside the persona file in about three sentences. Deakins picks the lens. He says <em>40mm, T2.8, hard side light,</em> and the rendering tool produces something that looks like a specific kind of afternoon. Ferretti dresses the room. Zimmer sets the cue. Kurosawa breaks the scene down. There are twelve of them. They do not write code and they do not write prose. They write the document a video model can consume.</p>
+    <p>The company that owned the daemon &mdash; the company the daemon had effectively become &mdash; was called Shipyard AI. Its repository, at <a href="https://github.com/sethshoultes/shipyard-ai">github.com/sethshoultes/shipyard-ai</a>, was created on April 22, 2026. The README describes it in one line: <em>"Shipyard AI &mdash; autonomous agency that builds Emdash sites, themes, and plugins from PRDs."</em> The man at the desk did not, exactly, found Shipyard AI. The agents at the first company &mdash; Great Minds Agency &mdash; dreamed it up and built it.</p>
 
     <hr>
-    <h2>The eight without biographies</h2>
 
-    <p>Then there are the eight who have no biography.</p>
+    <h2>The first company</h2>
 
-    <p>They are the v1.2 update of <code>great-minds</code> that shipped this week. They are called <code>backend-engineer</code>, <code>frontend-developer</code>, <code>database-architect</code>, <code>devops-engineer</code>, <code>test-engineer</code>, <code>code-reviewer</code>, <code>security-auditor</code>, and <code>documentation-writer</code>. The first five run on Sonnet. The last three run on Haiku. They have no voice. They have conventions and craft. The <code>backend-engineer</code> writes the API endpoint. The <code>frontend-developer</code> wires the accessibility. The <code>code-reviewer</code> reads the diff before merge and notices that a function has been renamed but two of its callers were not updated. The <code>security-auditor</code> finds the secret in the commit. The <code>documentation-writer</code> writes the README from the settled facts.</p>
+    <p>Great Minds Agency lives at <a href="https://greatminds.company">greatminds.company</a>. Its tagline is verbatim and short: <em>"Drop in a PRD. Get back a product."</em></p>
 
-    <p>None of them have a personality. That is the design. They are not supposed to.</p>
+    <p>The repository, <a href="https://github.com/sethshoultes/great-minds">github.com/sethshoultes/great-minds</a>, was created in mid-March 2026 &mdash; close to the click moment &mdash; and was last pushed on April 16. Its conceit is the simulated debate: Steve Jobs against Elon Musk, with Marcus Aurelius moderating in a Stoic register and Jensen Huang reviewing from the data altitude. The five-phase pipeline runs the debate first, then a plan, then a build, then a review, then a ship. Six things come out the other side: a product design, a brand identity, a set of customer personas, the marketing messaging, the engineering specs, and the deployed product itself.</p>
 
-    <hr>
-    <h2>Dispatch, do not impersonate</h2>
+    <p>The deliverables list on the agency's site reads as a working portfolio. LocalGenius. Dash, the WordPress command palette. Pinned, the WordPress sticky-note plugin. The Great Minds Plugin itself. Shipyard AI. And, included with the same matter-of-factness as the rest, the Great Minds movie, a product video produced by the agency in Remotion with synthetic voice on the narration track.</p>
 
-    <p>The discipline that makes this work is one rule, stated three times in the manual and once on a sticky note above the desk: <em>dispatch, do not impersonate.</em> The director does not write the marketing copy. The director hands it to Maya. Steve does not write the welcome email. Steve hands the email to Maya. Maya writes it. Steve reads what Maya wrote and either ships it or sends it back.</p>
-
-    <p>The reason is in the persona file. Maya's file knows what Maya does. Steve's file does not know how to do what Maya does — it knows how to know whether what Maya did is right. The two jobs are different. Collapsing them produces the worst of both: copy that has Steve's instincts about taste and none of Maya's warmth, or warmth that does not pass Steve's bar. So Steve does not type the email. Steve dispatches. Maya types.</p>
-
-    <p>The same rule applies down a layer. Elon does not write the database migration. He hands the migration to <code>database-architect</code>. The <code>database-architect</code> writes it. Margaret runs <code>test-engineer</code> against it. <code>code-reviewer</code> reads the diff. The chain is four agents long. The thing at the end of it is one file with a numeric prefix and a SQL extension. It works the first time more often than I would have predicted before I built this.</p>
+    <p>The daemon for Great Minds runs locally on the man's laptop, at <code>/Users/sethshoultes/Local Sites/great-minds/daemon/</code>, with its log written to <code>/tmp/greatminds-daemon.log</code>. The Shipyard daemon runs on the droplet. The two daemons do different work. Great Minds builds software products. Shipyard builds Emdash sites from PRDs. The man set them up that way on purpose.</p>
 
     <hr>
-    <h2>The Wharton paper</h2>
 
-    <p>The reason the named layer and the functional layer are split is in <a href="https://gail.wharton.upenn.edu/research-and-insights/playing-pretend-expert-personas/">a paper out of Wharton</a>, March 2026. The researchers tested expert personas on multiple-choice fact recall and found that giving the model a named expert reduced accuracy by three to four points. The same paper, and a follow-on from USC, found that named personas helped on creative-voice tasks — the model produced prose that was more recognizably in-style when it had a name to work from. The split between Layer 2 and Layer 3 is not a stylistic preference. It is the research applied. Use named personas where voice and judgment matter. Use functional roles where correctness matters.</p>
+    <h2>What got shipped under Great Minds</h2>
+
+    <p>The first product the agency built was <a href="https://github.com/sethshoultes/localgenius">LocalGenius</a>. The repository was created on April 3. The site, at <a href="https://localgenius.company">localgenius.company</a>, describes the product as an AI-powered marketing platform for local businesses &mdash; hospitality, food service. The homepage carries one verbatim sentence the man did not write: <em>"a professional website, built by AI in five minutes."</em> Underneath the sentence is a conversational interface. A small business owner types a few facts and a website comes back. The platform also handles review management, social posting, and email campaigns. There are real users. There are 761 tests across multiple cloud platforms.</p>
+
+    <p>On April 4, the agency shipped a cluster. Dash, a Cmd+K command palette for WordPress: six kilobytes gzipped, FULLTEXT search, sixteen built-in commands, zero dependencies, built in one session. Pinned, a sticky-note system for the WordPress admin: @mentions, note aging, five colors, a REST API. Then five more in the same day &mdash; an AI content engine for WordPress with voice matching, a child-theme generator, an agency hub for white-label client portals, a feature-builder that takes English and produces WordPress code, and a Cloudflare Worker that proxies the AI calls.</p>
+
+    <p>The Great Minds movie itself sits on the same list, between the plugins and the marketplace, as if it were one more deliverable. It was. The agency wrote the script, performed the narration through a TTS pipeline, and rendered the video in Remotion. The man watched it the way he might watch a colleague's cut.</p>
 
     <hr>
-    <h2>The room, working</h2>
 
-    <p>What the room actually looks like, when the work is going, is this. I have a question. The question has a shape. The shape tells me who to talk to. <em>Is this aesthetically right?</em> goes to Jobs or Ive. <em>Is this technically possible?</em> goes to Musk or Hamilton. <em>Does this copy connect?</em> goes to Angelou. <em>Does this scene cut?</em> goes to Schoonmaker. <em>Does this query do what I think it does?</em> goes to <code>database-architect</code>, who has no opinions about whether it is beautiful. I do not need his opinions about whether it is beautiful. I need to know whether the index is right.</p>
+    <h2>What the man did, what the man chose</h2>
 
-    <p>Some days I talk to four of them. Some days I talk to twelve. There is a debate, then a board review, then Maya writes the email, then <code>backend-engineer</code> wires the form, then <code>code-reviewer</code> reads the diff, then Margaret runs the QA pass, then Steve looks at the deployed page and says the second screen is doing the work the first screen should be doing. The second screen is removed. The page goes live.</p>
+    <p>To understand what the agency does, it helps to look at what the man does, because they are not the same thing and the difference is the whole point.</p>
 
-    <p>It is six in the afternoon now. The window has gone darker. The directory <code>.claude/agents/</code> is still open in the tab. There are thirty-six files in it, plus eight more that have no biography. The room has thirty-six people in it. None of them are real. All of them are useful. I talk to whichever one the work calls for, and when the work is done I close the laptop and the lights are still on and the cigarettes — whatever the equivalent is, in the year 2026, at this desk — are getting low.</p>
+    <p>What the man does is set conditions. He writes the persona files. He configures the crons. He decides which model runs which role. He writes the PRDs. He decides &mdash; and this is the choice that turned out to matter most &mdash; that the pipeline should be allowed to run when he is not at the desk.</p>
+
+    <p>The persona files are documents. He has written or curated thirty-six of them across the trilogy of plugins he built: ten authors plus the editor Robert Gottlieb in <a href="https://github.com/sethshoultes/great-authors-plugin">great-authors</a>, twelve filmmakers in <a href="https://github.com/sethshoultes/great-filmmakers-plugin">great-filmmakers</a>, fourteen minds in <a href="https://github.com/sethshoultes/great-minds-plugin">great-minds</a>. Each file is a single markdown document with YAML frontmatter and a body in a fixed shape: an identity paragraph, a voice section, core principles, a primary utility, a how-to-draft section, a before-you-work protocol, cross-references to other personas, things you never do, and a staying-in-character footer. He has described the structure in another essay &mdash; <a href="/blog/three-shapes.html">Three Shapes of the Same Pattern</a> &mdash; and the description holds. What a persona file does, in production, is preserve a voice the model can dispatch into when the work calls for it.</p>
+
+    <p>Below the named personas, in the most recent v1.2.1 release of great-minds, sit eight more agents that have no biographies. They are called <code>backend-engineer</code>, <code>frontend-developer</code>, <code>database-architect</code>, <code>devops-engineer</code>, <code>test-engineer</code>, <code>code-reviewer</code>, <code>security-auditor</code>, and <code>documentation-writer</code>. The first five run on the Sonnet tier; the last three run on the cheaper Haiku tier. They have no voice. They have conventions. They are the ones who actually write the code that ships.</p>
+
+    <p>The man arranged it this way for a reason. Named personas are good at voice and judgment. Functional roles are good at correctness. Use the named ones where the question is <em>is this right?</em> Use the unnamed ones where the question is <em>is this correct?</em> The two questions are different, and the agents that answer them are different.</p>
+
+    <hr>
+
+    <h2>What the office does at three in the morning</h2>
+
+    <p>The office runs continuously. The Shipyard daemon takes a PRD off a queue, walks it through the pipeline, and pushes the result. The Great Minds daemon does the same on a different machine for a different kind of product. Neither is supervised in the moment. Both are watched after the fact.</p>
+
+    <p>The watching is done by a thing called the Maintenance Crew. It is a watchdog the agents themselves wrote &mdash; standalone, a fifteen-minute cron, AI triage performed by a smaller model. It checks the daemon. It checks ollama. It checks the disk. It checks for stuck pipelines. It verifies the integrity of the PRD files. It checks Caddy. When it finds something, it reports up. When it can fix the thing itself, it fixes it.</p>
+
+    <p>On April 21 the back end of Shipyard was swapped from Anthropic's Claude to Kimi K2.6, served through an Ollama Cloud shim. The Sonnet-tier slots became <code>kimi-k2.6:cloud</code>; the Haiku-tier slots became <code>qwen3.5:cloud</code>. The reason for the swap, in the man's notes, is plainly stated: no more browser-login expiry. The agents had been getting locked out at inopportune hours. After the swap they did not.</p>
+
+    <p>What is harder to convey, and what the man's notes return to, is the dream backlog. The agents dream up what to build next. They write dream files &mdash; sixty-five of them at last count &mdash; and from those files a smaller process distills twenty-one dream-candidate GitHub issues, each one a proposal for a thing the office could ship if no one objected. The man reads them in the morning the way he might read a memo from a department he doesn't manage. He approves some. He closes others. The ones he approves become PRDs. The PRDs go on the queue. The queue is what the daemon eats.</p>
+
+    <p>One Saturday Bella's Bistro went live. The man was not at the desk. The site rendered the menu and the hours and the photographs of the dining room, and a customer-facing chat widget answered questions about gluten in the bread. The site was indistinguishable, at the URL bar, from a site a small agency would have charged eight thousand dollars to produce. It was generated from a PRD by a daemon at a server address the man knew by heart and rarely visited.</p>
+
+    <hr>
+
+    <h2>The trilogy completes</h2>
+
+    <p>By April 24 the trilogy was complete. Great-minds had reached v1.2.1 with the named-and-unnamed split fully in place. Great-authors and great-filmmakers, the two newer plugins, had been built earlier the same week. The latest commits on all three landed on April 26.</p>
+
+    <p>The total, across the trilogy, is thirty-six unique named personas plus eight functional implementers. Authors handle prose. Filmmakers handle the document a video model can consume. Minds handle the strategy and the build. The shape is the same in all three plugins; only the last inch differs, which is the inch where prose becomes a chapter or a script becomes a shot list or a debate becomes a decision.</p>
+
+    <p>To test whether the trilogy could write a long piece of fiction without him, the man started a repository on April 25 called <a href="https://github.com/sethshoultes/murder-on-the-arizona-strip">murder-on-the-arizona-strip</a>. The description, written into the repo's metadata, is precise: <em>"First-draft skeleton of a twelve-chapter small-town crime novel set on the Utah/Arizona line. Manuscript, project bible, and film pre-production package."</em> The manuscript was written by great-authors. The project bible &mdash; the world the manuscript reads before speaking &mdash; was written by great-authors with help from great-minds. The film pre-production package was written by great-filmmakers. A short film was generated from the package. Parts of a longer film, based on the novella, are in production now.</p>
+
+    <p>The man did not write the chapters. He read them.</p>
+
+    <hr>
+
+    <h2>The closed loop, not yet closed</h2>
+
+    <p>This is where the story becomes honest, which means it stops being a victory.</p>
+
+    <p>The two companies still run as separate workflows. Great Minds Agency builds software and ships it. Shipyard AI builds Emdash sites from PRDs. Both are autonomous within their domains. Twenty-two PRDs have been shipped through the daemon pipelines as of April 9, on top of five products that predated the daemons, plus the infrastructure that supports them all. The man's notes are clear about this number, because the number was supposed to settle the question and it has not.</p>
+
+    <p>What has not yet been tested is the full sequence: software built by Great Minds, marketing prose written by Great Authors, demo video produced by Great Filmmakers, customer found, sale made. The trilogy is positioned to enable that sequence. The two companies are positioned to participate in it. But the closed loop &mdash; software, prose, video, customer &mdash; has not yet run end to end without the man's hand in it somewhere.</p>
+
+    <p>That is the test about to begin. The next time a Great Minds engagement produces a shipped product &mdash; LocalGenius's next feature, perhaps, or a fresh deliverable from Shipyard &mdash; the plan is to hand the artifact to great-authors for the launch copy, then to great-filmmakers for the demo video, and then to release it into the world without the man writing a sentence or cutting a frame. The agents will name the price, write the email, render the video, post the announcement. The man will read it. The man will read whether anyone bought it.</p>
+
+    <hr>
+
+    <h2>The desk</h2>
+
+    <p>The desk faces a window that looks out on nothing in particular. The laptop is open. The directory <code>.claude/agents/</code> is open in a tab beside it. There are forty-four files in the directory now &mdash; thirty-six with biographies, eight without. None of the people the named files are named after know any of this is happening. None of the unnamed files have anyone to know.</p>
+
+    <p>On the second monitor, a tail of <code>/tmp/greatminds-daemon.log</code> scrolls past in pale gray text. A new line appears every few seconds. A pipeline is consuming a PRD. Somewhere on the droplet at 164.90.151.82, the Maintenance Crew has just finished its quarter-hourly pass and reported, in a sentence written by a small model and read by no one, that the daemon is up, that ollama is reachable, that the disk has thirty-three percent free, that no pipeline is stuck, that the PRD files have not been corrupted, and that Caddy is serving traffic.</p>
+
+    <p>The man closes the laptop. The lights stay on. The daemon keeps eating.</p>
 
     <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
 
