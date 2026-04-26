@@ -98,11 +98,9 @@
 
     <p>In <a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces</a>, I described how these tools all live in a single registry and fan out to every surface automatically. The widget is one more consumer of that registry. It calls <code>diagnose</code> and <code>routeByZip</code> the same way the chat interface does, the same way the Custom GPT does, the same way any agent calling <code>/api/v1/diagnose</code> over REST does.</p>
 
-    <p>What's new here isn't the tools. It's the shape of the UX around them &mdash; the decision about which kind of logic to put where. That decision is the part that doesn't appear in any registry.</p>
+    <p>What's new here isn't the tools. It's the shape of the UX around them &mdash; the decision about which kind of logic to put where.</p>
 
-    <p>The right shape of an AI-assisted tool, most of the time, is not "LLM everywhere." It's a few deterministic structures with an LLM slotted in exactly where humans do human things: describing something they're observing, asking something they can't quite name, reaching for the word that fits how it felt, not how it's cataloged.</p>
-
-    <p>The LLM is the last tool I reached for, not the first. That's usually the right order.</p>
+    <p>At 10pm, the widget shrugged at "gunshot." The homeowner typing that word doesn't have a better one &mdash; that is exactly what a snapped torsion spring sounds like. The fix was narrow: one LLM call, one translation step, and the lookup does the rest. The widget knows what a gunshot sounds like now. That's all it needed to know.</p>
 
     <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
 

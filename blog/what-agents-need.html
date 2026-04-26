@@ -129,25 +129,11 @@
 
     <h2>A shallow surface to crawl first</h2>
 
-    <p>Before an agent hits your deep API, it wants to know what you have. <code>/llms.txt</code> is a plaintext index of your site's machine-readable content &mdash; something an agent can crawl in a single request before deciding whether to go deeper. <code>/ai</code> is a tactical TL;DR: what tools exist, what they return, what the rate limits are. <code>/openapi.json</code> is the schema. These three surfaces together are the agent's orientation packet.</p>
-
-    <p>I built all three because they serve different callers at different depths. A LangGraph flow that's planning a research step wants the schema. A crawling agent that's deciding whether to index your site wants the plaintext. A developer building a connector wants the interactive docs at <code>/developers/api</code> via Scalar.</p>
-
-    <p>Give the agent a place to start before it has to go deep.</p>
+    <p><code>/llms.txt</code> is a plaintext index of your site's machine-readable content &mdash; something an agent can crawl in a single request before deciding whether to go deeper. <code>/ai</code> is a tactical TL;DR: what tools exist, what they return, what the rate limits are. <code>/openapi.json</code> is the schema.</p>
 
     <hr>
 
-    <p>Every item on this list is also what a thoughtful human developer needs from an API.</p>
-
-    <p>Named operations. Absolute URLs. Descriptions that tell you when to use something. A privacy policy. Clean errors. Constrained inputs. Explicit LLM flags. A discovery surface before the deep spec.</p>
-
-    <p>None of this was invented for agents. It's just what a well-built API looks like &mdash; and agents have no patience for APIs that aren't.</p>
-
-    <p>The difference is forgiveness. A human developer will muddle through thin docs &mdash; read the source, send test requests, ask in a Slack. The agent won't muddle. It will call the wrong tool with the wrong input and pass the result upstream as if nothing went wrong.</p>
-
-    <p>When an agent can call your API without human mediation &mdash; no integration guide, no "just ask Seth" &mdash; your API becomes part of an ecosystem bigger than your site. Your eight endpoints showing up in places you'll never see.</p>
-
-    <p>That's the whole promise. The list above is the price of admission.</p>
+    <p>The list above is the price of admission.</p>
 
     <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
 

@@ -104,7 +104,7 @@
       <figcaption>/brain. The architecture diagram at the top is the thing a new developer — or another AI — reads first. Below it, every endpoint is documented with what it returns, who it's for, and what auth it requires.</figcaption>
     </figure>
 
-    <p>That's the sharpest line from <a href="/blog/building-in-the-age-of-ai.html">the parent essay</a>, and I'll repeat it here because it's the thing that crystallized for me: I wrote a page documenting the platform <em>for the other AI to read.</em> That is a new category of work. It doesn't fit neatly into "developer documentation" or "marketing copy." It's somewhere in between — human-readable, but written with the assumption that the first reader might not be human at all.</p>
+    <p>I wrote a page documenting the platform <em>for the other AI to read.</em> That is a new category of work. It doesn't fit neatly into "developer documentation" or "marketing copy." It's somewhere in between — human-readable, but written with the assumption that the first reader might not be human at all.</p>
 
     <p>One thing worth knowing about that tool array: the description field matters more than most engineers expect. When Claude or ChatGPT decides whether to call your tool, it's reading that description — not your README, not your marketing page. If the description is vague or jargon-heavy, the tool gets skipped. If it's specific and honest about what the tool returns, it gets called. The contract is in the description.</p>
 
@@ -116,7 +116,7 @@
 
     <p>What changes right away is that your site gains callable surfaces that agent frameworks and AI assistants can discover and use. If someone building an agent wants garage door diagnostic data, they can call <code>/api/v1/diagnose</code> directly instead of scraping your blog. If Claude Desktop has a connector pointed at your MCP endpoint, it can answer homeowner questions with grounded, cited data from your corpus instead of hallucinating general knowledge.</p>
 
-    <p>What changes more slowly is discoverability. The <code>/llms.txt</code> convention isn't universal yet. Not every AI assistant knows to look for it. But the trajectory is clear enough that building for it now costs almost nothing compared to retrofitting it later. I spent more time deciding what to name the tools than I spent wiring up the endpoints.</p>
+    <p>What changes more slowly is discoverability. The <code>/llms.txt</code> convention isn't universal yet. Not every AI assistant knows to look for it. I spent more time deciding what to name the tools than I spent wiring up the endpoints.</p>
 
     <p>The last thing that changes: you find out what your site actually knows, versus what it pretends to know. The <code>/brain</code> page exists partly because I needed to document that honestly — what the system knows (ten labs, thirteen articles, twenty-eight videos, a structured diagnostic tree, a 24-point inspection checklist, partner data for twenty-six service areas) and what it doesn't. When you expose knowledge through a retrieval tool, the results are honest. They tell you where the gaps are.</p>
 
