@@ -1,10 +1,10 @@
 ---
 title: "The Constellation"
-subtitle: "Four plugins shipped. Six logged. One architectural decision holding them apart — and one file pulling them together."
+subtitle: "Five plugins shipped. Five logged. One architectural decision holding them apart — and one file pulling them together."
 date: "2026-04-29"
 description: "A strategy for building a full AI-staffed company from focused craft plugins, each owning one domain, none sharing a roster. What is shipped, what is next, and the single architectural choice that makes the whole thing cohere."
 og_title: "The Constellation"
-og_description: "Four plugins shipped. Six logged. The strategy behind a constellation of focused craft plugins that together compose a full AI-staffed company — and the one file that holds them all together."
+og_description: "Five plugins shipped. Five logged. The strategy behind a constellation of focused craft plugins that together compose a full AI-staffed company — and the one file that holds them all together."
 og_image: "https://sethshoultes.com/blog/images/the-constellation-featured.png"
 read_time: "10 min read"
 related:
@@ -28,7 +28,7 @@ related:
 
 <h2>What is shipped</h2>
 
-<p>Four plugins exist. Three of them arrived in a single session in late April, each emerging from the one before it, each filing the same four slots — persona, bible, save trigger, fan-out — adapted only at the last inch where the output format diverges. The <a href="/blog/three-shapes.html">trilogy essay</a> told that story. Here the relevant fact is simpler: three of the four plugins cover the creative stack from conception to screen.</p>
+<p>Five plugins exist. Three of them arrived in a single session in late April, each emerging from the one before it, each filing the same four slots — persona, bible, save trigger, fan-out — adapted only at the last inch where the output format diverges. The <a href="/blog/three-shapes.html">trilogy essay</a> told that story. Here the relevant fact is simpler: three of the five plugins cover the creative stack from conception to screen, and two more carry the work from screen to audience.</p>
 
 <p><code><a href="https://github.com/sethshoultes/great-minds-plugin">great-minds-plugin</a></code> is strategy and executive judgment. Its roster runs from Steve Jobs to Marcus Aurelius, from Warren Buffett to Phil Jackson. Jobs is the one who asks whether the thing in front of him is the thing that actually matters, and then declines to ship it if the answer is no. Jackson is the one who understands that the team is always performing two games simultaneously — the one on the court and the one in the room.</p>
 
@@ -38,7 +38,9 @@ related:
 
 <p><code>great-publishers-plugin</code> is publication form. Book covers, jacket copy, positioning, threshold reads, rollout sequencing, visual provocation, trailer composition. v0.1. The eight personas include the kinds of figures who know how a book's spine feels when someone pulls it from a shelf, and what that feeling is supposed to trigger. This plugin bridges the creative work of the other three to the market that receives it.</p>
 
-<p>Together, the four can take a concept through strategy, into prose, onto screen, and out the door. That is a creative-and-execution stack for a kind of company. What it cannot yet do is engineer the software, market the launch, design the product, operate the business, navigate the legal terrain, or conduct the research. Those are the six stars that are not yet lit.</p>
+<p><code><a href="https://github.com/sethshoultes/great-marketers-plugin">great-marketers-plugin</a></code> is positioning, demand generation, and the sales argument — the work that sits at the seam between publication and customer. David Ogilvy, who held that if a campaign does not sell, it is not creative. Bill Bernbach. Mary Wells Lawrence. Rory Sutherland. The plugin carries what <code>great-publishers</code> positions in the trade out into the channels where the audience already is. The gap between them is the gap between a finished artifact and a found audience.</p>
+
+<p>Together, the five can take a concept through strategy, into prose, onto screen, into the trade, and out to a customer. That is a creative-and-execution stack for a kind of company. What it cannot yet do is engineer the software, design the product, operate the business, navigate the legal terrain, or conduct the research. Those are the five stars that are not yet lit.</p>
 
 <hr>
 
@@ -60,11 +62,9 @@ related:
 
 <hr>
 
-<h2>The six stars not yet lit</h2>
+<h2>The five stars not yet lit</h2>
 
-<p>The roadmap logs six plugins in priority order. None of them is speculative — each fills a gap that the four shipped plugins leave visible.</p>
-
-<p><strong>great-marketers.</strong> David Ogilvy once said that if it doesn't sell, it isn't creative. His definition of creative work is usefully narrow: the work is good if it moves the person reading it toward a decision, and bad for every other reason. A marketing plugin built in Ogilvy's register — and in Bill Bernbach's, and Mary Wells Lawrence's, and Rory Sutherland's — would sit at the exact seam between publication and customer. <code>great-publishers</code> can position a book in the trade. <code>great-marketers</code> would carry that positioning into demand generation, social narrative, and the sales argument. The gap between them is the gap between a finished artifact and a found audience.</p>
+<p>The roadmap logs five plugins in priority order. None of them is speculative — each fills a gap that the five shipped plugins leave visible.</p>
 
 <p><strong>great-engineers.</strong> This is the most conspicuous absence in the constellation. Caseproof is a software company, and there is no plugin yet for the craft of building software. John Carmack, in the years when he was writing the engines that made first-person games possible, was doing something specific: he was finding the minimum computational surface needed to produce a given visual experience, then building that surface with the precision of someone who understood the machine at every level of abstraction simultaneously. That kind of thinking — from Grace Hopper's discipline of making the abstract concrete, through Don Knuth's precision about what an algorithm actually costs, through Linus Torvalds's blunt intolerance for approximation — is what a great-engineers plugin would hold. It is the plugin that does not yet exist and whose absence is felt every session.</p>
 
@@ -80,7 +80,7 @@ related:
 
 <h2>The file that holds the stars together</h2>
 
-<p>Six plugins logged. Four shipped. Each separate. Each lean. Each burning in its own register.</p>
+<p>Five plugins shipped. Five logged. Each separate. Each lean. Each burning in its own register.</p>
 
 <p>What keeps them from being simply unrelated? What makes the constellation a constellation rather than a scatter?</p>
 
@@ -92,7 +92,7 @@ related:
 
 <p>The pattern here is the same one that appeared in a post published <a href="/blog/canonical-secrets.html">three days ago</a> about API keys: seventeen env files holding the same handful of keys, silently drifting against one another, resolved by one canonical file that everything reads from at startup. One file. One source command. One rotation point. The credentials post described a consolidation that removed ambient drift from a developer's toolchain. The bible does the same thing for a project's creative context. Both are the same shape: a center that reads first, so that everything downstream reads from the same page.</p>
 
-<p>When great-engineers and great-marketers and great-designers ship, their personas will read the same <code>.great-authors/</code> bible before acting. An engineer persona writing a technical spec will read the project's voice rules. A marketer persona developing a launch brief will read the character files that describe who the audience is. A designer persona will read the place files that describe the visual world the product inhabits. The bible is not a prose artifact. It is a project-state artifact. Its name is legacy. Its function is universal.</p>
+<p>When great-engineers and great-designers and great-operators ship, their personas will read the same <code>.great-authors/</code> bible before acting. An engineer persona writing a technical spec will read the project's voice rules. A marketer persona developing a launch brief will read the character files that describe who the audience is. A designer persona will read the place files that describe the visual world the product inhabits. The bible is not a prose artifact. It is a project-state artifact. Its name is legacy. Its function is universal.</p>
 
 <hr>
 
