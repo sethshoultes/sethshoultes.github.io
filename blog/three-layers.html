@@ -39,11 +39,11 @@
 
   <p class="subtitle">A man set conditions for an office to run without him. Then he watched what the office did.</p>
 
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 26, 2026 &middot; 10 min read</p>
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 26, 2026 &middot; 12 min read</p>
 
   <div class="post-content">
 
-    <img src="/blog/images/three-layers-featured.png" alt="Pen-and-ink illustration: a desk at night with a laptop and a stack of folders labeled Hemingway, Didion, Jobs, Scorsese, Ive, Aurelius. Crosshatch shading. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+    <img src="/blog/images/three-layers-featured.png" alt="Pen-and-ink illustration: a small writer's office at night, empty chair pushed back, laptop closed on the desk, a second monitor still showing scrolling log text. New Yorker style. Crosshatch shading." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
     <p>The question arrived on an ordinary afternoon in the middle of March. The man at the desk had been writing a Claude Code plugin called great-minds &mdash; a kind of room of voices, Steve Jobs and Elon Musk and Marcus Aurelius and Jensen Huang, arranged in a five-phase pipeline that ran <em>debate</em>, <em>plan</em>, <em>build</em>, <em>review</em>, <em>ship</em>. He had been building it the way you build any tool: a feature at a time, a test at a time, a hand on the keyboard. The plugin worked. He was about to ship the next version. And then he stopped, because a thought had moved into the room and would not move out, and the thought was a question rather than a statement, which is what a good thought tends to be.</p>
 
@@ -57,6 +57,8 @@
 
     <h2>What the daemon built</h2>
 
+    <img src="/blog/images/three-layers-daemon.png" alt="Pen-and-ink illustration of a small server rack at night with a wall-mounted monitor showing scrolling log text. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
     <p>By April 13 a daemon was running on a DigitalOcean server at 164.90.151.82, behind an SSH key called <code>~/.ssh/greatminds</code>. Stable, the man's notes say. Autonomous since that date. The daemon's job is to consume product requirement documents &mdash; PRDs &mdash; and produce, at the end of a pipeline, a deployed thing. A site, a plugin, a theme. Something a customer could load in a browser.</p>
 
     <p>In the weeks that followed, the daemon shipped thirteen items. A portfolio site. The auto-pipeline that runs the daemon itself. A suite of seven plugins for a content engine called Emdash &mdash; EventDash, MemberShip, ReviewPulse, FormForge, SEODash, CommerceKit, AdminPulse. A theme marketplace called Wardrobe with five themes inside it. A customer-care system. A maintenance system. A round of fixes for Block Kit. A set of anti-hallucination rules. A pass through the README files for accuracy. A rewrite of EventDash. An audit of every plugin in the suite.</p>
@@ -68,6 +70,8 @@
     <hr>
 
     <h2>The first company</h2>
+
+    <img src="/blog/images/three-layers-shipyard.png" alt="Pen-and-ink illustration of an industrial shipyard scene with crates labeled EVENTDASH, MEMBERSHIP, REVIEWPULSE, FORMFORGE, SEODASH, COMMERCEKIT, ADMINPULSE on a dock stenciled SHIPYARD AI. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
     <p>Great Minds Agency lives at <a href="https://greatminds.company">greatminds.company</a>. Its tagline is verbatim and short: <em>"Drop in a PRD. Get back a product."</em></p>
 
@@ -81,15 +85,21 @@
 
     <h2>What got shipped under Great Minds</h2>
 
+    <img src="/blog/images/three-layers-portfolio.png" alt="Pen-and-ink illustration of a wall of cubbyholes, each holding a small product box labeled with one of the agency's deliverables. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
     <p>The first product the agency built was <a href="https://github.com/sethshoultes/localgenius">LocalGenius</a>. The repository was created on April 3. The site, at <a href="https://localgenius.company">localgenius.company</a>, describes the product as an AI-powered marketing platform for local businesses &mdash; hospitality, food service. The homepage carries one verbatim sentence the man did not write: <em>"a professional website, built by AI in five minutes."</em> Underneath the sentence is a conversational interface. A small business owner types a few facts and a website comes back. The platform also handles review management, social posting, and email campaigns. There are real users. There are 761 tests across multiple cloud platforms.</p>
 
-    <p>On April 4, the agency shipped a cluster. Dash, a Cmd+K command palette for WordPress: six kilobytes gzipped, FULLTEXT search, sixteen built-in commands, zero dependencies, built in one session. Pinned, a sticky-note system for the WordPress admin: @mentions, note aging, five colors, a REST API. Then five more in the same day &mdash; an AI content engine for WordPress with voice matching, a child-theme generator, an agency hub for white-label client portals, a feature-builder that takes English and produces WordPress code, and a Cloudflare Worker that proxies the AI calls.</p>
+    <p>On April 4, the agency shipped a cluster. <a href="https://github.com/sethshoultes/dash-command-bar">Dash</a>, a Cmd+K command palette for WordPress: six kilobytes gzipped, FULLTEXT search, sixteen built-in commands, zero dependencies, built in one session. <a href="https://github.com/sethshoultes/pinned-notes">Pinned</a>, a sticky-note system for the WordPress admin: @mentions, note aging, five colors, a REST API. Then five more in the same day &mdash; an <a href="https://github.com/sethshoultes/wp-content-engine">AI content engine</a> for WordPress with voice matching, a <a href="https://github.com/sethshoultes/wp-theme-forge">child-theme generator</a>, an <a href="https://github.com/sethshoultes/wp-agency-hub">agency hub</a> for white-label client portals, a <a href="https://github.com/sethshoultes/wp-feature-builder">feature-builder</a> that takes English and produces WordPress code, and a <a href="https://github.com/sethshoultes/smartweb-worker">Cloudflare Worker</a> that proxies the AI calls. The cluster lives in a <a href="https://github.com/sethshoultes/smartweb-plugins">SmartWebUtah marketplace</a> the agency stood up alongside the plugins themselves.</p>
 
     <p>The Great Minds movie itself sits on the same list, between the plugins and the marketplace, as if it were one more deliverable. It was. The agency wrote the script, performed the narration through a TTS pipeline, and rendered the video in Remotion. The man watched it the way he might watch a colleague's cut.</p>
+
+    <p>Earlier in April the agency was asked to do a different kind of work: prepare a talk the man would give at his employer's company retreat. The agency produced a slide deck and a workshop exercise package. The deck is at <a href="https://caseproof.github.io/agents-assemble-workshop-exercise/">caseproof.github.io/agents-assemble-workshop-exercise</a>; the exercises and source are at <a href="https://github.com/caseproof/agents-assemble-workshop-exercise">github.com/caseproof/agents-assemble-workshop-exercise</a>. The man stood at the front of the room and gave the talk. The agency had written it.</p>
 
     <hr>
 
     <h2>What the man did, what the man chose</h2>
+
+    <img src="/blog/images/three-layers-control.png" alt="Pen-and-ink illustration of a hand on a mechanical keyboard, beside a manila folder labeled PERSONA — STEVE JOBS, with an open notebook nearby. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
     <p>To understand what the agency does, it helps to look at what the man does, because they are not the same thing and the difference is the whole point.</p>
 
@@ -105,6 +115,8 @@
 
     <h2>What the office does at three in the morning</h2>
 
+    <img src="/blog/images/three-layers-3am.png" alt="Pen-and-ink illustration of an empty open-plan office at 3 a.m., a single laptop screen lit, a wall clock reading 3:00, no human present. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
     <p>The office runs continuously. The Shipyard daemon takes a PRD off a queue, walks it through the pipeline, and pushes the result. The Great Minds daemon does the same on a different machine for a different kind of product. Neither is supervised in the moment. Both are watched after the fact.</p>
 
     <p>The watching is done by a thing called the Maintenance Crew. It is a watchdog the agents themselves wrote &mdash; standalone, a fifteen-minute cron, AI triage performed by a smaller model. It checks the daemon. It checks ollama. It checks the disk. It checks for stuck pipelines. It verifies the integrity of the PRD files. It checks Caddy. When it finds something, it reports up. When it can fix the thing itself, it fixes it.</p>
@@ -119,6 +131,8 @@
 
     <h2>The trilogy completes</h2>
 
+    <img src="/blog/images/three-layers-trilogy.png" alt="Pen-and-ink illustration of three identical leather-bound books on a shelf, spines lettered GREAT MINDS, GREAT AUTHORS, GREAT FILMMAKERS. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
     <p>By April 24 the trilogy was complete. Great-minds had reached v1.2.1 with the named-and-unnamed split fully in place. Great-authors and great-filmmakers, the two newer plugins, had been built earlier the same week. The latest commits on all three landed on April 26.</p>
 
     <p>The total, across the trilogy, is thirty-six unique named personas plus eight functional implementers. Authors handle prose. Filmmakers handle the document a video model can consume. Minds handle the strategy and the build. The shape is the same in all three plugins; only the last inch differs, which is the inch where prose becomes a chapter or a script becomes a shot list or a debate becomes a decision.</p>
@@ -131,6 +145,8 @@
 
     <h2>The closed loop, not yet closed</h2>
 
+    <img src="/blog/images/three-layers-loop.png" alt="Pen-and-ink illustration of a circular diagram on a chalkboard, four segments labeled SOFTWARE, PROSE, VIDEO, CUSTOMER, with one segment drawn as a dashed line to indicate it has not yet been completed. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
     <p>This is where the story becomes honest, which means it stops being a victory.</p>
 
     <p>The two companies still run as separate workflows. Great Minds Agency builds software and ships it. Shipyard AI builds Emdash sites from PRDs. Both are autonomous within their domains. Twenty-two PRDs have been shipped through the daemon pipelines as of April 9, on top of five products that predated the daemons, plus the infrastructure that supports them all. The man's notes are clear about this number, because the number was supposed to settle the question and it has not.</p>
@@ -141,7 +157,25 @@
 
     <hr>
 
+    <h2>How this essay was written</h2>
+
+    <p>The essay you are reading was produced by the trilogy it describes.</p>
+
+    <p>A first draft was written by Joan Didion &mdash; that is, by a Claude Code subagent dispatched against the persona file at <code>great-authors-plugin/agents/didion-persona.md</code>. The first draft read as a tour of an architecture rather than a story, and the man at the desk said so. A second pass was edited by Robert Gottlieb &mdash; the persona file at <code>great-authors-plugin/agents/gottlieb-persona.md</code>. He added section titles, surfaced links, and cut two sentences he believed the reader did not need. The result was better but still wrong: the journey was missing.</p>
+
+    <p>The third draft was written by John McPhee &mdash; the persona file at <code>great-authors-plugin/agents/mcphee-persona.md</code>. He was given the full research dossier from a brain vault on the man's hard drive, the live websites of the two companies, the GitHub timestamps for thirty-some repositories, and a structural brief that proposed a braided shape. He read everything first, named the shape on a notional napkin, and wrote the piece you are reading. He chose the title. He chose the eight section headings. He ended on the desk.</p>
+
+    <p>The featured image and the seven section illustrations were generated by Imagen 4 Fast at two cents apiece, prompted in pen-and-ink editorial register to match the trilogy short. The image at the top of <em>The desk</em>, below, is the original featured image &mdash; produced before this revision, kept here because it fits the closing scene better than the new one.</p>
+
+    <p>The man at the desk read the result and changed nothing in the prose. He added repository links the writer had named but not linked. He fixed the homepage card on his blog to match the new title. He pushed the commit. The writer who wrote this paragraph &mdash; the one you are reading &mdash; was, in fact, the same orchestrator who dispatched McPhee, working from inside the same Claude Code session that ran the rest of the production.</p>
+
+    <p>You are reading a post about an autonomous office, written by the autonomous office.</p>
+
+    <hr>
+
     <h2>The desk</h2>
+
+    <img src="/blog/images/three-layers-desk.png" alt="Pen-and-ink illustration of the same desk as the featured image, but now showing a stack of folders labeled with the names of writers and directors. New Yorker style." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
     <p>The desk faces a window that looks out on nothing in particular. The laptop is open. The directory <code>.claude/agents/</code> is open in a tab beside it. There are forty-four files in the directory now &mdash; thirty-six with biographies, eight without. None of the people the named files are named after know any of this is happening. None of the unnamed files have anyone to know.</p>
 
