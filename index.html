@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -655,83 +658,41 @@
   <h2>Recent essays</h2>
   <p>Notes from building an AI-first platform. New posts ship here as they're written.</p>
 
-  <a href="/blog/building-in-the-age-of-ai.html" class="featured-writing" style="text-decoration: none;">
+  {%- assign featured = site.posts | where: "featured", true | first -%}
+  {%- if featured == nil -%}
+    {%- assign featured = site.posts | first -%}
+  {%- endif -%}
+
+  {%- if featured -%}
+  <a href="{{ featured.url }}" class="featured-writing" style="text-decoration: none;">
+    {%- if featured.hero_video %}
     <div class="fw-video">
-      <iframe src="https://www.youtube.com/embed/OOvcM1Pv2pA" title="Building in the Age of AI — A Four-Day Tour" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      <iframe src="{{ featured.hero_video }}" title="{{ featured.hero_video_title | default: featured.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
     </div>
+    {%- endif %}
     <div class="fw-text">
-      <span class="fw-eyebrow">Essay &middot; 9 min read</span>
-      <h3 class="fw-title">Building in the Age of AI &mdash; A Four-Day Tour</h3>
-      <p class="fw-subtitle">A live voice agent. A $0.35 article. An editorial team of five &mdash; one human, four AI-assisted. Twenty-six routing partners. Four days. Here's the tour, and what I think it all means.</p>
-      <p class="fw-meta">April 23, 2026</p>
+      <span class="fw-eyebrow">Essay &middot; {{ featured.read_time }}</span>
+      <h3 class="fw-title">{{ featured.title }}</h3>
+      <p class="fw-subtitle">{{ featured.subtitle | default: featured.description }}</p>
+      <p class="fw-meta">{{ featured.date | date: "%B %-d, %Y" }}</p>
       <span class="fw-cta">
         Read the full post
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
       </span>
     </div>
   </a>
+  {%- endif %}
 
   <div class="writing-grid">
-    <a href="/blog/35-cent-article.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 6 min read</span>
-      <h3>The $0.35 Article, and the AI Editor Who Refused to Ship It</h3>
-      <p>The pipeline didn't fail on the first run. The gate did &mdash; and that's exactly what it was supposed to do.</p>
-      <span class="wc-meta">April 21, 2026 &middot; Read &rarr;</span>
+    {%- for post in site.posts %}
+      {%- if post.url == featured.url %}{% continue %}{% endif %}
+    <a href="{{ post.url }}" class="writing-card">
+      <span class="wc-eyebrow">Essay &middot; {{ post.read_time }}</span>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.subtitle | default: post.description }}</p>
+      <span class="wc-meta">{{ post.date | date: "%B %-d, %Y" }} &middot; Read &rarr;</span>
     </a>
-    <a href="/blog/one-registry-seven-surfaces.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 7 min read</span>
-      <h3>One Registry, Seven Surfaces</h3>
-      <p>How to make your site callable by the AI assistants your customers are already using.</p>
-      <span class="wc-meta">April 22, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/twenty-five-years.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 7 min read</span>
-      <h3>Twenty-Five Years of Building, and This Was the First Week That Felt Different</h3>
-      <p>Every major shift in software felt significant at the time. None of them moved the constraint the way this one did.</p>
-      <span class="wc-meta">April 20, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/pattern-held.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 5 min read</span>
-      <h3>The Pattern Held</h3>
-      <p>Adding a Custom GPT to the registry cost zero lines of code and one DNS record. That's what the pattern buys.</p>
-      <span class="wc-meta">April 24, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/widget-gunshot.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 5 min read</span>
-      <h3>The Widget That Knows What a Gunshot Sounds Like</h3>
-      <p>When to reach for a lookup table and when to reach for an LLM. Three things wired together, each doing a job the others couldn't.</p>
-      <span class="wc-meta">April 26, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/what-agents-need.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 6 min read</span>
-      <h3>What Agents Actually Need From Your API</h3>
-      <p>The list is short. Most of it is also what a thoughtful human developer needs.</p>
-      <span class="wc-meta">April 28, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/canonical-secrets.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 8 min read</span>
-      <h3>One File for All My Keys</h3>
-      <p>A scan of one hard drive turned up seventeen env files holding the same handful of API keys. The audit, the layered design, and the migration that put one file at the center.</p>
-      <span class="wc-meta">April 26, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/four-paths.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 8 min read</span>
-      <h3>The Wrong Probe</h3>
-      <p>A claim shipped in v1.1 was wrong. A user pushed back. The re-test rendered on the first try. A diagnosis of one bug and the four render paths it opened up.</p>
-      <span class="wc-meta">April 26, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/three-layers.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 12 min read</span>
-      <h3>The Office That Worked While He Was Out</h3>
-      <p>A man set conditions for an office to run without him. Then he watched what the office did. Two companies, a trilogy of plugins, and the test about to begin.</p>
-      <span class="wc-meta">April 26, 2026 &middot; Read &rarr;</span>
-    </a>
-    <a href="/blog/three-shapes.html" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; 6 min read</span>
-      <h3>Three Shapes of the Same Pattern</h3>
-      <p>Three Claude Code plugins are one pattern at three resolutions. Everything above the output format is reusable. Everything at the output format is different.</p>
-      <span class="wc-meta">April 24, 2026 &middot; Read &rarr;</span>
-    </a>
+    {%- endfor %}
   </div>
 </section>
 

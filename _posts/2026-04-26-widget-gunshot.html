@@ -1,54 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Widget That Knows What a Gunshot Sounds Like — Seth Shoultes</title>
-  <meta name="description" content="When to reach for a lookup table and when to reach for an LLM. A design lesson from shipping a diagnostic widget." />
+---
+title: "The Widget That Knows What a Gunshot Sounds Like"
+subtitle: "When to reach for a lookup table and when to reach for an LLM."
+date: "2026-04-26"
+description: "When to reach for a lookup table and when to reach for an LLM. A design lesson from shipping a diagnostic widget."
+og_title: "The Widget That Knows What a Gunshot Sounds Like"
+og_description: "The instinct when building AI-assisted tools is to reach for the LLM for everything. That's usually wrong. Here's what I did instead."
+read_time: "5 min read"
+related:
+  - slug: pattern-held
+  - slug: one-registry-seven-surfaces
+  - slug: building-in-the-age-of-ai
+  - slug: 35-cent-article
+  - slug: twenty-five-years
+---
 
-  <meta property="og:title" content="The Widget That Knows What a Gunshot Sounds Like" />
-  <meta property="og:description" content="The instinct when building AI-assisted tools is to reach for the LLM for everything. That's usually wrong. Here's what I did instead." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/blog/widget-gunshot.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="blog.css">
-</head>
-<body>
-
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo">Seth Shoultes</a>
-    <a href="/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      Back to home
-    </a>
-  </div>
-</nav>
-
-<article>
-
-  <span class="post-label">Writing</span>
-
-  <h1>The Widget That Knows What a Gunshot Sounds Like</h1>
-
-  <p class="subtitle">When to reach for a lookup table and when to reach for an LLM.</p>
-
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 26, 2026 &middot; 5 min read</p>
-
-  <div class="video-hero">
-    <div class="video-embed">
-      <iframe src="https://www.youtube.com/embed/X120XYBhWdI" title="The Widget That Knows What a Gunshot Sounds Like" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-    </div>
-  </div>
-  <p class="video-hero-caption">The 45-second companion. Read on for the full essay.</p>
-
-  <div class="post-content">
-
-    <p>It was 10pm. I was testing the contractor embed widget I'd shipped that afternoon &mdash; a small diagnostic tool designed to sit on a partner's website so homeowners can describe a symptom and get a diagnosis without leaving the page. I typed into the free-text field: <em>my garage door sounds like a gunshot.</em></p>
+<p>It was 10pm. I was testing the contractor embed widget I'd shipped that afternoon &mdash; a small diagnostic tool designed to sit on a partner's website so homeowners can describe a symptom and get a diagnosis without leaving the page. I typed into the free-text field: <em>my garage door sounds like a gunshot.</em></p>
 
     <p>No match. The widget returned the no-result state: a short message, a list of suggested phrases to try instead. Try again.</p>
 
@@ -103,31 +69,3 @@
     <p>At 10pm, the widget shrugged at "gunshot." The homeowner typing that word doesn't have a better one &mdash; that is exactly what a snapped torsion spring sounds like. The fix was narrow: one LLM call, one translation step, and the lookup does the rest. The widget knows what a gunshot sounds like now. That's all it needed to know.</p>
 
     <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
-
-  </div>
-
-</article>
-
-<div class="related-posts">
-  <h3>Related reading</h3>
-  <ul>
-    <li><a href="/blog/pattern-held.html">The Pattern Held &rarr;</a></li>
-    <li><a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces &rarr;</a></li>
-    <li><a href="/blog/building-in-the-age-of-ai.html">Building in the Age of AI &rarr;</a></li>
-    <li><a href="/blog/35-cent-article.html">The $0.35 Article &rarr;</a></li>
-    <li><a href="/blog/twenty-five-years.html">Twenty-Five Years of Building &rarr;</a></li>
-  </ul>
-</div>
-
-<div class="divider"><hr></div>
-<footer>
-  <p>&copy; 2026 Seth Shoultes</p>
-  <div class="footer-links">
-    <a href="/">Home</a>
-    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
-    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
-  </div>
-</footer>
-
-</body>
-</html>

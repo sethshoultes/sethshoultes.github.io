@@ -1,0 +1,35 @@
+title: Seth Shoultes
+description: AI Developer, Product Leader, WordPress Pioneer
+url: https://sethshoultes.com
+
+# Preserve the existing /blog/<slug>.html URL shape so nothing breaks.
+permalink: /blog/:slug:output_ext
+
+# Date stamps in posts are 2026 — let future-dated posts publish.
+future: true
+
+# Markdown engine + highlighter (defaults; explicit for clarity).
+markdown: kramdown
+highlighter: rouge
+
+# Files at the repo root that aren't Jekyll-relevant.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+  - .gitignore
+  - .ruby-version
+
+# GitHub Pages plugins — these are the safe defaults.
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post

@@ -1,49 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>What Agents Actually Need From Your API — Seth Shoultes</title>
-  <meta name="description" content="The list is short. Most of it is also what a thoughtful human developer needs. Eight concrete things to build into your API so a stranger's agent can call it without human mediation." />
+---
+title: "What Agents Actually Need From Your API"
+subtitle: "The list is short. Most of it is also what a thoughtful human developer needs."
+date: "2026-04-28"
+description: "The list is short. Most of it is also what a thoughtful human developer needs. Eight concrete things to build into your API so a stranger's agent can call it without human mediation."
+og_title: "What Agents Actually Need From Your API"
+og_description: "Eight specific things an agent needs from your API — named operations, absolute URLs, descriptions written for when-to-call, clear error codes, and more. Grounded in what I shipped at garagedoorscience.com."
+read_time: "6 min read"
+related:
+  - slug: pattern-held
+    note: "the essay this one builds on"
+  - slug: widget-gunshot
+  - slug: one-registry-seven-surfaces
+  - slug: building-in-the-age-of-ai
+  - slug: 35-cent-article
+---
 
-  <meta property="og:title" content="What Agents Actually Need From Your API" />
-  <meta property="og:description" content="Eight specific things an agent needs from your API — named operations, absolute URLs, descriptions written for when-to-call, clear error codes, and more. Grounded in what I shipped at garagedoorscience.com." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/blog/what-agents-need.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="blog.css">
-</head>
-<body>
-
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo">Seth Shoultes</a>
-    <a href="/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      Back to home
-    </a>
-  </div>
-</nav>
-
-<article>
-
-  <span class="post-label">Writing</span>
-
-  <h1>What Agents Actually Need From Your API</h1>
-
-  <p class="subtitle">The list is short. Most of it is also what a thoughtful human developer needs.</p>
-
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; April 28, 2026 &middot; 6 min read</p>
-
-  <!-- Video embed coming — HeyGen render pending. Will land shortly. -->
-
-  <div class="post-content">
-
-    <p>When I wired up the Custom GPT a few days ago, I opened the Actions importer and watched it read my OpenAPI spec. Four seconds. It listed all eight tools &mdash; <code>diagnose</code>, <code>routeByZip</code>, <code>getDoorStyles</code>, <code>getActivePromotions</code>, <code>getInspectionReferencePhotos</code>, <code>retrieveLabContext</code>, <code>costEstimate</code>, <code>submitInspection</code> &mdash; and gave me a green checkmark.</p>
+<p>When I wired up the Custom GPT a few days ago, I opened the Actions importer and watched it read my OpenAPI spec. Four seconds. It listed all eight tools &mdash; <code>diagnose</code>, <code>routeByZip</code>, <code>getDoorStyles</code>, <code>getActivePromotions</code>, <code>getInspectionReferencePhotos</code>, <code>retrieveLabContext</code>, <code>costEstimate</code>, <code>submitInspection</code> &mdash; and gave me a green checkmark.</p>
 
     <p>I've been thinking about those four seconds. Not because it was fast. Because of what it was reading. Everything the import needed, I'd written for earlier reasons. The GPT showed up and asked for exactly those things.</p>
 
@@ -136,31 +108,3 @@
     <p>The list above is the price of admission.</p>
 
     <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
-
-  </div>
-
-</article>
-
-<div class="related-posts">
-  <h3>Related reading</h3>
-  <ul>
-    <li><a href="/blog/pattern-held.html">The Pattern Held &rarr;</a> <em>&mdash; the essay this one builds on</em></li>
-    <li><a href="/blog/widget-gunshot.html">The Widget That Knows What a Gunshot Sounds Like &rarr;</a></li>
-    <li><a href="/blog/one-registry-seven-surfaces.html">One Registry, Seven Surfaces &rarr;</a></li>
-    <li><a href="/blog/building-in-the-age-of-ai.html">Building in the Age of AI &rarr;</a></li>
-    <li><a href="/blog/35-cent-article.html">The $0.35 Article &rarr;</a></li>
-  </ul>
-</div>
-
-<div class="divider"><hr></div>
-<footer>
-  <p>&copy; 2026 Seth Shoultes</p>
-  <div class="footer-links">
-    <a href="/">Home</a>
-    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
-    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
-  </div>
-</footer>
-
-</body>
-</html>

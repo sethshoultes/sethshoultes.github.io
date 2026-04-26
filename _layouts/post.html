@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }} — Seth Shoultes</title>
+  <meta name="description" content="{{ page.description }}" />
+
+  <meta property="og:title" content="{{ page.og_title | default: page.title }}" />
+  <meta property="og:description" content="{{ page.og_description | default: page.description }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  {%- if page.og_image %}
+  <meta property="og:image" content="{{ page.og_image }}" />
+  <meta name="twitter:image" content="{{ page.og_image }}" />
+  {%- endif %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/blog/blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<article>
+
+  <span class="post-label">{{ page.label | default: "Writing" }}</span>
+
+  <h1>{{ page.title }}</h1>
+
+  {%- if page.subtitle %}
+  <p class="subtitle">{{ page.subtitle }}</p>
+  {%- endif %}
+
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; {{ page.date | date: "%B %-d, %Y" }} &middot; {{ page.read_time }}</p>
+
+  {%- if page.hero_video %}
+  <div class="video-hero">
+    <div class="video-embed">
+      <iframe src="{{ page.hero_video }}" title="{{ page.hero_video_title | default: page.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  {%- if page.hero_video_caption %}
+  <p class="video-hero-caption">{{ page.hero_video_caption }}</p>
+  {%- endif %}
+  {%- endif %}
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+</article>
+
+{%- if page.related and page.related.size > 0 %}
+<div class="related-posts">
+  <h3>Related reading</h3>
+  <ul>
+    {%- for rel in page.related %}
+    {%- assign related_post = site.posts | where: "slug", rel.slug | first %}
+    {%- if related_post %}
+    <li><a href="{{ related_post.url }}">{{ related_post.title }} &rarr;</a>{% if rel.note %} <em>&mdash; {{ rel.note }}</em>{% endif %}</li>
+    {%- endif %}
+    {%- endfor %}
+  </ul>
+</div>
+{%- endif %}
+
+<div class="divider"><hr></div>
+<footer>
+  <p>&copy; 2026 Seth Shoultes</p>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
+    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
