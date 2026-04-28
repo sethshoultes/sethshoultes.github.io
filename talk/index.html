@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talk to Seth — Live Avatar</title>
+  <meta name="description" content="A live, voice-driven conversation with Seth Shoultes — a HeyGen LiveAvatar that looks like Seth, voiced by an ElevenLabs clone of his actual voice." />
+
+  <meta property="og:title" content="Talk to Seth — Live Avatar" />
+  <meta property="og:description" content="A live, voice-driven conversation with Seth's avatar — HeyGen LiveAvatar + an ElevenLabs voice clone." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sethshoultes.com/talk/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --accent: #0f766e;
+      --accent-hover: #115e59;
+      --accent-light: #ccfbf1;
+      --border: #e5e7eb;
+      --danger: #dc2626;
+      --radius: 12px;
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(250, 250, 250, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 0 2rem;
+    }
+    nav .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+    nav .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    nav .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    nav .nav-back:hover { color: var(--accent); }
+    nav .nav-back svg { width: 14px; height: 14px; }
+
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 6rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .lede {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+    }
+
+    .stage {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .stage iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .placeholder {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .placeholder h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .placeholder p {
+      font-size: 0.92rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .controls {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.7rem 1.4rem;
+      border-radius: 100px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s, color 0.15s, border-color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    button[disabled] { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not([disabled]) { opacity: 0.92; }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+    }
+    .btn-primary:hover:not([disabled]) { background: var(--accent); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover:not([disabled]) { color: var(--text); border-color: var(--text); }
+
+    .btn-danger {
+      background: var(--surface);
+      color: var(--danger);
+      border-color: var(--border);
+    }
+    .btn-danger:hover:not([disabled]) { border-color: var(--danger); }
+
+    .status {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-height: 1.4em;
+    }
+    .status.error { color: var(--danger); }
+
+    .meta {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem 2rem;
+    }
+    .meta dt {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .meta dd {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .meta a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }
+
+    footer {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; margin-right: 1.25rem; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow">Beta · Voice + Video</span>
+  <h1>Talk to Seth.</h1>
+  <p class="lede">
+    A live conversation with a HeyGen LiveAvatar of Seth, voiced by an ElevenLabs clone of his actual voice. Click start, allow microphone access, and ask anything. The avatar listens, thinks, and answers in real time.
+  </p>
+
+  <div id="stage" class="stage">
+    <div class="placeholder">
+      <h2>Click "Start the call" to begin</h2>
+      <p>The session opens a microphone connection and streams an avatar of Seth back. Each call uses real LiveAvatar credits, so it'll close itself after a few minutes of silence.</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="start-btn" class="btn-primary" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
+      Start the call
+    </button>
+    <button id="stop-btn" class="btn-danger" type="button" disabled>End call</button>
+    <button id="iframe-btn" class="btn-secondary" type="button">Try the iframe version</button>
+  </div>
+
+  <p id="status" class="status"></p>
+
+  <dl class="meta">
+    <div>
+      <dt>What it is</dt>
+      <dd>A real-time avatar driven by <a href="https://docs.liveavatar.com">HeyGen LiveAvatar</a>. The avatar's likeness is Seth; the voice is an ElevenLabs clone of Seth's voice.</dd>
+    </div>
+    <div>
+      <dt>How it works</dt>
+      <dd>A small Cloudflare Worker mints a one-shot session token. The page opens a WebRTC connection to LiveAvatar with that token. The API key never leaves the server.</dd>
+    </div>
+    <div>
+      <dt>Privacy</dt>
+      <dd>Audio streams direct to LiveAvatar / ElevenLabs; nothing is logged here. Sessions auto-close on silence and on tab close.</dd>
+    </div>
+    <div>
+      <dt>Source</dt>
+      <dd><a href="https://github.com/sethshoultes/sethshoultes.github.io/tree/main/talk">talk/ on GitHub</a> · <a href="https://www.npmjs.com/package/@heygen/liveavatar-web-sdk">@heygen/liveavatar-web-sdk</a></dd>
+    </div>
+  </dl>
+</main>
+
+<footer>
+  <a href="/">Home</a>
+  <a href="https://www.linkedin.com/in/shoultes/" target="_blank" rel="noopener">LinkedIn</a>
+  <a href="https://github.com/sethshoultes" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+<script src="config.js"></script>
+<script type="module">
+  const stage = document.getElementById("stage");
+  const startBtn = document.getElementById("start-btn");
+  const stopBtn = document.getElementById("stop-btn");
+  const iframeBtn = document.getElementById("iframe-btn");
+  const status = document.getElementById("status");
+
+  let session = null;
+
+  function setStatus(text, isError = false) {
+    status.textContent = text;
+    status.classList.toggle("error", isError);
+  }
+
+  function clearStage() {
+    while (stage.firstChild) stage.removeChild(stage.firstChild);
+  }
+
+  function renderPlaceholder(titleText, bodyText) {
+    clearStage();
+    const wrap = document.createElement("div");
+    wrap.className = "placeholder";
+    const h = document.createElement("h2");
+    h.textContent = titleText;
+    const p = document.createElement("p");
+    p.textContent = bodyText;
+    wrap.append(h, p);
+    stage.append(wrap);
+  }
+
+  function renderVideo() {
+    clearStage();
+    const v = document.createElement("video");
+    v.autoplay = true;
+    v.playsInline = true;
+    stage.append(v);
+    return v;
+  }
+
+  function renderIframe(url) {
+    clearStage();
+    const iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.allow = "microphone";
+    iframe.title = "LiveAvatar Embed";
+    stage.append(iframe);
+  }
+
+  async function startSession() {
+    if (!window.AVATAR_WORKER_URL) {
+      setStatus("Worker URL not configured. Loading the iframe fallback.", true);
+      if (window.AVATAR_FALLBACK_EMBED) {
+        renderIframe(window.AVATAR_FALLBACK_EMBED);
+        startBtn.disabled = true;
+        stopBtn.disabled = true;
+        iframeBtn.disabled = true;
+      }
+      return;
+    }
+
+    startBtn.disabled = true;
+    setStatus("Minting session token…");
+
+    let sessionToken;
+    try {
+      const res = await fetch(window.AVATAR_WORKER_URL, { credentials: "omit" });
+      const payload = await res.json();
+      if (!res.ok || !payload.sessionToken) {
+        throw new Error(payload?.error?.message || `HTTP ${res.status}`);
+      }
+      sessionToken = payload.sessionToken;
+    } catch (err) {
+      setStatus(`Could not get a session token: ${err.message}`, true);
+      startBtn.disabled = false;
+      return;
+    }
+
+    setStatus("Connecting to LiveAvatar…");
+
+    let LiveAvatarSession;
+    try {
+      ({ LiveAvatarSession } = await import("https://esm.sh/@heygen/liveavatar-web-sdk@0.0.17"));
+    } catch (err) {
+      setStatus(`Could not load the LiveAvatar SDK: ${err.message}`, true);
+      startBtn.disabled = false;
+      return;
+    }
+
+    try {
+      session = new LiveAvatarSession(sessionToken, { voiceChat: true });
+      const video = renderVideo();
+      await session.start();
+      session.attach(video);
+      await session.voiceChat.start();
+      setStatus("Connected. Speak whenever you're ready.");
+      stopBtn.disabled = false;
+    } catch (err) {
+      setStatus(`Session failed to start: ${err.message}`, true);
+      startBtn.disabled = false;
+      session = null;
+    }
+  }
+
+  async function stopSession() {
+    stopBtn.disabled = true;
+    setStatus("Ending call…");
+    try { await session?.stop(); } catch {}
+    session = null;
+    renderPlaceholder("Call ended", "Click Start the call to open a new one.");
+    startBtn.disabled = false;
+    setStatus("");
+  }
+
+  startBtn.addEventListener("click", startSession);
+  stopBtn.addEventListener("click", stopSession);
+  iframeBtn.addEventListener("click", () => {
+    if (!window.AVATAR_FALLBACK_EMBED) {
+      setStatus("No iframe URL configured.", true);
+      return;
+    }
+    renderIframe(window.AVATAR_FALLBACK_EMBED);
+    setStatus("Loaded the iframe embed.");
+    startBtn.disabled = true;
+    stopBtn.disabled = true;
+    iframeBtn.disabled = true;
+  });
+
+  window.addEventListener("beforeunload", () => {
+    session?.stop?.().catch(() => {});
+  });
+</script>
+
+</body>
+</html>
