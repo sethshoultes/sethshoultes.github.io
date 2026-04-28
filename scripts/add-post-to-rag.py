@@ -41,20 +41,20 @@ EMBEDDING_MODEL = "e5_mistral_7b_instruct"
 SITE_BASE = "https://sethshoultes.com"
 
 # ---- env ----
+# Source canonical secrets if present (local runs). In CI, ELEVENLABS_API_KEY
+# is provided directly via the workflow env.
 SECRETS = Path.home() / ".config/dev-secrets/secrets.env"
-if not SECRETS.exists():
-    sys.exit(f"missing canonical secrets at {SECRETS}")
-
-for raw in SECRETS.read_text().splitlines():
-    line = raw.strip()
-    if not line or line.startswith("#") or "=" not in line:
-        continue
-    k, v = line.split("=", 1)
-    os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+if SECRETS.exists():
+    for raw in SECRETS.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 API_KEY = os.environ.get("ELEVENLABS_API_KEY")
 if not API_KEY:
-    sys.exit("ELEVENLABS_API_KEY missing from canonical secrets")
+    sys.exit("ELEVENLABS_API_KEY not set (env var or ~/.config/dev-secrets/secrets.env)")
 
 
 # ---- API helper ----

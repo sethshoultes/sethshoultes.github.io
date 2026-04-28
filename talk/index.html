@@ -143,13 +143,26 @@
       text-align: center;
       padding: 2rem;
       color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .placeholder img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--surface);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      margin-bottom: 0.75rem;
     }
 
     .placeholder h2 {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--text);
-      margin-bottom: 0.5rem;
     }
 
     .placeholder p {
@@ -266,8 +279,9 @@
 
   <div id="stage" class="stage">
     <div class="placeholder">
+      <img src="seth.jpg" alt="Seth Shoultes" />
       <h2>Click "Start the call" to begin</h2>
-      <p>The session opens a microphone connection and streams an avatar of Seth back. Each call uses real LiveAvatar credits, so it'll close itself after a few minutes of silence.</p>
+      <p>The session opens a microphone connection and streams an avatar of me back. Each call uses real LiveAvatar credits, so it'll close itself after a few minutes of silence.</p>
     </div>
   </div>
 
@@ -277,7 +291,6 @@
       Start the call
     </button>
     <button id="stop-btn" class="btn-danger" type="button" disabled>End call</button>
-    <button id="iframe-btn" class="btn-secondary" type="button">Try the iframe version</button>
   </div>
 
   <p id="status" class="status"></p>
@@ -313,7 +326,6 @@
   const stage = document.getElementById("stage");
   const startBtn = document.getElementById("start-btn");
   const stopBtn = document.getElementById("stop-btn");
-  const iframeBtn = document.getElementById("iframe-btn");
   const status = document.getElementById("status");
 
   let session = null;
@@ -331,11 +343,14 @@
     clearStage();
     const wrap = document.createElement("div");
     wrap.className = "placeholder";
+    const img = document.createElement("img");
+    img.src = "seth.jpg";
+    img.alt = "Seth Shoultes";
     const h = document.createElement("h2");
     h.textContent = titleText;
     const p = document.createElement("p");
     p.textContent = bodyText;
-    wrap.append(h, p);
+    wrap.append(img, h, p);
     stage.append(wrap);
   }
 
@@ -348,24 +363,9 @@
     return v;
   }
 
-  function renderIframe(url) {
-    clearStage();
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.allow = "microphone";
-    iframe.title = "LiveAvatar Embed";
-    stage.append(iframe);
-  }
-
   async function startSession() {
     if (!window.AVATAR_WORKER_URL) {
-      setStatus("Worker URL not configured. Loading the iframe fallback.", true);
-      if (window.AVATAR_FALLBACK_EMBED) {
-        renderIframe(window.AVATAR_FALLBACK_EMBED);
-        startBtn.disabled = true;
-        stopBtn.disabled = true;
-        iframeBtn.disabled = true;
-      }
+      setStatus("Worker URL not configured.", true);
       return;
     }
 
@@ -424,17 +424,6 @@
 
   startBtn.addEventListener("click", startSession);
   stopBtn.addEventListener("click", stopSession);
-  iframeBtn.addEventListener("click", () => {
-    if (!window.AVATAR_FALLBACK_EMBED) {
-      setStatus("No iframe URL configured.", true);
-      return;
-    }
-    renderIframe(window.AVATAR_FALLBACK_EMBED);
-    setStatus("Loaded the iframe embed.");
-    startBtn.disabled = true;
-    stopBtn.disabled = true;
-    iframeBtn.disabled = true;
-  });
 
   window.addEventListener("beforeunload", () => {
     session?.stop?.().catch(() => {});

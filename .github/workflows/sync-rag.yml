@@ -1,0 +1,36 @@
+name: Sync new posts into Seth's Clone RAG
+
+# Trigger whenever a post is added/changed on main, or manually via the Actions tab.
+# This workflow only consumes `secrets.ELEVENLABS_API_KEY` — no untrusted user
+# input from issues/PRs is interpolated into shell commands.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "_posts/**"
+      - "scripts/add-post-to-rag.py"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Add new blog URLs to ElevenLabs knowledge base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Sync RAG
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then
+            echo "::error::ELEVENLABS_API_KEY repository secret is not set."
+            echo "Add it at: Settings -> Secrets and variables -> Actions -> New repository secret"
+            exit 1
+          fi
+          python3 scripts/add-post-to-rag.py
