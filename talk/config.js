@@ -1,6 +1,6 @@
 // Set this to the Cloudflare Worker URL after deploying ../sethshoultes-avatar-worker.
 // Example: "https://sethshoultes-avatar-token.<your-subdomain>.workers.dev"
-window.AVATAR_WORKER_URL = "";
+window.AVATAR_WORKER_URL = "https://sethshoultes-avatar-token.seth-a02.workers.dev";
 
 // Optional fallback iframe — used if the worker URL is empty or fails.
 // This is the embed URL Seth already had configured at HeyGen.
