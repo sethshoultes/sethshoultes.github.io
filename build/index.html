@@ -514,9 +514,20 @@
     startBtn.disabled = true;
     setStatus("Minting session token…");
 
+    // Pass the starter prompt to the worker as a query param so the worker
+    // can fold it into the agent's dynamic_variables. In LITE mode the SDK
+    // has no client-side "send user message" — the agent has to be primed
+    // at session-start via its system prompt + dynamic variables.
+    let workerUrl = window.AVATAR_WORKER_URL;
+    if (pendingStarterPrompt) {
+      const u = new URL(workerUrl);
+      u.searchParams.set("starter", pendingStarterPrompt);
+      workerUrl = u.toString();
+    }
+
     let sessionToken;
     try {
-      const res = await fetch(window.AVATAR_WORKER_URL, { credentials: "omit" });
+      const res = await fetch(workerUrl, { credentials: "omit" });
       const payload = await res.json();
       if (!res.ok || !payload.sessionToken) throw new Error(payload?.error?.message || `HTTP ${res.status}`);
       sessionToken = payload.sessionToken;
@@ -547,10 +558,16 @@
       session.on(AgentEventsEnum.ELEVENLABS_AGENT_EVENT, (event) => {
         const evType = event?.elevenlabs_event_type;
         const data = event?.data || {};
-        if (evType === "client_tool_call" && data.tool_name === "show_blog_post") {
-          const slug = data.parameters?.slug || data.parameters?.post_slug;
+        // ElevenLabs wraps tool calls one level deeper than the LiveAvatar
+        // SDK's elevenlabs_agent_event passthrough exposes — check both shapes.
+        const tool = data.client_tool_call || data;
+        const toolName = tool.tool_name || data.tool_name;
+        const params = tool.parameters || data.parameters || {};
+        if (evType === "client_tool_call" && toolName === "show_blog_post") {
+          const slug = params.slug || params.post_slug;
           const match = posts.find((p) => p.slug === slug);
           if (match) renderCard(match);
+          else console.debug("show_blog_post: no post for slug", slug, "have", posts.map(p => p.slug));
         }
       });
 
@@ -559,10 +576,10 @@
       session.attach(video);
       await session.voiceChat.start();
 
-      // If a starter was clicked, send the prompt as a text message so the
-      // agent kicks off the build conversation.
-      if (pendingStarterPrompt && typeof session.message === "function") {
-        try { session.message(pendingStarterPrompt); } catch {}
+      // The starter prompt was passed to the worker as a dynamic variable —
+      // the agent's system prompt is what kicks off the build walkthrough.
+      // No client-side message injection (LITE mode SDK doesn't support it).
+      if (pendingStarterPrompt) {
         setStatus("Connected. The avatar will start by walking you through your starter.");
       } else {
         setStatus("Connected. Speak whenever you're ready.");

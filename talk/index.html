@@ -618,10 +618,16 @@
         const payload = event || {};
         const evType = payload.elevenlabs_event_type;
         const data = payload.data || {};
-        if (evType === "client_tool_call" && data.tool_name === "show_blog_post") {
-          const slug = data.parameters?.slug || data.parameters?.post_slug;
+        // ElevenLabs wraps tool calls one level deeper than the LiveAvatar
+        // SDK's elevenlabs_agent_event passthrough exposes — check both shapes.
+        const tool = data.client_tool_call || data;
+        const toolName = tool.tool_name || data.tool_name;
+        const params = tool.parameters || data.parameters || {};
+        if (evType === "client_tool_call" && toolName === "show_blog_post") {
+          const slug = params.slug || params.post_slug;
           const match = posts.find((p) => p.slug === slug);
           if (match) renderCard(match);
+          else console.debug("show_blog_post: no post for slug", slug, "have", posts.map(p => p.slug));
         }
       });
 
