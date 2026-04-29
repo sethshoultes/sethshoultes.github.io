@@ -114,6 +114,40 @@
       margin-bottom: 2.5rem;
     }
 
+    .starters { margin-bottom: 2rem; }
+    .starters-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .starter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+    .starter {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.95rem 1.1rem;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.92rem;
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .starter:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    }
+    .starter:disabled { opacity: 0.5; cursor: not-allowed; }
+    .starter strong { display: block; font-weight: 600; margin-bottom: 0.2rem; }
+    .starter span { font-size: 0.82rem; color: var(--text-muted); }
+
     .stage {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -391,8 +425,38 @@
   <span class="eyebrow">Beta · Voice + Video</span>
   <h1>Talk to Seth.</h1>
   <p class="lede">
-    A live conversation with a HeyGen LiveAvatar of Seth, voiced by an ElevenLabs clone of his actual voice. Click start, allow microphone access, and ask anything. The avatar listens, thinks, and answers in real time. Looking to build something specific? Try <a href="/build/" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;">Build with me</a> — same agent, framed for guided builds with starter prompts.
+    A live conversation with a HeyGen LiveAvatar of Seth, voiced by an ElevenLabs clone of his actual voice. Click start, allow microphone access, and ask anything. Or pick a starter below — same agent, opens with a guided walkthrough on whichever pattern.
   </p>
+
+  <div class="starters">
+    <p class="starters-label">Or start from one of these</p>
+    <div class="starter-grid">
+      <button class="starter" data-topic="add-avatar" data-slug="the-avatar-reads-first" data-prompt="Walk me through adding a HeyGen LiveAvatar with an ElevenLabs voice clone to a static site, like the one at /talk/. Tell me what I need to set up first.">
+        <strong>Add an avatar to my site</strong>
+        <span>HeyGen LiveAvatar + ElevenLabs voice</span>
+      </button>
+      <button class="starter" data-topic="add-rag" data-slug="the-bible-reads-first" data-prompt="Walk me through wiring URL-sourced RAG into an ElevenLabs Conversational AI agent — the same setup the /talk/ avatar uses. What do I need to do first?">
+        <strong>Add RAG to an ElevenLabs agent</strong>
+        <span>URL knowledge base + auto-sync</span>
+      </button>
+      <button class="starter" data-topic="brain-vault" data-slug="whats-on-the-desk" data-prompt="Walk me through setting up a brain vault in Obsidian wired to Claude Code as persistent memory — the one you use yourself. What do I install first?">
+        <strong>Set up a brain vault</strong>
+        <span>Obsidian + Claude Code memory</span>
+      </button>
+      <button class="starter" data-topic="client-tool" data-slug="skills-as-sops" data-prompt="Walk me through registering a browser-side client tool on an ElevenLabs Conversational AI agent — like the show_blog_post tool that surfaces cards on your /talk/ page. What's the two-step API flow?">
+        <strong>Register a client tool</strong>
+        <span>Browser-side tool calling</span>
+      </button>
+      <button class="starter" data-topic="token-worker" data-slug="canonical-secrets" data-prompt="Walk me through standing up a Cloudflare Worker that mints LiveAvatar session tokens, like the one behind your /talk/ page. What goes where?">
+        <strong>Stand up a token-mint Worker</strong>
+        <span>Cloudflare Workers · CORS · secrets</span>
+      </button>
+      <button class="starter" data-topic="constellation" data-slug="great-minds-constellation" data-prompt="Walk me through setting up the Great Minds Constellation — installing the marketplace, picking which plugins to enable per-project, and dispatching the first persona. What's the discovery path?">
+        <strong>Set up the Great Minds Constellation</strong>
+        <span>10-plugin marketplace · per-project enablement</span>
+      </button>
+    </div>
+  </div>
 
   <div id="stage" class="stage">
     <div class="placeholder">
@@ -451,11 +515,13 @@
   const status = document.getElementById("status");
   const cardsDrawer = document.getElementById("cards-drawer");
   const cardsList = document.getElementById("cards-list");
+  const starters = document.querySelectorAll(".starter");
 
   let session = null;
   let posts = [];                 // loaded from /talk/posts.json
   let titleMatchers = [];         // [{ re, post }] for transcription scanning
   const shownSlugs = new Set();   // dedupe — show each post at most once per call
+  let pendingStarter = null;      // {topic, slug, prompt} when a starter was clicked
 
   // --- Load post catalog up front so it's ready when the call starts. ---
   fetch("/talk/posts.json", { credentials: "omit" })
@@ -572,9 +638,20 @@
     startBtn.disabled = true;
     setStatus("Minting session token…");
 
+    // When a starter was picked, append topic + starter to the worker URL so
+    // it can return a topic-aware first_message and feed the topic context
+    // into the system prompt for follow-up turns.
+    let workerUrl = window.AVATAR_WORKER_URL;
+    if (pendingStarter) {
+      const u = new URL(workerUrl);
+      u.searchParams.set("topic", pendingStarter.topic);
+      if (pendingStarter.prompt) u.searchParams.set("starter", pendingStarter.prompt);
+      workerUrl = u.toString();
+    }
+
     let sessionToken;
     try {
-      const res = await fetch(window.AVATAR_WORKER_URL, { credentials: "omit" });
+      const res = await fetch(workerUrl, { credentials: "omit" });
       const payload = await res.json();
       if (!res.ok || !payload.sessionToken) {
         throw new Error(payload?.error?.message || `HTTP ${res.status}`);
@@ -635,7 +712,11 @@
       await session.start();
       session.attach(video);
       await session.voiceChat.start();
-      setStatus("Connected. Speak whenever you're ready.");
+      if (pendingStarter) {
+        setStatus("Connected. The avatar will open with a walkthrough on the topic you picked.");
+      } else {
+        setStatus("Connected. Speak whenever you're ready.");
+      }
       stopBtn.disabled = false;
     } catch (err) {
       setStatus(`Session failed to start: ${err.message}`, true);
@@ -649,11 +730,37 @@
     setStatus("Ending call…");
     try { await session?.stop(); } catch {}
     session = null;
+    pendingStarter = null;
+    starters.forEach((b) => { b.disabled = false; b.style.borderColor = ""; });
     renderPlaceholder("Call ended", "Click Start the call to open a new one.");
     startBtn.disabled = false;
     setStatus("");
     clearCards();
   }
+
+  // Starter click — pre-render the matching post card immediately (so the
+  // user has a clickable reference without waiting on transcription scan or
+  // tool-call event), stage the starter context, and start the session.
+  starters.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      pendingStarter = {
+        topic: btn.dataset.topic,
+        slug: btn.dataset.slug,
+        prompt: btn.dataset.prompt,
+      };
+      starters.forEach((b) => b.disabled = true);
+      btn.style.borderColor = "var(--accent)";
+      // Pre-render the related card. Posts.json may not be loaded yet on a
+      // fast click; if so, retry once after a short delay.
+      const tryRender = () => {
+        const match = posts.find((p) => p.slug === pendingStarter.slug);
+        if (match) renderCard(match);
+        else if (!posts.length) setTimeout(tryRender, 300);
+      };
+      tryRender();
+      if (!session) startSession();
+    });
+  });
 
   startBtn.addEventListener("click", startSession);
   stopBtn.addEventListener("click", stopSession);
