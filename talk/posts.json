@@ -1,0 +1,17 @@
+---
+layout: null
+permalink: /talk/posts.json
+---
+[
+{% for post in site.posts %}
+  {
+    "slug": "{{ post.slug | jsonify | replace: '"', '' }}",
+    "title": {{ post.title | jsonify }},
+    "subtitle": {{ post.subtitle | default: post.description | jsonify }},
+    "url": "{{ post.url }}",
+    "image": "{{ post.og_image | default: '' }}",
+    "date": "{{ post.date | date: '%B %-d, %Y' }}",
+    "read_time": {{ post.read_time | default: '' | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]

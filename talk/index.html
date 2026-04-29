@@ -170,6 +170,103 @@
       margin: 0 auto;
     }
 
+    /* --- Cards drawer (surfaces blog posts the agent mentions) --- */
+    .cards-drawer {
+      margin-top: 1.25rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .cards-drawer.visible { display: flex; }
+
+    .cards-drawer .cards-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .cards-list {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+    }
+
+    .post-card {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.2s ease-out, opacity 0.2s;
+      animation: cardEnter 0.25s ease-out;
+    }
+    .post-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-card .pc-thumb {
+      flex: 0 0 64px;
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--accent-light);
+    }
+    .post-card .pc-thumb-fallback {
+      flex: 0 0 64px;
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: var(--accent-light);
+    }
+
+    .post-card .pc-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+    .post-card .pc-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .post-card .pc-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .post-card .pc-cta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: auto;
+    }
+
     .controls {
       margin-top: 1.25rem;
       display: flex;
@@ -315,6 +412,11 @@
 
   <p id="status" class="status"></p>
 
+  <aside id="cards-drawer" class="cards-drawer" aria-live="polite">
+    <span class="cards-eyebrow">Mentioned in this conversation</span>
+    <div id="cards-list" class="cards-list"></div>
+  </aside>
+
   <dl class="meta">
     <div>
       <dt>What it is</dt>
@@ -347,8 +449,86 @@
   const startBtn = document.getElementById("start-btn");
   const stopBtn = document.getElementById("stop-btn");
   const status = document.getElementById("status");
+  const cardsDrawer = document.getElementById("cards-drawer");
+  const cardsList = document.getElementById("cards-list");
 
   let session = null;
+  let posts = [];                 // loaded from /talk/posts.json
+  let titleMatchers = [];         // [{ re, post }] for transcription scanning
+  const shownSlugs = new Set();   // dedupe — show each post at most once per call
+
+  // --- Load post catalog up front so it's ready when the call starts. ---
+  fetch("/talk/posts.json", { credentials: "omit" })
+    .then((r) => r.ok ? r.json() : [])
+    .then((data) => {
+      posts = data;
+      // Build matchers: title is the canonical signal; the agent is
+      // instructed to cite posts by title. Match case-insensitively, with
+      // word boundaries so "Constellation" doesn't match inside other words.
+      titleMatchers = posts.map((p) => ({
+        post: p,
+        re: new RegExp(`\\b${escapeRegExp(p.title)}\\b`, "i"),
+      }));
+    })
+    .catch(() => { /* posts.json not yet built; cards just won't surface */ });
+
+  function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function renderCard(post) {
+    if (shownSlugs.has(post.slug)) return;
+    shownSlugs.add(post.slug);
+
+    const a = document.createElement("a");
+    a.className = "post-card";
+    a.href = post.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+
+    if (post.image) {
+      const img = document.createElement("img");
+      img.className = "pc-thumb";
+      img.src = post.image;
+      img.alt = "";
+      img.loading = "lazy";
+      a.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "pc-thumb-fallback";
+      a.appendChild(ph);
+    }
+
+    const text = document.createElement("div");
+    text.className = "pc-text";
+    const title = document.createElement("div");
+    title.className = "pc-title";
+    title.textContent = post.title;
+    const subtitle = document.createElement("div");
+    subtitle.className = "pc-subtitle";
+    subtitle.textContent = post.subtitle || "";
+    const cta = document.createElement("div");
+    cta.className = "pc-cta";
+    cta.textContent = `Read it · ${post.read_time || ""}`.trim().replace(/·\s*$/, "").trim();
+    text.append(title, subtitle, cta);
+    a.appendChild(text);
+
+    cardsList.appendChild(a);
+    cardsDrawer.classList.add("visible");
+  }
+
+  function scanForTitles(text) {
+    if (!text || !titleMatchers.length) return;
+    for (const { re, post } of titleMatchers) {
+      if (re.test(text)) renderCard(post);
+    }
+  }
+
+  function clearCards() {
+    shownSlugs.clear();
+    while (cardsList.firstChild) cardsList.removeChild(cardsList.firstChild);
+    cardsDrawer.classList.remove("visible");
+  }
 
   function setStatus(text, isError = false) {
     status.textContent = text;
@@ -408,9 +588,11 @@
 
     setStatus("Connecting to LiveAvatar…");
 
-    let LiveAvatarSession;
+    let LiveAvatarSession, AgentEventsEnum;
     try {
-      ({ LiveAvatarSession } = await import("https://esm.sh/@heygen/liveavatar-web-sdk@0.0.17"));
+      const sdk = await import("https://esm.sh/@heygen/liveavatar-web-sdk@0.0.17");
+      LiveAvatarSession = sdk.LiveAvatarSession;
+      AgentEventsEnum = sdk.AgentEventsEnum;
     } catch (err) {
       setStatus(`Could not load the LiveAvatar SDK: ${err.message}`, true);
       startBtn.disabled = false;
@@ -419,6 +601,30 @@
 
     try {
       session = new LiveAvatarSession(sessionToken, { voiceChat: true });
+
+      // --- Wire transcription -> card surfacing. ---
+      // Path A (passive): scan AVATAR_TRANSCRIPTION text for any post title.
+      // The agent is instructed to cite posts by title, so the title appears
+      // verbatim in transcription text.
+      session.on(AgentEventsEnum.AVATAR_TRANSCRIPTION, (event) => {
+        scanForTitles(event?.text || "");
+      });
+      session.on(AgentEventsEnum.AVATAR_TRANSCRIPTION_CHUNK, (event) => {
+        scanForTitles(event?.text || "");
+      });
+      // Path B (explicit): if a future tool registration on the agent emits a
+      // client_tool_call for show_blog_post, we render the card directly.
+      session.on(AgentEventsEnum.ELEVENLABS_AGENT_EVENT, (event) => {
+        const payload = event || {};
+        const evType = payload.elevenlabs_event_type;
+        const data = payload.data || {};
+        if (evType === "client_tool_call" && data.tool_name === "show_blog_post") {
+          const slug = data.parameters?.slug || data.parameters?.post_slug;
+          const match = posts.find((p) => p.slug === slug);
+          if (match) renderCard(match);
+        }
+      });
+
       const video = renderVideo();
       await session.start();
       session.attach(video);
@@ -440,6 +646,7 @@
     renderPlaceholder("Call ended", "Click Start the call to open a new one.");
     startBtn.disabled = false;
     setStatus("");
+    clearCards();
   }
 
   startBtn.addEventListener("click", startSession);
