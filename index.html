@@ -125,6 +125,13 @@ layout: null
       margin-bottom: 2rem;
     }
 
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
     .hero-cta {
       display: inline-flex;
       align-items: center;
@@ -136,12 +143,25 @@ layout: null
       text-decoration: none;
       font-weight: 600;
       font-size: 0.9rem;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
     }
 
     .hero-cta:hover { opacity: 0.85; }
 
     .hero-cta svg { width: 16px; height: 16px; }
+
+    .hero-cta-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .hero-cta-secondary:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+      opacity: 1;
+    }
 
     /* --- SECTIONS --- */
     section {
@@ -644,10 +664,16 @@ layout: null
     <span class="hero-label">AI Developer &bull; Product Leader &bull; Visionary</span>
     <h1>Building tools that empower creators and businesses.</h1>
     <p>25+ years shipping products, leading teams, and turning ideas into platforms people love — from award-winning WordPress plugins to AI-driven experiences.</p>
-    <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta">
-      Connect on LinkedIn
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-    </a>
+    <div class="hero-ctas">
+      <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta">
+        Connect on LinkedIn
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+      </a>
+      <a href="/talk/" class="hero-cta hero-cta-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
+        Talk to my AI clone
+      </a>
+    </div>
   </div>
   <img src="seth-shoultes.jpg" alt="Seth Shoultes" class="hero-photo">
 </div>

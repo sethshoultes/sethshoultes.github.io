@@ -4,10 +4,14 @@ name: Sync new posts into Seth's Clone RAG
 # This workflow only consumes `secrets.ELEVENLABS_API_KEY` — no untrusted user
 # input from issues/PRs is interpolated into shell commands.
 on:
+  # Fire on page_build (after Pages finishes rebuilding) so URL ingestion
+  # never races a stale 404. See:
+  # ~/brain/learnings/github-pages-rebuild-race-breaks-post-publish-webhooks.md
+  page_build:
+  # Also fire on script-only pushes — script changes don't need Pages to rebuild.
   push:
     branches: [main]
     paths:
-      - "_posts/**"
       - "scripts/add-post-to-rag.py"
   workflow_dispatch:
 
