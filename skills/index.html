@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills · Seth Shoultes</title>
+  <meta name="description" content="Reusable Agent Skills for building with AI — avatar + voice, RAG, client tools, and more. Installable in any Claude Code, Cursor, or Codex session." />
+
+  <meta property="og:title" content="Skills · Building with AI" />
+  <meta property="og:description" content="Agent Skills you can install. Each one a procedure I've used to ship; each one tied to a post that explains the why." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sethshoultes.com/skills/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-inset: #f3f4f6;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --accent: #0f766e;
+      --accent-light: #ccfbf1;
+      --border: #e5e7eb;
+      --radius: 12px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(250,250,250,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+    .nav-inner .logo {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .nav-back:hover { color: var(--accent); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5rem 2rem 2rem;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .lede {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-bottom: 1.25rem;
+    }
+    .hero a { color: var(--accent); }
+
+    .install {
+      max-width: 1080px;
+      margin: 0 auto 1.5rem;
+      padding: 0 2rem;
+    }
+    .install-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .install-card .label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .install-card pre {
+      margin: 0;
+      font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+      font-size: 0.84rem;
+      color: var(--text);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .install-card code { font-family: inherit; }
+    .install-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+    }
+
+    section.skills {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .skill-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .skill-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .skill-card .name {
+      font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .skill-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .skill-card .links {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .skill-card .links a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .skill-card .links a:hover { text-decoration: underline; }
+    .skill-card .install-row {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .roadmap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+    .roadmap h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .roadmap .lede { margin-bottom: 1.5rem; }
+    .roadmap ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+      list-style: none;
+      padding: 0;
+    }
+    .roadmap li {
+      padding: 0.85rem 1rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .roadmap li code {
+      font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85em;
+      color: var(--text);
+    }
+
+    footer {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; margin-right: 1.25rem; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 3rem 1.25rem 1.5rem; }
+      .install, section.skills, .roadmap, footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<div class="hero">
+  <span class="eyebrow">Skills · For coding agents</span>
+  <h1>Building with AI — Agent Skills</h1>
+  <p class="lede">Reusable, installable Agent Skills — markdown procedures any Claude Code, Cursor, or Codex session can read and follow. Each skill is a battle-tested pattern from a real ship; each one links to the blog post that explains the why.</p>
+  <p class="lede">Source repo: <a href="https://github.com/sethshoultes/building-with-ai-skills"><code>github.com/sethshoultes/building-with-ai-skills</code></a> · Companion essay: <a href="/blog/skills-as-sops.html">Skills as SOPs</a>.</p>
+</div>
+
+<div class="install">
+  <div class="install-card">
+    <p class="label">Install all skills globally</p>
+    <pre><code>npx skills add github:sethshoultes/building-with-ai-skills -a claude-code -g</code></pre>
+    <p class="install-note">Drops the skills into <code>~/.claude/skills/</code>; activates in every project. Use <code>-a cursor</code> or <code>-a codex</code> for those agents instead.</p>
+  </div>
+</div>
+
+<section class="skills">
+  <div class="skills-grid">
+
+    <article class="skill-card">
+      <h3>Add an avatar to a site</h3>
+      <p class="name">add-avatar-to-site</p>
+      <p>Real-time, lip-synced video avatar with an ElevenLabs voice clone on any static or framework-based site. Generates the Cloudflare Worker, the page, and the agent config. Includes the gotchas: PCM 24K audio, the LiveAvatar vs HeyGen API key split, the mobile aspect-ratio trap.</p>
+      <div class="links">
+        <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-avatar-to-site/SKILL.md">SKILL.md →</a>
+        <a href="/blog/the-avatar-reads-first.html">Reference post →</a>
+      </div>
+      <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill add-avatar-to-site</div>
+    </article>
+
+    <article class="skill-card">
+      <h3>Add RAG to an ElevenLabs agent</h3>
+      <p class="name">add-rag-to-elevenlabs-agent</p>
+      <p>Wire URL-sourced knowledge base documents to a Conversational AI agent so it retrieves grounded context per turn. Includes the GitHub Action for auto-syncing from <code>_posts/</code> — and the <code>page_build</code> trigger fix for the Pages-rebuild race.</p>
+      <div class="links">
+        <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-rag-to-elevenlabs-agent/SKILL.md">SKILL.md →</a>
+        <a href="/blog/the-bible-reads-first.html">Reference post →</a>
+      </div>
+      <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill add-rag-to-elevenlabs-agent</div>
+    </article>
+
+    <article class="skill-card">
+      <h3>Register a client tool</h3>
+      <p class="name">register-elevenlabs-client-tool</p>
+      <p>Add a browser-side client tool to an ElevenLabs agent so it can render UI on the page — cards, modals, navigations — by calling a function. Two-step API flow plus the SDK handler. Covers both the LiveAvatar Plugin path and the direct ElevenLabs SDK path.</p>
+      <div class="links">
+        <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/register-elevenlabs-client-tool/SKILL.md">SKILL.md →</a>
+        <a href="/blog/skills-as-sops.html">Reference post →</a>
+      </div>
+      <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill register-elevenlabs-client-tool</div>
+    </article>
+
+  </div>
+</section>
+
+<div class="roadmap">
+  <h2>Coming next</h2>
+  <p class="lede">Patterns from the brain vault that prove themselves on real projects get promoted here. Tracked queue:</p>
+  <ul>
+    <li><code>add-cloudflare-worker-token-mint</code> — generalized Worker template for any service that needs server-side token minting.</li>
+    <li><code>add-admin-dashboard-via-worker</code> — gated dashboard for chat + voice sessions, querying ElevenLabs and D1 in parallel.</li>
+    <li><code>migrate-static-blog-to-jekyll</code> — convert hand-coded post HTML into <code>_posts/</code> with permalink-preserving migration.</li>
+    <li><code>set-up-canonical-secrets</code> — consolidate scattered <code>.env</code> files into <code>~/.config/dev-secrets/secrets.env</code> with the layered design.</li>
+    <li><code>set-up-claude-code-with-brain-vault</code> — turn Claude Code into a personal memory system: vault layout, hooks, slash commands, weekly consolidation.</li>
+    <li><code>register-blog-post-card-tool</code> — the <code>show_blog_post</code> client-tool pattern, packaged for any blog + ElevenLabs agent.</li>
+    <li><code>wire-livekit-data-channel-events</code> — passive transcription scanning + explicit tool-call handlers as fallback layers.</li>
+    <li><code>migrate-cloudflare-worker-across-accounts</code> — the four-step rebind pattern when moving Workers between Cloudflare accounts.</li>
+  </ul>
+</div>
+
+<footer>
+  <a href="/">Home</a>
+  <a href="/blog/">Writing</a>
+  <a href="/talk/">Talk</a>
+  <a href="https://github.com/sethshoultes/building-with-ai-skills" target="_blank" rel="noopener">Source repo</a>
+  <a href="https://github.com/sethshoultes" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+</body>
+</html>
