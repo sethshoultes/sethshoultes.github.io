@@ -320,6 +320,29 @@
       <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill register-elevenlabs-client-tool</div>
     </article>
 
+    <article class="skill-card">
+      <h3>Set up a brain vault</h3>
+      <p class="name">set-up-claude-code-with-brain-vault</p>
+      <p>An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory across sessions. Vault layout, the <code>/brain</code> slash command, SessionStart and Stop hooks, embedding-index search, and a public skeleton repo to clone.</p>
+      <div class="links">
+        <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md">SKILL.md →</a>
+        <a href="https://github.com/sethshoultes/building-with-ai-brain">Skeleton repo →</a>
+        <a href="/recipes/claude-code-brain-vault.html">Recipe →</a>
+      </div>
+      <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill set-up-claude-code-with-brain-vault</div>
+    </article>
+
+    <article class="skill-card">
+      <h3>Set up canonical secrets</h3>
+      <p class="name">set-up-canonical-secrets</p>
+      <p>Consolidate scattered <code>.env</code> files into <code>~/.config/dev-secrets/secrets.env</code> using the layered design — personal-everywhere keys in one canonical home, project-isolated keys in subdirs, deployment keys still in <code>.env.local</code>. Includes a hash-audit script that surfaces drift across projects.</p>
+      <div class="links">
+        <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-canonical-secrets/SKILL.md">SKILL.md →</a>
+        <a href="/blog/canonical-secrets.html">Reference post →</a>
+      </div>
+      <div class="install-row">npx skills add github:sethshoultes/building-with-ai-skills --skill set-up-canonical-secrets</div>
+    </article>
+
   </div>
 </section>
 
@@ -330,8 +353,6 @@
     <li><code>add-cloudflare-worker-token-mint</code> — generalized Worker template for any service that needs server-side token minting.</li>
     <li><code>add-admin-dashboard-via-worker</code> — gated dashboard for chat + voice sessions, querying ElevenLabs and D1 in parallel.</li>
     <li><code>migrate-static-blog-to-jekyll</code> — convert hand-coded post HTML into <code>_posts/</code> with permalink-preserving migration.</li>
-    <li><code>set-up-canonical-secrets</code> — consolidate scattered <code>.env</code> files into <code>~/.config/dev-secrets/secrets.env</code> with the layered design.</li>
-    <li><code>set-up-claude-code-with-brain-vault</code> — turn Claude Code into a personal memory system: vault layout, hooks, slash commands, weekly consolidation.</li>
     <li><code>register-blog-post-card-tool</code> — the <code>show_blog_post</code> client-tool pattern, packaged for any blog + ElevenLabs agent.</li>
     <li><code>wire-livekit-data-channel-events</code> — passive transcription scanning + explicit tool-call handlers as fallback layers.</li>
     <li><code>migrate-cloudflare-worker-across-accounts</code> — the four-step rebind pattern when moving Workers between Cloudflare accounts.</li>
