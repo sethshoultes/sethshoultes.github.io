@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conversations · Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/_admin.css" />
+</head>
+<body>
+
+<nav class="admin-nav">
+  <div class="admin-nav-inner">
+    <a href="/admin/conversations/" class="admin-logo">Seth Shoultes <span class="pill">Admin</span></a>
+    <div class="admin-nav-links">
+      <a href="/admin/conversations/">Conversations</a>
+      <a href="/" target="_blank" rel="noopener">View site →</a>
+      <button id="logout-btn" type="button">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <p class="eyebrow">Voice sessions</p>
+  <h1>Conversations</h1>
+  <p class="lede">Voice sessions with the Seth avatar at <a href="/talk/" target="_blank" rel="noopener">sethshoultes.com/talk/</a>. Sourced from ElevenLabs Conversational AI. Text chat sessions will appear here too once that surface ships.</p>
+
+  <div class="toolbar">
+    <button id="refresh-btn" class="btn btn-secondary" type="button">Refresh</button>
+    <span id="count" class="status-row" style="margin-bottom:0;"></span>
+  </div>
+
+  <p id="status" class="status-row"></p>
+
+  <div id="content"></div>
+</main>
+
+<script type="module">
+  import {
+    requireAuth, clearToken, adminFetch,
+    formatRelative, formatDuration, truncate, firstUserMessage,
+  } from "/admin/_admin.js";
+
+  if (!(await requireAuth())) {
+    // requireAuth redirects on miss; if we get here, we're authenticated.
+  }
+
+  const status = document.getElementById("status");
+  const content = document.getElementById("content");
+  const count = document.getElementById("count");
+  const refreshBtn = document.getElementById("refresh-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  function setStatus(text, level = "") {
+    status.textContent = text;
+    status.classList.remove("error", "warn");
+    if (level) status.classList.add(level);
+  }
+
+  function clearContent() {
+    while (content.firstChild) content.removeChild(content.firstChild);
+  }
+
+  function badge(text, kind) {
+    const span = document.createElement("span");
+    span.className = `tag ${kind || "unknown"}`;
+    span.textContent = text;
+    return span;
+  }
+
+  function callSuccessTag(s) {
+    if (s === "success") return badge("Success", "success");
+    if (s === "failure") return badge("Failed", "failure");
+    return badge(s || "Unknown", "unknown");
+  }
+
+  function renderTable(conversations) {
+    clearContent();
+    if (!conversations.length) {
+      const div = document.createElement("div");
+      div.className = "empty";
+      div.textContent = "No conversations yet. Start one at /talk/.";
+      content.appendChild(div);
+      return;
+    }
+    const table = document.createElement("table");
+    table.className = "admin";
+
+    const thead = document.createElement("thead");
+    const tr = document.createElement("tr");
+    for (const h of ["When", "Type", "Duration", "Turns", "Status", "First user message", "ID"]) {
+      const th = document.createElement("th");
+      th.textContent = h;
+      tr.appendChild(th);
+    }
+    thead.appendChild(tr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    for (const c of conversations) {
+      const row = document.createElement("tr");
+      const id = c.conversation_id || c.id || "";
+      const start = c.start_time_unix_secs || c.start_time || null;
+      const dur = c.call_duration_secs ?? c.duration_secs ?? null;
+      const turns = c.message_count ?? c.turn_count ?? "—";
+      const status = c.call_successful || c.status;
+      const firstMsg = c.first_user_message || firstUserMessage(c.transcript) || "";
+
+      // When (link to detail).
+      const whenTd = document.createElement("td");
+      const whenLink = document.createElement("a");
+      whenLink.className = "row-link";
+      whenLink.href = `/admin/conversation.html?id=${encodeURIComponent(id)}`;
+      whenLink.textContent = formatRelative(start);
+      whenLink.title = new Date((start || 0) * 1000).toLocaleString();
+      whenTd.appendChild(whenLink);
+      row.appendChild(whenTd);
+
+      // Type
+      const typeTd = document.createElement("td");
+      typeTd.appendChild(badge("Voice", "voice"));
+      row.appendChild(typeTd);
+
+      // Duration
+      const durTd = document.createElement("td");
+      durTd.className = "col-num";
+      durTd.textContent = formatDuration(dur);
+      row.appendChild(durTd);
+
+      // Turns
+      const turnsTd = document.createElement("td");
+      turnsTd.className = "col-num";
+      turnsTd.textContent = turns;
+      row.appendChild(turnsTd);
+
+      // Status
+      const statusTd = document.createElement("td");
+      statusTd.appendChild(callSuccessTag(status));
+      row.appendChild(statusTd);
+
+      // First user message
+      const msgTd = document.createElement("td");
+      msgTd.className = "col-truncate";
+      msgTd.textContent = truncate(firstMsg, 80) || "—";
+      msgTd.title = firstMsg || "";
+      row.appendChild(msgTd);
+
+      // ID
+      const idTd = document.createElement("td");
+      idTd.className = "col-mono";
+      idTd.textContent = id ? id.slice(0, 16) + "…" : "—";
+      idTd.title = id;
+      row.appendChild(idTd);
+
+      tbody.appendChild(row);
+    }
+    table.appendChild(tbody);
+    content.appendChild(table);
+  }
+
+  async function load() {
+    setStatus("Loading…");
+    refreshBtn.disabled = true;
+    try {
+      const data = await adminFetch("/admin/conversations?page_size=50");
+      const list = data.conversations || data.items || data.data || [];
+      count.textContent = `${list.length} conversation${list.length === 1 ? "" : "s"}`;
+      renderTable(list);
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message, "error");
+    } finally {
+      refreshBtn.disabled = false;
+    }
+  }
+
+  refreshBtn.addEventListener("click", load);
+  logoutBtn.addEventListener("click", () => {
+    clearToken();
+    window.location.href = "/admin/";
+  });
+
+  load();
+</script>
+
+</body>
+</html>

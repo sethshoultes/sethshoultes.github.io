@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Seth Shoultes</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/_admin.css" />
+</head>
+<body>
+
+<nav class="admin-nav">
+  <div class="admin-nav-inner">
+    <a href="/admin/" class="admin-logo">Seth Shoultes <span class="pill">Admin</span></a>
+  </div>
+</nav>
+
+<main style="max-width:440px;">
+  <p class="eyebrow">Admin access</p>
+  <h1>Sign in</h1>
+  <p class="lede">Enter the admin token to view chat and voice sessions with the avatar.</p>
+
+  <form id="login-form" autocomplete="off">
+    <input id="token-input" class="input" type="password" placeholder="Admin token" autocomplete="off" autofocus />
+    <p id="status" class="status-row" style="margin-top:0.75rem;"></p>
+    <button id="submit-btn" class="btn btn-primary" type="submit">Enter</button>
+  </form>
+</main>
+
+<script type="module">
+  import { adminAuth, setToken, getToken } from "/admin/_admin.js";
+
+  const form = document.getElementById("login-form");
+  const input = document.getElementById("token-input");
+  const status = document.getElementById("status");
+  const submitBtn = document.getElementById("submit-btn");
+
+  // Already signed in? Bounce to the dashboard.
+  if (getToken()) {
+    window.location.href = "/admin/conversations/";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const token = input.value.trim();
+    if (!token) return;
+    submitBtn.disabled = true;
+    status.textContent = "Validating…";
+    status.classList.remove("error");
+
+    try {
+      const ok = await adminAuth(token);
+      if (!ok) {
+        status.textContent = "Invalid token.";
+        status.classList.add("error");
+        submitBtn.disabled = false;
+        return;
+      }
+      setToken(token);
+      window.location.href = "/admin/conversations/";
+    } catch (err) {
+      status.textContent = `Could not reach the worker: ${err.message}`;
+      status.classList.add("error");
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>

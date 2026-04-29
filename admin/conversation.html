@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conversation · Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/_admin.css" />
+</head>
+<body>
+
+<nav class="admin-nav">
+  <div class="admin-nav-inner">
+    <a href="/admin/conversations/" class="admin-logo">Seth Shoultes <span class="pill">Admin</span></a>
+    <div class="admin-nav-links">
+      <a href="/admin/conversations/">← All conversations</a>
+      <button id="logout-btn" type="button">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <p class="eyebrow">Conversation</p>
+  <h1 id="title">Loading…</h1>
+  <p id="subtitle" class="lede" style="margin-bottom:1.5rem;"></p>
+
+  <p id="status" class="status-row"></p>
+
+  <div id="meta-card" class="card" style="display:none;">
+    <p class="card-eyebrow">Metadata</p>
+    <dl class="kv"><div class="grid" id="meta-grid"></div></dl>
+  </div>
+
+  <div id="audio-card" class="card" style="display:none;">
+    <p class="card-eyebrow">Audio</p>
+    <button id="audio-btn" class="btn btn-secondary" type="button">Load audio</button>
+    <audio id="audio-player" controls preload="none" style="width:100%; display:none; margin-top:0.75rem;"></audio>
+    <p id="audio-status" class="status-row" style="margin:0.5rem 0 0;"></p>
+  </div>
+
+  <div id="transcript-section" style="display:none;">
+    <p class="card-eyebrow" style="margin-bottom:0.6rem;">Transcript</p>
+    <div id="transcript" class="transcript"></div>
+  </div>
+</main>
+
+<script type="module">
+  import {
+    requireAuth, clearToken, adminFetch, adminFetchAudioUrl,
+    formatTimestamp, formatDuration,
+  } from "/admin/_admin.js";
+
+  if (!(await requireAuth())) {}
+
+  const params = new URLSearchParams(window.location.search);
+  const conversationId = params.get("id");
+
+  const titleEl = document.getElementById("title");
+  const subtitleEl = document.getElementById("subtitle");
+  const statusEl = document.getElementById("status");
+  const metaCard = document.getElementById("meta-card");
+  const metaGrid = document.getElementById("meta-grid");
+  const audioCard = document.getElementById("audio-card");
+  const audioBtn = document.getElementById("audio-btn");
+  const audioPlayer = document.getElementById("audio-player");
+  const audioStatus = document.getElementById("audio-status");
+  const transcriptSection = document.getElementById("transcript-section");
+  const transcript = document.getElementById("transcript");
+
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    clearToken();
+    window.location.href = "/admin/";
+  });
+
+  function setStatus(text, level = "") {
+    statusEl.textContent = text;
+    statusEl.classList.remove("error", "warn");
+    if (level) statusEl.classList.add(level);
+  }
+
+  function addMeta(label, value) {
+    if (value == null || value === "") return;
+    const wrap = document.createElement("div");
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    dd.textContent = value;
+    wrap.append(dt, dd);
+    metaGrid.appendChild(wrap);
+  }
+
+  function renderTranscript(turns) {
+    while (transcript.firstChild) transcript.removeChild(transcript.firstChild);
+    if (!Array.isArray(turns) || !turns.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No transcript available.";
+      transcript.appendChild(empty);
+      return;
+    }
+    for (const t of turns) {
+      const role = (t.role || "").toLowerCase();
+      const text = t.message || t.text || "";
+      const div = document.createElement("div");
+      div.className = `turn ${role === "user" ? "user" : "agent"}`;
+      const roleEl = document.createElement("div");
+      roleEl.className = "role";
+      roleEl.textContent = role === "user" ? "User" : "Seth";
+      const textEl = document.createElement("div");
+      textEl.className = "text";
+      textEl.textContent = text;
+      div.append(roleEl, textEl);
+      transcript.appendChild(div);
+    }
+  }
+
+  audioBtn.addEventListener("click", async () => {
+    audioBtn.disabled = true;
+    audioStatus.textContent = "Fetching audio…";
+    audioStatus.classList.remove("error");
+    try {
+      const url = await adminFetchAudioUrl(conversationId);
+      audioPlayer.src = url;
+      audioPlayer.style.display = "block";
+      audioBtn.style.display = "none";
+      audioStatus.textContent = "";
+    } catch (err) {
+      audioStatus.textContent = `Audio unavailable: ${err.message}`;
+      audioStatus.classList.add("error");
+      audioBtn.disabled = false;
+    }
+  });
+
+  async function load() {
+    if (!conversationId) {
+      setStatus("Missing conversation id.", "error");
+      titleEl.textContent = "—";
+      return;
+    }
+    setStatus("Loading…");
+    try {
+      const data = await adminFetch(`/admin/conversations/${encodeURIComponent(conversationId)}`);
+
+      const start = data.start_time_unix_secs || data.metadata?.start_time_unix_secs;
+      const dur = data.call_duration_secs ?? data.metadata?.call_duration_secs;
+      const turns = data.transcript || data.messages || [];
+      const callStatus = data.call_successful || data.status;
+      const cost = data.metadata?.cost ?? data.cost;
+
+      titleEl.textContent = `Conversation ${conversationId.slice(0, 12)}…`;
+      const startStr = formatTimestamp(start);
+      subtitleEl.textContent = `${startStr}${dur ? " · " + formatDuration(dur) : ""}${turns.length ? " · " + turns.length + " turn" + (turns.length === 1 ? "" : "s") : ""}`;
+
+      addMeta("Conversation ID", conversationId);
+      addMeta("Started at", startStr);
+      addMeta("Duration", formatDuration(dur));
+      addMeta("Status", callStatus || "Unknown");
+      addMeta("Turns", turns.length || 0);
+      if (cost != null) addMeta("Cost (credits)", cost);
+      if (data.metadata?.termination_reason) addMeta("Ended", data.metadata.termination_reason);
+
+      metaCard.style.display = "";
+      audioCard.style.display = "";
+      transcriptSection.style.display = "";
+
+      renderTranscript(turns);
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message, "error");
+      titleEl.textContent = "Could not load";
+    }
+  }
+
+  load();
+</script>
+
+</body>
+</html>
