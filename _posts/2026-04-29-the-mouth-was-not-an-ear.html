@@ -2,11 +2,11 @@
 title: "The Mouth Was Not an Ear"
 subtitle: "The avatar SDK had three commands for what the figure said and none for what it heard. The bug was already inside the shape of the API."
 date: "2026-04-29"
-description: "A starter button on the /build/ page was supposed to open the avatar's walkthrough automatically. Instead the avatar read the prompt aloud and went silent. The diagnostic took ten minutes once the SDK source was open. The fix lived three layers down."
+description: "A starter button on the /build/ page was supposed to open the avatar's walkthrough automatically. Instead the avatar read the prompt aloud and went silent. The fix lived three layers down."
 og_title: "The Mouth Was Not an Ear"
 og_description: "session.message existed in the autocomplete. It sent AVATAR_SPEAK_RESPONSE. The SDK had three commands for what the avatar said and none for what the agent heard. The bug was in the shape of the API."
 og_image: "https://sethshoultes.com/blog/images/the-mouth-was-not-an-ear-featured.png"
-read_time: "7 min read"
+read_time: "4 min read"
 related:
   - slug: the-avatar-reads-first
     note: "the architectural predecessor — the agent is the brain, the face is just the face"
@@ -16,29 +16,27 @@ related:
     note: "the full stack this fix lives inside"
 ---
 
-<img src="/blog/images/the-mouth-was-not-an-ear-featured.png" alt="Pen-and-ink illustration: an antique candlestick telephone in dense crosshatch, the speaking horn fully detailed and the listening cup conspicuously absent — the bracket is there, the cord descends, but the earpiece itself is simply not." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+<img src="/blog/images/the-mouth-was-not-an-ear-featured.png" alt="Pen-and-ink schematic: a single small box with one bold arrow leaving its right side, no arrow entering on the left — the absence is structural, not gestural; the empty side is the argument." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
-<p>The /build/ page had a row of buttons. Not navigation. Starter buttons — each one a prompt, a topic, a signal of intent. Click "Add an avatar to my site," allow the microphone, and the avatar was supposed to appear and open the walkthrough without making you repeat yourself. The button encoded the question. The session would carry it. The avatar would begin.</p>
+<p>The /build/ page had a row of starter buttons. Click "Add an avatar to my site," allow the microphone, and the avatar was supposed to appear and begin the walkthrough without making you repeat yourself. The button encoded the question. The avatar would open on it.</p>
 
-<p>Instead, the avatar appeared, said the greeting, and went silent. Not an error. Not a crash. Just — the avatar, waiting, as if it were your turn.</p>
-
-<p>A different user every time, and every time the same pause. The kind of pause that teaches a visitor what the page actually does, as opposed to what it was supposed to do.</p>
+<p>Instead, the avatar appeared, said the greeting, and went silent. Not an error. Not a crash. Just the avatar, waiting, as if it were your turn.</p>
 
 <hr>
 
 <h2>The code that looked correct</h2>
 
-<p>The sequence in the page's JavaScript read plausibly enough. After the session connected, the code called <code>session.message(prompt)</code>, where <code>prompt</code> was the text from whichever starter button the user had clicked. <code>session.message</code> appeared in the SDK's autocomplete. It accepted a string. It existed. The inference — that it sent the string to the agent as a user turn — was not an unreasonable inference. A method named <code>message</code> on a conversational session object: what else would it do.</p>
+<p>After the session connected, the code called <code>session.message(prompt)</code>, where <code>prompt</code> was the text from whichever starter button the user had clicked. <code>session.message</code> appeared in the SDK's autocomplete. It accepted a string. It existed. A method named <code>message</code> on a conversational session object — the inference that it sent the string to the agent as a user turn was not unreasonable.</p>
 
 <p>It made the avatar speak the text aloud.</p>
 
-<p><code>session.message</code> on <code>@heygen/liveavatar-web-sdk@0.0.17</code> sends a command internally called <code>AVATAR_SPEAK_RESPONSE</code>. That command puts words in the avatar's mouth — not in the agent's input stream. The starter prompt, "Walk me through adding a HeyGen LiveAvatar to my site," was being read out in Seth's voice, into the void, as if the avatar had originated the thought. The agent received nothing. The user, having clicked a button to skip the preamble, heard the avatar say exactly what they had asked and then sit there as if waiting to be asked.</p>
+<p><code>session.message</code> on <code>@heygen/liveavatar-web-sdk@0.0.17</code> sends a command internally called <code>AVATAR_SPEAK_RESPONSE</code>. That command puts words in the avatar's mouth — not in the agent's input stream. The starter prompt was being read out in Seth's voice, into the void, as if the avatar had originated the thought. The agent received nothing.</p>
 
 <hr>
 
 <h2>What the SDK source said</h2>
 
-<p>The diagnostic took ten minutes once the source was open. <code>LiveAvatarSession.js</code>, the <code>message()</code> method: one function, one command emitted. <code>CommandEventsEnum.AVATAR_SPEAK_RESPONSE</code>. The evidence was not ambiguous.</p>
+<p>The diagnostic took ten minutes once the source was open. <code>LiveAvatarSession.js</code>, the <code>message()</code> method: one function, one command emitted. <code>CommandEventsEnum.AVATAR_SPEAK_RESPONSE</code>. Not ambiguous.</p>
 
 <p>Then the enum itself. Three values:</p>
 
@@ -46,19 +44,17 @@ related:
 AVATAR_SPEAK_RESPONSE
 AVATAR_SPEAK_AUDIO</code></pre>
 
-<p>All three end in a verb that describes what the avatar does with output. None of them end in <code>INPUT</code>. None of them end in <code>USER</code>. There is no <code>USER_MESSAGE</code>. There is no <code>AGENT_INPUT</code>. The three commands the client can issue are the three ways to put a specific string or audio buffer into the avatar's mouth. The ear — the channel through which the agent receives a user turn — is not in the enum.</p>
+<p>All three end in a verb describing what the avatar does with output. None end in <code>INPUT</code>. None end in <code>USER</code>. There is no <code>USER_MESSAGE</code>. There is no <code>AGENT_INPUT</code>. The three commands the client can issue are three ways to put a string or audio buffer into the avatar's mouth.</p>
 
-<p>In LITE mode, the user speaks through the microphone. The microphone feeds ElevenLabs's speech-to-text pipeline, which the agent is wired to. That is the only path. The client cannot inject text the agent will receive as a conversational turn. The SDK does not expose that surface. It was not overlooked in the page's code. It is not there.</p>
+<p>In LITE mode, the user speaks through the microphone. The microphone feeds ElevenLabs's speech-to-text pipeline, which the agent is wired to. That is the only path. The client cannot inject text the agent receives as a conversational turn. The SDK does not expose that surface.</p>
 
 <hr>
 
 <h2>The shape of the possible</h2>
 
-<p>A bug that presents as a wiring problem at the page — <em>the prompt isn't reaching the agent</em> — is, on inspection, a statement about what the SDK will allow. The three <code>SPEAK</code> commands and the absence of any <code>USER</code> or <code>INPUT</code> command are not a gap in the implementation. They are the implementation. The surface area of what was exposed to the client is the product.</p>
+<p>The three <code>SPEAK</code> commands and the absence of any <code>USER</code> or <code>INPUT</code> command are not a gap in the implementation. They are the implementation. The SDK's job is to control an avatar. The mouth. Not the ear.</p>
 
-<p>This is the thing that autocomplete hides. <code>session.message</code> listed itself. It typed cleanly. It compiled. The shape of the method signature — a string in, nothing out — looked like the shape of "send a user message." But the SDK's job was never to simulate a user turn. The SDK's job is to control an avatar. The mouth. Not the ear.</p>
-
-<p>Once that distinction is clear, the constraint becomes obvious: in LITE mode, the agent's ear is the microphone. The pipeline from mic to STT to agent is managed by ElevenLabs, on their servers, and the client has no programmatic access to it after the session opens. If you want to prime the agent with something the client knows before the conversation begins, you have one window: session start, before the ear opens.</p>
+<p>Once that is clear, the constraint follows: in LITE mode, the agent's ear is the microphone. The pipeline from mic to STT to agent is managed by ElevenLabs, on their servers. If you want to prime the agent with something the client knows before the conversation begins, you have one window: session start, before the ear opens.</p>
 
 <hr>
 
@@ -66,36 +62,34 @@ AVATAR_SPEAK_AUDIO</code></pre>
 
 <p>The fix did not live on the page. The page was wired correctly to the API it had. The API it had was the wrong one for the job.</p>
 
-<p>The seam where text can cross from client space to agent space, in LITE mode, is the session token. The Cloudflare Worker that mints the token accepts a request from the browser, holds the API key server-side, and calls the LiveAvatar token endpoint with a configuration object. That configuration object can include <code>elevenlabs_agent_config</code>. Inside that, <code>dynamic_variables</code>.</p>
+<p>The seam where text can cross from client space to agent space is the session token. The Cloudflare Worker that mints the token accepts a request from the browser, holds the API key server-side, and calls the LiveAvatar token endpoint with a configuration object. That configuration object can include <code>elevenlabs_agent_config</code>. Inside that, <code>dynamic_variables</code>.</p>
 
 <p>Three changes, in order of where they live in the stack.</p>
 
-<p>On the page: when a starter button was clicked, instead of staging the prompt for a post-connect <code>session.message</code> call, the code appended <code>?starter=&lt;prompt&gt;</code> to the worker URL at token-fetch time. Before the session opened. Before the avatar appeared.</p>
+<p>On the page: when a starter button was clicked, instead of staging the prompt for a post-connect <code>session.message</code> call, the code appended <code>?starter=&lt;prompt&gt;</code> to the worker URL at token-fetch time. Before the session opened.</p>
 
-<p>In the Worker: read the <code>starter</code> query parameter, validate it (length cap at 800 characters, which bounds the prompt-injection blast radius), and forward it as <code>dynamic_variables: { starter_prompt: starterPrompt }</code> in the <code>elevenlabs_agent_config</code> block.</p>
+<p>In the Worker: read the <code>starter</code> query parameter, validate it (length cap at 800 characters), and forward it as <code>dynamic_variables: { starter_prompt: starterPrompt }</code> in the <code>elevenlabs_agent_config</code> block.</p>
 
-<p>In the agent's system prompt: a paragraph conditioned on <code>{{starter_prompt}}</code>. When the dynamic variable is present and non-empty, the agent opens the conversation by acknowledging the selection and beginning the walkthrough immediately. When it is absent, the agent greets normally and waits.</p>
+<p>In the agent's system prompt: a paragraph conditioned on <code>{{starter_prompt}}</code>. When the variable is present and non-empty, the agent opens the conversation by acknowledging the selection and beginning the walkthrough. When it is absent, the agent greets normally and waits.</p>
 
-<p>The starter prompt now reaches the agent before the conversation begins, as configuration, not as a message. The agent acts on it the way it acts on any instruction in its system prompt — because that is exactly where it lives.</p>
+<p>The starter prompt reaches the agent before the conversation begins, as configuration. The agent acts on it the way it acts on any instruction in its system prompt — because that is exactly where it lives.</p>
 
 <hr>
 
 <h2>The hidden contract</h2>
 
-<p><a href="/blog/the-avatar-reads-first.html">The avatar reads first</a> made the argument that the brain is the agent, the face is the face, and the seam between them is just plumbing. True. But plumbing has a direction. The pipes that carry data from the client to the agent — in LITE mode, through a HeyGen session — are laid at the SDK level, and the SDK laid them one way. Outward. From agent to avatar. The commands expose what the avatar can be told to do.</p>
+<p><a href="/blog/the-avatar-reads-first.html">The avatar reads first</a> made the argument that the brain is the agent, the face is the face, and the seam between them is plumbing. True. But plumbing has a direction. The pipes that carry data from the client to the agent — in LITE mode, through a HeyGen session — are laid at the SDK level, and the SDK laid them one way. Outward. From agent to avatar.</p>
 
-<p>The corpus on this site has <a href="/blog/skills-as-sops.html">skills</a> that make procedures installable — the <code>add-avatar-to-site</code> skill encodes the right sequence, the gotchas, the session-token pattern. But a skill encodes what the procedure has learned. What this fix revealed is something a step upstream: the SDK itself is a contract, and the contract specifies what the procedures are allowed to do. Before a skill can encode the workaround, someone has to discover that the direct path is not a path.</p>
+<p>The constraint was already there the day the SDK shipped. Every developer who installed <code>@heygen/liveavatar-web-sdk@0.0.17</code> and typed <code>session.</code> got the same autocomplete. <code>message</code> appeared. The inference was available to anyone who did not read the source.</p>
 
-<p>That discovery happens when you open the source. Not when you read the docs — the docs describe what the methods do, not what methods are absent. Not when you run the code — <code>session.message</code> succeeds silently. The enum names are where the contract is legible. <code>AVATAR_SPEAK_TEXT</code>. <code>AVATAR_SPEAK_RESPONSE</code>. <code>AVATAR_SPEAK_AUDIO</code>. Three verbs describing the avatar's output. The input side is not a locked door. It is a wall. The wall does not announce itself.</p>
+<p>The enum names are where the contract is legible. <code>AVATAR_SPEAK_TEXT</code>. <code>AVATAR_SPEAK_RESPONSE</code>. <code>AVATAR_SPEAK_AUDIO</code>. Three verbs describing the avatar's output. The input side is not a locked door. It is a wall. The wall does not announce itself.</p>
 
 <hr>
 
 <h2>What sits in the autocomplete</h2>
 
-<p>The constraint was already there the day the SDK shipped. Every developer who installed <code>@heygen/liveavatar-web-sdk@0.0.17</code> and typed <code>session.</code> got the same autocomplete. <code>message</code> appeared. The inference was available to anyone who did not read the source.</p>
+<p>The fix works. The starter prompts reach the agent. The walkthrough begins without the user repeating themselves. But the fix does not change the SDK. The three <code>SPEAK</code> commands are still the three <code>SPEAK</code> commands. The next build that wants to inject a user turn after session start will hit the same wall.</p>
 
-<p>The fix is real and it works. The starter prompts reach the agent. The walkthrough begins without the user repeating themselves. But the fix does not change the SDK. The SDK is what it is. The three <code>SPEAK</code> commands are still the three <code>SPEAK</code> commands. The next build that wants to inject a user turn after session start will hit the same wall.</p>
-
-<p>The lesson the brain vault holds now, filed under learnings dated today: when debugging a LITE-mode avatar integration that fails to pass a message to the agent, check the SDK's command enum before you check the wiring. If the API is named <code>message</code> or <code>say</code> or <code>speak</code>, it almost certainly addresses the avatar's output. The fix lives at session-start, in dynamic variables, before the ear opens — because in LITE mode, the ear is the microphone, and the client does not own it.</p>
+<p>When debugging a LITE-mode avatar integration that fails to pass a message to the agent: check the SDK's command enum before you check the wiring. If the method is named <code>message</code> or <code>say</code> or <code>speak</code>, it almost certainly addresses the avatar's output. The fix lives at session-start, in dynamic variables, before the ear opens — because in LITE mode, the ear is the microphone, and the client does not own it.</p>
 
 <p>The full record, with the source excerpt and the three-layer fix, is at <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/liteavatar-sdk-no-client-user-message.md">brain/learnings/liteavatar-sdk-no-client-user-message.md</a>.</p>
