@@ -40,7 +40,7 @@
     <span><strong>Time:</strong> ~25 min</span>
     <span><strong>Difficulty:</strong> intermediate</span>
     <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></span>
-    <span><strong>Reference repo:</strong> <a href="https://github.com/sethshoultes/brain"><code>github.com/sethshoultes/brain</code></a></span>
+    <span><strong>Reference repo:</strong> <a href="https://github.com/sethshoultes/building-with-ai-brain"><code>github.com/sethshoultes/building-with-ai-brain</code></a></span>
   </div>
 
   <h2>Why a brain vault</h2>
@@ -350,7 +350,7 @@ chmod +x ~/.claude/hooks/check-messages.sh</code></pre>
 <pre><code># Pull a small embedding model (one-time, ~274MB)
 ollama pull nomic-embed-text</code></pre>
 
-  <p>Save a small Python script at <code>~/brain/scripts/brain-search.py</code> that builds and queries the index. The full version (with chunking, rebuild-on-change, and a clean CLI) lives in the <a href="https://github.com/sethshoultes/brain/blob/main/scripts/brain-search.py">brain repo</a>; the minimum useful version is ~80 lines and stores a SQLite index next to the vault.</p>
+  <p>Save a small Python script at <code>~/brain/scripts/brain-search.py</code> that builds and queries the index. The full version (with chunking, rebuild-on-change, and a clean CLI) lives in the <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/scripts/brain-search.py">brain repo</a>; the minimum useful version is ~80 lines and stores a SQLite index next to the vault.</p>
 
   <p>Add a shell alias so the search is one keystroke:</p>
 
@@ -409,7 +409,7 @@ brain "the time I broke production"      # works even with vague queries</code><
     <h3>Companion materials</h3>
     <ul>
       <li>Companion skill: <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></li>
-      <li>Reference repo: <a href="https://github.com/sethshoultes/brain"><code>github.com/sethshoultes/brain</code></a></li>
+      <li>Reference repo: <a href="https://github.com/sethshoultes/building-with-ai-brain"><code>github.com/sethshoultes/building-with-ai-brain</code></a></li>
       <li>Reference essay: <a href="/blog/the-bible-reads-first.html">The Bible Reads First</a> — the connective-tissue argument the vault embodies</li>
       <li>Reference essay: <a href="/blog/skills-as-sops.html">Skills as SOPs</a> — what makes the brain skill installable</li>
     </ul>
