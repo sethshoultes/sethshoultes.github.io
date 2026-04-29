@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Set up Claude Code with a Brain Vault — Recipe</title>
+  <meta name="description" content="A step-by-step recipe for wiring an Obsidian brain vault to Claude Code as persistent memory. Hooks, skills, auto-commit, semantic search." />
+
+  <meta property="og:title" content="Set up Claude Code with a Brain Vault" />
+  <meta property="og:description" content="A persistent memory system for Claude Code — an Obsidian vault, a /brain skill, hooks, auto-commit, semantic search." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sethshoultes.com/recipes/claude-code-brain-vault.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/recipes/_recipe.css" />
+</head>
+<body>
+
+<nav class="recipe-nav">
+  <div class="recipe-nav-inner">
+    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
+    <a href="/recipes/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      All recipes
+    </a>
+  </div>
+</nav>
+
+<main class="recipe">
+
+  <span class="eyebrow">Recipe · Knowledge management</span>
+  <h1>Set up Claude Code with a Brain Vault</h1>
+  <p class="subtitle">An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory — so the next session knows what the last one figured out.</p>
+
+  <div class="recipe-meta">
+    <span><strong>Time:</strong> ~25 min</span>
+    <span><strong>Difficulty:</strong> intermediate</span>
+    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></span>
+    <span><strong>Reference repo:</strong> <a href="https://github.com/sethshoultes/brain"><code>github.com/sethshoultes/brain</code></a></span>
+  </div>
+
+  <h2>Why a brain vault</h2>
+
+  <p>I work across a lot of projects with Claude Code. Each session has a context window, which closes when the session closes. A pattern I figured out yesterday in one project is gone tomorrow when I'm in a different project unless I wrote it down somewhere both me and Claude can read.</p>
+
+  <p>The fix is a personal knowledge vault — an Obsidian vault at <code>~/brain</code> that lives outside any single project. Claude Code reads from it on startup, can save to it during a session, and rebuilds a search index on every commit. It is the canonical context the orchestrator reads first, the way every persona in the <a href="/blog/the-bible-reads-first.html">bible</a> reads its bible before speaking.</p>
+
+  <p>When working in a new project, Claude Code knows about the patterns I've already proved out in old ones. When debugging an issue, it can grep <code>~/brain/learnings/</code> for "I've seen this before" notes. When standing up a new piece of infrastructure, it can read the relevant runbook. The vault is the institutional memory I never had.</p>
+
+  <h2>What you'll build</h2>
+
+  <ul>
+    <li>An <strong>Obsidian vault</strong> at <code>~/brain</code> with a structured layout (journal, learnings, projects, repos, runbooks, scripts, templates).</li>
+    <li>A <strong><code>CLAUDE.md</code> at the vault root</strong> that tells Claude the structure and the conventions — every session in any project that pulls from this vault gets the rules automatically.</li>
+    <li>A <strong><code>/brain</code> skill</strong> at <code>~/.claude/skills/brain/SKILL.md</code> — invoked when the user says <em>"save this as a learning"</em> or similar. Drafts a note, gets approval, writes it to disk, commits.</li>
+    <li>A <strong>SessionStart hook</strong> — runs a small script when a Claude Code session opens (mine checks the agent message bus; yours can prime context, surface alerts, anything).</li>
+    <li>A <strong>Stop hook</strong> — fires when the session ends, prompts <em>"Anything worth saving to the brain vault? Run /brain to save a learning, runbook, or project note."</em></li>
+    <li>An <strong>auto-committing git repo</strong> — every change pushes to GitHub on a 10-minute timer via Obsidian's Git plugin, so the vault syncs across machines.</li>
+    <li>A <strong>semantic search index</strong> — a small Python script that embeds every note locally and exposes a <code>brain</code> shell command for grep-with-meaning.</li>
+  </ul>
+
+  <h2>Prerequisites</h2>
+
+  <ul>
+    <li>macOS or Linux (works on Windows/WSL but the shell commands assume bash/zsh).</li>
+    <li><a href="https://obsidian.md">Obsidian</a> installed.</li>
+    <li>Claude Code installed (any recent version).</li>
+    <li>A <a href="https://github.com">GitHub</a> account for the auto-commit sync.</li>
+    <li><a href="https://ollama.com">Ollama</a> installed for local embeddings (optional but cheap and good).</li>
+    <li>Python 3.9+ for the search script.</li>
+  </ul>
+
+  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+
+  <h2>Step 1 — Create the vault</h2>
+
+  <p>Make a new git repo at <code>~/brain</code> with the directory layout. The names are conventions — you can rename, but anything that pulls from the vault expects this shape.</p>
+
+<pre><code>mkdir -p ~/brain/{journal,learnings,projects,repos,runbooks,scripts,templates,claude-memory,backups}
+cd ~/brain
+git init -b main</code></pre>
+
+  <p>Create one starter README so the repo isn't empty:</p>
+
+<pre><code>cat &gt; ~/brain/README.md &lt;&lt;'EOF'
+# Brain
+
+Personal knowledge vault. Projects, learnings, runbooks, repos, journal entries.
+EOF</code></pre>
+
+  <h2>Step 2 — Write the operating manual (<code>CLAUDE.md</code>)</h2>
+
+  <p>This is the most important file in the vault. Claude Code auto-loads <code>CLAUDE.md</code> at the root of any directory you're working in, so a vault-level <code>CLAUDE.md</code> teaches every session the structure and the rules.</p>
+
+<pre><code>cat &gt; ~/brain/CLAUDE.md &lt;&lt;'EOF'
+# Brain Vault — Claude Code Operating Manual
+
+This is an Obsidian knowledge base at `~/brain`. When working in this vault,
+follow these conventions exactly.
+
+## Vault Structure
+
+| Folder | Purpose | Template |
+|--------|---------|----------|
+| `journal/` | Daily logs — what happened, decisions, frustrations | `YYYY-MM-DD.md` |
+| `learnings/` | Hard-won lessons from building | `templates/learning.md` |
+| `projects/` | Living project notes | `templates/project.md` |
+| `repos/` | Repository reference cards | `templates/repo.md` |
+| `runbooks/` | Step-by-step operational procedures | Numbered steps |
+| `scripts/` | Automation scripts (bash, python) | N/A — executable |
+| `templates/` | Note templates | N/A |
+| `claude-memory/` | Synced Claude Code memories (auto-managed) | Don't edit by hand |
+
+## Note Creation Rules
+
+### Frontmatter is mandatory
+Every `.md` note must have YAML frontmatter:
+
+- **Learnings**: `title`, `date`, `source`, `tags`
+- **Projects**: `name`, `status`, `repo`, `url`, `created`, `updated`, `tags`
+- **Repos**: `name`, `url`, `status`, `language`, `created`, `last_active`, `tags`
+- **Journal**: `date`, `tags`
+- **Runbooks**: `title`, `date`, `tags`
+
+### File naming
+- Journal: `YYYY-MM-DD.md`
+- Everything else: `kebab-case.md` (lowercase, hyphens). Grep-friendly.
+
+### Wikilinks
+A note without links is a bug. Every note should link to at least one related note via `[[note-name]]`.
+
+## When saving a note
+
+1. Pick the right folder. Learnings vs runbooks vs project notes are different shapes.
+2. Use the matching template if one exists in `templates/`.
+3. Add at least one wikilink to a related note.
+4. Run the search-index rebuild and commit (see `scripts/brain-search.py`).
+
+## What NOT to put here
+
+- Code that belongs in a project repo. The vault is for knowledge ABOUT building, not the build artifacts.
+- Long-form prose drafts. Those go in a writing/manuscript directory.
+- Secrets. The vault is a public-ish git repo. Secrets live in `~/.config/dev-secrets/secrets.env`.
+EOF</code></pre>
+
+  <h2>Step 3 — Add the templates</h2>
+
+  <p>Three templates make notes consistent and one-line creatable. They live in <code>templates/</code> so Obsidian's Templates plugin can use them too.</p>
+
+<pre><code>cat &gt; ~/brain/templates/learning.md &lt;&lt;'EOF'
+---
+title:
+date:
+source:
+tags: []
+---
+
+#
+
+## The Lesson
+
+## Context
+
+## How to Apply
+
+## Related
+- [[]]
+EOF
+
+cat &gt; ~/brain/templates/project.md &lt;&lt;'EOF'
+---
+name:
+status: active
+repo:
+url:
+created:
+updated:
+tags: []
+---
+
+#
+
+## What Is It
+
+## Status
+
+## Recent Activity
+
+## Open Questions
+
+## Related
+- [[]]
+EOF
+
+cat &gt; ~/brain/templates/repo.md &lt;&lt;'EOF'
+---
+name:
+url:
+status: active
+language:
+created:
+last_active:
+tags: []
+---
+
+#
+
+## What It Does
+
+## How It Connects
+
+## Related
+- [[]]
+EOF</code></pre>
+
+  <h2>Step 4 — Open the vault in Obsidian</h2>
+
+  <ol>
+    <li>Open Obsidian.</li>
+    <li>Click the vault icon (bottom-left of the sidebar) → <strong>Open folder as vault</strong> → select <code>~/brain</code>.</li>
+    <li>Settings → Community plugins → <strong>Turn on community plugins</strong> (you'll get a one-time warning; this is fine).</li>
+    <li>Settings → Community plugins → Browse → search <strong>Git</strong> → install + enable.</li>
+    <li>Settings → Git → set <strong>Vault backup interval</strong> to 10 (minutes). Push on every commit: ON.</li>
+  </ol>
+
+  <p>The Git plugin will commit and push every 10 minutes from now on. The vault stays in sync across every machine you connect.</p>
+
+  <div class="callout note">
+    <strong>Don't have an Obsidian license?</strong> The free version is enough for this. Sync across devices via the Git plugin — Obsidian's paid Sync product is convenient but unnecessary if you're already running git.
+  </div>
+
+  <h2>Step 5 — Push the repo to GitHub</h2>
+
+<pre><code>cd ~/brain
+git add -A
+git commit -m "Initial vault structure"
+gh repo create brain --private --source=. --push
+# (or: gh repo create brain --public --source=. --push  if you're comfortable
+#  publishing your knowledge base — most people start private and graduate)</code></pre>
+
+  <div class="callout gotcha">
+    <strong>Gotcha — secrets.</strong> Don't commit anything from <code>~/.config/dev-secrets/</code> into the brain vault. Even if the repo is private, anything that reaches a git history is one accidental publish away from being public. Keep the vault for <em>knowledge about</em> infrastructure, not credentials for it.
+  </div>
+
+  <h2>Step 6 — Add the <code>/brain</code> skill</h2>
+
+  <p>Skills live at <code>~/.claude/skills/&lt;skill-name&gt;/SKILL.md</code> and activate when an agent matches their description. Create the brain skill so any Claude Code session can save a note when you say <em>"save this as a learning"</em> or similar.</p>
+
+<pre><code>mkdir -p ~/.claude/skills/brain
+cat &gt; ~/.claude/skills/brain/SKILL.md &lt;&lt;'EOF'
+---
+name: brain
+description: Use when a session produced something worth remembering — a fix, decision, runbook, or learning. Also use when the user says /brain or asks to save something to the vault.
+---
+
+# Brain — Save to Knowledge Vault
+
+Save a note to the Obsidian brain vault (`~/brain`) from the current session.
+
+## How it works
+
+1. Ask the user what type of note to save:
+   - **learning** — a pattern or lesson learned (goes in `learnings/`)
+   - **runbook** — a step-by-step procedure (goes in `runbooks/`)
+   - **project** — project status or context (goes in `projects/`)
+
+2. Draft the note based on what happened in the session. Use the matching template from `~/brain/templates/` if one exists.
+
+3. Show the draft to the user for approval.
+
+4. Write the file to `~/brain/<type>/<name>.md`
+
+5. Rebuild the search index and commit:
+```bash
+cd ~/brain && python3 scripts/brain-search.py index
+git add -A && git commit -m "brain: add <type>/<name>" && git push origin main
+```
+
+## Note guidelines
+
+- Use the session context — don't ask the user to re-explain what just happened.
+- Keep notes concise and scannable (headers, bullet points, code blocks).
+- Add `[[wiki links]]` to related notes when obvious.
+- Runbooks must have: When to use, Prerequisites, Steps (with checkboxes), Verify.
+- Learnings must have: What happened, What we learned, How to apply next time.
+EOF</code></pre>
+
+  <p>Restart Claude Code (or run <code>/reload-plugins</code>). The skill will appear in the available list — typing <code>/brain</code> in a session invokes it.</p>
+
+  <h2>Step 7 — Wire the hooks</h2>
+
+  <p>Hooks fire on lifecycle events: <code>SessionStart</code> when a Claude Code session opens, <code>Stop</code> when it ends. Two minimal hooks make the vault a real persistent-memory system.</p>
+
+  <p>Edit <code>~/.claude/settings.json</code>:</p>
+
+<pre><code>{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/&lt;you&gt;/.claude/hooks/check-messages.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"\\ud83e\\udde0 Anything worth saving to the brain vault? Run /brain to save a learning, runbook, or project note.\"}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+
+  <p>The Stop hook is the workhorse — every session ends with a brain-vault prompt, which trains the habit of saving what was just learned. The SessionStart hook is a placeholder for whatever you want to surface when a session opens. Mine checks an agent message bus for cross-session signals; yours might cat the latest journal entry, surface a TODO, or do nothing.</p>
+
+  <p>Make the SessionStart script if you want one:</p>
+
+<pre><code>mkdir -p ~/.claude/hooks
+cat &gt; ~/.claude/hooks/check-messages.sh &lt;&lt;'EOF'
+#!/usr/bin/env bash
+# Surface a one-line context blip at session start. Customize freely.
+LATEST_JOURNAL=$(ls -t ~/brain/journal/*.md 2>/dev/null | head -1)
+if [ -n "$LATEST_JOURNAL" ]; then
+  echo "{\"systemMessage\": \"📓 Latest journal: $(basename "$LATEST_JOURNAL")\"}"
+fi
+EOF
+chmod +x ~/.claude/hooks/check-messages.sh</code></pre>
+
+  <div class="callout gotcha">
+    <strong>Gotcha — JSON in the hook command.</strong> Hook commands echo JSON; backslashes inside the JSON in <code>settings.json</code> have to be double-escaped (<code>\\u</code>, not <code>\u</code>). If the hook silently does nothing, validate your JSON.
+  </div>
+
+  <h2>Step 8 — Add the semantic search index</h2>
+
+  <p>Grep is fine for keyword search. For "I learned something about X" queries, embeddings are better — they find conceptually similar notes even when the wording is different. Ollama runs the embeddings locally for free.</p>
+
+<pre><code># Pull a small embedding model (one-time, ~274MB)
+ollama pull nomic-embed-text</code></pre>
+
+  <p>Save a small Python script at <code>~/brain/scripts/brain-search.py</code> that builds and queries the index. The full version (with chunking, rebuild-on-change, and a clean CLI) lives in the <a href="https://github.com/sethshoultes/brain/blob/main/scripts/brain-search.py">brain repo</a>; the minimum useful version is ~80 lines and stores a SQLite index next to the vault.</p>
+
+  <p>Add a shell alias so the search is one keystroke:</p>
+
+<pre><code># In ~/.zshrc (or ~/.bashrc)
+brain() {
+  python3 ~/brain/scripts/brain-search.py "$@"
+}</code></pre>
+
+  <p>Then:</p>
+
+<pre><code>source ~/.zshrc
+brain index                              # build the index
+brain "ElevenLabs tool registration"     # semantic query
+brain "the time I broke production"      # works even with vague queries</code></pre>
+
+  <h2>Step 9 — Verify end-to-end</h2>
+
+  <ol>
+    <li>Open a Claude Code session in any project. The Stop-hook reminder fires when you end the session — confirms the hook is wired.</li>
+    <li>In the same session, do something worth remembering. Then say <em>"save this as a learning"</em>. Claude should invoke the <code>/brain</code> skill, draft a note, ask for approval, write to <code>~/brain/learnings/&lt;slug&gt;.md</code>, and commit.</li>
+    <li>Within ~10 minutes the Obsidian Git plugin pushes to GitHub. Refresh your repo on github.com to confirm.</li>
+    <li>Run <code>brain "&lt;keyword from the note&gt;"</code> — the new note should surface.</li>
+  </ol>
+
+  <h2>What this gets you, day-to-day</h2>
+
+  <p>The vault is a flywheel. Each session adds to it; each session benefits from what's already there. Specifically:</p>
+
+  <ul>
+    <li><strong>Cross-project memory.</strong> A pattern you proved out in project A is instantly available when working in project B.</li>
+    <li><strong>Searchable history.</strong> "Have I seen this error before?" — <code>brain "Cloudflare 525"</code>. The answer is in <code>learnings/cloudflare-525-zone-mismatch.md</code>.</li>
+    <li><strong>Documented runbooks.</strong> "How do I deploy a Worker?" — <code>~/brain/runbooks/Cloudflare Worker Deploy.md</code>. Every operational procedure I've ever solved is one grep away.</li>
+    <li><strong>The agent does the saving.</strong> The Stop hook makes saving the default action at end of session. You don't have to remember to write it down — Claude reminds you, and the <code>/brain</code> skill drafts the note for you.</li>
+  </ul>
+
+  <h2>The companion skill</h2>
+
+  <p>Everything above is also packaged as an installable Agent Skill: <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a>. Install it with:</p>
+
+<pre><code>npx skills add github:sethshoultes/building-with-ai-skills --skill set-up-claude-code-with-brain-vault</code></pre>
+
+  <p>Then in any new session: <em>"set up a brain vault for me"</em> — the skill walks the agent through the procedure on a fresh machine.</p>
+
+  <h2>What's next</h2>
+
+  <p>Once the vault has 20+ notes, add a few patterns that make it more powerful:</p>
+
+  <ul>
+    <li><strong>Daily journal hook</strong> — a cron that creates today's <code>journal/YYYY-MM-DD.md</code> file at 6 a.m. with a stub template, so writing into the day's entry is friction-free.</li>
+    <li><strong>Cross-vault links</strong> — when a learning emerges from a project, link it both ways. The Obsidian graph view becomes a real map.</li>
+    <li><strong>Weekly consolidation</strong> — a slash command (<code>/consolidate</code>) that scans recent journal entries and proposes which ones should be promoted into the permanent <code>learnings/</code> folder. Pattern documented at <a href="/blog/the-bible-reads-first.html">The Bible Reads First</a>.</li>
+    <li><strong>Brain-as-RAG</strong> — point an LLM agent at the vault for retrieval. Same shape as the <a href="/blog/the-bible-reads-first.html">project bible</a>, just personal scope.</li>
+  </ul>
+
+  <div class="recipe-footer">
+    <h3>Companion materials</h3>
+    <ul>
+      <li>Companion skill: <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></li>
+      <li>Reference repo: <a href="https://github.com/sethshoultes/brain"><code>github.com/sethshoultes/brain</code></a></li>
+      <li>Reference essay: <a href="/blog/the-bible-reads-first.html">The Bible Reads First</a> — the connective-tissue argument the vault embodies</li>
+      <li>Reference essay: <a href="/blog/skills-as-sops.html">Skills as SOPs</a> — what makes the brain skill installable</li>
+    </ul>
+  </div>
+
+  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
+
+</main>
+
+</body>
+</html>

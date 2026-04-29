@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipes · Seth Shoultes</title>
+  <meta name="description" content="Long-form runbooks for building with AI — step-by-step procedures, with the gotchas. Companion to the Agent Skills index for human readers." />
+
+  <meta property="og:title" content="Recipes · Building with AI" />
+  <meta property="og:description" content="Step-by-step runbooks for building with AI. The why, the how, and the gotchas. Each recipe has a companion installable Agent Skill." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sethshoultes.com/recipes/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --accent: #0f766e;
+      --accent-light: #ccfbf1;
+      --border: #e5e7eb;
+      --radius: 12px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(250,250,250,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+    .nav-inner .logo {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .nav-back:hover { color: var(--accent); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5rem 2rem 1.5rem;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.3rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .lede {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-bottom: 1.25rem;
+    }
+    .hero a { color: var(--accent); }
+
+    section.recipes {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 2rem 4rem;
+    }
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .recipe-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--text);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .recipe-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .recipe-card .meta {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .recipe-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.5rem;
+    }
+    .recipe-card p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+    .recipe-card .links {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .roadmap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+    .roadmap h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .roadmap .lede { margin-bottom: 1.5rem; }
+    .roadmap ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+      list-style: none;
+      padding: 0;
+    }
+    .roadmap li {
+      padding: 0.85rem 1rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    footer {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; margin-right: 1.25rem; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 3rem 1.25rem 1.5rem; }
+      section.recipes, .roadmap, footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <a href="/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<div class="hero">
+  <span class="eyebrow">Recipes · For people who like to read first</span>
+  <h1>Building with AI — Recipes</h1>
+  <p class="lede">Long-form runbooks for the patterns I've shipped. The why, the how, and the gotchas — written for humans, with screenshots when they help. Each recipe pairs with an installable <a href="/skills/">Agent Skill</a>: the recipe explains it; the skill makes it executable.</p>
+  <p class="lede">Companion essay: <a href="/blog/skills-as-sops.html">Skills as SOPs</a>.</p>
+</div>
+
+<section class="recipes">
+  <div class="recipes-grid">
+    <a class="recipe-card" href="/recipes/claude-code-brain-vault.html">
+      <p class="meta">Knowledge management · ~25 min</p>
+      <h3>Set up Claude Code with a Brain Vault</h3>
+      <p>An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory. SessionStart and Stop hooks, a <code>/brain</code> skill that saves notes from any session, an auto-committing git repo, and a semantic search index. The pattern that keeps me from forgetting what I learned the last time.</p>
+      <span class="links">Read the recipe →</span>
+    </a>
+  </div>
+</section>
+
+<div class="roadmap">
+  <h2>Coming next</h2>
+  <p class="lede">Recipes pulled from the brain vault as patterns prove themselves on real projects. Tracked queue:</p>
+  <ul>
+    <li>Add a real-time avatar with a voice clone to a static site (companion to <code>add-avatar-to-site</code>)</li>
+    <li>Wire RAG into an ElevenLabs Conversational AI agent (companion to <code>add-rag-to-elevenlabs-agent</code>)</li>
+    <li>Build an autonomous editorial pipeline with the Great Minds Constellation</li>
+    <li>Migrate scattered <code>.env</code> files into canonical secrets at <code>~/.config/dev-secrets/</code></li>
+    <li>Stand up a personal Cloudflare Worker for token minting</li>
+    <li>Migrate a hand-coded blog into Jekyll without breaking URLs</li>
+    <li>Set up a GitHub Pages → ElevenLabs RAG sync via <code>page_build</code></li>
+    <li>Build a gated admin dashboard with a Cloudflare Worker as the backend</li>
+  </ul>
+</div>
+
+<footer>
+  <a href="/">Home</a>
+  <a href="/blog/">Writing</a>
+  <a href="/skills/">Skills</a>
+  <a href="/talk/">Talk</a>
+  <a href="https://github.com/sethshoultes" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+</body>
+</html>
