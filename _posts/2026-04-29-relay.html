@@ -1,0 +1,41 @@
+---
+title: "The Office Held a Vote"
+subtitle: "Six AI personas met at midnight, voted on six dream proposals, picked one, and built it before sunrise. The pipeline shipped a working WordPress plugin without a human in the loop."
+date: "2026-04-29"
+description: "An autonomous AI agency held a board vote at 7am UTC. Three of six personas chose the same dream candidate. By the next pipeline tick the plan was written, by the one after that the code was committed, and by the morning standup the engineer woke to a shipped WordPress plugin he had not asked for."
+og_title: "The Office Held a Vote"
+og_description: "Six AI personas met at midnight, voted on six dream proposals, picked one, and built it before sunrise. The pipeline shipped a working WordPress plugin without a human in the loop."
+og_image: "https://sethshoultes.com/blog/images/relay-featured.png"
+read_time: "5 min read"
+related:
+  - slug: three-layers
+    note: "the autonomous office that ships while the writer is out"
+  - slug: pattern-held
+    note: "the loop that survives without supervision"
+  - slug: building-in-the-age-of-ai
+    note: "what changes when the agents start choosing the work"
+---
+
+<p>The engineer left his desk at midnight on Tuesday and went to bed. The office, which was an autonomous AI agency running on a DigitalOcean server with a Kimi K2.6 brain and nine constellation plugins for personas, did not sleep. Every four hours a cron called the dream cycle. The dream cycle assembled the personas &mdash; Steve, Elon, Phil, Buffett, Shonda, Jensen &mdash; and asked each one to propose a product worth building, using only the company's existing tooling and the unmet needs the brain had been turning over in the background. They proposed six.</p>
+
+<p>The voting happened at 7:02 UTC. Three personas chose the same candidate: a WordPress plugin called Relay that would intercept any contact-form submission, send it to Claude for classification, route it according to admin-configurable rules, and surface the results in a React-powered inbox inside <code>wp-admin</code>. Steve liked it because it transformed a dumb pipe into an intelligent one with no behavior change for the form filler. Elon liked it because it had a freemium-on-WordPress.org distribution wedge and a paid-tier upsell for Slack and CRM webhooks. Buffett liked the moat: every install gradually accumulated a private classification corpus that competitors could not buy.</p>
+
+<p>By 7:11 UTC, the dream daemon had written a 24-section PRD to <code>prds/relay-ai-form-handler.md</code>. By 7:14, the watcher had detected the file and queued it. By 7:18, the debate phase began. Steve and Elon argued through two rounds about the v1 surface: Steve wanted the inbox to feel like Apple Mail, Elon wanted it to ship as a single-page table that loaded in 200ms. Phil consolidated. Rick distilled the debate to one essence question: <em>does this make a small business owner feel less behind on Tuesday morning, or just more notified?</em> The plan phase ran for twelve minutes, Sara gut-checked it, and the build phase started.</p>
+
+<p>The build phase took an hour and a half. The builder agent, running on Kimi K2.6 via Ollama Cloud (because the office had migrated off the Anthropic browser-login a week earlier when sessions kept expiring overnight), wrote thirteen files. <code>relay.php</code> as the plugin bootstrap. <code>includes/class-form-handler.php</code> for the REST endpoint. <code>includes/class-claude-client.php</code> for the AI integration. <code>includes/class-storage.php</code> for the custom database table. <code>includes/class-async-processor.php</code> so the form submission did not block while Claude classified. <code>includes/class-cache.php</code>, <code>class-admin.php</code>, <code>class-relay.php</code> for the bootstrap orchestration. <code>admin/views/inbox.php</code> for the admin page server render. <code>admin/views/settings.php</code> for the configuration page. <code>admin/js/relay-admin.js</code> for the React inbox. A <code>spec.md</code> capturing the locked decisions. A <code>todo.md</code> tracking unfinished items.</p>
+
+<p>The build-gate that the office had installed two days earlier &mdash; a substance check that refused any ship with fewer than three source files unless the PRD was an explicit hotfix &mdash; counted thirteen and let it through. The QA pass ran. Margaret found one issue with how the cache invalidation interacted with the async queue and a fixer agent corrected it. The creative review ran: Jony noted the inbox needed an empty-state illustration, Maya rewrote two error messages from "Submission failed" to "We couldn't save that &mdash; can you try once more?". The board review ran. Jensen flagged that the freemium boundary needed a clearer line between "the free thing actually works" and "you must upgrade to do anything useful." Shonda noted the retention loop &mdash; the engineer would come back tomorrow only if the inbox surfaced something he would have missed.</p>
+
+<p>The ship phase committed everything to <code>main</code>, pushed to GitHub, archived the PRD to <code>prds/completed/</code>, ran the deploy hook, wrote a retrospective. The engineer's email pinged at 13:00 UTC the next morning with the daily digest. <em>Shipped: relay-ai-form-handler in 142 minutes.</em> Below it, ten other lines about the maintenance crew's overnight checks, one PRD that hit the build-gate and failed correctly, two GitHub issues auto-closed. He read the digest, opened the GitHub commit, and saw a working WordPress plugin he had not asked anyone to build.</p>
+
+<hr>
+
+<h2>What the office actually did</h2>
+
+<p>The office did not invent product strategy. It picked one out of six candidates the personas had been refining through three previous dream cycles &mdash; the third refinement always sharper than the second. It did not write better code than the engineer would have. It wrote competent code, in the right places, with the right boundaries, fast. It did not test the plugin against a real WordPress install. That part still belongs to the engineer.</p>
+
+<p>What it did was close the gap between "this would be a useful thing to exist" and "this thing now exists in a repository with a commit history and a passing build-gate." That gap, traditionally, is days or weeks of human attention on a project nobody had time for. The office traversed it in two and a half hours of cron ticks while the engineer slept.</p>
+
+<p>The plugin is at <a href="https://github.com/sethshoultes/shipyard-ai/tree/main/deliverables/relay-ai-form-handler"><code>shipyard-ai/deliverables/relay-ai-form-handler/</code></a>. The PRD is one directory up. The retrospective is in <code>rounds/</code>. None of it is yet on a real site. The next move &mdash; the human one &mdash; is to install it on a WordPress site, send three test submissions, and see whether the office got the routing rules right.</p>
+
+<p>The office does not yet know that part. It will know tomorrow.</p>
