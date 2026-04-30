@@ -18,19 +18,19 @@ related:
 
 <img src="/blog/images/closing-the-agent-discovery-loop-featured.png" alt="Pen-and-ink schematic: three numbered boxes connected by arrows in a descending line — URL, discovery file, MCP endpoint — with a fourth box at the bottom labeled 'catalog data, no credentials required'; the loop is closed." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
-<p>Visit <a href="https://smartwebutah.com/.well-known/mcp.json">https://smartwebutah.com/.well-known/mcp.json</a> from any HTTP client — no credentials, no headers, no session. The response, in full:</p>
+<p>Visit <a href="https://sethshoultes.com/.well-known/mcp.json">https://sethshoultes.com/.well-known/mcp.json</a> from any HTTP client — no credentials, no headers, no session. The response:</p>
 
 <pre><code>{
-  "name": "Smart Website Solutions - Utah",
-  "description": "Search Engine Optimization, Website Security, and Business Consulting in Southern Utah",
+  "name": "Seth Shoultes — Writing &amp; Skills",
+  "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com.",
   "protocol": "mcp",
   "version": "2025-06-18",
-  "endpoints": { "public": "https://smartwebutah.com/wp-json/mp-mcp/v1/public-mcp" },
+  "endpoints": { "public": "https://mcp.sethshoultes.com/" },
   "auth_required": false,
   "transport": "http"
 }</code></pre>
 
-<p>That JSON points to a JSON-RPC 2.0 endpoint. POST <code>{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}</code> to the listed URL and an AI client can enumerate the site's membership plans, fetch pricing, and retrieve signup URLs. No credentials. No human in the loop. This is the first time the agent discovery loop has fully closed for a real commerce surface.</p>
+<p>That JSON points to a JSON-RPC 2.0 endpoint at a same-origin subdomain. POST <code>{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}</code> to the listed URL and an AI client can enumerate the site's blog posts, fetch their HTML, and discover the installable Skills. No credentials. No human in the loop. The same three-file pattern was first shipped on a real commerce surface — <a href="https://smartwebutah.com/.well-known/mcp.json">smartwebutah.com</a>, running the <a href="https://github.com/caseproof/memberpress-ai-foundation">MemberPress AI Foundation</a> WordPress plugin — but the engineering described below is the same on either side. This is what closing the loop looks like when there's nothing left in the way.</p>
 
 <hr>
 
@@ -88,7 +88,7 @@ related:
 
 <h2>What the loop closing means</h2>
 
-<p>The loop is closed for SmartWebUtah.com. An AI client given that domain can fetch the discovery file, find the endpoint, call <code>tools/list</code>, and enumerate the site's offerings without credentials and without a human in the loop. The membership plans, prices, billing intervals, and signup URLs come back as structured JSON that an LLM can reason from directly.</p>
+<p>The loop is closed for sethshoultes.com. An AI client given that domain can fetch the discovery file, find the endpoint at <code>mcp.sethshoultes.com</code>, call <code>tools/list</code>, and enumerate the site's offerings without credentials and without a human in the loop. The blog post catalog, the post bodies, the installable Agent Skills — all of it comes back as structured JSON that an LLM can reason from directly. SmartWebUtah.com closes the same loop on a commerce surface; the structure is identical on both sides, the catalog data is what differs.</p>
 
 <p><a href="/blog/the-mouth-was-not-an-ear.html">The Mouth Was Not an Ear</a> described a site that had listeners but no ear the client could reach: the avatar SDK had three commands for output and none for input. The pipes ran one way. This is the inversion. The site had an authenticated MCP layer the owner could query and nothing the prospective customer's agent could find. The public layer is the ear the site was missing. The loop is now symmetrical: the agent can find the surface, and the surface is listening.</p>
 
