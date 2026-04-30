@@ -231,6 +231,30 @@
       <p>An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory. SessionStart and Stop hooks, a <code>/brain</code> skill that saves notes from any session, an auto-committing git repo, and a semantic search index. The pattern that keeps me from forgetting what I learned the last time.</p>
       <span class="links">Read the recipe →</span>
     </a>
+    <a class="recipe-card" href="/recipes/add-avatar-to-site.html">
+      <p class="meta">Voice UI · ~35 min</p>
+      <h3>Add a Real-Time Avatar to a Static Site</h3>
+      <p>A synchronous, speaking avatar embedded in a webpage using HeyGen and ElevenLabs. Cloudflare Worker token exchange, SDK integration, mobile gotchas, and when not to use it.</p>
+      <span class="links">Read the recipe →</span>
+    </a>
+    <a class="recipe-card" href="/recipes/add-rag-to-elevenlabs-agent.html">
+      <p class="meta">Knowledge retrieval · ~20 min</p>
+      <h3>Wire RAG into an ElevenLabs Agent</h3>
+      <p>Connect external documents to your ElevenLabs Conversational AI agent so it retrieves relevant context before answering. Knowledge-base API calls, vectorization, and the GitHub <code>page_build</code> gotcha.</p>
+      <span class="links">Read the recipe →</span>
+    </a>
+    <a class="recipe-card" href="/recipes/register-elevenlabs-client-tool.html">
+      <p class="meta">Voice-driven UI · ~25 min</p>
+      <h3>Register an ElevenLabs Client Tool</h3>
+      <p>Let an ElevenLabs voice agent invoke functions that run inside the visitor's browser — open modals, scroll to sections, play videos — by wiring client-side tool calls to the page's JavaScript.</p>
+      <span class="links">Read the recipe →</span>
+    </a>
+    <a class="recipe-card" href="/recipes/set-up-canonical-secrets.html">
+      <p class="meta">Security hygiene · ~30 min</p>
+      <h3>Set Up Canonical Secrets</h3>
+      <p>Centralize every scattered API key into one protected user-level store at <code>~/.config/dev-secrets/</code>. Audit existing .env files, migrate by layer, revoke leaked tokens, and never paste a key in chat again.</p>
+      <span class="links">Read the recipe →</span>
+    </a>
   </div>
 </section>
 
@@ -238,13 +262,9 @@
   <h2>Coming next</h2>
   <p class="lede">Recipes pulled from the brain vault as patterns prove themselves on real projects. Tracked queue:</p>
   <ul>
-    <li>Add a real-time avatar with a voice clone to a static site (companion to <code>add-avatar-to-site</code>)</li>
-    <li>Wire RAG into an ElevenLabs Conversational AI agent (companion to <code>add-rag-to-elevenlabs-agent</code>)</li>
     <li>Build an autonomous editorial pipeline with the Great Minds Constellation</li>
-    <li>Migrate scattered <code>.env</code> files into canonical secrets at <code>~/.config/dev-secrets/</code></li>
     <li>Stand up a personal Cloudflare Worker for token minting</li>
     <li>Migrate a hand-coded blog into Jekyll without breaking URLs</li>
-    <li>Set up a GitHub Pages → ElevenLabs RAG sync via <code>page_build</code></li>
     <li>Build a gated admin dashboard with a Cloudflare Worker as the backend</li>
   </ul>
 </div>

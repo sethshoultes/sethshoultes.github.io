@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register an ElevenLabs Client Tool — Recipe</title>
+  <meta name="description" content="Step-by-step recipe for letting an ElevenLabs agent invoke functions that run inside a visitor's browser to display UI elements like cards, modals, or scroll actions." />
+
+  <meta property="og:title" content="Register an ElevenLabs Client Tool" />
+  <meta property="og:description" content="Give your ElevenLabs voice agent the ability to change the page it's running in — open modals, scroll to sections, play videos." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sethshoultes.com/recipes/register-elevenlabs-client-tool.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/recipes/recipe.css" />
+</head>
+<body>
+
+<nav class="recipe-nav">
+  <div class="recipe-nav-inner">
+    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
+    <a href="/recipes/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      All recipes
+    </a>
+  </div>
+</nav>
+
+<main class="recipe">
+
+  <span class="eyebrow">Recipe · Voice-driven UI</span>
+  <h1>Register an ElevenLabs Client Tool</h1>
+  <p class="subtitle">Let an ElevenLabs voice agent invoke functions that run inside the visitor's browser — open cards, scroll to sections, play videos — by wiring client-side tool calls to the page's JavaScript.</p>
+
+  <div class="recipe-meta">
+    <span><strong>Time:</strong> ~25 min</span>
+    <span><strong>Difficulty:</strong> intermediate</span>
+    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/register-elevenlabs-client-tool/SKILL.md"><code>register-elevenlabs-client-tool</code></a></span>
+  </div>
+
+  <h2>Why client tools</h2>
+
+  <p>A voice agent that only talks is a chatbot with audio. A voice agent that can change the page it's running on is a UI layer. Client tools are the bridge: the agent decides to do something, the platform passes the invocation to the browser, and the page executes it.</p>
+
+  <p>This is different from server-side tools. Server tools hit an API, process data, and return a result. Client tools manipulate the DOM, play media, or trigger navigation. Both are useful; this recipe is about the client side.</p>
+
+  <h2>What you'll build</h2>
+
+  <ul>
+    <li>A <strong>client tool definition</strong> in the ElevenLabs API — a function schema the agent learns to call.</li>
+    <li>An <strong>updated system prompt</strong> — instructions that tell the agent when and how to invoke the tool.</li>
+    <li>A <strong>frontend handler</strong> — JavaScript that listens for <code>client_tool_call</code> events and runs the matching function.</li>
+    <li>A <strong>fallback watcher</strong> — a scan of transcription events to catch missed calls when the primary channel drops.</li>
+  </ul>
+
+  <h2>Prerequisites</h2>
+
+  <ul>
+    <li>An <a href="https://elevenlabs.io">ElevenLabs</a> Conversational AI agent already running.</li>
+    <li>A webpage where the agent is embedded (via the ElevenLabs SDK, the LiveAvatar SDK, or the Conversational AI widget).</li>
+    <li>Basic JavaScript and DOM manipulation knowledge.</li>
+  </ul>
+
+  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+
+  <h2>Step 1 — Define the client tool</h2>
+
+  <p>Create a new tool via the ElevenLabs API. The critical field is <code>"type": "client"</code> — this tells the platform the function runs in the browser, not on a server.</p>
+
+  <pre><code>curl -X POST https://api.elevenlabs.io/v1/convai/tools \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "client",
+    "name": "scroll_to_section",
+    "description": "Scroll the page to a named section. Call this when the user asks to navigate to pricing, docs, or a specific feature.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string",
+          "description": "The section ID to scroll to. Must be 'pricing', 'docs', 'features', or 'contact'."
+        }
+      },
+      "required": ["section"]
+    }
+  }'</code></pre>
+
+  <p>Save the returned tool ID — you'll attach it to the agent in Step 2.</p>
+
+  <div class="callout note">
+    <strong>Description quality matters.</strong> The agent decides whether to call this tool based on the description. Write it like you're explaining the function to a junior developer, not to a machine. "Call this when the user asks to navigate to..." is better than "Scrolls page."
+  </div>
+
+  <h2>Step 2 — Attach to the agent and update the prompt</h2>
+
+  <p>Patch the agent to include the tool and add trigger instructions to the system prompt:</p>
+
+  <pre><code>curl -X PATCH https://api.elevenlabs.io/v1/convai/agents/{agent_id} \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "conversation_config": {
+      "agent": {
+        "prompt": {
+          "system_prompt": "You are a helpful assistant embedded in a website. When the user asks to see pricing, documentation, features, or contact information, use the scroll_to_section client tool. Do not just describe the section — scroll to it."
+        }
+      },
+      "client_tools": ["tool-id-from-step-1"]
+    }
+  }'</code></pre>
+
+  <h2>Step 3 — Handle the call in the frontend</h2>
+
+  <p>The frontend listens for <code>client_tool_call</code> events from the SDK and executes the matching function. The exact event shape depends on which SDK you're using.</p>
+
+  <h3>Using the direct ElevenLabs SDK</h3>
+
+  <pre><code>import { Conversation } from '@ elevenlabs/elevenlabs-js';
+
+const conversation = new Conversation({
+  agentId: 'your-agent-id',
+  onMessage: (message) => {
+    if (message.type === 'client_tool_call') {
+      handleClientTool(message);
+    }
+  }
+});
+
+function handleClientTool(message) {
+  const { tool_name, parameters } = message;
+
+  switch (tool_name) {
+    case 'scroll_to_section':
+      document.getElementById(parameters.section)?.scrollIntoView({ behavior: 'smooth' });
+      break;
+    case 'open_modal':
+      document.getElementById(parameters.modal_id)?.showModal();
+      break;
+    default:
+      console.warn('Unknown client tool:', tool_name);
+  }
+}</code></pre>
+
+  <h3>Using the LiveAvatar SDK</h3>
+
+  <pre><code>import { LiveAvatarSession } from '@heygen/liveavatar-web-sdk';
+
+const session = new LiveAvatarSession({
+  token: '...',
+  videoElement: document.getElementById('avatar'),
+  onClientToolCall: (data) => {
+    // LiveAvatar nests the tool call differently
+    const toolCall = data.client_tool_call || data;
+    handleClientTool(toolCall);
+  }
+});</code></pre>
+
+  <div class="callout gotcha">
+    <strong>Gotcha — tool-call nesting.</strong> The LiveAvatar SDK nests the tool call under <code>data.client_tool_call</code>. The direct ElevenLabs SDK puts it at the top level of the message. Your handler must check both shapes or it will silently miss calls.
+  </div>
+
+  <h2>Step 4 — Set <code>expects_response</code> correctly</h2>
+
+  <p>For LiveAvatar integrations, set <code>"expects_response": "false"</code> on the tool definition. Client tools through LiveAvatar cannot return values to the agent (the pipeline is one-way), so telling the agent to wait for a response will cause a timeout.</p>
+
+  <pre><code>curl -X PATCH https://api.elevenlabs.io/v1/convai/tools/{tool_id} \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "expects_response": false
+  }'</code></pre>
+
+  <p>Server-side effects (database writes, API calls) should not happen in client tools. If you need a side effect, use a server-side tool instead, or have the client tool call an internal API endpoint.</p>
+
+  <h2>Step 5 — Add a fallback watcher</h2>
+
+  <p>The primary event channel can drop tool calls under load or on mobile networks. A fallback scan of transcription events catches missed invocations:</p>
+
+  <pre><code>// Fallback: if the agent says it will scroll but the event never fired,
+// parse the transcript and trigger manually.
+conversation.onMessage((message) => {
+  if (message.type === 'transcript' && message.role === 'agent') {
+    const text = message.text.toLowerCase();
+    if (text.includes('scroll') && text.includes('pricing')) {
+      // Check if scroll_to_section already fired
+      if (!document.getElementById('pricing').classList.contains('scrolled-to')) {
+        document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
+});</code></pre>
+
+  <p>This is defensive, not primary. The real fix is reliable event delivery, but the fallback prevents the agent from claiming it did something the user never saw.</p>
+
+  <h2>Step 6 — Verify end-to-end</h2>
+
+  <ol>
+    <li>Open the agent in your page. Start a conversation.</li>
+    <li>Say: "Show me the pricing."</li>
+    <li>The agent should respond with something like "Scrolling to pricing now..." and the page should smoothly scroll to the pricing section.</li>
+    <li>Check the browser console. You should see the <code>client_tool_call</code> event logged with <code>tool_name: "scroll_to_section"</code> and the correct <code>section</code> parameter.</li>
+    <li>Test a miss — say something unrelated. The tool should not fire.</li>
+  </ol>
+
+  <h2>What this gets you</h2>
+
+  <ul>
+    <li><strong>Voice-driven navigation.</strong> "Take me to the docs" becomes a scroll action, not a description.</li>
+    <li><strong>Contextual UI.</strong> The agent can open modals, play videos, or highlight elements based on what the user just asked.</li>
+    <li><strong>Progressive enhancement.</strong> The page works normally without the agent. The tools are additive.</li>
+  </ul>
+
+  <h2>When not to use this</h2>
+
+  <p>Server-side effects belong in server tools, not client tools. If the agent needs to write to a database, send an email, or charge a card, use a server tool with a webhook. Client tools should only manipulate the DOM or trigger client-side behavior.</p>
+
+  <h2>What's next</h2>
+
+  <ul>
+    <li><strong>Rich responses.</strong> Return structured data from client tools (if the SDK supports it) so the agent can adapt its next utterance based on what happened on the page.</li>
+    <li><strong>Tool composition.</strong> Chain client tools — scroll to a section, then open a modal inside it, then focus an input. The agent can orchestrate multi-step UI flows.</li>
+    <li><strong>RAG + tools.</strong> Combine this with a knowledge base so the agent answers from docs and then scrolls to the relevant section automatically. See the <a href="/recipes/add-rag-to-elevenlabs-agent.html">RAG recipe</a>.</li>
+  </ul>
+
+  <div class="recipe-footer">
+    <h3>Companion materials</h3>
+    <ul>
+      <li>Companion skill: <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/register-elevenlabs-client-tool/SKILL.md"><code>register-elevenlabs-client-tool</code></a></li>
+      <li>Related recipe: <a href="/recipes/add-avatar-to-site.html">Add a real-time avatar to a static site</a></li>
+      <li>Related recipe: <a href="/recipes/add-rag-to-elevenlabs-agent.html">Wire RAG into an ElevenLabs agent</a></li>
+    </ul>
+  </div>
+
+  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
+
+</main>
+
+</body>
+</html>

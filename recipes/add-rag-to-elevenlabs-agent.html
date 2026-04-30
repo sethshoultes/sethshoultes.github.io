@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wire RAG into an ElevenLabs Agent — Recipe</title>
+  <meta name="description" content="Step-by-step recipe for connecting external documents to an ElevenLabs Conversational AI agent via retrieval-augmented generation. API calls, vectorization, and the GitHub Action gotcha." />
+
+  <meta property="og:title" content="Wire RAG into an ElevenLabs Agent" />
+  <meta property="og:description" content="Give your ElevenLabs voice agent a memory of your content — docs, posts, runbooks — so it answers from source instead of training." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sethshoultes.com/recipes/add-rag-to-elevenlabs-agent.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/recipes/recipe.css" />
+</head>
+<body>
+
+<nav class="recipe-nav">
+  <div class="recipe-nav-inner">
+    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
+    <a href="/recipes/" class="nav-back">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      All recipes
+    </a>
+  </div>
+</nav>
+
+<main class="recipe">
+
+  <span class="eyebrow">Recipe · Knowledge retrieval</span>
+  <h1>Wire RAG into an ElevenLabs Agent</h1>
+  <p class="subtitle">Connect external documents to your ElevenLabs Conversational AI agent so it retrieves relevant context before answering — and attributes answers to source titles.</p>
+
+  <div class="recipe-meta">
+    <span><strong>Time:</strong> ~20 min</span>
+    <span><strong>Difficulty:</strong> intermediate</span>
+    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-rag-to-elevenlabs-agent/SKILL.md"><code>add-rag-to-elevenlabs-agent</code></a></span>
+  </div>
+
+  <h2>Why RAG</h2>
+
+  <p>An ElevenLabs agent without RAG answers from its training data. That is fine for general knowledge. It is wrong for specific knowledge: your product docs, your pricing, your runbooks, your blog posts. The agent will hallucinate confidently about things it was never trained on.</p>
+
+  <p>Retrieval-augmented generation fixes this. Before the agent answers, it queries a vectorized knowledge base of your documents, pulls the relevant chunks, and grounds its response in what you actually wrote. The result is specific, attributable, and updatable.</p>
+
+  <h2>What you'll build</h2>
+
+  <ul>
+    <li>A <strong>knowledge base</strong> inside ElevenLabs — a collection of your documents, vectorized for semantic search.</li>
+    <li>An <strong>auto-update pipeline</strong> — a GitHub Action that re-indexes your content every time your site rebuilds.</li>
+    <li>A <strong>prompt update</strong> — instructions that tell the agent when to retrieve and how to attribute sources.</li>
+  </ul>
+
+  <h2>Prerequisites</h2>
+
+  <ul>
+    <li>An <a href="https://elevenlabs.io">ElevenLabs</a> account with Conversational AI access.</li>
+    <li>An existing agent you want to add RAG to.</li>
+    <li>An ElevenLabs API key with permissions for knowledge-base and agent editing.</li>
+    <li>A source of documents (blog, docs site, Notion exports, PDFs).</li>
+    <li>If your site is on GitHub Pages: a repo with GitHub Actions enabled.</li>
+  </ul>
+
+  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+
+  <h2>Step 1 — Create knowledge-base entries</h2>
+
+  <p>Each document becomes a knowledge-base entry via the ElevenLabs API. You can do this manually in the dashboard for a quick test, but for a real pipeline you'll script it.</p>
+
+  <p>First, create a knowledge base document from a URL:</p>
+
+  <pre><code>curl -X POST https://api.elevenlabs.io/v1/convai/knowledge-base \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Product Docs",
+    "type": "url",
+    "url": "https://your-site.com/docs/"
+  }'</code></pre>
+
+  <p>Or upload a file directly:</p>
+
+  <pre><code>curl -X POST https://api.elevenlabs.io/v1/convai/knowledge-base \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: multipart/form-data" \
+  -F "name=Runbook" \
+  -F "file=@/path/to/runbook.pdf"</code></pre>
+
+  <p>Save the returned <code>id</code> for each entry — you'll attach it to the agent in Step 3.</p>
+
+  <h2>Step 2 — Trigger vectorization</h2>
+
+  <p>ElevenLabs needs to vectorize the knowledge base before the agent can query it. This happens server-side when you specify a model. The default is <code>e5_mistral_7b_instruct</code>, which is good for general text.</p>
+
+  <pre><code>curl -X POST https://api.elevenlabs.io/v1/convai/knowledge-base/{id}/vectorize \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "e5_mistral_7b_instruct"
+  }'</code></pre>
+
+  <p>Vectorization is async. Poll for status or just wait a minute before testing queries.</p>
+
+  <h2>Step 3 — Attach to the agent and enable RAG</h2>
+
+  <p>Update your agent with a PATCH request that enables RAG and attaches the knowledge base entries:</p>
+
+  <pre><code>curl -X PATCH https://api.elevenlabs.io/v1/convai/agents/{agent_id} \
+  -H "xi-api-key: $ELEVENLABS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": {
+      "rag": {
+        "enabled": true,
+        "knowledge_base": ["kb-entry-id-1", "kb-entry-id-2"]
+      }
+    },
+    "conversation_config": {
+      "agent": {
+        "prompt": {
+          "system_prompt": "You are a helpful assistant. When answering questions, retrieve relevant context from the knowledge base and attribute your answers to the source title. If the answer is not in the knowledge base, say so."
+        }
+      }
+    }
+  }'</code></pre>
+
+  <div class="callout gotcha">
+    <strong>Gotcha — the prompt matters.</strong> Without explicit instructions, the agent may retrieve but not cite, or ignore the retrieval entirely. The system prompt must name the behavior: retrieve, then attribute. Test this explicitly — ask a question you know is in the docs and verify the agent names the source.
+  </div>
+
+  <h2>Step 4 — Auto-sync with a GitHub Action</h2>
+
+  <p>For static sites on GitHub Pages, you want the knowledge base to update every time the site rebuilds. The trigger is <code>page_build</code>, not <code>push</code>. A <code>push</code> trigger fires before GitHub Pages finishes deploying, which causes a <code>ReadabilityError</code> because the URL isn't live yet.</p>
+
+  <p>Save this workflow to <code>.github/workflows/sync-knowledge-base.yml</code> in your site's repo:</p>
+
+  <pre><code>name: Sync Knowledge Base
+
+on:
+  page_build:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Re-create knowledge base entries
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          # Delete old entries (optional — or just update in place)
+          # This script re-creates and re-attaches knowledge base documents
+          python3 scripts/sync_kb.py
+
+      - name: Vectorize
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          # Poll until vectorization is complete
+          python3 scripts/vectorize_kb.py</code></pre>
+
+  <p>The <code>page_build</code> event fires after GitHub Pages finishes, so the URLs in your knowledge base entries are guaranteed live. Add your <code>ELEVENLABS_API_KEY</code> to the repo's GitHub Secrets.</p>
+
+  <div class="callout gotcha">
+    <strong>Gotcha — ReadabilityError on push.</strong> If you use <code>on: push</code> and your knowledge base entries reference URLs on GitHub Pages, the ElevenLabs crawler may hit a 404 because Pages hasn't finished deploying. The fix is <code>on: page_build</code>. This is documented poorly and cost me an hour.
+  </div>
+
+  <h2>Step 5 — Verify end-to-end</h2>
+
+  <ol>
+    <li>Open your ElevenLabs agent in the dashboard. The knowledge base section should show your attached entries with green checkmarks (vectorized).</li>
+    <li>Start a conversation with the agent. Ask a question whose answer is in your docs.</li>
+    <li>Verify the agent names the source document (e.g., "According to the Product Docs...").</li>
+    <li>Ask a question not in the knowledge base. The agent should say it doesn't know, rather than hallucinating.</li>
+    <li>Push a change to your site. Wait for the <code>page_build</code> action to run. Ask the same question again — the answer should reflect the updated content.</li>
+  </ol>
+
+  <h2>When not to use this</h2>
+
+  <p>RAG is the wrong pattern when:</p>
+
+  <ul>
+    <li><strong>The agent needs broad world knowledge.</strong> If most questions are "What's the weather in Paris?" not "What's your refund policy?", RAG adds latency for no gain.</li>
+    <li><strong>Source material changes hourly.</strong> Re-vectorizing on every change is expensive. For rapidly changing content, consider a dynamic lookup (API, database) instead of a static knowledge base.</li>
+  </ul>
+
+  <h2>What's next</h2>
+
+  <ul>
+    <li><strong>Multi-source attribution.</strong> If you attach multiple knowledge bases, the agent can cite them by name. This requires careful prompt engineering — test that it distinguishes between "Pricing FAQ" and "Developer Docs."</li>
+    <li><strong>Chunking strategy.</strong> For long documents, ElevenLabs splits into chunks automatically. If answers span multiple chunks, you may need to tune chunk size or add cross-references.</li>
+    <li><strong>Client-side tools.</strong> Combine RAG with client tools so the agent can not only answer from docs but also trigger UI changes. See the <a href="/recipes/register-elevenlabs-client-tool.html">client tool recipe</a>.</li>
+  </ul>
+
+  <div class="recipe-footer">
+    <h3>Companion materials</h3>
+    <ul>
+      <li>Companion skill: <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-rag-to-elevenlabs-agent/SKILL.md"><code>add-rag-to-elevenlabs-agent</code></a></li>
+      <li>Related recipe: <a href="/recipes/add-avatar-to-site.html">Add a real-time avatar to a static site</a></li>
+      <li>Related recipe: <a href="/recipes/register-elevenlabs-client-tool.html">Register an ElevenLabs client tool</a></li>
+    </ul>
+  </div>
+
+  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
+
+</main>
+
+</body>
+</html>
