@@ -22,6 +22,12 @@ exclude:
   - .ruby-version
   - scripts
 
+# Jekyll skips dotfiles and dotted directories by default; force-include
+# the .well-known directory so /.well-known/mcp.json is served at the
+# canonical agent-discovery path.
+include:
+  - .well-known
+
 # GitHub Pages plugins — these are the safe defaults.
 plugins:
   - jekyll-feed

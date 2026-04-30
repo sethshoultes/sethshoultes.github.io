@@ -1,0 +1,26 @@
+{
+  "name": "Seth Shoultes — Writing & Skills",
+  "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials.",
+  "protocol": "mcp",
+  "version": "2025-06-18",
+  "endpoints": {
+    "public": "https://sethshoultes-avatar-token.seth-a02.workers.dev/mcp"
+  },
+  "auth_required": false,
+  "transport": "http",
+  "tools_summary": [
+    {
+      "name": "list_posts",
+      "description": "List all blog posts with metadata (title, slug, subtitle, date, read time, og_image)."
+    },
+    {
+      "name": "get_post",
+      "description": "Fetch the full HTML body of a blog post by slug."
+    },
+    {
+      "name": "list_skills",
+      "description": "List installable Agent Skills from building-with-ai-skills."
+    }
+  ],
+  "documentation": "https://sethshoultes.com/blog/closing-the-agent-discovery-loop.html"
+}
