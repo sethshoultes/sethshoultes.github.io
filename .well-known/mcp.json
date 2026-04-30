@@ -4,7 +4,7 @@
   "protocol": "mcp",
   "version": "2025-06-18",
   "endpoints": {
-    "public": "https://sethshoultes-avatar-token.seth-a02.workers.dev/mcp"
+    "public": "https://sethshoultes-mcp.seth-a02.workers.dev/"
   },
   "auth_required": false,
   "transport": "http",
