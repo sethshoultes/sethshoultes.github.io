@@ -1,0 +1,48 @@
+---
+layout: post
+title: "When You Draw Departments Inside a Plugin, You've Found a Split"
+subtitle: "The structural smell of 'departments' as a signal for architectural fission."
+date: "2026-05-01"
+description: "Drawing departments within a single plugin is not an organizational task; it is a structural signal that your system needs to split into separate plugins."
+og_title: "When You Draw Departments Inside a Plugin, You've Found a Split"
+og_description: "Stop organizing mega-plugins into 'departments' and start splitting them into constellations."
+og_image: "/blog/images/departments-inside-a-plugin-featured.png"
+read_time: 4
+---
+
+<<imgimg src="/blog/images/departments-inside-a-plugin-featured.png" alt="A high-contrast, industrial minimalist sketch of a complex architectural blueprint. A red pen has circled four distinct clusters of components, each labeled as a 'department'. A large, bold arrow points from one cluster to a separate page, indicating a split." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<<pp>I was sketching a plugin called <code>great-publishers</code> when I noticed the error. I had drawn four distinct "departments" on the page: books, magazines, video, and marketing.</p>
+
+<<pp>At first, this looked like organization. It felt like a way to keep the roster tidy. But a closer look revealed a fraud. The book-cover designer does not share a register with the ad-copywriter. The video editor does not follow the same reading pattern as the magazine art director.</p>
+
+<<pp>They were not departments of a single craft. They were four separate plugins wearing a single costume.</p>
+
+<<hh2 class="section-title">The Three-Strike Rule</h2>
+
+<<pp>In software, as in language, we use euphemisms to hide a failure of thought. We call it a "department" when we actually mean a "separate plugin." To tell the difference, apply the Three-Strike Rule. If a subsystem triggers any of these signals, it is not a department; it is a split.</p>
+
+<<olol>
+    <li><strong>Strike One: The Register Shift.</strong> Personas in a true plugin share a professional dialect. A book designer and a magazine art director both operate at the publication threshold; they speak the language of form and layout. A software engineer speaks the language of logic and state. If the "department" requires a completely different vocabulary, it is a separate plugin.</li>
+    <li><strong>Strike Two: The Reading Pattern.</strong> Every craft has a specific protocol for consuming information before making a decision. Publishers read the manuscript and the project bible. Engineers read the codebase and the architecture docs. If the department reads from different sources using different protocols, it is a separate plugin.</li>
+    <li><strong>Strike Three: The Output Shape.</strong> A plugin should own one craft. This means its skills produce a consistent class of artifact. Publishers produce form-stage deliverables—covers, jacket copy, layouts. Marketers produce campaigns and ad-copy. If the output of a "department" belongs in a different directory with a different lifecycle, it is a separate plugin.</li>
+</ol>
+
+<<hh2 class="section-title">The Diagnostic Test</h2>
+
+<<pp>When you are tempted to organize a plugin into departments, run this test. If you answer "No" to any of these questions, the plugin is too large.</p>
+
+<ul>
+    <li>Do the personas share a real-world register?</li>
+    <li>Do they share a reading-before-deciding pattern?</li>
+    <li>Do the skills share a workflow shape?</li>
+    <li>Would a user installing this plugin find value in most of the personas, rather than just one or two?</li>
+</ul>
+
+<<hrhr>
+
+<<pp>The cost of ignoring this smell is the "mega-plugin." The mega-plugin is a sprawling, ambiguous mass where the orchestrator must fight through irrelevant personas to find the right tool. It is the architectural equivalent of a government department: an entity so large that its primary function is to manage its own internal bureaucracy.</p>
+
+<<pp>The fix is architectural fission. Split the "departments" into sibling plugins. Group them into a constellation. Trust the orchestrator to compose them.</p>
+
+<<pp>A plugin that tries to do everything eventually does nothing with precision. One craft, one plugin.</p>
