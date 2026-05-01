@@ -1,1 +1,1 @@
-status: BRIEFED
+status: WRITTEN
