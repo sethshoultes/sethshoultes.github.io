@@ -8,10 +8,10 @@ type: project
 This file tracks the current progress of the active content piece.
 
 ## Current Cycle
-- **Idea ID**: personas-claim-facts-confidently
+- **Idea ID**: switch-channels-dont-dig
 - **Target Date**: 2026-05-01
 - **Status**: DEPLOYED
-- **Assigned Persona**: orwell
+- **Assigned Persona**: mcphee
 - **Asset Status**:
     - Prose: COMPLETED
     - HeyGen Intro: COMPLETED
