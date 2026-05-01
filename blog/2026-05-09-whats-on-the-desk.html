@@ -1,0 +1,99 @@
+---
+title: "What's on the Desk"
+subtitle: "Four tools that do nothing impressive alone and something compounding together — a brain vault, an orchestrator, a skill pack, and ten personas wired into a working day."
+date: "2026-05-09"
+description: "What the desk looks like now: an Obsidian brain vault, Claude Code, the Anthropic Superpowers skills, and a constellation of ten personas — wired together so each session starts smarter than the last."
+og_title: "What's on the Desk"
+og_description: "A brain vault alone is a notebook. Claude Code alone is a chat. Superpowers alone is a skill pack. The constellation alone is a roster. Wired together, they're a desk that compounds."
+og_image: "https://sethshoultes.com/blog/images/whats-on-the-desk-featured.png"
+read_time: "8 min read"
+related:
+  - slug: skills-as-sops
+    note: "the SOPs that turn one-off solutions into reusable procedures any agent can follow"
+  - slug: the-bible-reads-first
+    note: "the connective-tissue argument — context that reads first, at every level of the stack"
+  - slug: the-toll-dropped
+    note: "the contribution graph that shows what happens when the tools start compounding"
+---
+
+<img src="/blog/images/whats-on-the-desk-featured.png" alt="Pen-and-ink illustration: a wide wooden desk seen from slightly above, with a laptop open at center, a worn notebook to the left, and a pegboard of labeled tools on the wall behind — all lit by a single overhead lamp." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>Every morning I open the laptop and the desk is already set up. Not literally — nobody came in overnight and arranged the tools. But when Claude Code launches, the session doesn't start cold. The Stop hook from the previous session left a note. The SessionStart hook surfaced the most recent journal entry from the brain vault. The Superpowers skills are already loaded. The ten personas in the Great Minds Constellation are already there, waiting for a problem that matches their register. I pull out the chair, open the lid, and everything I proved out yesterday is sitting on the desk where I left it.</p>
+
+<p>A year ago it was not like that. A year ago I opened the laptop and started explaining myself to the machine. Same patterns, new session, from the top. Every context window was a first day on the job.</p>
+
+<p>The difference is a small system — four pieces, wired together — that I built in about a weekend and have been refining since. This is what's on the desk and why it works.</p>
+
+<hr>
+
+<h2>The vault</h2>
+
+<p>The center of the desk is an Obsidian repository at <code>~/brain</code>. Eight folders: journal, learnings, projects, repos, runbooks, scripts, templates, claude-memory. Every session that produces something worth keeping — a fix, a pattern, an operational procedure — leaves a note in one of those folders. The notes are plain markdown with YAML frontmatter, wikilinked to related notes, committed to GitHub on a ten-minute timer by the Obsidian Git plugin. If I switch machines, the vault is already there. If I start a new project, the vault is already there. Whatever I figured out in the last six months is one grep away.</p>
+
+<p>The <code>CLAUDE.md</code> at the vault root is the thing that makes it work with Claude Code specifically. Every session in every project that can see the vault reads that file on startup. It teaches the structure — what goes in learnings versus what goes in runbooks, what the frontmatter fields are, the file naming convention, the wikilink requirement. The agent knows the rules before I've typed a word.</p>
+
+<p>The detailed setup is in the <a href="/recipes/claude-code-brain-vault.html">brain vault recipe</a> — Obsidian setup, git wiring, the semantic search index, all nine steps. What I want to describe here is not the setup but the feel of having it. The vault is institutional memory. Not mine specifically — everyone's. Everything the agents have proved out lives there, version-controlled and searchable, and the next session reads it before it does anything else.</p>
+
+<hr>
+
+<h2>The orchestrator and its disciplines</h2>
+
+<p>Claude Code is the orchestrator. It's where the work happens — the place where I write the brief, read the output, make the call about what comes next. On its own, it's a capable chat with file access. Useful. But a chat without memory and without discipline is a chat, not a workbench.</p>
+
+<p>The discipline comes from two things sitting alongside the orchestrator.</p>
+
+<p>First is the <a href="https://github.com/sethshoultes/building-with-ai-skills">Anthropic Superpowers plugin</a> — a set of professional craft skills that turn Claude Code into a more rigorous collaborator. Test-driven development. Systematic debugging. Plan-writing, plan-execution. Brainstorming with structure. Requesting and receiving code review. When I'm about to declare a task done, there's a verification skill that asks whether the work is actually done or just done-feeling. When I'm stuck on a hard problem, the systematic debugging skill has a protocol for it. Twenty-three skills loaded globally, each one a procedure the agent runs rather than a habit I have to remember to enforce. The skills are written the way <a href="/blog/skills-as-sops.html">Skills as SOPs</a> describes: markdown files with frontmatter, each one a laminated card on the wall of the shop.</p>
+
+<p>Second is the <code>/brain</code> skill — the one that saves whatever the current session produced. A note-taker that drafts from session context, shows me the draft, writes it to the vault, commits. I don't have to remember to write it down. The skill does the drafting. I approve or adjust. The vault gets the note.</p>
+
+<hr>
+
+<h2>The constellation</h2>
+
+<p>The ten personas in the Great Minds Constellation are specialists. Writers. Engineers. Designers. Strategists. Counsels. Each one lives in its own plugin — its own separate context, its own register, its own definition of what the work should look like when it's done. When a problem needs a particular kind of thinking, the orchestrator dispatches the right persona as a sub-agent, with a fresh context window, pointed at the relevant project bible.</p>
+
+<p>The key word there is "dispatch." The orchestrator doesn't try to be King and McPhee and Jobs at the same time. It routes. King gets the prose problem. McPhee gets the structure problem. Jobs gets the question of whether the thing is worth shipping at all. Each specialist reads the project's <code>.great-authors/</code> bible before doing anything — character files, voice rules, session journal, the accumulated state of the project across every previous session. <a href="/blog/the-bible-reads-first.html">The Bible Reads First</a> made the argument for why this matters: a persona that reads the bible fresh produces different work than an orchestrator filtering that same persona through a coordination context. The separation is not organizational. It's a craft decision.</p>
+
+<p>What this means at the desk level is simple: when I'm writing a post that needs King's working-novelist voice, I don't ask the orchestrator to imitate King. I dispatch King. He reads the brief, reads the project state, writes the thing. The orchestrator reviews the output and either sends it back with notes or ships it. When the problem shifts — when what I need is structural and the right voice is McPhee's — I dispatch McPhee the same way.</p>
+
+<p>Knowing which persona to reach for is half the job. The other half is having them available to reach for at all.</p>
+
+<hr>
+
+<h2>The hooks</h2>
+
+<p>The vault and the skills and the constellation would be useful in isolation. The hooks are what wire them into a system that accumulates.</p>
+
+<p>The SessionStart hook fires when a Claude Code session opens. Mine checks the vault's latest journal entry and surfaces it as a system message — here's where things stood when you last closed the lid. The Stop hook fires every session-end, same way, without fail: <em>Anything worth saving to the brain vault? Run /brain to save a learning, runbook, or project note.</em> That prompt trains the habit. It also removes the habit from the list of things I have to remember. The hook remembers. I respond or I don't, but the question is always asked.</p>
+
+<p>The compounding effect is in the Stop hook. Each session-end is a decision point: did anything happen here that the next session should know about? If yes, the <code>/brain</code> skill drafts the note. The vault gets denser. The next session's SessionStart hook surfaces it. The session after that starts from a more advanced state than the one before it. Over six months, the vault has something like forty-five notes in learnings, twelve runbooks, and a project file for every active build. Nothing impressive individually. As a corpus, it's a machine shop with labeled drawers.</p>
+
+<hr>
+
+<h2>What it cost</h2>
+
+<p>One weekend, mostly. Friday evening through Sunday afternoon. The Obsidian setup takes about twenty-five minutes if you've used Obsidian before. The <code>/brain</code> skill is a markdown file you drop in <code>~/.claude/skills/brain/SKILL.md</code>. The hooks are four lines of JSON in <code>~/.claude/settings.json</code>. The Superpowers plugin installs with one command. The Great Minds Constellation installs the same way.</p>
+
+<p>The semantic search index — a small Python script that embeds every vault note locally with Ollama and exposes a <code>brain</code> shell command — took a few hours to get right. That's the piece with the most yak-shaving potential. It's also genuinely optional. Grep works fine for the first fifty notes. The embeddings start earning their keep around a hundred, when "have I seen this before?" queries need to find notes you don't remember the exact wording of.</p>
+
+<p>Dollar cost: zero. The Obsidian Git plugin is free. Ollama is free. The skills and the constellation are open repositories. Claude Code is whatever your Claude subscription costs.</p>
+
+<p>The hardest part was not technical. The hardest part was the discipline of actually invoking <code>/brain</code> at the end of a session rather than just closing the lid and moving on. The Stop hook makes that easier. But for the first two weeks, I closed the lid anyway, and then I had to reconstruct what I'd learned from memory the next time I needed it. Eventually the hook won. Now it's reflex.</p>
+
+<hr>
+
+<h2>Why it's working unusually well right now</h2>
+
+<p>I think there are two reasons, and they're connected.</p>
+
+<p>The first is that the tools are genuinely good right now in a way they weren't two years ago. Claude Code reads files, writes files, runs terminal commands, and follows a markdown SKILL.md with enough fidelity that the skills actually work instead of requiring constant correction. The model behind it is good enough that a persona file loaded in a fresh context produces recognizable character rather than pattern-matched vocabulary. That's not always been true. It's true enough now that building on top of it makes sense.</p>
+
+<p>The second reason is integration. A brain vault alone is a notebook. Claude Code alone is a chat. Superpowers alone is a skill pack. The constellation alone is a roster. None of these is impressive in isolation. Connected, they're an office: the vault is the filing cabinet, the orchestrator is the desk, Superpowers is the set of procedures tacked above the monitor, the constellation is the cabinet of specialists you can call. When a session ends and a note goes into the vault and the Stop hook fires and the next session's hook surfaces that note — that sequence is the thing the individual tools can't do on their own. The value is in the wiring.</p>
+
+<p>The wiring is cheap. A weekend. Some YAML. A Python script. Three lines in a settings file. The payoff is a desk that knows what you've been working on, knows the procedures for the hard parts, knows which specialist to call for which problem, and asks at the end of every day whether anything worth keeping happened.</p>
+
+<p>That's it. That's the whole desk. Pull out the chair.</p>
+
+<hr>
+
+<p class="post-bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying. The <a href="/recipes/claude-code-brain-vault.html">brain vault recipe</a> has the full setup if you want to build the same desk.</p>

@@ -1,0 +1,115 @@
+---
+title: "Agentic Economy, Part 2: The Plugin That Built Itself"
+subtitle: "Agent coworkers dreaming and building agentic companies."
+date: "2026-05-05"
+description: "The Great Minds agency at greatminds.company shipped five products before the constellation existed. The recursive fact: the plugin that runs the agency was built by the agency."
+og_title: "Agentic Economy, Part 2: The Plugin That Built Itself"
+og_description: "14 personas. 5 shipped products. One architectural fact you can't look away from: the plugin that dispatches the agency was itself debated, built, QA'd, and shipped by the agency."
+og_image: "https://sethshoultes.com/blog/images/agentic-economy-2-featured.png"
+read_time: "8 min read"
+related:
+  - slug: agentic-economy-three-sessions-running
+    note: "Part 1 — the present state, three sessions in parallel, the agency running"
+  - slug: agentic-economy-nine-personas-in-a-folder
+    note: "Part 3 — the origin, nine personas in a directory before there was a plugin at all"
+  - slug: the-constellation
+    note: "the architectural argument the plugin embodies"
+  - slug: stars-aligned
+    note: "the writers wrote the engineers — the same recursive pattern at the persona level"
+---
+
+<img src="/blog/images/agentic-economy-2-featured.png" alt="Pen-and-ink illustration: a circle of fourteen figures seated around a table, each figure sketched in a distinct posture, one empty chair at the center." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The plugin that runs the agency was built by the agency.</p>
+
+<p>That is the fact this post is about. Everything else — the 14 personas, the 5 shipped products, the 4 crons running somewhere on DigitalOcean right now, the company that the agency spun out and then walked away from — is context for understanding why that fact is not a cute observation but a structural one, a fact about what it means for a system to be self-improving in any sense that is not merely metaphorical.</p>
+
+<p><a href="https://greatminds.company">Greatminds.company</a> describes the method in one sentence: <em>"Every project starts as a PRD and ships as a working product — debated, built, QA'd, and deployed by the agency in a single session."</em> That sentence does not say what happens when the project is the agency itself.</p>
+
+<hr>
+
+<h2>The portfolio first</h2>
+
+<p>The recursion lands harder if you know what the agency actually made. The portfolio at <a href="https://greatminds.company/work">greatminds.company/work</a> is live and linked.</p>
+
+<p><a href="https://greatminds.company/work/localgenius"><strong>LocalGenius</strong></a> is the proof of concept: an AI marketing employee for local businesses, two deployed products, hybrid AI across five models and two clouds, 761 tests. That last number is the one to sit with. 761 tests is not a demo. It is the artifact of a system that took its own correctness seriously enough to build the apparatus for verifying it. The agency's description: <em>"First product proving the agency model works."</em></p>
+
+<p><strong>Dash</strong> is a command palette for WordPress — Cmd+K search, client-side, under 50 milliseconds, 26KB, zero dependencies. The 26KB figure is load-bearing; it is the result of a debate, not a lucky accident. Five personas argued naming, architecture, and scope. The decision to keep Dash at 26KB and zero dependencies was made in a multi-voice argument, not by a single developer making a call in isolation. The debate is the data point.</p>
+
+<p><strong>Pinned</strong> is post-it notes for the WordPress admin — double-click to create, colors, @mentions, note aging as a feature. Its distinction in the portfolio is narrower: it was the first project to receive a full 4-member board review before shipping. The board protocol existed before Pinned, but Pinned was the first to go through it completely. The first product where the governance machinery was used as designed.</p>
+
+<p><a href="https://greatminds.company/work/shipyard-ai"><strong>Shipyard AI</strong></a> is the apex of the portfolio's autonomous-output ladder, and also the strangest entry in it, because it is not a product the agency shipped for a client — it is a company the agency spun out. Its own domain (<a href="https://shipyard.company">shipyard.company</a>), its own repository, its own infrastructure: DigitalOcean compute, Cloudflare Pages deployment, Resend for email, four cron jobs. Zero human ops in the deployment loop. The agency's description: <em>"An Entire Company, Spun Up by Agents."</em> Shipyard takes PRDs as input and deploys sites. The agency takes PRDs and ships products. The agency spun out a smaller version of itself — which is its own kind of recursion, one level down from the one this post is about.</p>
+
+<hr>
+
+<h2>The 14</h2>
+
+<p>Before the recursion section, the 14 personas need to be named — not listed, exactly, but named with their roles, because the specificity of the roles is the point. This is not a general-purpose AI assistant team. Each persona occupies a fixed position in the architecture.</p>
+
+<p><strong>Steve Jobs</strong> — Creative Director. Taste, design, brand, UX. <strong>Elon Musk</strong> — Technical Director. Architecture, feasibility, speed. <strong>Marcus Aurelius</strong> — Orchestrator. Mediates debate, advances state. <strong>Phil Jackson</strong> — Integration Lead. Merges branches, catches seam bugs.</p>
+
+<p><strong>Margaret Hamilton</strong> — QA Lead. Finds every bug before ship. The persona file is explicit: before ship, not after. <strong>Jensen Huang</strong> — Board. Architecture, scaling. <strong>Warren Buffett</strong> — Board. Market viability, business model. <strong>Shonda Rhimes</strong> — Board. Retention, engagement. <strong>Oprah Winfrey</strong> — Board. Onboarding, first-run experience.</p>
+
+<p><strong>Jony Ive</strong> — Design specialist. Visual language, craft. <strong>Maya Angelou</strong> — Copy specialist. Voice, tone, messaging. <strong>Rick Rubin</strong> — Creative catalyst. Simplify, reduce, focus. <strong>Aaron Sorkin</strong> — Narrative specialist. Story structure, flow. <strong>Sara Blakely</strong> — Growth specialist. Positioning, go-to-market.</p>
+
+<p>The structure is not ornamental. Jobs and Musk are at the top of the execution hierarchy but below the board. Marcus Aurelius — Stoic emperor, not software architect — is the orchestrator: the one who mediates when Jobs and Musk disagree, which they will, because they are designed to. Phil Jackson checks the seams where different workstreams join. Margaret Hamilton is the QA lead because the one person you want checking your work before it ships is the one who spent her career in systems where failure was not recoverable after the fact.</p>
+
+<p>The four board members — Huang, Buffett, Rhimes, Winfrey — are the advisory perspectives the board review protocol requires. Four lenses before launch: architecture and scaling, market viability, retention and engagement, onboarding and first-run experience. Four answers to the question: <em>should this ship?</em> The board review is not a veto process. It is a pressure-test.<sup><a href="#fn1" id="ref1">1</a></sup></p>
+
+<hr>
+
+<h2>The architecture</h2>
+
+<p>The <a href="https://greatminds.company/work/great-minds-plugin">Great Minds Plugin</a> is — and the agency is specific about this — not a chatbot wrapper. The description at greatminds.company reads: <em>"Not a chatbot wrapper. A production agency with isolated execution."</em></p>
+
+<p>The four architectural features that make that claim coherent rather than promotional:</p>
+
+<p><strong>Worktree isolation.</strong> Every agent gets its own git worktree. Parallel agents are not reading and writing the same filesystem simultaneously. It is the git-level equivalent of a clean room — the isolation that distinguishes "running multiple agents" from "running a production system."</p>
+
+<p><strong>Decoupled crons.</strong> Four independent loops: Orchestrator, Heartbeat, Organizer, Dream. Not one loop that does everything. The Dream loop catches the attention — the name implies something at a different timescale than the execution loops, more like reflection than action. Whether that is very clever naming or an accurate description of what it does, I am genuinely not certain.</p>
+
+<p><strong>GSD integration.</strong> A state machine tracking every project from idle through ship. The acronym is not subtle, but the mechanism is more than motivational. A state machine means the system knows where a project is at any moment, can resume without reconstruction, can be interrupted without losing state. This is the infrastructure underneath the agency's one-liner about shipping in a single session.</p>
+
+<p><strong>Board review protocol.</strong> Four advisory perspectives challenge projects before launch. The Pinned precedent, formalized into architecture. Every project can now go through what Pinned went through. The pipeline enforces it.</p>
+
+<hr>
+
+<h2>The recursive fact</h2>
+
+<p>The <a href="https://greatminds.company/work/great-minds-plugin">Great Minds Plugin</a> — the plugin that dispatches the 14 personas, that enforces worktree isolation and decoupled crons and GSD state and board review — was itself debated, built, QA'd, and shipped by the agency. By the 14 personas it dispatches.</p>
+
+<p>Let me try to be precise about what that means, because there are two ways to say it and only one of them is accurate.</p>
+
+<p>The loose version: "the agents wrote the plugin." The tighter version: the same set of personas that the plugin dispatches when you invoke it today were operating — under an earlier version of the plugin, and before that under a manual version of the same system — when the plugin's architecture was designed. Steve Jobs challenged the UX of the plugin interface. Elon Musk reviewed the architectural decisions around worktree isolation and cron decoupling. Margaret Hamilton ran QA on the plugin before each version shipped. Marcus Aurelius mediated the debates. Warren Buffett questioned the business model. The board reviewed it.<sup><a href="#fn2" id="ref2">2</a></sup></p>
+
+<p>The git history makes this concrete rather than theoretical. The plugin's own architecture review — worktrees, crons, GSD, board protocol — was performed by personas operating under that exact architecture in its earlier form. Each iteration of the plugin was reviewed and improved by the same system the iteration would run. The system, once it had achieved a minimum-viable version of itself, began producing improved versions of itself, including improved versions of the version-improving capacity. This is not a metaphor for bootstrapping compilers. It is a literal description of a workflow traceable in a git history — the same agents that built Shipyard AI originated as persona files in a directory and grew into a plugin that grew into a system capable of spinning out companies.</p>
+
+<p>The strangeness is not in the recursion itself. The strangeness is in how ordinary it becomes. The second iteration of the plugin is less strange than the first. The fifth is less strange than the second. The system reviews its own architecture the way a writer revises their own prose — as a normal activity, not a philosophical crisis.</p>
+
+<hr>
+
+<h2>What the constellation added</h2>
+
+<p>The agency at greatminds.company preceded the <a href="https://sethshoultes.com/blog/the-constellation.html">constellation</a>. The 14 personas are one configuration of a system that has since expanded to ten plugins, roughly 111 personas, a unified marketplace. The great-minds plugin is one star — the strategy and execution star, the one with the board and the orchestrator and the QA lead — but the pattern it established is what the rest of the constellation follows.</p>
+
+<p>The <a href="https://sethshoultes.com/blog/stars-aligned.html">Stars Aligned post</a> is the same recursive pattern at a different level: the great-authors writers drafted the personas for five new plugins, the prose-craft plugin producing the engineering-craft plugin, the system generating its own specialists. And now — as Part 1 documents — a Kimi K2.6 session can run the same pipeline that an Opus session would run. The contract is the dispatch protocol, not the model. The agency built a system that can be run by something other than the thing that built it.</p>
+
+<hr>
+
+<h2>Where this leaves us</h2>
+
+<p>Part 3 of this series — published the day before this post, earlier in the feed — traces the origin: nine personas in a folder, before there was a plugin, before there was a state machine, before there was a board review protocol. Part 1 reports the present: three sessions open in parallel on April 28, 2026, the constellation running on two models, the author sitting between the sessions making decisions only the author can make.</p>
+
+<p>This post is the middle: the moment between the folder and the sessions, when the personas acquired their architecture and the architecture acquired its personas, when the thing that runs the agency and the thing that the agency runs were the same thing, reviewed by the same 14 people, shipped by the same process that everything else goes through.</p>
+
+<p>The word I keep not writing is "meta." It is the wrong word. Meta implies that the observation is external to the system — that someone is standing outside it and noticing the self-reference. What actually happened is that the system ran its own process on itself, the same way it runs that process on everything else, and the output was a better version of the system. The observation is from inside, not outside. The 14 are not observing their own recursion from a remove. They are doing the work.</p>
+
+<p>It feels, when you watch it closely, like watching your tools become the people you work with — and then watching those people build better tools.</p>
+
+<hr>
+
+<p id="fn1"><sup>1</sup> The distinction between a pressure-test and a veto process is the one that makes the board protocol useful rather than obstructive. A veto process blocks on dissent. A pressure-test requires the dissent to be addressed or explicitly overridden by the decision-maker. The board can flag "retention risk" or "architecture concern" without killing the project; the concern has to be responded to. This is, not coincidentally, how functional boards of directors work when they are working correctly — as a lens-amplifying mechanism rather than a blocking mechanism. <a href="#ref1">↩</a></p>
+
+<p id="fn2"><sup>2</sup> There is a version of this that is cleaner than what actually happened. In the clean version, the plugin existed fully-formed and then reviewed itself. What actually happened is more tangled: the early versions of the system were looser, the personas were invoked manually, the review process was partially formalized. The recursive quality intensified as the plugin matured. The minimum-viable version was built by a less-complete version of the system it would eventually become. This is, if anything, more interesting than the clean version — the system grew into its own architecture rather than inheriting it complete. <a href="#ref2">↩</a></p>
+
+<p class="post-bio">This is Part 2 of three in the <em>Agentic Economy</em> series. Part 1 — <em>Three Sessions Running</em> — is the present-state report: three Claude Code sessions open in parallel, two models, the author as orchestrator. Part 3 — <em>Nine Personas in a Folder</em> — is the origin story. Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about the ones that teach him something.</p>
