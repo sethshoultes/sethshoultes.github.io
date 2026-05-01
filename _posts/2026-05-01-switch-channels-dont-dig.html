@@ -1,8 +1,9 @@
 ---
+layout: post
 title: "Switch Channels, Don't Dig"
 subtitle: "The fallacy of the deeper prompt and the architecture of probabilistic channels."
 date: "2026-05-01"
-description: "When an AI fails, the instinct is to dig deeper with more constraints. The solution is not to refine the prompt, but to switch the channel. If the 'Creative' channel is failing to be precise, don't prompt it to be precise; switch to the 'Analytic' channel."
+description: "When an AI fails, the instinct is to dig deeper with more constraints. The solution is not to refine the prompt, but to switch the channel."
 og_title: "Switch Channels, Don't Dig"
 og_description: "Stop negotiating with the ghost. If you've refined the prompt three times and the core failure persists, the channel is wrong. Switch the lens, not the words."
 og_image: "https://sethshoultes.com/blog/images/switch-channels-dont-dig-featured.png"
@@ -12,54 +13,54 @@ related:
     note: "the structural logic of how toolsets become systems via temporal verbs"
 ---
 
-<img src="/blog/images/switch-channels-dont-dig-featured.png" alt="Pen-and-ink illustration: a series of radio dials and frequency sliders. One dial is labeled 'Creative' and is vibrating with static; another is labeled 'Analytic' and shows a clean, sharp sine wave. A hand is reaching to turn the dial away from the static toward the signal." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+<<imgimg src="/blog/images/switch-channels-dont-dig-featured.png" alt="Pen-and-ink illustration: a series of radio dials and frequency sliders. One dial is labeled 'Creative' and is vibrating with static; another is labeled 'Analytic' and shows a clean, sharp sine wave. A hand is reaching to turn the dial away from the static toward the signal." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
 
-<p>There is a specific kind of frustration known to the AI operator: the Dig. It begins when a model produces a response that is almost right, but structurally flawed, or precisely wrong in a way that feels like a simple misunderstanding. The operator's response is to add a constraint. <em>“That’s good, but make it more concise.”</em> Then another. <em>“Now remove the introductory paragraph and use a bulleted list.”</em> Then a third, more desperate plea. <em>“I explicitly asked for no adjectives; please follow the instructions exactly.”</em></p>
+<<pp>There is a specific kind of frustration known to the AI operator: the Dig. It begins when a model produces a response that is almost right, but structurally flawed, or precisely wrong in a way that feels like a simple misunderstanding. The operator's response is to add a constraint. <<emem class="italic">“That’s good, but make it more concise.”</em> Then another. <<emem class="italic">“Now remove the introductory paragraph and use a bulleted list.”</em> Then a third, more desperate plea. <<emem class="italic">“I explicitly asked for no adjectives; please follow the instructions exactly.”</em></p>
 
-<p>This is the Digging Fallacy. It is the belief that the desired output is buried slightly deeper in the current conversation, and that with a more precise shovel—a more granular prompt, a more restrictive set of constraints—it can be unearthed. The operator becomes obsessed with the wording of the prompt, treating the interaction as a negotiation with a ghost. They believe they are refining a request. In reality, they are merely adding noise to a failing channel.</p>
+<<pp>This is the Digging Fallacy. It is the belief that the desired output is buried slightly deeper in the current conversation, and that with a more precise shovel—a more granular prompt, a more restrictive set of constraints—it can be unearthed. The operator becomes obsessed with the wording of the prompt, treating the interaction as a negotiation with a ghost. They believe they are refining a request. In reality, they are merely adding noise to a failing channel.</p>
 
-<hr>
+<<hrhr>
 
-<h2>The Geology of the Model</h2>
+<<hh2 class="section-title">The Geology of the Model</h2>
 
-<p>To understand why digging fails, one must stop viewing the Large Language Model as a monolithic intelligence and start viewing it as a map of probabilistic terrains. A model does not "know" things in the way a human does; it possesses a set of distinct registries of behavior—what we might call channels.</p>
+<<pp>To understand why digging fails, one must stop viewing the Large Language Model as a monolithic intelligence and start viewing it as a map of probabilistic terrains. A model does not "know" things in the way a human does; it possesses a set of distinct registries of behavior—what we might call channels.</p>
 
-<p>Prompting is not the act of asking a question; it is the act of steering the model into a specific channel. When you tell a model to <em>“act as a senior software engineer,”</em> you are not just giving it a role; you are selecting a frequency. You are shifting the probability distribution of the next token toward a specific cluster of training data—one characterized by technical rigor, a preference for efficiency, and a specific linguistic register.</p>
+<<pp>Prompting is not the act of asking a question; it is the act of steering the model into a specific channel. When you tell a model to <<emem class="italic">“act as a senior software engineer,”</em> you are not just giving it a role; you are selecting a frequency. You are shifting the probability distribution of the next token toward a specific cluster of training data—one characterized by technical rigor, a preference for efficiency, and a specific linguistic register.</p>
 
-<p>Once the model is locked into a channel, you can refine the output. You can ask it to be shorter or longer, to change the tone from formal to casual. But you cannot fundamentally change the nature of the channel from within. If the model has entered a "Chatty" channel—a registry of behavior that prizes politeness and filler over density—no amount of <em>“be concise”</em> prompting will ever be as effective as simply switching to a "Clinical" channel.</p>
+<<pp>Once the model is locked into a channel, you can refine the output. You can ask it to be shorter or longer, to change the tone from formal to casual. But you cannot fundamentally change the nature of the channel from within. If the model has entered a "Chatty" channel—a registry of behavior that prizes politeness and filler over density—no amount of <<emem class="italic">“be concise”</em> prompting will ever be as effective as simply switching to a "Clinical" channel.</p>
 
-<p>The operator who digs is trying to force a "Creative" channel to act with "Analytic" precision. It is like trying to use a watercolor brush to etch a circuit board. You can press harder, you can refine your stroke, you can add more constraints to the brush—but the tool is fundamentally mismatched to the task. The failure is not in the prompting; it is in the route.</p>
+<<pp>The operator who digs is trying to force a "Creative" channel to act with "Analytic" precision. It is like trying to use a watercolor brush to etch a circuit board. You can press harder, you can refine your stroke, you can add more constraints to the brush—but the tool is fundamentally mismatched to the task. The failure is not in the prompting; it is in the route.</p>
 
-<hr>
+<<hrhr>
 
-<h2>The Cost of the Dig</h2>
+<<hh2 class="section-title">The Cost of the Dig</h2>
 
-<p>Digging is not merely inefficient; it is actively destructive. Every refinement, every "please do it this way instead," adds to the context window. In a short session, this seems negligible. But as the dig deepens, the context window becomes cluttered with the history of failure. The model is no longer just processing your request; it is processing a record of its own inability to meet that request.</p>
+<<pp>Digging is not merely inefficient; it is actively destructive. Every refinement, every "please do it this way instead," adds to the context window. In a short session, this seems negligible. But as the dig deepens, the context window becomes cluttered with the history of failure. The model is no longer just processing your request; it is processing a record of its own inability to meet that request.</p>
 
-<p>This creates a feedback loop of degradation. The model begins to attend more to the constraints—the <em>“do not do X”</em> and <em>“make sure to do Y”</em>—than to the core objective. The signal-to-noise ratio collapses. By the fifth single-minded refinement, the model is often so constrained by the operator's desperation that it loses the ability to be creative or coherent. The aphasia of the over-prompted model is a direct result of the dig.</p>
+<<pp>This creates a feedback loop of degradation. The model begins to attend more to the constraints—the <<emem class="italic">“do not do X”</em> and <<emem class="italic">“make sure to do Y”</em>—than to the core objective. The signal-to-noise ratio collapses. By the fifth single-minded refinement, the model is often so constrained by the operator's desperation that it loses the ability to be creative or coherent. The aphasia of the over-prompted model is a direct result of the dig.</p>
 
-<p>The cognitive load shifts from the task to the tool. The operator stops thinking about the problem and starts thinking about how to trick the model into solving the problem. This is the point where the work ceases to be intellectual and becomes clerical.</p>
+<<pp>The cognitive load shifts from the task to the tool. The operator stops thinking about the problem and starts thinking about how to trick the model into solving the problem. This is the point where the work ceases to be intellectual and becomes clerical.</p>
 
-<hr>
+<<hrhr>
 
-<h2>The Three-Strike Rule</h2>
+<<hh2 class="section-title">The Three-Strike Rule</h2>
 
-<p>The professional operator recognizes the difference between refinement and digging. Refinement is the act of polishing a result that is qualitatively correct. Digging is the act of attempting to fix a result that is qualitatively wrong.</p>
+<<pp>The professional operator recognizes the difference between refinement and digging. Refinement is the act of polishing a result that is qualitatively correct. Digging is the act of attempting to fix a result that is qualitatively wrong.</p>
 
-<p>To avoid the dig, one must employ the Three-Strike Rule: <em>If you have refined the prompt three times and the core failure persists, the channel is wrong.</p>
+<<pp>To avoid the dig, one must employ the Three-Strike Rule: <<emem class="italic">If you have refined the prompt three times and the core failure persists, the channel is wrong.</em></p>
 
-<p>The protocol for the switch is simple: stop negotiating. Do not add another constraint. Do not explain why the previous response was wrong. Instead, change the lens. If the "Creative" persona is hallucinating details, switch to the "Researcher" persona. If the "Generalist" is being too vague, switch to the "Technical Architect."</p>
+<<pp>The protocol for the switch is simple: stop negotiating. Do not add another constraint. Do not explain why the previous response was wrong. Instead, change the lens. If the "Creative" persona is hallucinating details, switch to the "Researcher" persona. If the "Generalist" is being too vague, switch to the "Technical Architect."</p>
 
-<p>This is not "prompt engineering" in the popular sense of finding the magic word. It is frequency management. You are acknowledging that the current probabilistic path is a dead end and choosing to start over on a different path. The most efficient path to a result is rarely a more detailed prompt; it is almost always a change in the identity of the agent.</p>
+<<pp>This is not "prompt engineering" in the popular sense of finding the magic word. It is frequency management. You are acknowledging that the current probabilistic path is a dead end and choosing to start over on a different path. The most efficient path to a result is rarely a more detailed prompt; it is almost always a change in the identity of the agent.</p>
 
-<hr>
+<<hrhr>
 
-<h2>Selecting the Frequency</h2>
+<<hh2 class="section-title">Selecting the Frequency</h2>
 
-<p>When you switch channels, you are not just changing a label; you are changing the a priori assumptions the model makes about the world. An "Analytic" channel assumes that precision is the primary virtue and that brevity is a secondary benefit. A "Creative" channel assumes that novelty is the primary virtue and that precision is a constraint to be played with.</p>
+<<pp>When you switch channels, you are not just changing a label; you are changing the a priori assumptions the model makes about the world. An "Analytic" channel assumes that precision is the primary virtue and that brevity is a secondary benefit. A "Creative" channel assumes that novelty is the primary virtue and that precision is a constraint to be played with.</p>
 
-<p>The shift from digging to switching transforms the operator's role. You are no longer a negotiator pleading with a ghost; you are a dispatcher routing a problem to the correct specialist. You stop asking, <em>“How can I make the model understand me?”</em> and start asking, <em>“Which registry of behavior is best suited for this specific output?”</em></p>
+<<pp>The shift from digging to switching transforms the operator's role. You are no longer a negotiator pleading with a ghost; you are a dispatcher routing a problem to the correct specialist. You stop asking, <<emem class="italic">“How can I make the model understand me?”</em> and start asking, <<emem class="italic">“Which registry of behavior is best suited for this specific output?”</em></p>
 
-<p>The result is a dramatic reduction in token waste and a profound increase in velocity. The work moves from the friction of the dig to the clarity of the switch. The aphasia vanishes, the context window stays clean, and the output arrives not through force, but through alignment.</p>
+<<pp>The result is a dramatic reduction in token waste and a profound increase in velocity. The work moves from the friction of the dig to the clarity of the switch. The aphasia vanishes, the context window stays clean, and the output arrives not through force, but through alignment.</p>
 
-<p>Stop digging. Switch the channel.</p>
+<<pp>Stop digging. Switch the channel.</p>
