@@ -1,0 +1,103 @@
+---
+title: "Agentic Economy, Part 3: Nine Personas in a Folder"
+subtitle: "Before there was a plugin, before there was a product, there was a directory — and inside it, nine markdown files named after people who would never see them."
+date: "2026-05-04"
+description: "The origin of the Great Minds agency: nine character files in a local directory, each one a voice and a frame, before the loops ran and the night the system built things on its own."
+og_title: "Agentic Economy, Part 3: Nine Personas in a Folder"
+og_description: "Before there was a plugin, there was a directory. Nine markdown files, each named after someone who would never see it, each written for a project that did not yet exist."
+og_image: "https://sethshoultes.com/blog/images/agentic-economy-3-featured.png"
+read_time: "8 min read"
+related:
+  - slug: agentic-economy-three-sessions-running
+    note: "Part 1 — the present, three sessions in parallel, the constellation running"
+  - slug: agentic-economy-the-plugin-that-built-itself
+    note: "Part 2 — the middle past, the agency that shipped products and then built the tool that ran it"
+  - slug: the-toll-dropped
+    note: "the arithmetic that made the whole thing possible"
+---
+
+<img src="/blog/images/agentic-economy-3-featured.png" alt="Pen-and-ink illustration: a desk lamp casting light over an open folder containing nine handwritten cards, each bearing a name, arranged in a loose arc." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>Nine markdown files in a folder. Each one named after a person who would never see the file. Each one written for a project that did not yet exist.</p>
+
+<p>That is where it begins. Not with a system diagram, not with an architecture decision, not with a memo about the future of work. With a directory on a local machine and nine character files inside it, each one a voice and a frame and a way of deciding what matters.</p>
+
+<hr>
+
+<h2>Where the personas came from</h2>
+
+<p>The files did not originate here. They came from <a href="https://www.think-like.com">Think Like ___</a>, an app built to teach the mental models of iconic figures — the way Jobs thought about product taste, the way Marcus Aurelius reasoned through adversity, the way Elon Musk evaluated an engineering constraint before deciding it was not a constraint at all. The idea behind Think Like was pedagogy: read a scenario, see how a given mind would approach it, learn the frame. The personas were the curriculum.</p>
+
+<p>They were specific. Not summaries. Not the general wisdom of a life extracted into bullet points. Jobs's persona captured the particular habit of refusing to ship until the thing was right — not until it was done, until it was right, which is a different standard and a harder one. Aurelius's persona carried the Stoic move: separate what you control from what you do not, then stop spending attention on the second category. Each file was a decision style written down.</p>
+
+<p>At some point — the exact point is not recoverable, which is itself a fact about how these things actually go, as opposed to how they are later described — the files moved. Out of the teaching app and into a local directory. A folder called <code>.great-authors/</code> that would later become the name for something larger. Nine files. Nine voices. Each one now pointed not at a student but at a task.</p>
+
+<hr>
+
+<h2>Nine, then fourteen</h2>
+
+<p>The original nine were the figures you would reach for first if you were staffing a project from scratch and had no budget for actual people. Jobs for taste and the refusal to ship the wrong thing. Aurelius for the moments when two strong opinions were both correct and someone had to decide. Hamilton — Margaret Hamilton, not the one from the musical, the one who wrote the software for Apollo 11 — for the question no one wants to ask before launch: what breaks first?</p>
+
+<p>Nine became fourteen. The gaps filled themselves in as the work made them visible. You could have Jobs and Musk at the execution layer, but without someone to watch the seams — the places where one workstream hands off to another — the seams would fail. Phil Jackson went in as Integration Lead: the one who had spent a career thinking about what happens when very good individual performers are not yet a team. Warren Buffett went in as the board perspective on whether the thing being built had a real market or only a theoretical one. Shonda Rhimes for retention — the question of whether anyone would come back after the first encounter.</p>
+
+<p>By the time there were fourteen, the folder had a structure. Not an org chart — each file was still just a markdown document — but a system of relationships. Jobs and Musk at the top of the execution hierarchy but below the board. Aurelius in the middle, mediating. Hamilton at the end of every pipeline, before anything shipped. The arrangement was not drawn out. It emerged from the work, from the repeated experience of knowing which voice was needed at which moment, until the sequence became a pattern and the pattern became a discipline.</p>
+
+<hr>
+
+<h2>The loop</h2>
+
+<p>A directory of character files is a library. Libraries do not act. Something has to read the files and decide which one applies to the problem at hand.</p>
+
+<p>The first version of that something was manual. The session would open, the relevant persona files would be loaded, the work would begin. This worked but it was not the same thing as a system. A system does not require someone to remember which files to load. A system does not depend on the human being in the room.</p>
+
+<p>What followed was a set of loops. Cron jobs running on a schedule, each one checking the state of the project against a list of work waiting to be done, each one reading the persona files and dispatching the right specialist for the next move. A daemon — a persistent process running in the background, independent of any open session — watching for new work the way a producer watches a production board, except the producer was Claude Code and the production board was a directory of task files and the watching happened at regular intervals whether or not anyone was at the desk.</p>
+
+<p>Claude Code became the orchestrator: the runtime that read the persona files, parsed the brief, identified the gap in the work, and dispatched the right voice for it. Not the writer, not the designer, not the strategist — those roles belonged to the persona files. The orchestrator's job was routing. The distinction matters because it is easy to lose and expensive to lose: an orchestrator that also tries to do the substantive work produces hollow output, the kind that sounds like the surface of a voice without its interior. The lesson of that distinction was learned the hard way, in a session where the wrong role was occupied by the wrong process, and what came back was mechanical. After that, the separation was enforced.</p>
+
+<hr>
+
+<h2>The night</h2>
+
+<p>Sometime in late 2025 — the exact date is not pinned; the git history shows a range of commits and the range is what survives — he left the daemon running and went to bed.</p>
+
+<p>This was not a calculated experiment. It was the natural endpoint of a gradual process. The daemon had been running in shorter stretches, supervised, watched. The work it produced had been reviewed before anything shipped. At some point the reviewing had become routine in the way that reviewing any reliable process becomes routine: you look at the output, it is what you expected, you move on. The night it ran unsupervised was the night that routine crossed a threshold.</p>
+
+<p>He went to bed. The system did not.</p>
+
+<p>In the morning there were artifacts. Specs drafted by the strategist. Drafts reviewed by the editor. Design notes from the designer, which had been fed to the engineer, whose implementation notes had gone back to the strategist for a final pass before the whole thread was flagged complete. The loop had run. The personas had read their files and done their work and produced things that were not there the night before.</p>
+
+<p>The things were real. Not simulations. Not placeholder outputs that would have to be replaced. Working artifacts — the same kind the system produced in supervised sessions. The system had run on its own and the output was the same as when it was being watched.</p>
+
+<p>This is the fact to hold: not that it ran, but that it ran the same. A system that performs differently when it is being observed is not a system yet. It is a performance. What ran that night was a system.</p>
+
+<hr>
+
+<h2>What the night meant, and what it did not</h2>
+
+<p>It would be easy to render that morning as a revelation. The writer comes downstairs, finds the work waiting, understands in a flash what the future holds. That is not what happened, or if it is, the flash was quiet enough to be indistinguishable from ordinary recognition — the recognition that something you had been building toward had, without ceremony, arrived.</p>
+
+<p>The toll had already dropped by then. The post on this blog about the GitHub contribution graphs — zero in 2022, zero in 2023, 9,297 in the rolling year through April 2026 — traces the arithmetic of that change: the cost of getting from an idea to a working version of it had fallen far enough that the ideas waiting on the other side of that cost could finally be paid for. The night the daemon ran on its own was a point inside that larger arc, not the arc's beginning.</p>
+
+<p>What it was the beginning of was the agency. The system that ran that night went on to become <a href="https://greatminds.company">Great Minds</a> — the local agency that shipped five products before it had a name for what it was doing, that built the plugin that runs the agency, that demonstrated in a git history what it meant for the personas to review their own architecture and improve it. Part 2 of this series tells that story. Part 1 tells where it is now: three sessions running in parallel on April 28, 2026, the constellation operational on two models, a trilogy of novels in production, the corpus publishing for thirty-five cents an article.</p>
+
+<p>All of that follows from the folder. From the nine files, then fourteen. From the loop and the daemon and the night the loop ran without anyone watching it.</p>
+
+<hr>
+
+<h2>The thing about the names</h2>
+
+<p>The files were named after people. This is worth pausing on, because the alternative — naming them by function, by role, by the abstract job they perform — would have produced a different kind of system. <code>strategist.md</code> is a description. <code>jobs.md</code> is a commitment.</p>
+
+<p>A commitment to what, exactly, is harder to say. To a particular way of making taste decisions — the way that rejects the merely adequate in favor of the thing that is right. To a level of specificity about how decisions get made that is only possible when the decision-maker has a name and a history and a set of documented failures as well as the documented successes. The specificity of the persona files was what made them work. Not the names themselves but what the names required: that the file contain not a general approach but the approach of a specific person in a specific situation with specific constraints.</p>
+
+<p>The teaching app understood this before the agency did. The pedagogy of Think Like ___ was built on the premise that the specific case is more instructive than the general principle — that you learn more from watching how Jobs actually responded to a particular product failure than from reading a list of principles extracted from that response. When the files moved from the teaching app to the directory, they brought that specificity with them. It is the specificity that survived.</p>
+
+<hr>
+
+<p>Nine files in a folder. The folder became a loop. The loop ran through a night. The night became a system. The system built things.</p>
+
+<p>That is the origin. It is not dramatic and it is not simple. It is the record of a particular kind of attention — the kind that writes a character file carefully enough that an orchestrator can read it and know what to do — applied over time until the time condensed into something that ran on its own.</p>
+
+<p>The folder still exists. The files have multiplied. What they run now is described elsewhere in this series, in the posts that come before this one in the feed. Here it is enough to say: it began with the names.</p>
+
+<p class="post-bio">This is Part 3 of three in the <em>Agentic Economy</em> series. Part 2 &mdash; <em>The Plugin That Built Itself</em> &mdash; documents the agency at greatminds.company and the recursive fact of a system that improved its own architecture. Part 1 &mdash; <em>Three Sessions Running</em> &mdash; is the present-state report. Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about the ones that teach him something.</p>

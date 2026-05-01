@@ -1,0 +1,135 @@
+---
+title: "The Wrong Probe"
+subtitle: "A claim shipped in v1.1 was wrong. A user pushed back. The re-test rendered on the first try."
+date: "2026-04-26"
+description: "A v1.1 release of the great-filmmakers-plugin shipped a wrong claim: that reference images don't work on the Gemini API. The v1.4 release corrects it. A field report on the probe that misled, the re-test that didn't, and the four render paths now documented."
+og_title: "The Wrong Probe"
+og_description: "A v1.1 release shipped a wrong claim about Veo 3.1 reference images. A user pushed back. A re-test rendered cleanly on the first try. The v1.4 release corrects the documentation and adds two more render paths. The meta-lesson: vary one constraint at a time."
+og_image: "https://sethshoultes.com/blog/images/four-paths-featured.png"
+read_time: "8 min read"
+related:
+  - slug: three-layers
+    note: "the autonomous office that ships while the writer is out"
+  - slug: three-shapes
+    note: "the trilogy as one pattern at three resolutions"
+  - slug: what-agents-need
+---
+
+<img src="/blog/images/four-paths-featured.png" alt="Pen-and-ink illustration of a forking road or four-path diagram, New Yorker style, crosshatch shading." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+
+    <p>The mistake was made in mid-April 2026, and it was a small one in the way that wrong things made quickly tend to be small: a single failed API call, a glance at an error message, a conclusion that the feature did not work, and a release note shipped in <a href="https://github.com/sethshoultes/great-filmmakers-plugin/releases/tag/v1.1.0">v1.1</a> of the <a href="https://github.com/sethshoultes/great-filmmakers-plugin">great-filmmakers-plugin</a> declaring it so. The release note routed users away from the feature. The plugin's documentation followed the release note. By the time the writer at the desk noticed something was off, the wrong claim had been live for about a week.</p>
+
+    <p>The feature in question was reference images on Veo 3.1 Fast preview &mdash; the ability to send up to three character reference stills with a video generation request, so a model in shot one and a model in shot four read as the same person. The plugin had been built for a trilogy short film. Character continuity was not a luxury for that work; it was the assignment. So the claim that reference images were not supported on the Gemini API tier mattered, and the fact that the claim was wrong mattered more.</p>
+
+    <hr>
+
+    <h2>The probe that misled</h2>
+
+    <p>What the writer did, in mid-April, was run a single probe. He read a section of Google's docs page, copied a request shape from an example that turned out to be misleading, set the duration to four seconds because four seconds was what his text-only prompts had been using, set an aspect ratio he had been getting away with elsewhere, attached two reference stills, and sent the request. The API returned an error. The error was the kind of message a tired engineer reads and stops reading:</p>
+
+    <p><em>"Your use case is currently not supported."</em></p>
+
+    <p>He concluded the feature was unsupported. He wrote that in the release notes. He shipped v1.1.</p>
+
+    <p>The trouble with the probe was not that it failed. The trouble was that it varied three things at once. The request shape was wrong: he had wrapped the reference stills in an <code>inlineData</code> envelope copied from a stale read of a docs example, and the API rejects that envelope; the correct shape is a flat object with <code>bytesBase64Encoded</code>, <code>mimeType</code>, and a <code>referenceType</code> field set to the lowercase string <code>"asset"</code>. The duration was wrong: Veo 3.1 silently rejects four- and six-second clips when reference images are attached and accepts only eight. The aspect ratio was wrong: with reference images present, Veo silently rejects ratios other than 16:9. Three constraints, one error message, no isolation.</p>
+
+    <p>To say the feature was unsupported on the basis of that probe was, strictly, to say that <em>some combination</em> of those three constraints was unsupported. The probe could not say which. It said only that the request, as posed, did not render.</p>
+
+    <hr>
+
+    <h2>What v1.1 told the user</h2>
+
+    <p>The v1.1 release notes for great-filmmakers were specific in a way that made the mistake worse. They did not hedge. They did not say <em>we could not get reference images to render in our test</em>. They said the feature was unusable on the Gemini API tier and routed users to a workaround the plugin called <em>inline character anchoring</em> &mdash; a technique that bakes character description into the text prompt itself, scene by scene. Inline anchoring works, after a fashion, but it is a thinner instrument. It cannot do what a reference image does, which is hand the model a face and a wardrobe and say <em>this person, again</em>.</p>
+
+    <p>So users of the plugin in the week after April 18 were quietly steered away from the better tool toward the lesser one, on the writer's authority, on the basis of a probe that had varied three things at once.</p>
+
+    <hr>
+
+    <h2>The pushback</h2>
+
+    <p>The correction came from a reader. He pointed at research suggesting reference images did, in fact, work, and he linked to a forum thread on Google's developer forum titled, with a precision the writer would later quote in his own notes:</p>
+
+    <p><em>"Veo 3.1 Reference Images: Docs Say Available, API Says Not Supported."</em></p>
+
+    <p>The thread, at <a href="https://discuss.ai.google.dev/t/veo-3-1-reference-images-docs-say-available-api-says-not-supported/111853">discuss.ai.google.dev/t/veo-3-1-reference-images-docs-say-available-api-says-not-supported/111853</a>, was the canonical evidence. It contained two things the writer's probe had lacked. The first was a Google staff confirmation that reference images required 16:9. The second was a working request body posted by a community member, with a flat <code>bytesBase64Encoded</code> shape and a <code>referenceType</code> of <code>"asset"</code>. Both pieces of evidence had been on the public internet during the week the wrong claim was live in the plugin's docs. Neither had been consulted before shipping.</p>
+
+    <p>The writer re-tested on April 26, 2026.</p>
+
+    <hr>
+
+    <h2>The corrected probe</h2>
+
+    <p>He used the same model &mdash; Veo 3.1 Fast preview. He fixed the request shape: flat object, <code>bytesBase64Encoded</code> and <code>mimeType</code> at the top level, <code>referenceType: "asset"</code>, lowercase. He fixed the duration: eight seconds. He fixed the aspect ratio: 16:9. He attached two character reference stills from the trilogy short. He sent the request.</p>
+
+    <p>It rendered. First try.</p>
+
+    <p>The render came back at fifty-eight seconds. The two characters in the clip were recognizably the two characters in the reference stills. Wardrobe held. Faces held. The thing the plugin's documentation had said could not be done had just been done, on the same API tier, by the same writer, at the same desk, with three constraints corrected one at a time.</p>
+
+    <p>What the corrected probe demonstrated was not that Veo 3.1 supported reference images &mdash; the docs and the forum had said as much &mdash; but that the original probe had proved nothing about Veo 3.1. It had proved that one or more of three independently varied constraints was wrong. The correct response to that result was a multi-axis probe that held two constraints fixed and varied the third. The response actually given was a release note declaring the feature unsupported. The two responses are not similar.</p>
+
+    <hr>
+
+    <h2>Four paths, now documented</h2>
+
+    <p><a href="https://github.com/sethshoultes/great-filmmakers-plugin/releases/tag/v1.4.0">v1.4</a> shipped today. It corrects the documentation and, while doing so, expands the render paths from two to four. The expansion came out of a head-to-head shootout the writer ran across three services using a single composition from the trilogy short &mdash; a wide on three figures &mdash; plus a ten-shot full re-render of the trilogy through one of the new paths.</p>
+
+    <p>The four paths now sit in the plugin's documentation as a decision matrix:</p>
+
+    <table style="width:100%;max-width:780px;margin:1.5rem auto;border-collapse:collapse;font-size:0.95rem">
+      <thead>
+        <tr style="border-bottom:1px solid #ccc">
+          <th style="text-align:left;padding:0.5rem">Path</th>
+          <th style="text-align:left;padding:0.5rem">Service</th>
+          <th style="text-align:left;padding:0.5rem">Durations</th>
+          <th style="text-align:left;padding:0.5rem">Best for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #eee">
+          <td style="padding:0.5rem"><strong>A</strong> (default)</td>
+          <td style="padding:0.5rem">Veo 3.0 Fast text-to-video</td>
+          <td style="padding:0.5rem">{4, 6, 8}</td>
+          <td style="padding:0.5rem">Multi-shot stylized series</td>
+        </tr>
+        <tr style="border-bottom:1px solid #eee">
+          <td style="padding:0.5rem"><strong>B</strong></td>
+          <td style="padding:0.5rem">Veo 3.1 Fast preview + reference images</td>
+          <td style="padding:0.5rem">{8}</td>
+          <td style="padding:0.5rem">Multi-character continuity</td>
+        </tr>
+        <tr style="border-bottom:1px solid #eee">
+          <td style="padding:0.5rem"><strong>C</strong> (new)</td>
+          <td style="padding:0.5rem">Kling 2.5 Turbo image-to-video</td>
+          <td style="padding:0.5rem">{5, 10}</td>
+          <td style="padding:0.5rem">Single cinematic clip from an art-directed still</td>
+        </tr>
+        <tr>
+          <td style="padding:0.5rem"><strong>D</strong> (new)</td>
+          <td style="padding:0.5rem">Leonardo Motion 2.0 image-to-video</td>
+          <td style="padding:0.5rem">{5}</td>
+          <td style="padding:0.5rem">Atmospheric B-roll, no character identity</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The shootout produced three findings the writer wrote into the brain vault under <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/video-gen-services-comparison.md"><code>learnings/video-gen-services-comparison.md</code></a>. The first: all three services finish a short clip in fifty to seventy-five seconds. Speed is no longer a differentiator. The second: on a single shot, Veo 3.1 and Kling 2.5 Turbo are roughly tied on quality. The writer's note in the comparison file reads, plainly, <em>"hard to tell which was which."</em> The third, and the one that mattered for the trilogy: at project scale, Path A still wins.</p>
+
+    <p>The reason Path A still wins for series work is structural. Text-to-video keeps the composition consistent across shots because each shot is rendered from the same prompt grammar, the same instruction about framing, the same negative space. Image-to-video pipelines &mdash; Kling, Leonardo Motion &mdash; inherit composition flaws from the source still. The writer learned this in a way only a stress test can teach: he re-rendered the full ten-shot trilogy through Kling, using stills produced by a separate image generator. The Kling clips came back beautifully animated and subtly wrong. The figures read as <em>grounded in a stage floor</em>, because the source stills had introduced floor surfaces the original Veo text-to-video would have rendered as void. The composition error had been baked into the still and Kling had honored it.</p>
+
+    <p>Leonardo Motion 2.0, at five cents a clip, has its own documented limitation. Figures drift. A character asked to hold pose will, over five seconds, shift unnaturally. The writer logged the drift in the same comparison file. Path D is in the matrix not because Leonardo Motion can do what Veo can do but because, for atmospheric B-roll where character identity does not matter, five cents a clip is five cents a clip.</p>
+
+    <p>Kling 2.5 Turbo, by contrast, costs about a dollar per five-second clip. The trilogy re-render through Kling cost real money and produced a real lesson, which is what the writer wrote down.</p>
+
+    <hr>
+
+    <h2>What the brain vault now remembers</h2>
+
+    <p>The meta-lesson from the wrong probe is unglamorous. When an API rejects a request that has multiple silent constraints, a single failed call proves nothing about the feature. It proves at most that some combination of constraints is wrong. To honestly conclude that a feature is unsupported, the engineer must vary one constraint at a time and hold the others fixed, until the failing axis is isolated. Otherwise he has combined N wrong things and concluded the feature itself is missing &mdash; which is what the writer did, and which is what shipped in v1.1.</p>
+
+    <p>The corollary, for public-facing claims, is harsher. Do not ship <em>feature X does not work</em> in documentation without one of three things: a Google staff confirmation, a multi-axis probe that varied each constraint independently, or a forum search that turned up a community-confirmed working request. The v1.1 release notes failed all three tests. The forum thread that would have prevented the mistake was already on the public internet on the day v1.1 shipped.</p>
+
+    <p>The writer wrote the meta-lesson into the brain vault as <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/veo-3-api-constraints.md"><code>learnings/veo-3-api-constraints.md</code></a>. The file lists the three silent constraints that misled the original probe, the corrected request shape with the lowercase <code>"asset"</code> string, the eight-second duration requirement, the 16:9 aspect ratio requirement, and the forum thread URL. A companion file at <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/image-gen-tier-system.md"><code>learnings/image-gen-tier-system.md</code></a> documents the upstream stills pipeline that feeds Paths C and D, so future shootouts start from a clearer baseline.</p>
+
+    <p>The brain vault is the part of the system the writer cares about most when he is writing about a mistake. It is where the next probe gets to start. The trilogy of plugins described in <a href="/blog/three-shapes.html">Three Shapes of the Same Pattern</a> and the autonomous office described in <a href="/blog/three-layers.html">The Office That Worked While He Was Out</a> both depend on a brain vault that does not let the same wrong conclusion ship twice. v1.4 of great-filmmakers is now in the documentation. The forum thread is in the documentation. The four paths are in the documentation. The lowercase string <code>"asset"</code> is in the documentation. So is the eight.</p>
+
+    <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>

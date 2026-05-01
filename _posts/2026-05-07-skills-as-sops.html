@@ -1,0 +1,103 @@
+---
+title: "Skills as SOPs"
+subtitle: "The next layer of the agentic economy is not more agents — it is procedures made installable."
+date: "2026-05-07"
+description: "A skill is a markdown SOP an AI agent can read and execute. Three skills shipped today in building-with-ai-skills. The bottleneck is no longer intelligence — it is whether the procedure is written down."
+og_title: "Skills as SOPs"
+og_description: "The factory solved this in 1908. An SOP made the work independent of the person who knew how. A skill does the same thing for an AI agent. Three shipped today."
+og_image: "https://sethshoultes.com/blog/images/skills-as-sops-featured.png"
+read_time: "8 min read"
+related:
+  - slug: agentic-economy-three-sessions-running
+    note: "Part 1 of the Agentic Economy series — the operational picture these skills extract from"
+  - slug: the-bible-reads-first
+    note: "the same pattern one level up — a persona reads its context before it works"
+  - slug: the-avatar-reads-first
+    note: "the builds the first three skills codify"
+---
+
+<img src="/blog/images/skills-as-sops-featured.png" alt="Pen-and-ink illustration: a laminated card pinned to a factory wall beside an open laptop, both lit by the same overhead light." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The kitchen has a laminated card on the wall above each station. It tells you the mise en place for that dish, the order of operations, what temperature the pan needs to be at before the protein goes in, what to do if the sauce breaks. The card exists because the chef cannot be at every station at once. It exists because a new cook walks in at seven on a Friday and the service cannot wait for anyone to explain the procedure from memory. The card is the procedure made plain, nailed to the wall where it can be read and followed without the person who wrote it in the room.</p>
+
+<p>The hospital has the same card, in a different form, on the wall of the cath lab. The factory had it on the line in 1908. Anywhere that work needed to be done consistently, by different people, under time pressure, without the expert available — someone wrote down the steps. The Standard Operating Procedure: institutional memory fixed in place so the work does not depend on the person who last did it.</p>
+
+<p>An AI agent can now read that card. And follow it.</p>
+
+<hr>
+
+<h2>What a skill is</h2>
+
+<p>A skill — in the sense the Agent Skills format defines it — is a markdown file. It has frontmatter that names it and tells a coding agent when to use it. It has a body that describes the procedure: which API to call first, what the response will look like, what to check before the next step, what breaks and why, what to do when it does. Code blocks for the exact curl commands. Notes for the gotchas discovered the hard way.</p>
+
+<p>When a skill is installed, it sits in the agent's context the way the laminated card sits on the wall. The agent reads the skill. The agent does the work. It does not require the person who wrote the procedure to be at the desk. It does not require a chat thread where you explain the same setup from scratch for the fourth time. The procedure is written down. The agent reads it. The work proceeds.</p>
+
+<p>This is not a new idea. It is the same idea — institutional memory fixed in writing so the work is repeatable — applied to a new substrate. The substrate is an AI agent. The format is markdown. The result is that a procedure you worked out once, at cost, can be run by any agent that reads it.</p>
+
+<hr>
+
+<h2>The repo</h2>
+
+<p>Today I am opening <a href="https://github.com/sethshoultes/building-with-ai-skills">building-with-ai-skills</a> — a public repository that codifies the procedures behind the builds described in recent posts here. Three skills shipped today.</p>
+
+<p><strong>add-avatar-to-site</strong> — the procedure for putting a HeyGen LiveAvatar with an ElevenLabs voice clone on a static site. The Cloudflare Worker that mints the session token so the API key never crosses the network. The LITE-mode session config. The SDK loaded via esm.sh with no build step. The agent setup. The gotchas — including why <code>expects_response</code> behaves differently on the LiveAvatar Plugin path than anywhere else.</p>
+
+<p><strong>add-rag-to-elevenlabs-agent</strong> — the procedure for wiring a URL-sourced knowledge base to an ElevenLabs Conversational AI agent. Two API calls: POST the URL document, trigger RAG indexing. Then PATCH the agent's prompt object. Then the system-prompt-update that teaches the agent to retrieve before answering. The order matters. This skill encodes the order.</p>
+
+<p><strong>register-elevenlabs-client-tool</strong> — the procedure for adding a browser-side client tool to an ElevenLabs agent. The two-step protocol: POST to <code>/v1/convai/tools</code>, PATCH the agent's <code>prompt.tool_ids</code>. The PATCH replaces the field — it does not merge. Read first, append, write. Miss that step and you lose every tool already on the agent. This skill encodes that too.</p>
+
+<p>Each skill links to the post on this site that explains why the pattern exists. The post gives you the reasoning. The skill makes the procedure executable.</p>
+
+<hr>
+
+<h2>The install pattern</h2>
+
+<p>One command installs all three skills and makes them available automatically to any Claude Code session in any project:</p>
+
+<pre><code>npx skills add github:sethshoultes/building-with-ai-skills -a claude-code -g</code></pre>
+
+<p>The <code>-g</code> flag installs globally. After that, any Claude Code session picks them up. You do not need to install them project by project. You do not need to paste the procedure into a chat window. The card is on the wall.</p>
+
+<p>The HeyGen team showed the pattern. Their <a href="https://github.com/heygen-com/liveavatar-agent-skills">liveavatar-agent-skills</a> repository is the reference implementation — a set of skills for LiveAvatar integrations, installable the same way, available to any agent that reads them. The install mechanism is already there. What this repo adds is the procedures I have worked out for this specific stack: HeyGen LiveAvatar, ElevenLabs Conversational AI, Cloudflare Workers, Jekyll on GitHub Pages.</p>
+
+<hr>
+
+<h2>The argument</h2>
+
+<p>The previous posts in this series — the <a href="/blog/agentic-economy-three-sessions-running.html">Agentic Economy trilogy</a> — described a world where three Claude Code sessions run in parallel, two models dispatching personas, the author as orchestrator rather than writer. That picture is about what becomes possible when agent intelligence scales.</p>
+
+<p>This is about something different. Agent intelligence is not the bottleneck anymore. The bottleneck is whether the procedure has been written down.</p>
+
+<p>A capable agent given a vague brief will invent a solution. Sometimes it invents the right one. More often it invents a plausible one that skips a step, misses a gotcha, or takes a path that works in the obvious case and fails in the second one. The agent is not stupid. The agent has not been told what you learned the hard way. The procedure has not been written down.</p>
+
+<p>When the procedure is written down, in a form the agent can read and follow, the agent does not have to invent. It executes. The step it would have skipped is in the skill file. The gotcha is named. The PATCH-replaces-not-merges detail is right there in the code block, with a note saying why it matters.</p>
+
+<p>The factory understood this in 1908. You do not train every new worker from scratch. You write the SOP, you put it on the wall, and the work proceeds whether or not the expert is in the building. The agentic economy is solving the same problem now, for a new kind of worker.</p>
+
+<hr>
+
+<h2>The honest caveat</h2>
+
+<p>A skill inherits the correctness of the procedure it encodes.</p>
+
+<p>If the SOP on the factory wall has a wrong step, every worker who follows it produces the wrong output — faster and more consistently than if they had been guessing. A skill is the same. A wrong procedure, committed to a skill file and installed globally, executes the wrong thing in every session that calls it, without complaint, at full speed.</p>
+
+<p>The three skills in this repo have been run against real builds. The procedures they encode are the ones that produced the avatar at <a href="https://sethshoultes.com/talk/">/talk/</a>, the RAG corpus the avatar reads from, and the client tools registered on the agent. They are not theoretical. They are the record of what actually worked, with the failures and their fixes written in.</p>
+
+<p>But they will drift. ElevenLabs will change an endpoint. HeyGen will update the SDK. A field that is currently required will become optional, or the reverse. A skill that is correct today can become wrong through no fault of the procedure — the world it describes changes. The skill needs to be maintained the same way the SOP on the wall needs to be updated when the equipment changes. That work does not end at publication.</p>
+
+<hr>
+
+<h2>What comes next</h2>
+
+<p>Three skills today. The brain vault has eight more candidate skills already documented as runbooks — procedures that have been run enough times to prove themselves, not yet promoted to a public skill file. They become skills when I am confident the procedure is stable and the gotchas are named. Not before.</p>
+
+<p>The shape of the library as I see it from here: skills for the GitHub Actions patterns that keep the RAG corpus in sync, skills for the Cloudflare Worker token-mint pattern, skills for the constellation dispatch protocols the Agentic Economy series describes. Procedures that have been worked out at cost, made installable so the next build does not start from the same place.</p>
+
+<p>The library is open. If you have worked out a procedure that belongs here, the format is simple: one markdown file, frontmatter that names the skill and when to use it, a body that encodes the steps. The repository is at <a href="https://github.com/sethshoultes/building-with-ai-skills">github.com/sethshoultes/building-with-ai-skills</a>.</p>
+
+<p>The card goes on the wall. The work proceeds.</p>
+
+<hr>
+
+<p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about the ones that teach him something. The avatar at <a href="https://sethshoultes.com/talk/">/talk/</a> can answer questions about any post on this site.</p>

@@ -1,0 +1,110 @@
+---
+title: "What Agents Actually Need From Your API"
+subtitle: "The list is short. Most of it is also what a thoughtful human developer needs."
+date: "2026-04-28"
+description: "The list is short. Most of it is also what a thoughtful human developer needs. Eight concrete things to build into your API so a stranger's agent can call it without human mediation."
+og_title: "What Agents Actually Need From Your API"
+og_description: "Eight specific things an agent needs from your API — named operations, absolute URLs, descriptions written for when-to-call, clear error codes, and more. Grounded in what I shipped at garagedoorscience.com."
+read_time: "6 min read"
+related:
+  - slug: pattern-held
+    note: "the essay this one builds on"
+  - slug: widget-gunshot
+  - slug: one-registry-seven-surfaces
+  - slug: building-in-the-age-of-ai
+  - slug: 35-cent-article
+---
+
+<p>When I wired up the Custom GPT a few days ago, I opened the Actions importer and watched it read my OpenAPI spec. Four seconds. It listed all eight tools &mdash; <code>diagnose</code>, <code>routeByZip</code>, <code>getDoorStyles</code>, <code>getActivePromotions</code>, <code>getInspectionReferencePhotos</code>, <code>retrieveLabContext</code>, <code>costEstimate</code>, <code>submitInspection</code> &mdash; and gave me a green checkmark.</p>
+
+    <p>I've been thinking about those four seconds. Not because it was fast. Because of what it was reading. Everything the import needed, I'd written for earlier reasons. The GPT showed up and asked for exactly those things.</p>
+
+    <p><a href="/blog/pattern-held.html">That essay</a> was about the pattern holding. This one is about what the pattern required &mdash; the specific things an agent needs from your API, and why that list looks so familiar.</p>
+
+    <hr>
+
+    <h2>OperationIds</h2>
+
+    <p>ChatGPT's Actions importer will not import a spec without an <code>operationId</code> on every endpoint. Not "will display a warning." Will not import.</p>
+
+    <p>That sounds like a papercut. It isn't.</p>
+
+    <p>The operationId is the name an agent uses to reason about which tool to call. An agent deciding between <code>post_api_v1_diagnose</code> and <code>post_api_v1_routeByZip</code> is doing disambiguation work with names that carry no meaning. An agent choosing between <code>diagnose</code> and <code>routeByZip</code> is reading intent.</p>
+
+    <p>I'd added operationIds because MCP requires named operations to work correctly. By the time the GPT importer ran, they were already there.</p>
+
+    <p>Name your operations for what they do, not for where they live.</p>
+
+    <hr>
+
+    <h2>Absolute server URLs</h2>
+
+    <p>Relative URLs break two things: Scalar's interactive doc renderer and ChatGPT's Actions importer. A stranger's agent has no idea what domain your API lives at. A relative <code>/api/v1</code> path is not a locator. It's a fragment.</p>
+
+    <p>My spec declares a single absolute server: <code>"url": "https://garagedoorscience.com"</code>. One line. Any agent that reads it knows where to send the request without asking.</p>
+
+    <p>Make your spec self-locating. The agent you haven't met yet is grateful.</p>
+
+    <hr>
+
+    <h2>Tool descriptions written for when to call them</h2>
+
+    <p>A human developer figures out, over time, when to reach for each tool. An agent reads the description field and has to decide on the spot, with no second chance to ask.</p>
+
+    <p>"Returns diagnostic tree results" is a description of what the tool does. It tells the agent nothing about when to use it.</p>
+
+    <p>"Use this when a homeowner describes a symptom in their own words &mdash; 'my door won't close' or 'it makes a grinding noise.' Returns likely issues, typical cost range, urgency, and a DIY-safety flag for each." &mdash; that's a description that routes correctly.</p>
+
+    <p>The description field is not documentation. It's an instruction to an agent who is deciding, right now, whether this is the right tool. Write it that way.</p>
+
+    <hr>
+
+    <h2>A public privacy policy URL</h2>
+
+    <p>Not optional for the Custom GPT Store. Not optional for the <code>/developers</code> portal I built for issuing <code>gds_live_</code> API keys. Anywhere you ask someone &mdash; human or automated &mdash; for consent before accessing your system, you need a stable URL to your privacy policy.</p>
+
+    <p>I'd written it three weeks earlier for the developers portal. It was already live. The GPT Store required it. It was there.</p>
+
+    <p>Write it once. Put it somewhere it won't move.</p>
+
+    <hr>
+
+    <h2>Clear error shapes</h2>
+
+    <p>Agents treat HTTP status codes as semantic signals. <code>5xx</code> means retry. <code>4xx</code> means surface the error to the user. <code>404</code> means stop.</p>
+
+    <p>When you return <code>200</code> with <code>{"error": "not found"}</code> in the body, you've broken that logic. The agent retried successfully, got a 200, passed garbage upstream.</p>
+
+    <p>Standard HTTP semantics exist because every client already knows them. Don't invent new ones.</p>
+
+    <hr>
+
+    <h2>Input schemas that exclude nonsense</h2>
+
+    <p><code>{"zipOrLocation": string}</code> &mdash; with no description &mdash; means an agent will pass "the user's garage door" as the input. I've seen this happen.</p>
+
+    <p>The description field on a parameter is not optional. "A 5-digit US ZIP code (e.g. '84770') or a city name (e.g. 'St. George, UT'). Do not pass a full address." &mdash; that's a constraint. It shapes the input the agent will generate.</p>
+
+    <hr>
+
+    <h2>An opt-in flag for LLM-assisted paths</h2>
+
+    <p>This is the subtle one, and I only understood it after building the widget.</p>
+
+    <p>The <code>diagnose</code> endpoint supports a <code>useLlmFallback: true</code> flag. When the deterministic lookup misses &mdash; when someone types "sounds like a gunshot" and no alias matches &mdash; the fallback runs a Haiku classification pass and tries again. <a href="/blog/widget-gunshot.html">I wrote about that decision here</a>.</p>
+
+    <p>But make the fallback the default and you've created a problem: most agents calling your API already have their own LLM. They're not asking you to run a model on their behalf. If you silently fire a second one on top of theirs, you've added latency, cost, and non-determinism they didn't ask for.</p>
+
+    <p>Let them choose. Default to the deterministic path. Expose <code>useLlmFallback</code> as an explicit opt-in. Agents that want it will pass it. Agents that don't, won't.</p>
+
+    <hr>
+
+    <h2>A shallow surface to crawl first</h2>
+
+    <p><code>/llms.txt</code> is a plaintext index of your site's machine-readable content &mdash; something an agent can crawl in a single request before deciding whether to go deeper. <code>/ai</code> is a tactical TL;DR: what tools exist, what they return, what the rate limits are. <code>/openapi.json</code> is the schema.</p>
+
+    <hr>
+
+    <p>The list above is the price of admission.</p>
+
+    <p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>

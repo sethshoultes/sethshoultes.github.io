@@ -1,0 +1,85 @@
+---
+title: "The Avatar Reads First"
+subtitle: "The face is not the voice. The voice is not the brain. The brain reads first."
+date: "2026-05-03"
+description: "A live avatar at sethshoultes.com/talk/ — HeyGen face, ElevenLabs brain, 17-document RAG corpus. Three services, one boundary. This post is the test of the loop it describes."
+og_title: "The Avatar Reads First"
+og_description: "The face is HeyGen. The brain is ElevenLabs. The brain reads 17 URL documents before each turn. This post is the test of the loop the post describes."
+og_image: "https://sethshoultes.com/blog/images/the-bible-reads-first-featured.png"
+read_time: "5 min read"
+related:
+  - slug: the-bible-reads-first
+    note: "same shape, one resolution out — a writer-persona reads the project bible before drafting"
+  - slug: the-toll-dropped
+    note: "the output that made this kind of build possible"
+  - slug: canonical-secrets
+    note: "the same center-file pattern, at the level of credentials"
+---
+
+<img src="/blog/images/the-bible-reads-first-featured.png" alt="Pen-and-ink illustration: five figures arranged in an arc around an open book at the center of a wide desk, each leaning in to point at the same page." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>When I push this post, a GitHub Actions workflow will notice, pull the URL, and add it to the ElevenLabs agent&rsquo;s knowledge base. A few minutes later, the avatar at <a href="https://sethshoultes.com/talk/">sethshoultes.com/talk/</a> will be able to answer questions about it. The post is the test of the loop the post describes.</p>
+
+<hr>
+
+<h2>What got built</h2>
+
+<p>Four pieces. Three seams.</p>
+
+<p><strong>A page at /talk/.</strong> Voice-driven. A HeyGen LiveAvatar that looks like me. The browser loads <code>@heygen/liveavatar-web-sdk</code> from esm.sh &mdash; vanilla JS, no framework, no build step. You click Start the call. The avatar appears. It listens. No API key in the browser.</p>
+
+<p><strong>A Cloudflare Worker.</strong> The browser calls it once at the start of a session. It holds <code>LIVEAVATAR_API_KEY</code> server-side, calls the LiveAvatar token endpoint, and returns a short-lived <code>sessionToken</code> to the browser. CORS is restricted to <code>sethshoultes.com</code>. The key never crosses the network.</p>
+
+<p><strong>A knowledge base.</strong> Seventeen URL documents attached to the ElevenLabs Conversational AI agent &mdash; every post on this site plus the home page &mdash; indexed via the RAG endpoint with <code>enable_auto_sync: true</code>. The agent&rsquo;s system prompt was rewritten: first person, identify as a clone, cite posts by title, ground answers in the corpus.</p>
+
+<p><strong>A GitHub Actions workflow.</strong> <code>.github/workflows/sync-rag.yml</code>. Watches <code>_posts/**</code> on pushes to main. When a post lands, <code>scripts/add-post-to-rag.py</code> diffs the agent&rsquo;s current knowledge base against <code>_posts/</code>, POSTs any new URL documents, triggers indexing, and PATCHes the agent. The existing entries survive. The script is idempotent. I do not have to remember.</p>
+
+<hr>
+
+<h2>The boundary</h2>
+
+<p>The face is HeyGen LiveAvatar. It renders the video stream &mdash; the likeness, the mouth, what the visitor sees. It does not know what the brain knows.</p>
+
+<p>The voice is an ElevenLabs clone of my voice. It speaks the words the brain produces. It does not decide what to say.</p>
+
+<p>The brain is the ElevenLabs Conversational AI agent. It receives the question. It retrieves from the knowledge base. It generates the answer. RAG is a brain concern. It belongs on that layer.</p>
+
+<p>Three services. Three concerns. HeyGen ships official agent skills &mdash; <code>liveavatar-agent-skills</code> &mdash; that give a coding agent procedural knowledge for LiveAvatar integrations. Useful when the shape is still unknown. Once the boundary is clear, it is just plumbing.</p>
+
+<hr>
+
+<h2>The corpus</h2>
+
+<p>Seventeen URL documents. The agent retrieves before each turn.</p>
+
+<p>The system prompt tells the agent to cite posts by title, to ground claims in what it has indexed, and to acknowledge being a clone when asked. The corpus is what keeps the answers honest. Without it, the agent speaks in generalities. With it, it speaks from what I have actually written.</p>
+
+<p>Auto-sync is on. ElevenLabs re-fetches each URL when the content changes. The workflow handles new posts. Each one arrives as a new document. The corpus grows without my hand in it.</p>
+
+<hr>
+
+<h2>The loop</h2>
+
+<p>When I push this post, the workflow runs. In CI it reads <code>ELEVENLABS_API_KEY</code> from the workflow environment. Locally it sources <code>~/.config/dev-secrets/secrets.env</code> &mdash; the canonical file described in <a href="/blog/canonical-secrets.html"><em>One File for All My Keys</em></a>. The same key. One source, two consumers.</p>
+
+<p>The script will not add a post twice. If the workflow runs on a push with no new posts, it exits clean. Idempotent by design. The diff is between titles in the agent and titles in <code>_posts/</code>. What is already there stays. What is missing gets added.</p>
+
+<p>That loop closes when this post is indexed.</p>
+
+<hr>
+
+<h2>The shape, one resolution out</h2>
+
+<p>A <a href="/blog/the-bible-reads-first.html">post published last week</a> described a writer-persona that reads the project bible before drafting a sentence. A persona without its bible is a tic and a vocabulary. The read has to happen in fresh context &mdash; not filtered through the orchestrator&rsquo;s summary, not compressed into a prior session&rsquo;s working model. Clean window. Bible first. Then writing.</p>
+
+<p>The avatar is the same shape at a different resolution. The agent retrieves before it speaks. Not after. Not if it remembers to. Before, every turn, because that is how it was built.</p>
+
+<p><code>.great-authors/</code> reads first. The knowledge base reads first. The canonical secrets file reads first.</p>
+
+<p>Same pattern. The consumer does not decide whether to read. The architecture decides for it.</p>
+
+<hr>
+
+<p>The avatar at /talk/ is not useful because it looks like me. It is useful because the brain reads first.</p>
+
+<p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
