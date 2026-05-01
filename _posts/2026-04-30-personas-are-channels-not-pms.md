@@ -4,6 +4,7 @@ title: "Personas Are Channels. Something Else Has to Decide When to Call Them."
 date: 2026-04-30
 categories: [agentic-systems, architecture]
 tags: [personas, infrastructure, automation]
+image: /blog/images/personas-are-channels-not-pms-featured.png
 slug: personas-are-channels-not-pms
 ---
 
