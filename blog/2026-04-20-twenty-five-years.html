@@ -1,0 +1,109 @@
+---
+title: "Twenty-Five Years of Building, and This Was the First Week That Felt Structurally Different"
+subtitle: "Every major shift in software felt significant at the time. None of them moved the constraint the way this one did."
+date: "2026-04-20"
+description: "Every major shift in software felt significant at the time. None of them moved the constraint the way this one did."
+og_title: "Twenty-Five Years of Building, and This Was the First Week That Felt Structurally Different"
+og_description: "For twenty-five years, the binding constraint was getting the code right. This week, it was deciding."
+read_time: "7 min read"
+related:
+  - slug: building-in-the-age-of-ai
+  - slug: 35-cent-article
+  - slug: one-registry-seven-surfaces
+---
+
+<p>Last Monday at 11pm, an article published itself. I didn't write it. It cost thirty-five cents. By Tuesday morning, Google had crawled it.</p>
+
+    <p>If you read <a href="/blog/building-in-the-age-of-ai.html">the companion piece to this one</a>, you already know the details — the four-day build, the voice agent, the editorial pipeline that runs on a schedule while I sleep. That essay was a tour. This one is something different. This one is me stepping back and asking whether I've actually seen this before, or whether I'm just telling myself I have.</p>
+
+    <p>I've been building software for twenty-five years. I've been through several moments that felt like the ground shifted. What I want to figure out here is whether this week belongs in that category, or whether it's in a different category entirely.</p>
+
+    <hr>
+
+    <h2>The first shift I remember clearly</h2>
+
+    <p>It was 2009. WordPress had just crossed some invisible threshold where it stopped being a blogging tool and became the thing you built on. The plugin economy wasn't fully formed yet, but you could feel it forming. My co-founder and I were building <a href="https://eventespresso.com/" target="_blank">Event Espresso</a> — event management for WordPress — and the thing that felt different then was <em>distribution</em>.</p>
+
+    <p>Before that, if you built software, you figured out how to reach customers yourself. With WordPress, you dropped a plugin in a directory and the customers came to you. The friction of getting something to someone who needed it went from enormous to nearly zero. In 2011 we won the Utah Entrepreneur Challenge — $40,000 grand prize — and the thing that made that possible wasn't just the product. It was that the distribution was already there. We built something and the platform carried it.</p>
+
+    <p>That felt like a structural shift. The constraint on building had been "how do you reach people." And then, pretty suddenly, it wasn't.</p>
+
+    <hr>
+
+    <h2>The second one I remember</h2>
+
+    <p>Around 2015, I bought a garage door company. This wasn't an accident — I wanted to understand local service business from the inside. I spent two years ramping up its SEO, rebuilding its online presence, learning how a homeowner actually finds a contractor at 9pm on a Thursday. Then I sold it and went back to product work.</p>
+
+    <p>What I took from that wasn't the operational knowledge. It was something narrower: I saw what happened when you gave a local business internet-native tools. Not enterprise software. Tools sized right. The constraint that had been killing those businesses wasn't ambition. It was access — to the platforms, to the infrastructure, to the expertise that would take someone like me five minutes and someone running a garage door shop five thousand dollars.</p>
+
+    <p>So the second shift I remember isn't a technology shift. It's a distribution-of-capability shift. When SaaS started making professional-grade tools available to small businesses for a monthly fee, the constraint moved. The question wasn't "can your business afford software" anymore. It was "will you actually use it."</p>
+
+    <p>Those two shifts — the WordPress distribution shift and the SaaS access shift — I've carried with me for fifteen years. They're the lens I use to read new things.</p>
+
+    <hr>
+
+    <h2>This week doesn't fit that lens</h2>
+
+    <p>Here's where it gets harder to write, because I don't want to reach for the big claim. I've seen too many big claims. Every new wave of tooling comes with someone saying the constraint has moved, the game has changed, everything is different now. Most of the time they're half-right, which is a way of being mostly wrong.</p>
+
+    <p>Before I get specific about this week, I should mention what preceded it. A few weekends earlier I'd spent two days building ten interactive 3D labs about garage doors — the physics of torsion springs, the geometry of the sectional track, a 3D anatomy of a garage door opener. It was meant as a weekend hobby. When it was done I looked at the labs and asked the only reasonable question: what would it take to build a whole site around these? The answer turned out to be four more days. But the weekend was the first signal. I just didn't read it correctly at the time.</p>
+
+    <p>So let me be specific about what actually happened this week.</p>
+
+    <p>On Day 2, I made a decision: the separate product I'd been maintaining for our partner A Plus Garage Doors was deprecated. Everything moved to garagedoorscience.com. That decision took ten minutes. Not because it was a small decision — it was an architectural identity shift, the kind that normally involves weeks of deliberation and a migration plan and a deprecation notice and a bunch of careful emails. It took ten minutes because the migration didn't exist anymore as a problem. The code had already been written, the data was already in the right shape, the only thing left was the call itself.</p>
+
+    <p>That's the thing that's different.</p>
+
+    <p>For twenty-five years, the constraint on building has been getting the code right. Enough hours, enough hands, enough iteration. When I won the UEC in 2011, the pitch was strong but the reason we'd gotten there was grinding — twelve months of building, testing, responding to support tickets, shipping updates. That's how it worked. You had an idea, and then you had a very long gap, and then — if you were lucky and stubborn — you had a product.</p>
+
+    <p>The gap is gone. Or close enough to gone that the thing filling its place is something else entirely.</p>
+
+    <p>This week, the gap between idea and shipped code was measured in minutes, not months. And what I found on the other side of that was not ease. What I found was exposure.</p>
+
+    <hr>
+
+    <h2>Where the work actually lives now</h2>
+
+    <p>When the cost of building drops to near-zero, you don't get a vacation. You get a different kind of work.</p>
+
+    <p>The 24-point inspection tool — scrollable checklist, AI chat tuned to each item, scored report at the end — would have taken a week to spec out a year ago. This week it took an afternoon. Which means the afternoon wasn't spent writing code. It was spent deciding whether the tool should flag safety items differently from maintenance items, whether the AI should ever advise someone to stop mid-inspection, what to do when the report score is bad enough that the homeowner needs a professional, not a checklist.</p>
+
+    <figure>
+      <img src="images/personal-blog/02-inspection.png" alt="The 24-point inspection page on garagedoorscience.com, with quick diagnostic videos at the top and the full checklist below">
+      <figcaption>The 24-point inspection. An afternoon to build. Every judgment call about what it should flag, when, and how, made in real time.</figcaption>
+    </figure>
+
+    <p>Those aren't technical decisions. They're judgment calls. And they came fast — one after another — because the code was never the bottleneck.</p>
+
+    <p>The auto-content pipeline on Day 3 is the clearest example. Margaret Stone, the safety editor, flagged three unsourced claims on the first article draft. Correctly. The draft was held. I sourced the claims, ran it again, she passed it, it published. Total cost: $0.35. The thing I spent the most time on that day wasn't the pipeline itself. It was deciding what Margaret should flag, how strict the gate should be, what "sourced" means when you're writing for homeowners rather than academics.</p>
+
+    <figure>
+      <img src="images/personal-blog/04-blog-byline.png" alt="The published auto-generated article How to tell if your garage door is properly balanced, with Maya Harper's byline, April 22 2026, 6 min read, and topic tags">
+      <figcaption>The thirty-five-cent article. Margaret's job was to stop it if it wasn't ready. My job was to decide what her bar should be.</figcaption>
+    </figure>
+
+    <p>That's editorial judgment. I've been making editorial judgment calls my whole career. But I've never made them at that pace, with that much downstream consequence, compressed into that short a window. What I nearly got wrong was Margaret's bar. Set it too loose and the pipeline publishes unsourced claims at 11pm while I'm asleep. Set it too tight and nothing ships. Nobody else was in the room for that call. It ran on a schedule and then it ran again, and the bar I set was the only check in the system.</p>
+
+    <hr>
+
+    <h2>What a builder does with this</h2>
+
+    <p>I'm not going to tell you to learn to code faster, or to trust the AI more, or to stop worrying about the output. Those are the wrong lessons.</p>
+
+    <p>The right lesson, as far as I can tell, is this: the skills that compound now are judgment and taste. Not in the abstract sense. In the specific sense. How strict should Margaret's gate be? Should the inspection tool flag safety items differently from maintenance items? When a report score is bad enough that the homeowner needs a professional, does the tool say so, or does it stay quiet and let them keep going? Those questions don't have a right answer you can find in the code. They have a right answer you can only find if you've spent enough time thinking about real products and real people to trust your own read on them.</p>
+
+    <p>I've been sharpening those skills for twenty-five years. The code was always downstream of them. I just spent most of my time in the code because that's where the friction was. Now the friction is gone, and what's left is the part I can't delegate.</p>
+
+    <p>For the next year, I think the builders who navigate this well are the ones who've made enough real decisions — about real products, real customers, real consequences — that they can make the new wave of decisions at the new speed without cutting corners on the ones that matter. Experience doesn't matter less in this environment. It matters more, and faster.</p>
+
+    <p>What I'm watching for, in myself and in the tools, is the moment when speed starts producing decisions that nobody checked. That's the edge. The pipeline that runs at 11pm on a schedule, the voice agent that answers in real time — those are only as good as the judgment that was baked into them before they ran.</p>
+
+    <p>That judgment has to come from somewhere.</p>
+
+    <hr>
+
+    <p>For twenty-five years, the job was to build the thing correctly. This week, the job was to decide what the thing should be.</p>
+
+    <p>Both of those are the job. But only one of them used to take most of the time.</p>
+
+    <p class="post-bio">Seth Shoultes is the founder of <a href="https://garagedoorscience.com">garagedoorscience.com</a>. He has been building software since before most of his current tools existed.</p>

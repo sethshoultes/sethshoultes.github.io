@@ -1,0 +1,103 @@
+---
+title: "The Constellation"
+subtitle: "Five plugins shipped. Five logged. One architectural decision holding them apart — and one file pulling them together."
+date: "2026-04-29"
+description: "A strategy for building a full AI-staffed company from focused craft plugins, each owning one domain, none sharing a roster. What is shipped, what is next, and the single architectural choice that makes the whole thing cohere."
+og_title: "The Constellation"
+og_description: "Five plugins shipped. Five logged. The strategy behind a constellation of focused craft plugins that together compose a full AI-staffed company — and the one file that holds them all together."
+og_image: "https://sethshoultes.com/blog/images/the-constellation-featured.png"
+read_time: "10 min read"
+related:
+  - slug: the-bible-reads-first
+    note: "the bible as connective tissue — at the persona level"
+  - slug: three-shapes
+    note: "the trilogy as one pattern at three resolutions"
+  - slug: canonical-secrets
+    note: "one file at the center of every script"
+---
+
+<img src="/blog/images/the-constellation-featured.png" alt="Pen-and-ink celestial chart: stars connected by clean ruled lines, with a brighter star at the upper center anchoring the constellation." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>On April 26, <code><a href="https://github.com/sethshoultes/great-publishers-plugin">great-publishers-plugin</a></code> cleared its smoke tests and received a version tag: v0.1.0. Eight personas, four minimum-viable skills, a DXT bundle for Claude Desktop. It was the fourth plugin in a constellation that had been building for weeks without a name for itself.</p>
+
+<p>The name, when it finally arrived, was the right one. Not a suite. Not a platform. Not a stack. A constellation: distinct points of light, each burning on its own, each holding a fixed position, together forming a shape the eye can read as a whole.</p>
+
+<p>This is an account of what that shape looks like now, what it will look like when the remaining stars are lit, and why the decision to keep each star separate — rather than pulling them into one mass — is the architectural choice on which everything else depends.</p>
+
+<hr>
+
+<h2>What is shipped</h2>
+
+<p>Five plugins exist. Three of them arrived in a single session in late April, each emerging from the one before it, each filing the same four slots — persona, bible, save trigger, fan-out — adapted only at the last inch where the output format diverges. The <a href="/blog/three-shapes.html">trilogy essay</a> told that story. Here the relevant fact is simpler: three of the five plugins cover the creative stack from conception to screen, and two more carry the work from screen to audience.</p>
+
+<p><code><a href="https://github.com/sethshoultes/great-minds-plugin">great-minds-plugin</a></code> is strategy and executive judgment. Its roster runs from Steve Jobs to Marcus Aurelius, from Warren Buffett to Phil Jackson. Jobs is the one who asks whether the thing in front of him is the thing that actually matters, and then declines to ship it if the answer is no. Jackson is the one who understands that the team is always performing two games simultaneously — the one on the court and the one in the room.</p>
+
+<p><code><a href="https://github.com/sethshoultes/great-authors-plugin">great-authors-plugin</a></code> is prose. Hemingway. McCarthy. Didion. Baldwin. Morrison. King. Orwell. Le Guin. Wallace. Vonnegut. Plus one editor: Robert Gottlieb, who spent forty years at Knopf and The New Yorker watching writers make the same mistake — the one where they explain what the scene already showed — and who has a specific vocabulary for naming it. The plugin's roster is v1.4. It has been used on a novel, on essays, on blog posts including this one.</p>
+
+<p><code><a href="https://github.com/sethshoultes/great-filmmakers-plugin">great-filmmakers-plugin</a></code> is film and video production. Scorsese, Kubrick, Kurosawa, Hitchcock, Spielberg, Lynch. And the craft specialists: Roger Deakins on visual grammar, Thelma Schoonmaker on the cut, Dante Ferretti on the world inside a frame, Hans Zimmer on what the music does to the image before the audience knows it. v1.6, with a render pipeline that produces scripts for HeyGen, Veo 3, and Remotion depending on which back end the project needs.</p>
+
+<p><code>great-publishers-plugin</code> is publication form. Book covers, jacket copy, positioning, threshold reads, rollout sequencing, visual provocation, trailer composition. v0.1. The eight personas include the kinds of figures who know how a book's spine feels when someone pulls it from a shelf, and what that feeling is supposed to trigger. This plugin bridges the creative work of the other three to the market that receives it.</p>
+
+<p><code><a href="https://github.com/sethshoultes/great-marketers-plugin">great-marketers-plugin</a></code> is positioning, demand generation, and the sales argument — the work that sits at the seam between publication and customer. David Ogilvy, who held that if a campaign does not sell, it is not creative. Bill Bernbach. Mary Wells Lawrence. Rory Sutherland. The plugin carries what <code>great-publishers</code> positions in the trade out into the channels where the audience already is. The gap between them is the gap between a finished artifact and a found audience.</p>
+
+<p>Together, the five can take a concept through strategy, into prose, onto screen, into the trade, and out to a customer. That is a creative-and-execution stack for a kind of company. What it cannot yet do is engineer the software, design the product, operate the business, navigate the legal terrain, or conduct the research. Those are the five stars that are not yet lit.</p>
+
+<hr>
+
+<h2>The boundary that holds the shape</h2>
+
+<p>The instinct, when <code>great-publishers</code> was being designed, was to make it a set of departments inside one of the existing plugins. Books department. Video department. Marketing. The instinct was logical. Publishers touch all of those things.</p>
+
+<p>It was the wrong instinct, and understanding why it was wrong is the architectural lesson on which the rest of the constellation depends.</p>
+
+<p>Different specialties do not share a roster. A book-cover designer and a film-trailer composer are not colleagues the way a novelist and an editor are colleagues. They occupy different craft registers. The vocabulary of one is not the vocabulary of the other. A plugin's persona files are written in the register of that plugin's domain — the way a practitioner in that domain thinks, the hierarchy of concerns they apply, the vocabulary they use when the work is going wrong. Cramming a roster of mixed registers into one plugin does not create a versatile plugin. It creates a confused one: personas that don't share a reading pattern, a bible structure, a set of slash commands, or a definition of what "done" means.</p>
+
+<p>The rule that emerged from this observation is blunt: one plugin equals one craft equals one persona register equals one set of skills. When a new specialty appears that does not share the existing plugin's register, it does not get added to that plugin. It becomes a new plugin.</p>
+
+<p>This is the same principle that keeps great-minds, great-authors, and great-filmmakers separate even though they are used together on the same projects. Jobs and Hemingway and Scorsese are not colleagues. They are specialists. Their separation is not an organizational decision. It is a craft decision. A specialist who has been diluted by proximity to other specialties is not a specialist anymore.</p>
+
+<p>The boundary is the thing. The boundary is what makes each plugin lean. The boundary is what makes cross-plugin orchestration coherent — when a skill in one plugin dispatches a persona from a sibling plugin via the Agent tool, it is calling a specialist, not a generalist who happens to have the right label.</p>
+
+<p>One other boundary holds across the whole constellation: plugins ship prompts. Projects ship renders. A persona can produce a screenplay, a shot list, a visual-grammar brief, a positioning document. It cannot produce an MP4 or a PDF or a print-ready cover file — because the render step depends on per-project API keys, per-project idempotency state, and per-project filesystem layout that no plugin can know. The render scripts live at the project level. The templates for those scripts live in the plugin. The plugin is the source of truth for the shape of the work. The project is the site of execution. These are different things, and they belong in different places.</p>
+
+<hr>
+
+<h2>The five stars not yet lit</h2>
+
+<p>The roadmap logs five plugins in priority order. None of them is speculative — each fills a gap that the five shipped plugins leave visible.</p>
+
+<p><strong>great-engineers.</strong> This is the most conspicuous absence in the constellation. Caseproof is a software company, and there is no plugin yet for the craft of building software. John Carmack, in the years when he was writing the engines that made first-person games possible, was doing something specific: he was finding the minimum computational surface needed to produce a given visual experience, then building that surface with the precision of someone who understood the machine at every level of abstraction simultaneously. That kind of thinking — from Grace Hopper's discipline of making the abstract concrete, through Don Knuth's precision about what an algorithm actually costs, through Linus Torvalds's blunt intolerance for approximation — is what a great-engineers plugin would hold. It is the plugin that does not yet exist and whose absence is felt every session.</p>
+
+<p><strong>great-designers.</strong> Dieter Rams's ten principles are not a design philosophy. They are a constraint system. Good design is as little design as possible: the form that remains when everything unnecessary has been removed. Rams is distinct from Jony Ive, who appears in great-minds in a strategic-design register — Ive as the person in the room when Apple was deciding what the product was, Rams as the person at the bench deciding what the product looked like and why. A designers plugin would cover hands-on product craft: interaction design, UX, the decisions that Susan Kare made when she was inventing the vocabulary of the graphical interface, the decisions that Don Norman described when he was explaining why the world is full of objects that do not explain themselves.</p>
+
+<p><strong>great-operators.</strong> Tim Cook, before Apple became a consumer-electronics company, solved a logistics problem. The problem was that Apple was building products that required components sourced from dozens of suppliers across three continents, assembled in facilities that could be disrupted by any of a hundred variables, shipped through a global distribution system that had no tolerance for the inventory levels Apple had been carrying. Cook looked at this problem and built a supply chain that could move faster than the competitors' product cycles. Andy Grove, at Intel, was solving a different version of the same problem — how to scale a manufacturing organization without losing the discipline that made it good at the small scale. An operators plugin would hold this register: finance, scaling, process, the thinking that gets applied when the question is not what to build but how to run the thing that builds it.</p>
+
+<p><strong>great-counsels.</strong> Lawrence Lessig spent a significant portion of his career arguing that the architecture of networks is not a neutral technical decision — that the code is the law, that the choices embedded in a system's design are policy choices whether or not they are recognized as such. A counsels plugin would hold the "should we?" register: Lessig on digital law and platform architecture, Ruth Bader Ginsburg on constitutional reasoning, Tim Wu on the antitrust arguments that describe what concentrated power in a network does to everyone who depends on it. The counsels plugin is not the same as a legal research tool. It is the set of lenses that asks whether a decision is wise before asking whether it is allowed.</p>
+
+<p><strong>great-researchers.</strong> Carl Sagan could explain the distance between galaxies to someone who had never thought about the distance between galaxies, and the explanation would be accurate and would not condescend. That combination — citation discipline, prose clarity, the ability to hold a literature review and a human reader in the same sentence — is what a researchers plugin would provide. It is close to the great-authors register but distinct from it in one dimension: the authors write from voice; the researchers write from evidence. The evidence has to be traceable. The citation is not optional.</p>
+
+<hr>
+
+<h2>The file that holds the stars together</h2>
+
+<p>Five plugins shipped. Five logged. Each separate. Each lean. Each burning in its own register.</p>
+
+<p>What keeps them from being simply unrelated? What makes the constellation a constellation rather than a scatter?</p>
+
+<p>The answer is a directory at the root of every project that uses any of these plugins: <code>.great-authors/</code>. The name is legacy — it was written for the prose plugin and kept because renaming it would break every existing project. The structure is universal. It holds the project's character files, its place files, its voice rules, its timeline, its glossary, its session journal. It is the canonical state of the project, the part that holds still while individual sessions come and go.</p>
+
+<p>The <a href="/blog/the-bible-reads-first.html">Bible Reads First essay</a> made this argument at the persona level: a King persona dispatched as a fresh sub-agent reads the bible before writing a sentence, and the chapter that results is different — measurably, audibly different — from the chapter produced when the orchestrator filtered King through a coordination context. The bible is the condition under which the persona can be itself. Without it, the voice is hollow because the world is hollow.</p>
+
+<p>At the constellation level, the argument is structural. When a great-minds persona is orchestrating a project that uses great-authors and great-filmmakers and great-publishers, all four sets of personas read the same bible before they act. They read the same voice rules. They read the same character files. They read the same decisions the project has accumulated across sessions. The bible is not a brief for any particular task. It is the shared context that makes coordination possible without centralization — without a single orchestrating persona that tries to carry the whole project in its context window and fails, as the novel sessions showed, by compressing the world into a summary and then writing from the summary.</p>
+
+<p>The pattern here is the same one that appeared in a post published <a href="/blog/canonical-secrets.html">three days ago</a> about API keys: seventeen env files holding the same handful of keys, silently drifting against one another, resolved by one canonical file that everything reads from at startup. One file. One source command. One rotation point. The credentials post described a consolidation that removed ambient drift from a developer's toolchain. The bible does the same thing for a project's creative context. Both are the same shape: a center that reads first, so that everything downstream reads from the same page.</p>
+
+<p>When great-engineers and great-designers and great-operators ship, their personas will read the same <code>.great-authors/</code> bible before acting. An engineer persona writing a technical spec will read the project's voice rules. A marketer persona developing a launch brief will read the character files that describe who the audience is. A designer persona will read the place files that describe the visual world the product inhabits. The bible is not a prose artifact. It is a project-state artifact. Its name is legacy. Its function is universal.</p>
+
+<hr>
+
+<h2>The corporation on the horizon</h2>
+
+<p>The roadmap uses the word "corporation" for what the constellation becomes when each star has shipped real artifacts — not persona files, not smoke tests, but actual creative and operational work that a real customer paid for or depends on. At that point, the plugins are not a developer's toolset. They are a staff. The user, or a small human team, is the head coach. Customer engagements flow through the stack as a complete creative-and-execution system. The constellation becomes a company. That is the horizon this architecture is walking toward, one plugin at a time, one real artifact at a time.</p>
+
+<p class="post-bio">Seth Shoultes builds things at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about them occasionally.</p>
