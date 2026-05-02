@@ -1,1 +1,1 @@
-status: WRITTEN
+status: DEPLOYED
