@@ -4,3 +4,6 @@ _site/
 .bundle/
 vendor/
 .claude/
+.great-minds/
+.wolf/
+.playwright-mcp/

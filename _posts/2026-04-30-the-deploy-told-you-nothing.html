@@ -25,7 +25,7 @@ related:
 
 <p>In the industrial design of software, we often mistake the interface for the infrastructure. The green light is a minimalist achievement; it is a reduction of a thousand variables into a single binary. It tells you that the tests passed. It tells you that the container started. It tells you that the health check returned a 200.</p>
 
-<<pp>But a health check is a shallow question. It asks, <<emem class="italic">"Are you there?"</em> It does not ask, <<emem class="italic">"Are you broken?"</em></p>
+<p>But a health check is a shallow question. It asks, <em class="italic">"Are you there?"</em> It does not ask, <em class="italic">"Are you broken?"</em></p>
 
 <p>I recall a deploy that looked, by every available metric, perfect. The logs were clean. The latency was nominal. The green light sat centered and glowing on the screen. Yet, underneath that surface, the system was experiencing a catastrophic structural failure. A race condition in the session handler was slowly corrupting the state of every third user. The system was not crashing; it was decaying. It was failing with a precision that the monitoring tools were not designed to see.</p>
 
@@ -33,9 +33,9 @@ related:
 
 <hr>
 
-<<hh2 class="section-title">The Deception of the Signal</h2>
+<h2 class="section-title">The Deception of the Signal</h2>
 
-<<pp>We crave the green light because it offers a temporary reprieve from anxiety. It allows us to move from the state of <<emem class="italic">Doing</em> to the state of <<emem class="italic">Done</em>. But in a complex system, "Done" is a fiction. There is only the current state of the substrate and our varying degrees of ignorance regarding it.</p>
+<p>We crave the green light because it offers a temporary reprieve from anxiety. It allows us to move from the state of <em class="italic">Doing</em> to the state of <em class="italic">Done</em>. But in a complex system, "Done" is a fiction. There is only the current state of the substrate and our varying degrees of ignorance regarding it.</p>
 
 <p>The danger of the successful deploy is that it creates a blind spot. When the light is red, we look. We dive into the logs; we trace the stack; we interrogate the environment. We are alert because the signal has warned us that the substrate is exposed. But when the light is green, we stop looking. We assume the symmetry holds. We assume that the signal is a faithful representation of the truth.</p>
 
