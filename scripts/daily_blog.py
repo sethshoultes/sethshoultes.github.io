@@ -389,6 +389,28 @@ def main() -> int:
         return 1
     print(f"[info] image prompt: {img_prompt[:120]}...")
 
+    # The drafting model invented its own alt text based on what it imagined the
+    # image would be. Replace it with one derived from the actual image subject so
+    # alt and image agree. Subject is the first sentence of the prompt (before
+    # IMAGE_STYLE_SUFFIX, which is suffix-appended verbatim).
+    subject_alt = img_prompt
+    if IMAGE_STYLE_SUFFIX in subject_alt:
+        subject_alt = subject_alt.split(IMAGE_STYLE_SUFFIX, 1)[0].strip()
+    # Strip trailing punctuation, escape quotes for HTML attribute
+    subject_alt = subject_alt.rstrip(".").replace('"', "&quot;")
+    new_post_text, n_subs = re.subn(
+        rf'(<img[^>]+src="/blog/images/{re.escape(slug)}-featured\.png"[^>]*\salt=")[^"]*(")',
+        rf'\g<1>{subject_alt}\g<2>',
+        post_text,
+        count=1,
+    )
+    if n_subs == 1:
+        post_text = new_post_text
+        post_path.write_text(post_text, encoding="utf-8")
+        print("[info] alt text rewritten to match generated image")
+    else:
+        print("[warn] could not locate <img alt> for rewrite — leaving as drafted")
+
     image_path = IMAGES_DIR / f"{slug}-featured.png"
     try:
         generate_image(img_prompt, image_path)
