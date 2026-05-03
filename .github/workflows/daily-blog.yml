@@ -11,6 +11,11 @@ on:
     # 13:00 UTC = 09:00 ET (EDT). During EST (winter) this is 08:00 ET — accept the drift.
     - cron: "0 13 * * *"
   workflow_dispatch:
+    inputs:
+      force_date:
+        description: "Override target date (YYYY-MM-DD). Leave blank for today."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -50,6 +55,7 @@ jobs:
           NOTIFY_EMAIL: seth@caseproof.com
           NOTIFY_FROM: noreply@sethshoultes.com
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_DATE: ${{ inputs.force_date }}
         run: |
           set -e
           if [ -z "$ANTHROPIC_API_KEY" ] || [ -z "$OPENAI_API_KEY" ]; then

@@ -331,7 +331,12 @@ def report_failure(stage: str, summary: str, details: str = "") -> None:
 # ----- main ---------------------------------------------------------------------
 
 def main() -> int:
-    today = date.today()
+    force_date = os.environ.get("FORCE_DATE", "").strip()
+    if force_date:
+        today = date.fromisoformat(force_date)
+        print(f"[info] FORCE_DATE={force_date} (overriding today)")
+    else:
+        today = date.today()
 
     # 0. Don't double-post
     existing_today = list(POSTS_DIR.glob(f"{today.isoformat()}-*.html"))
