@@ -1,1 +1,1 @@
-status: DEPLOYED
+status: BRIEFED
