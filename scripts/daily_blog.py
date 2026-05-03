@@ -505,6 +505,24 @@ def main() -> int:
         images_arr.append({"slug": slug, "prompt": img_prompt})
         IMAGES_JSON.write_text(json.dumps(images_arr, indent=2) + "\n", encoding="utf-8")
 
+    # 4b. Add inline contextual links from the reference catalog (best-effort).
+    # If anything goes wrong here we log and continue — inline-linking is a
+    # quality enhancement, not a publish-blocker.
+    try:
+        sub = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "add_inline_links.py"), slug],
+            capture_output=True, text=True, timeout=120, cwd=REPO_ROOT,
+        )
+        if sub.returncode == 0:
+            print(sub.stdout.strip())
+        else:
+            print(f"[warn] add_inline_links exited {sub.returncode}: {sub.stderr.strip()}")
+    except Exception as e:
+        print(f"[warn] add_inline_links failed: {e}")
+
+    # Re-read post text since add_inline_links may have modified it
+    post_text = post_path.read_text(encoding="utf-8")
+
     # 5. Validate
     res = subprocess.run(
         [sys.executable, str(VALIDATOR), str(post_path), "--repo-root", str(REPO_ROOT)],
