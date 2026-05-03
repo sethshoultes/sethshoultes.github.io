@@ -152,17 +152,23 @@ def recent_posts_context(n: int = 3) -> str:
 
 
 def _post_meta(p: Path) -> dict | None:
-    """Extract slug/title/subtitle for an existing post. None if filename invalid."""
+    """Extract slug/title/subtitle for an existing post. None if filename invalid.
+
+    `slug` here is the FILENAME slug — that's what Jekyll's `post.slug` resolves to
+    for Liquid lookups like `where: "slug", rel.slug` in the related-reading layout.
+    The frontmatter `slug:` field, if present, is a URL-permalink override only and
+    does NOT change `post.slug`. Using the filename slug keeps related-reading
+    references resolvable.
+    """
     m = re.match(r"\d{4}-\d{2}-\d{2}-(.+)\.html$", p.name)
     if not m:
         return None
     text = p.read_text(encoding="utf-8")
     filename_slug = m.group(1)
-    slug_match = re.search(r'^slug:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
     title_match = re.search(r'^title:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
     sub_match = re.search(r'^subtitle:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
     return {
-        "slug": slug_match.group(1).strip() if slug_match else filename_slug,
+        "slug": filename_slug,
         "title": title_match.group(1).strip() if title_match else filename_slug,
         "subtitle": sub_match.group(1).strip() if sub_match else "",
     }

@@ -7,8 +7,14 @@ og_title: "The Pipeline Rate-Limits Itself"
 og_description: "Why actuators need governors to survive the flapping signal."
 og_image: "/blog/images/pipeline-rate-limits-featured.png"
 read_time: "6 min read"
+related:
+  - slug: hooks-as-commitment-devices
+    note: "The companion case for structural constraints over good intentions in autonomous systems."
+  - slug: the-deploy-told-you-nothing
+    note: "Another instance where a green signal masks a structural failure beneath."
+  - slug: the-validator-with-teeth
+    note: "The same argument in a different register — hopes in memory versus constraints in code."
 ---
-
 <img src="/blog/images/pipeline-rate-limits-featured.png" alt="A high-resolution, industrial minimalist photograph of a precision-milled aluminum governor lock, frozen in a moment of mechanical tension against a seamless matte grey void." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
 <p>At 12:14:03 the daemon restarts <code>ollama.service</code>. At 12:14:31 it restarts it again. At 12:15:02 it restarts it a third time. The service is crashlooping. Each restart accomplishes nothing. The daemon does not know this. It will continue, on a fifteen-minute interval, until the operator notices.</p>
@@ -70,3 +76,7 @@ read_time: "6 min read"
 <p>The pipeline that requires no human attention is the pipeline that requires the most thought up front. The executor without a governor is not a tool. It is a runaway shaft, turning at the speed the bus permits, until the bearings give.</p>
 
 <p>The first duty of the operator who builds it is to ensure that it knows how to be idle.</p>
+
+<hr>
+
+<p class="post-bio"><em>Norbert Wiener spent the 1940s explaining that feedback without damping is not control — it is oscillation with a budget. The daemon learns this on a fifteen-minute interval, or the operator learns it on a thirty-hour one.</em></p>
