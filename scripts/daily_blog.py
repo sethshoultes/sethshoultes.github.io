@@ -151,6 +151,41 @@ def recent_posts_context(n: int = 3) -> str:
     return "\n\n".join(chunks)
 
 
+def _post_meta(p: Path) -> dict | None:
+    """Extract slug/title/subtitle for an existing post. None if filename invalid."""
+    m = re.match(r"\d{4}-\d{2}-\d{2}-(.+)\.html$", p.name)
+    if not m:
+        return None
+    text = p.read_text(encoding="utf-8")
+    filename_slug = m.group(1)
+    slug_match = re.search(r'^slug:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+    title_match = re.search(r'^title:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+    sub_match = re.search(r'^subtitle:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+    return {
+        "slug": slug_match.group(1).strip() if slug_match else filename_slug,
+        "title": title_match.group(1).strip() if title_match else filename_slug,
+        "subtitle": sub_match.group(1).strip() if sub_match else "",
+    }
+
+
+def corpus_index(limit: int = 25) -> str:
+    """Compact list of recent posts for the model to pick `related:` entries from.
+
+    Format: `- <slug> | <title> — <subtitle>` per line.
+    """
+    posts = sorted(POSTS_DIR.glob("*.html"))[-limit:]
+    lines = []
+    for p in posts:
+        meta = _post_meta(p)
+        if not meta:
+            continue
+        line = f"- {meta['slug']} | {meta['title']}"
+        if meta["subtitle"]:
+            line += f" — {meta['subtitle']}"
+        lines.append(line)
+    return "\n".join(lines)
+
+
 def recent_commits(n: int = 15) -> str:
     out = subprocess.run(
         ["git", "log", f"-n{n}", "--pretty=format:%h %s"],
@@ -201,6 +236,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
     system_prompt = voice_path.read_text(encoding="utf-8")
 
     tone_ref = recent_posts_context(3)
+    available = corpus_index(25)
 
     user = (
         f"Today is {today.isoformat()}.\n\n"
@@ -212,17 +248,43 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "unless your voice would naturally do so. They are here so you can match the "
         "register of the site.\n\n"
         f"{tone_ref}\n\n"
+        "AVAILABLE POSTS for related-reading links — pick 2-3 that genuinely connect to your post's "
+        "argument. Use the slug exactly as shown. Write a one-line note for each that names the "
+        "actual connection — what the related post adds, contrasts with, or proves.\n\n"
+        f"{available}\n\n"
         "Write the post now. Output ONLY the complete file contents, starting with the "
-        "Jekyll frontmatter (---) and ending with the last </p>. Use this exact frontmatter:\n\n"
+        "Jekyll frontmatter (---) and ending with the closing </p>. Use this exact frontmatter "
+        "shape (fill in title, subtitle, and 2-3 related entries):\n\n"
         "---\n"
         f'title: "<your title>"\n'
         f'subtitle: "<one-sentence subtitle>"\n'
         f'date: {today.isoformat()}\n'
+        "related:\n"
+        '  - slug: <slug-from-list-above>\n'
+        '    note: "<one-line description of the connection>"\n'
+        '  - slug: <slug-from-list-above>\n'
+        '    note: "<one-line description of the connection>"\n'
         "---\n\n"
         "Then a featured image tag in this exact form (the image will be generated to match):\n\n"
         f'<img src="/blog/images/{idea["slug"]}-featured.png" alt="<short alt text>" '
         'style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />\n\n'
         "Then your prose, every <p> opened and closed, every <h2> opened and closed.\n\n"
+        "Then, AT THE END of the body — after the last paragraph of prose — add this closing block:\n\n"
+        "<hr>\n\n"
+        '<p class="post-bio"><em>{closing line}</em></p>\n\n'
+        "The {closing line} is ONE of these two registers — pick whichever fits the post and your "
+        "voice better, and vary across posts so the corpus does not flatten:\n\n"
+        "REGISTER A — a brief literary aside about a writer or thinker whose work bears on the "
+        "post's argument. One or two sentences. Specific. The figure should be real and the "
+        "observation should land. Examples:\n"
+        "  • \"Kurt Vonnegut wrote 14 novels and died before anyone told him the job was now to "
+        "brief the machine. He would have found this funny and then noticed it wasn't.\"\n"
+        "  • \"Orwell warned about words that do the thinking for us. The validator does no thinking. "
+        "That is the whole point.\"\n\n"
+        "REGISTER B — a short author bio with the standard link. Two sentences max:\n"
+        "  • \"Seth Shoultes builds at <a href=\\\"https://garagedoorscience.com\\\">garagedoorscience.com</a> "
+        "and writes here when the building produces something worth saying.\"\n\n"
+        "Pick A or B based on what the post needs and your voice's instincts. Do not pick A and B together.\n\n"
         "CRITICAL: Every opening tag is exactly <tagname>. Never write <<tagname or <<tt or any "
         "doubled-prefix variant. The validator blocks the commit if you do. Output the file. Nothing else."
     )
