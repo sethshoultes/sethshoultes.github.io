@@ -80,15 +80,24 @@ def call(method: str, path: str, body=None):
 
 # ---- post discovery ----
 def discover_posts():
-    """Yield (slug, title, url) for every post in _posts/."""
+    """Yield (slug, title, url) for every post in _posts/.
+
+    Jekyll's permalink scheme is `/blog/:slug:output_ext`, where `:slug` is the
+    frontmatter `slug:` field if present, otherwise derived from the filename.
+    Honor the frontmatter override so the published URL matches what we send
+    to the RAG ingester (otherwise we 404 and ElevenLabs returns ReadabilityError).
+    """
     for p in sorted(POSTS_DIR.glob("*.html")):
         m = re.match(r"\d{4}-\d{2}-\d{2}-(.+)\.html$", p.name)
         if not m:
             continue
-        slug = m.group(1)
-        title_match = re.search(r'^title:\s*"([^"]+)"', p.read_text(), re.MULTILINE)
-        title = title_match.group(1) if title_match else slug
-        yield slug, title, f"{SITE_BASE}/blog/{slug}.html"
+        filename_slug = m.group(1)
+        text = p.read_text()
+        title_match = re.search(r'^title:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+        title = title_match.group(1).strip() if title_match else filename_slug
+        slug_match = re.search(r'^slug:\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+        url_slug = slug_match.group(1).strip() if slug_match else filename_slug
+        yield filename_slug, title, f"{SITE_BASE}/blog/{url_slug}.html"
 
 
 # ---- main ----
