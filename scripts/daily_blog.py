@@ -50,14 +50,18 @@ DRY_RUN = os.environ.get("DRY_RUN") == "1"
 ANTHROPIC_MODEL = "claude-opus-4-7"
 IMAGE_MODEL = "dall-e-3"
 
-# The fixed style suffix that gives every featured image the same industrial-minimalist
-# look established in images.json. Only the conceptual subject varies per post.
+# The fixed style suffix that gives every featured image the same pen-and-ink
+# editorial illustration look — established in skills-as-sops, whats-on-the-desk,
+# and the-recipe-that-wrote-itself. Only the conceptual subject varies per post.
 IMAGE_STYLE_SUFFIX = (
-    "Industrial minimalism. Precision-milled aluminum and polished steel forms suspended "
-    "in a matte grey void. High-contrast clinical lighting, sharp directional shadows. "
-    "Architectural composition, low entropy, zero clutter. Monochromatic palette — deep "
-    "charcoal shadows, brilliant silver highlights, frosted glass for diffused glow. "
-    "8k resolution, ultra-sharp focus. No humans, no text, no logos."
+    "Pen-and-ink editorial illustration, hand-drawn in the register of a vintage "
+    "book illustration or a New Yorker spot drawing. Fine ink line work with "
+    "crosshatched shading. Warm cream or sepia paper background, sometimes set "
+    "within a softly crosshatched interior environment with a pool of warm light. "
+    "Monochromatic palette — sepia ink, charcoal shadows, cream highlights. No "
+    "saturated color. Literary, domestic, contemplative register. Single subject "
+    "or small still-life, centered, simple composition. No humans, no text, no "
+    "logos, no labels. The object carries the metaphor by itself."
 )
 
 
@@ -243,15 +247,20 @@ def generate_image_prompt(idea: dict, post_text: str) -> str:
             "role": "user",
             "content": (
                 "Read this blog post and propose a single physical-object SUBJECT for the "
-                "featured image. The site's visual language is industrial minimalism — "
-                "precision-milled aluminum, polished steel, frosted glass, matte grey void, "
-                "no humans, no text. Your job is ONLY to pick the metaphor object and "
+                "featured image. The site's visual language is pen-and-ink editorial "
+                "illustration — hand-drawn, crosshatched, sepia-on-cream, in the register of "
+                "a vintage book illustration or a New Yorker spot drawing. The objects are "
+                "domestic, writerly, craft-oriented: typewriters, desk lamps, notebooks, "
+                "books, paper notes pinned to cork, hand tools, chess pieces, kitchen "
+                "thermometers, gavels. Your job is ONLY to pick the metaphor object and "
                 "describe its arrangement.\n\n"
-                "Examples of past subjects:\n"
-                "- 'A precision-milled aluminum governor lock, frozen in mechanical tension.'\n"
-                "- 'A singular aluminum latch mechanism with a high-tension contact point of "
-                "polished steel meeting a frosted glass surface.'\n"
-                "- 'Two precision-milled aluminum plates meeting at a singular point of contact.'\n\n"
+                "Examples of past subjects (this site's actual house style):\n"
+                "- 'A vintage typewriter on a desk with a sheet of paper rising out of it, "
+                "the paper itself depicting a smaller typewriter — the recipe writing itself.'\n"
+                "- 'A desk lamp casting a warm pool of light over an open notebook, with a "
+                "few books and a chess piece scattered in the surrounding shadow.'\n"
+                "- 'Two paper notes pinned to a softly crosshatched cork board, one bearing "
+                "a checklist, one bearing a paragraph, each held by a single brass pushpin.'\n\n"
                 f"Post claim: {idea.get('claim', '')}\n\n"
                 f"Post text:\n\n{post_text[:3000]}\n\n"
                 "Reply with ONE sentence describing the subject and arrangement. No preamble. "
