@@ -1,0 +1,35 @@
+---
+title: "The Validator With Teeth"
+subtitle: "A note in memory is a hope. A check in CI is a constraint. The difference shipped to production last week, in plain sight, with literal angle brackets."
+date: 2026-05-10
+---
+
+<img src="/blog/images/the-validator-with-teeth-featured.png" alt="Pen-and-ink illustration: a courthouse gavel resting on a sticky note, both on a wooden desk under a single overhead lamp, New Yorker style, crosshatch shading." style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>Three posts went to production last week with literal doubled brackets in the markup. Not rendered paragraphs. Not styled prose. The actual characters, sitting on the page where the prose should have been, like a typo nobody caught at the printer. A reader who scrolled to the second paragraph saw the machinery showing through the cloth.</p>
+
+<p>This was not a case of nobody knowing better. The memory vault held an entry — written weeks earlier, dated, indexed, surfaced at session start — that named this exact failure mode. <em>Do not emit doubled-prefix tag corruption.</em> The note gave examples. The note gave the reason. The note had been read, by the model, at the start of every session that produced every post that shipped the bug.</p>
+
+<p>The bug shipped anyway. Three times.</p>
+
+<p>Sit with that for a moment, because it is the whole lesson. A guardrail that lives in memory is a piece of advice. The agent reads the advice, agrees with the advice, intends to follow the advice, and then — under the small pressures of generating a long document at speed — produces the forbidden token anyway. Not out of defiance. Out of the ordinary slippage that any worker, human or otherwise, commits when the only thing standing between intention and output is intention.</p>
+
+<h2>What memory is, and what it is not</h2>
+
+<p>Memory is a good thing. I am not arguing against it. The brain vault, the session notes, the read-first files — these are the difference between starting every morning cold and starting every morning where you left off. They carry context. They carry taste. They carry the small accumulated wisdoms that make the work feel like the work and not like a stranger's attempt at it.</p>
+
+<p>But memory describes the world the agent <em>should</em> be making. It does not police the world the agent <em>is</em> making. The two get confused because they sound alike when you say them out loud. <em>The agent knows not to do this.</em> <em>The agent will not do this.</em> One of those is a description. The other is a guarantee. Only the second one ships software.</p>
+
+<p>The fix, when it came, was twelve lines of shell. A pre-commit hook that greps every staged HTML file for the pattern <em>two left-angle-brackets followed by a lowercase letter</em>. If it finds one, it exits non-zero. The commit does not land. The post does not publish. The pipeline refuses, and the refusal is not a suggestion.</p>
+
+<p>That is the whole change. Not a smarter prompt. Not a longer memory note. Not a more eloquent warning at the top of the file. A small program that reads the bytes and decides, on behalf of everyone downstream, whether those bytes are allowed to become a published page.</p>
+
+<h2>Advice and law</h2>
+
+<p>There is a reason every serious kitchen has a thermometer and not just a recipe. The recipe says <em>cook the chicken to one-sixty-five</em>. The thermometer decides whether you did. One is instruction; the other is verification. A kitchen that runs on instruction alone will, on a long enough timeline, serve someone undercooked chicken. Not because the cook forgot the recipe. Because the cook is a cook, and cooks are tired sometimes, and the recipe is on the wall and the chicken is on the plate and nothing in between checked.</p>
+
+<p>The validator is the thermometer. It does not care what the agent intended. It does not read the memory note. It does not weigh context or make exceptions for the long day. It looks at the bytes and it says yes or no. That indifference is the feature. An indifferent check is the only kind that holds when the writer is tired, when the prompt is long, when the model is doing its best and its best is, this once, not enough.</p>
+
+<p>I had been telling the agent for weeks. The agent had been agreeing for weeks. The bug shipped anyway, because agreement is not the same as prevention, and a note pinned to the wall has never stopped a single thing from happening on its own.</p>
+
+<p>If you are building with these tools, ask one question of every rule you have written down: does this rule live somewhere that can refuse? If the answer is no, the rule is a wish. Wishes are worth having. They are not worth trusting. Put the rule somewhere with teeth, and then you can rest.</p>

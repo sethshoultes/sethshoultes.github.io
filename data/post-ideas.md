@@ -16,7 +16,7 @@ The `slug` becomes the post filename: `_posts/YYYY-MM-DD-<slug>.html`.
 ---
 
 ## Idea: the-validator-with-teeth
-status: ready
+status: consumed
 claim: A guardrail that lives in memory is advice; a guardrail that lives in CI is law.
 notes: A markup-discipline memory entry existed for weeks warning agents not to emit doubled-prefix tag corruption like `<<pp>` and `<<imgimg>`. The corruption shipped to production anyway — three blog posts on main with literal `<<pp>` text rendering. The fix wasn't more memory. The fix was a validator wired into the publish pipeline that exits non-zero on `<<[a-z]` patterns. Memory tells the agent what should be true; the validator decides what gets shipped. The post should sit with the discomfort that comes from realizing a memory note is a hope, not a constraint.
 
