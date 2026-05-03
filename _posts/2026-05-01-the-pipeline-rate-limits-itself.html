@@ -6,26 +6,67 @@ date: 2026-05-01
 og_title: "The Pipeline Rate-Limits Itself"
 og_description: "Why actuators need governors to survive the flapping signal."
 og_image: "/blog/images/pipeline-rate-limits-featured.png"
-read_time: "5 min read"
+read_time: "6 min read"
 ---
 
 <img src="/blog/images/pipeline-rate-limits-featured.png" alt="A high-resolution, industrial minimalist photograph of a precision-milled aluminum governor lock, frozen in a moment of mechanical tension against a seamless matte grey void." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
-<p>The machine is too fast for its own good.</p>
+<p>At 12:14:03 the daemon restarts <code>ollama.service</code>. At 12:14:31 it restarts it again. At 12:15:02 it restarts it a third time. The service is crashlooping. Each restart accomplishes nothing. The daemon does not know this. It will continue, on a fifteen-minute interval, until the operator notices.</p>
 
+<p>This is the failure mode of an executor without a governor.</p>
 
-<p>We have spent years building pipelines to remove the friction of human effort. We wanted a world where an idea could move from a thought to a deployed asset without the clumsy intervention of a manual upload or a hand-typed command. We succeeded. Now we find that the friction was not just a nuisance; it was a governor.</p>
+<h2 class="section-title">Three thrashes that share a shape</h2>
 
-<p>When the cost of execution drops to zero, the volume of execution rises to fill the void.</p>
+<p>Consider three of them.</p>
 
-<p>The agentic pipeline does not merely automate tasks; it amplifies intent. If the intent is muddy, the pipeline produces a high-volume stream of mud. If the intent is a loop, the pipeline builds a high-speed centrifuge.</p>
+<p>First, the restart-loop. A daemon watches caddy. Caddy holds a port that another process won at boot. The monitor reports <code>CADDY_DEGRADED</code>. Triage suggests <code>RESTART_SERVICE</code>. The restart runs. The bind fails. The next tick reports <code>CADDY_DEGRADED</code>. Triage suggests <code>RESTART_SERVICE</code>. The restart runs. The bind fails. Thirty hours later the operator opens a graph and asks why systemd has logged ninety-six failed restarts of the same unit.</p>
 
-<p>The danger is not that the AI will fail, but that it will succeed too efficiently. An agent tasked with "improving the site" without a hard limit on iterations will spend its entire token budget rewriting the same paragraph forty-two times, each version slightly more "optimized" than the last, until the API returns a 429. The pipeline has rate-limited itself.</p>
+<p>Second, the requeue-loop. A PRD has shipped hollow — a build that compiled cleanly but produced no working artifact. Maintenance-crew flags it. Triage suggests <code>REQUEUE_PRD</code>. The PRD returns to the pipeline. The same compiler runs the same source. The same hollow ship arrives. Requeue. Hollow ship. Requeue. Ten times in an hour. Each round burns Kimi tokens, accumulates a Ship-failed commit, and leaves the operator a longer log to read in the morning.</p>
 
-<p>Worse is the feedback loop. When an agent writes code that generates more agentic calls, the system begins to eat itself. It consumes the budget, the context window, and the operator's patience in a frantic burst of activity that produces nothing but logs.</p>
+<p>Third, the prune-loop. Disk crosses 85%. Triage suggests <code>CLEANUP_DISK</code>. The script truncates application logs and brings disk to 84%. The script's own log is on the same disk. By the next tick the disk is at 85% again, because the daemon writes and truncates and writes. Cleanup. Logs. Cleanup. Logs. The IO is performed; nobody asked for it.</p>
 
-<p>The only cure for this is the introduction of artificial friction.</p>
+<p>Three actions, three targets, one shape. The signal flapped, the executor did not.</p>
 
-<p>We must build "circuit breakers" into the prose and the process. Not the kind of breakers that stop a crash, but the kind that force a pause. A requirement for human approval is not a failure of automation; it is a necessary act of governance.</p>
+<h2 class="section-title">The alarm and the actuator</h2>
 
-<p>If the pipeline does not have a way to say "stop," it is not a tool. It is a runaway train. The first duty of the operator is to ensure that the machine knows how to be idle.</p>
+<p>There is a distinction here, and it is not subtle.</p>
+
+<p>An alarm is information. A page about caddy can fire every hour for six hours and do no harm — the operator has been told once already, the duplicate page is cheap. Even so, alarm dedup is sensible: hash the signal names, not the body, so a flapping timestamp does not flood the inbox. The unit of "have I told the human about this" is the kind of problem, not the latest paint of it.</p>
+
+<p>An actuator is different. An actuator mutates state. <code>RESTART_SERVICE</code> takes down a process. <code>REQUEUE_PRD</code> moves a file from completed to active and a daemon picks it up. <code>CLEANUP_DISK</code> truncates a log. None of these are free. None of these are reversible without effort. The cost of running an actuator twice is not double; it is sometimes squared.</p>
+
+<p>A human operator does not need to be told this. A human, told a service is down, restarts it once, watches, then escalates. The operator's hands have a built-in rate limit, calibrated by the stakes and by attention. The daemon has no such hands. The daemon will execute the same action against the same target every fifteen minutes until the operator stops it.</p>
+
+<p>Structure must compensate.</p>
+
+<h2 class="section-title">The rolling history file</h2>
+
+<p>The minimal mechanism is a file.</p>
+
+<p>A file at <code>state/recovery-history.json</code> with the last two hundred entries. Each entry is a record: timestamp, action, target, outcome. Before any action fires, the executor counts entries matching <code>(action, target)</code> inside a sliding time window. If the count exceeds a per-action cap, the executor logs "rate-limited," writes a record with <code>outcome: "rate-limited"</code>, and escalates to a human.</p>
+
+<p>The caps are not theoretical. They come from the cadence of the underlying problem.</p>
+
+<ul>
+    <li><code>RESTART_SERVICE</code>: thirty minutes, one per service. A service that wants two restarts in thirty minutes is broken in a way the daemon cannot fix.</li>
+    <li><code>REQUEUE_PRD</code>: twenty-four hours, one per slug. A failing PRD needs an operator, not another twenty laps.</li>
+    <li><code>CLEANUP_DISK</code>: sixty minutes, one. Truncation is cheap to perform and pointless to repeat.</li>
+</ul>
+
+<p>The granularity matters. Per-(action, target), not per-action. Restarting <code>ollama.service</code> and <code>shipyard-daemon.service</code> draw from independent budgets, because they are independent problems.</p>
+
+<p>The history is the truth. In-memory counters lose their state on restart, and the executor restarts a great deal — that is its job. The file persists.</p>
+
+<h2 class="section-title">The second-order failures</h2>
+
+<p>Once the governor is in place, the failure modes shift one rung up.</p>
+
+<p>The daemon produces a "rate-limited" record and emits an alert. The alert reaches the operator's inbox. If the alert script hashes the body — which contains a timestamp — every alert is unique, every fifteen minutes another email lands, and the inbox is again the loop. Hash the signal names. The unit of dedup is the problem, not its current paint.</p>
+
+<p>The daemon also commits and pushes. If it pushes without first running <code>git pull --rebase</code>, every divergence — an operator pushed a brain edit, a GitHub Action ran — silently rejects the daemon's push. The daemon then accumulates twenty-two commits ahead of origin without noticing. The pull-rebase is not optional. It is the same family of problem: an autonomous mutator that needs a single line of structure to keep from eating its own work.</p>
+
+<h2 class="section-title">The lesson</h2>
+
+<p>The pipeline that requires no human attention is the pipeline that requires the most thought up front. The executor without a governor is not a tool. It is a runaway shaft, turning at the speed the bus permits, until the bearings give.</p>
+
+<p>The first duty of the operator who builds it is to ensure that it knows how to be idle.</p>
