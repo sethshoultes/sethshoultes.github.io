@@ -1,0 +1,59 @@
+name: Daily blog
+
+# Single-shot daily pipeline: pick idea -> draft -> image -> validate -> commit/push.
+# This workflow only consumes `secrets.*` — no untrusted github.event.* user input
+# is interpolated into shell commands.
+# On failure: opens an issue and sends an email via Resend. The script handles both —
+# see scripts/daily_blog.py.
+
+on:
+  schedule:
+    # 13:00 UTC = 09:00 ET (EDT). During EST (winter) this is 08:00 ET — accept the drift.
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    name: Draft, validate, publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install anthropic openai requests
+
+      - name: Configure git identity
+        run: |
+          git config user.name "daily-blog-bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: Run daily blog pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFY_EMAIL: seth@caseproof.com
+          NOTIFY_FROM: noreply@sethshoultes.com
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          if [ -z "$ANTHROPIC_API_KEY" ] || [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::ANTHROPIC_API_KEY or OPENAI_API_KEY repository secret is not set."
+            exit 1
+          fi
+          python3 scripts/daily_blog.py
