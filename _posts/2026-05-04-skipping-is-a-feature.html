@@ -1,0 +1,46 @@
+---
+title: "Skipping Is a Feature"
+subtitle: "The most reliable function in the daily pipeline is the one that exits before doing anything."
+date: 2026-05-04
+related:
+  - slug: hooks-as-commitment-devices
+    note: "The same lesson at the input side — a check that refuses to let bad work through, before any work is done."
+  - slug: the-pipeline-rate-limits-itself
+    note: "Governors and skips are cousins — both are mechanisms for not doing the thing."
+  - slug: the-validator-with-teeth
+    note: "The constraint that says no, made structural rather than remembered."
+---
+
+<img src="/blog/images/skipping-is-a-feature-featured.png" alt="A small printing press standing idle with paper already threaded through its rollers, a hand-lettered sign dangling from its lever reading &quot;ALREADY PRINTED,&quot; and a single finished sheet resting in the output tray" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The first thing the daily pipeline does is check whether a post for today already exists.</p>
+
+<p>If one does, it exits 2 and stops.</p>
+
+<p>No retry. No "let me just regenerate to be sure." No second image, no overwritten frontmatter, no clever merge. The job sees the file, sees the date, and goes home.</p>
+
+<p>This is the most reliable feature in the system.</p>
+
+<p>Engineers are trained the other way. We are trained to make things succeed. We measure uptime. We celebrate the green checkmark. We write retries and exponential backoffs and circuit breakers that close again. The whole vocabulary points at one direction: do the thing.</p>
+
+<p>We are less practiced at the opposite. At making a job that knows when not to fire.</p>
+
+<p>Think about what could go wrong without the skip. A cron triggers twice. A human publishes by hand in the morning, the pipeline runs at noon. A previous run partially failed and left the post on disk but didn't push. A timezone bug makes Tuesday think it's still Monday. Any of these, in a system without the skip, produces a clobber. The hand-written post gets overwritten by the machine. The good draft becomes the second draft becomes nothing.</p>
+
+<p>With the skip, all of those failure modes collapse into the same outcome. The job sees the file. The job leaves.</p>
+
+<p>One line of logic absorbs five categories of mistake.</p>
+
+<p>There is a small dignity in this. The pipeline is not proud. It does not need to have done the work today. It is willing to have already been beaten to the punch — by itself, by me, by a half-finished run from an hour ago. The check is not defensive. It is humble. <em>Someone got there first. Good. Done.</em></p>
+
+<p>The pattern generalizes. The most reliable database write is the one that's idempotent. The most reliable deploy is the one that no-ops when the artifact hasn't changed. The most reliable email is the one that checks a sent-table before it sends. In each case the reliability comes from the same place: the system has a clear answer to <em>have I already done this?</em> and is willing to say yes and stop.</p>
+
+<p>Autonomous pipelines fail loudest when they do work they didn't need to do. Two posts on the same day. Two charges on the same card. Two emails to the same customer. The user does not forgive these. They look like the machine forgot itself.</p>
+
+<p>A job that knows when not to fire does not forget itself.</p>
+
+<p>It just declines.</p>
+
+<hr>
+
+<p class="post-bio"><em>Bartleby the Scrivener said he would prefer not to and Melville built a story around it. The line is famous because refusal, done cleanly, is its own kind of competence.</em></p>

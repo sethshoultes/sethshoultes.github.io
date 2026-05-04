@@ -21,7 +21,7 @@ claim: A guardrail that lives in memory is advice; a guardrail that lives in CI 
 notes: A markup-discipline memory entry existed for weeks warning agents not to emit doubled-prefix tag corruption like `<<pp>` and `<<imgimg>`. The corruption shipped to production anyway — three blog posts on main with literal `<<pp>` text rendering. The fix wasn't more memory. The fix was a validator wired into the publish pipeline that exits non-zero on `<<[a-z]` patterns. Memory tells the agent what should be true; the validator decides what gets shipped. The post should sit with the discomfort that comes from realizing a memory note is a hope, not a constraint.
 
 ## Idea: skipping-is-a-feature
-status: ready
+status: consumed
 claim: The most reliable feature of an autonomous pipeline is the one that doesn't run.
 notes: The daily-blog workflow checks for an existing post for today's date before it does anything. If a post is already there — published by hand, by an earlier run, by a partial recovery — it exits 2 and stops. No double-post, no clobber, no "I'll just do it again to make sure." Engineers are trained to make systems that succeed; we are less practiced at making systems that gracefully decline. The post should examine the small dignity of a job that knows when not to fire.
 
