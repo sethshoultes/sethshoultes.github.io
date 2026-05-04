@@ -16,6 +16,11 @@ on:
         description: "Override target date (YYYY-MM-DD). Leave blank for today."
         required: false
         default: ""
+      force_publish:
+        description: "Bypass the 'bot already ran today' guard. Use for recovery / re-runs."
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -56,6 +61,7 @@ jobs:
           NOTIFY_FROM: noreply@sethshoultes.com
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_DATE: ${{ inputs.force_date }}
+          FORCE_PUBLISH: ${{ inputs.force_publish && '1' || '' }}
         run: |
           set -e
           if [ -z "$ANTHROPIC_API_KEY" ] || [ -z "$OPENAI_API_KEY" ]; then
