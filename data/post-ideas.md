@@ -26,7 +26,7 @@ claim: The most reliable feature of an autonomous pipeline is the one that doesn
 notes: The daily-blog workflow checks for an existing post for today's date before it does anything. If a post is already there — published by hand, by an earlier run, by a partial recovery — it exits 2 and stops. No double-post, no clobber, no "I'll just do it again to make sure." Engineers are trained to make systems that succeed; we are less practiced at making systems that gracefully decline. The post should examine the small dignity of a job that knows when not to fire.
 
 ## Idea: failure-visible-three-ways
-status: ready
+status: consumed
 claim: For unattended automation, redundant failure signals are not paranoia — they are the contract.
 notes: When the daily-blog pipeline fails it does three things: writes a failure report to data/failures/<date>.md, opens a labeled GitHub issue via gh CLI, and sends an email via Resend. Any one of those could fail silently — the runner could be down, gh could rate-limit, the email service could be having a day. Three channels means the operator finds out within a workflow that, by definition, runs without an operator watching. The cost of a missed failure ping is one bad day's content; the cost of building three is one afternoon. The post should land on this asymmetry.
 

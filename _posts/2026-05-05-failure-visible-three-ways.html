@@ -1,0 +1,44 @@
+---
+title: "Failure, Visible Three Ways"
+subtitle: "The pipeline runs while you sleep. When it breaks, it tells you three times."
+date: 2026-05-05
+related:
+  - slug: the-pipeline-rate-limits-itself
+    note: "The companion argument about governors — same principle, applied to throttling instead of alerting."
+  - slug: skipping-is-a-feature
+    note: "The other side of the same coin — a clean exit is a signal, and so is a loud failure."
+  - slug: the-deploy-told-you-nothing
+    note: "On green checkmarks that lie. This post is about red flags that have to land."
+---
+
+<img src="/blog/images/failure-visible-three-ways-featured.png" alt="Three small brass alarm bells of varying sizes mounted in a row on a wooden board, each connected by its own separate wire to a single shared trigger lever, all three clappers caught mid-strike" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The pipeline runs at six in the morning. Nobody is watching. That is the design.</p>
+
+<p>When it breaks, it does three things. It writes a failure report to <code>data/failures/&lt;date&gt;.md</code>. It opens a labeled issue on GitHub. It sends an email through Resend.</p>
+
+<p>One signal would be enough if the world were honest. The world is not.</p>
+
+<p>The runner can be down. Then the file does not get written, because there is no disk to write it to. The GitHub API can rate-limit. Then the issue does not open, because the door is shut. The email service can have a bad afternoon. Then the email does not arrive, because somewhere a queue is backed up and nobody told you.</p>
+
+<p>Each channel has a failure mode. The failure modes are independent. That is the only thing that matters.</p>
+
+<p>Three independent channels means the probability that all three fail at once is the product, not the sum. If each channel works ninety-nine times out of a hundred, one channel misses one alert in a hundred. Three channels miss one in a million. The arithmetic is not subtle. The arithmetic is the whole argument.</p>
+
+<p>People call this paranoia. It is not paranoia. It is the contract.</p>
+
+<p>The contract says: this pipeline runs without a human. In exchange, the pipeline owes the human a loud, redundant, unmissable signal when it cannot do its job. The cost of a missed signal is a day of bad output, or no output, or worse — output that looks fine and is not. The cost of building three channels is one afternoon.</p>
+
+<p>One afternoon against every morning the pipeline runs from now until you turn it off. The asymmetry is not close.</p>
+
+<p>The temptation, when you write the first version, is to pick the channel you like and trust it. Email feels personal. The issue tracker feels professional. The file on disk feels honest. Each one feels like enough on its own. None of them is.</p>
+
+<p>You learn this the first time the alert does not come and the blog goes quiet for two days and a friend asks if you are okay. You were okay. The mailer was not.</p>
+
+<p>So you write three. You let them be redundant. You let them feel like overkill on the days they all fire together.</p>
+
+<p>On the day only one fires, you will know why you wrote three.</p>
+
+<hr>
+
+<p class="post-bio"><em>Hemingway kept two notebooks in case he lost one. He was not being careful. He was being correct about how often things get lost.</em></p>
