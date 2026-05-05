@@ -40,11 +40,11 @@ related:
 
 <p>Today I am opening <a href="https://github.com/sethshoultes/building-with-ai-skills">building-with-ai-skills</a> — a public repository that codifies the procedures behind the builds described in recent posts here. Three skills shipped today.</p>
 
-<p><strong>add-avatar-to-site</strong> — the procedure for putting a HeyGen LiveAvatar with an ElevenLabs voice clone on a static site. The Cloudflare Worker that mints the session token so the API key never crosses the network. The LITE-mode session config. The SDK loaded via esm.sh with no build step. The agent setup. The gotchas — including why <code>expects_response</code> behaves differently on the LiveAvatar Plugin path than anywhere else.</p>
+<p><strong><a href="/recipes/add-avatar-to-site.html">add-avatar-to-site</a></strong> — the procedure for putting a HeyGen LiveAvatar with an ElevenLabs voice clone on a static site. The Cloudflare Worker that mints the session token so the API key never crosses the network. The LITE-mode session config. The SDK loaded via esm.sh with no build step. The agent setup. The gotchas — including why <code>expects_response</code> behaves differently on the LiveAvatar Plugin path than anywhere else.</p>
 
-<p><strong>add-rag-to-elevenlabs-agent</strong> — the procedure for wiring a URL-sourced knowledge base to an ElevenLabs Conversational AI agent. Two API calls: POST the URL document, trigger RAG indexing. Then PATCH the agent's prompt object. Then the system-prompt-update that teaches the agent to retrieve before answering. The order matters. This skill encodes the order.</p>
+<p><strong><a href="/recipes/add-rag-to-elevenlabs-agent.html">add-rag-to-elevenlabs-agent</a></strong> — the procedure for wiring a URL-sourced knowledge base to an ElevenLabs Conversational AI agent. Two API calls: POST the URL document, trigger RAG indexing. Then PATCH the agent's prompt object. Then the system-prompt-update that teaches the agent to retrieve before answering. The order matters. This skill encodes the order.</p>
 
-<p><strong>register-elevenlabs-client-tool</strong> — the procedure for adding a browser-side client tool to an ElevenLabs agent. The two-step protocol: POST to <code>/v1/convai/tools</code>, PATCH the agent's <code>prompt.tool_ids</code>. The PATCH replaces the field — it does not merge. Read first, append, write. Miss that step and you lose every tool already on the agent. This skill encodes that too.</p>
+<p><strong><a href="/recipes/register-elevenlabs-client-tool.html">register-elevenlabs-client-tool</a></strong> — the procedure for adding a browser-side client tool to an ElevenLabs agent. The two-step protocol: POST to <code>/v1/convai/tools</code>, PATCH the agent's <code>prompt.tool_ids</code>. The PATCH replaces the field — it does not merge. Read first, append, write. Miss that step and you lose every tool already on the agent. This skill encodes that too.</p>
 
 <p>Each skill links to the post on this site that explains why the pattern exists. The post gives you the reasoning. The skill makes the procedure executable.</p>
 
@@ -90,7 +90,7 @@ related:
 
 <h2>What comes next</h2>
 
-<p>Three skills today. The brain vault has eight more candidate skills already documented as runbooks — procedures that have been run enough times to prove themselves, not yet promoted to a public skill file. They become skills when I am confident the procedure is stable and the gotchas are named. Not before.</p>
+<p>Three skills today. The <a href="/recipes/claude-code-brain-vault.html">brain vault</a> has eight more candidate skills already documented as runbooks — procedures that have been run enough times to prove themselves, not yet promoted to a public skill file. They become skills when I am confident the procedure is stable and the gotchas are named. Not before.</p>
 
 <p>The shape of the library as I see it from here: skills for the GitHub Actions patterns that keep the RAG corpus in sync, skills for the Cloudflare Worker token-mint pattern, skills for the constellation dispatch protocols the Agentic Economy series describes. Procedures that have been worked out at cost, made installable so the next build does not start from the same place.</p>
 

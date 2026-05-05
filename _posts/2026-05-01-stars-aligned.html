@@ -72,7 +72,7 @@ related:
 
 <p>The structure is simple: a <code>plugins/</code> directory with each of the ten plugins as a subdirectory, and a <code>.claude-plugin/marketplace.json</code> as the marketplace manifest. One add command makes all ten discoverable:</p>
 
-<pre><code>claude /plugin marketplace add github:sethshoultes/great-minds-constellation</code></pre>
+<pre><code>claude /plugin marketplace add github:sethshoultes/<a href="https://github.com/sethshoultes/great-minds-constellation">great-minds-constellation</a></code></pre>
 
 <p>Each project then installs only what it needs. Each installed plugin loads roughly 150–250 tokens of agent metadata at startup; all ten together is approximately 19,000 tokens per session, even when only two or three personas will be invoked. You pay the full constellation tax only for the project that is actually orchestrating the constellation. Casual sessions stay lean.</p>
 
