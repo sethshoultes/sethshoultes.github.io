@@ -277,6 +277,17 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "Then your prose, every <p> opened and closed, every <h2> opened and closed.\n\n"
         "Then, AT THE END of the body — after the last paragraph of prose — add this closing block:\n\n"
         "<hr>\n\n"
+        "[OPTIONAL references paragraph — INCLUDE IT if the post leans on any specific external "
+        "resource (a public repo, a recipe page on this site, a brain learning, a runbook). "
+        'Format: <p><em>References: ...</em></p> with hyperlinks. Examples:\n'
+        '  • <p><em>References: the <a href=\\"/recipes/claude-code-brain-vault.html\\">brain '
+        'vault recipe</a> and the example structure at '
+        '<a href=\\"https://github.com/sethshoultes/building-with-ai-brain\\">building-with-ai-brain</a>.</em></p>\n'
+        '  • <p><em>The brain learning behind this post is in the public skeleton at '
+        '<a href=\\"https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/'
+        '<filename>.md\\"><filename>.md</a>.</em></p>\n'
+        "If the post is purely conceptual and points at no specific external resource, omit "
+        "this paragraph. Default to including it when in doubt — readers want the doorway.]\n\n"
         '<p class="post-bio"><em>{closing line}</em></p>\n\n'
         "The {closing line} is ONE of these two registers — pick whichever fits the post and your "
         "voice better, and vary across posts so the corpus does not flatten:\n\n"
