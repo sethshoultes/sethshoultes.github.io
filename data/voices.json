@@ -22,6 +22,11 @@
       "voice": "hemingway",
       "slug": "failure-visible-three-ways",
       "date": "2026-05-05"
+    },
+    {
+      "voice": "baldwin",
+      "slug": "cron-on-the-laptop-is-not-automation",
+      "date": "2026-05-06"
     }
   ]
 }

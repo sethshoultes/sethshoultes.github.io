@@ -31,7 +31,7 @@ claim: For unattended automation, redundant failure signals are not paranoia —
 notes: When the daily-blog pipeline fails it does three things: writes a failure report to data/failures/<date>.md, opens a labeled GitHub issue via gh CLI, and sends an email via Resend. Any one of those could fail silently — the runner could be down, gh could rate-limit, the email service could be having a day. Three channels means the operator finds out within a workflow that, by definition, runs without an operator watching. The cost of a missed failure ping is one bad day's content; the cost of building three is one afternoon. The post should land on this asymmetry.
 
 ## Idea: cron-on-the-laptop-is-not-automation
-status: ready
+status: consumed
 claim: A cron job that depends on the operator's machine state is theatre, not infrastructure.
 notes: The previous daily-content setup ran via local launchd jobs on a MacBook. It silently skipped every day the laptop was closed, every flight, every long meeting. The operator believed the system was running because the system *could* run — but the run rate was something like 60%. Moving to GitHub Actions removed the dependency on whether anyone happened to be at a keyboard. The pipeline doesn't care if the operator exists. That's the whole point of automation, and the local-cron pattern quietly violated it for months. The post should examine why this confusion is so common — the local cron *feels* like automation because it runs without a click. But "without a click" is not the same as "without a person."
 

@@ -1,0 +1,38 @@
+---
+title: "Cron on the Laptop Is Not Automation"
+subtitle: "A scheduled job that depends on whether the lid is open is not infrastructure. It is a performance the operator gives himself."
+date: 2026-05-06
+related:
+  - slug: skipping-is-a-feature
+    note: "the difference between a job that decides not to run and a job that simply did not get the chance — one is logic, the other is absence."
+  - slug: hooks-as-commitment-devices
+    note: "the same lesson at a smaller scale — a rule only governs if something other than the operator's good intentions is enforcing it."
+  - slug: failure-visible-three-ways
+    note: "what visibility looks like when the pipeline runs without you — and how silent skipping is the failure mode that hides longest."
+---
+
+<img src="/blog/images/cron-on-the-laptop-is-not-automation-featured.png" alt="A closed laptop sitting on a nightstand with its lid down, beside it a wall clock whose hands point to the scheduled hour, a small unopened envelope resting on the laptop's lid as if waiting to be delivered" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>For months I told myself I had a daily content pipeline. I said it out loud to other people. I described the schedule, the steps, the outputs; I drew the boxes on a napkin once, at a coffee shop, for someone who asked how the system worked. The system, I said, ran every morning. The system, I said, did not need me. And every word of that was a kind of lie I had not yet learned to recognize as a lie, because the machinery of the lie was a launchd plist on my MacBook, and the MacBook was, more often than I wanted to admit, closed.</p>
+
+<p>Closed on the plane. Closed in the long meeting. Closed overnight when the lid went down and the laptop, doing what laptops do, slept through the hour at which the job was scheduled to run. The job did not fail on those days. Failure would have been a gift; failure leaves a log, a stack trace, a red mark on a dashboard somewhere that a person can look at and feel something about. The job simply did not run. There was no record of the not-running, because the thing that would have produced the record was the thing that had not run. The absence was invisible because the absence was total.</p>
+
+<p>I want to be precise about the rate, because the rate is the indictment. Something like sixty percent. Three days in five, on a generous count. The other two days were a silence I had built and was paying to maintain, because I had convinced myself that <em>scheduled</em> was the same word as <em>automated</em>, and it is not, and the distance between those two words is the distance between a system and a story you tell about a system.</p>
+
+<p>I want to ask why this confusion is so easy. Why a person who knows better — who has shipped software, who has read the documentation, who can recite from memory the difference between a daemon and a user agent — will still, given a laptop and a cron expression, mistake the one for the other. The answer, I think, is that local cron <em>feels</em> like automation in the body. You set it up once. You walk away. The machine, when you are looking at it, does the thing without your hand on the keyboard. The click is gone. And because the click is gone, you tell yourself the person is gone, too. But the person is not gone. The person is the substrate. The person's open laptop, the person's network, the person's failure to close seventeen Chrome tabs that are eating the RAM the job needs — all of it, the whole soft envelope of the operator's daily life, is what the job is actually running on. The operator <em>is</em> the infrastructure, and has not noticed, because the operator has confused his own continuous presence with the absence of work.</p>
+
+<p>This is the trick, and it is worth naming as a trick, because it is the same trick we play in larger and more dangerous forms elsewhere. We mistake the appearance of independence for independence. We mistake the absence of a click for the absence of a person. We build a thing that runs without us being asked, and we call it autonomous, and we forget that we are still the one carrying it; we are still the one whose closed laptop, whose travel day, whose ordinary human refusal to be at the desk, decides whether the thing exists at all that morning. A system that runs only when you are available to host it is not a system that has been built. It is a habit you have given a schedule.</p>
+
+<p>The move to GitHub Actions did not make the pipeline cleverer. It made the pipeline <em>indifferent to me</em>. That is the only test that matters. The runner does not know whether I am at the desk or on a plane or in a hospital. The runner does not care. It wakes when it is told to wake, it does the work, it writes the log, and if it fails it fails loudly enough that I can hear it from wherever I happen to be standing. The pipeline now runs in spite of me. That is what automation has always meant, and I had been calling something else by its name for the better part of a year.</p>
+
+<p>I do not think I am unusual in this. I think a great many people who say they have automated something have, in fact, only relocated the click — moved it from the hand to the lid, from the keyboard to the wall power, from the explicit gesture to the implicit one. The click is still there. They have only stopped seeing it. And the run rate, if anyone bothered to measure it honestly, would tell them the truth their story will not.</p>
+
+<p>So measure it. Count the days the job actually produced its output, and divide by the days it was scheduled to. If the number is not very close to one, you do not have automation. You have a ritual that requires your presence, dressed up in the costume of a system. The costume is convincing. The costume is convincing to <em>you</em>, which is the problem; you are the one who built it, you are the one it is performed for, and you are the one who will keep believing in it until the day you look at the output folder and find two weeks of nothing and finally understand what you have been paying for.</p>
+
+<p>The question is not whether your job runs without a click. The question is whether it runs without you.</p>
+
+<hr>
+
+<p><em>References: the related posts above, and the broader argument about pipelines that survive the operator's absence in <a href="/blog/failure-visible-three-ways.html">Failure, Visible Three Ways</a>.</em></p>
+
+<p class="post-bio"><em>Joan Didion wrote that we tell ourselves stories in order to live. She did not have a launchd plist in mind, but she might as well have. The story I told myself was that the system was running. The system was not running. The story was running, and I was the one running it.</em></p>
