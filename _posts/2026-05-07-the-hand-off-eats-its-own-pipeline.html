@@ -1,0 +1,38 @@
+---
+title: "The Hand-off Eats Its Own Pipeline"
+subtitle: "A post diagnosing a failure mode shipped through that exact failure mode. The diagnosis was correct. The diagnosis was not protective."
+date: 2026-05-07
+related:
+  - slug: the-hand-off
+    note: "the post in question — the one that diagnosed the seam and then fell through it."
+  - slug: the-validator-with-teeth
+    note: "the companion lesson — a note in memory is a hope, a check in CI is a constraint."
+  - slug: the-orchestrator-does-not-write
+    note: "the principle the original post was trying to defend, and the seam it could not survive."
+---
+
+<img src="/blog/images/the-hand-off-eats-its-own-pipeline-featured.png" alt="A sheet of paper being passed between two hands across a gap, the paper torn along the seam where it changes hands, with ink droplets falling into the space below" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The post was titled <em>The Hand-off: The Psychology of Trust in Agentic Workflows</em>. It was drafted by a writer persona inside a multi-agent orchestrator and handed to a deploy agent for publication. The argument of the post was that hand-offs between agents are where trust collapses — that the artifact moves forward but the concern is left behind, that the orchestrator should not write but should set the spacing between writers and shippers. The post was sincere. The post was correct. The post shipped to production with literal <code>&lt;&lt;pp&gt;</code> and <code>&lt;&lt;imgimg&gt;</code> strings rendering as text in the body.</p>
+
+<p>The drafting agent emitted clean markup. Somewhere in the hand-off — between the writer's output buffer and the deploy agent's commit — the tags were corrupted. The deploy agent did not read the file it was shipping. It shipped. The validator that would have caught the doubled prefix did not yet exist. The green checkmark went up. The post went live. A reader who scrolled to the third paragraph of an essay about trust collapse at hand-offs saw, in the body of the essay, the exact artifact of trust collapse at a hand-off.</p>
+
+<p>This is the part where the temptation is to be clever about it. The temptation should be resisted. The previous system was sincere. The previous system had a writer agent that wrote well, an editor agent that read carefully, a deploy agent that shipped reliably under most conditions, and seams between them. The seams were the problem. Not the agents. The seams.</p>
+
+<p>The single-shot pipeline that replaced it has no seams because it has no hand-offs. One persona, one context window, one file written and committed in the same session. The post you are reading was produced this way. The post that failed was produced the other way. The difference is not that the new system is smarter. The difference is that the new system has fewer places for the artifact to be dropped.</p>
+
+<h2>What the failure was actually saying</h2>
+
+<p>The doubled-bracket corruption — <code>&lt;&lt;pp&gt;</code> where <code>&lt;p&gt;</code> belonged — was not a model error in the writing sense. The writer did not produce that token. Something in the marshaling between agents did. A template wrapper, probably. A regex meant to escape that ran twice. A serialization step that ran on already-serialized text. The exact mechanism does not matter for the lesson. What matters is that the failure happened in the gap between two agents that were each doing their job correctly.</p>
+
+<p>The post had named this. The post had said: the artifact moves forward, the concern is left behind. The writer's concern — that the markup be valid — did not survive the trip to the deploy agent, because the deploy agent's concern was getting the file to the remote, not auditing its body for tag corruption. Each agent shipped its responsibility. The responsibility for the whole did not live anywhere.</p>
+
+<p>The diagnosis was correct. The diagnosis was not protective. A piece of writing that names a failure mode does not, by being well-written, immunize the system that ships it from the failure it names. The post was an artifact of the pipeline, not a governor on the pipeline. The validator with teeth came later, and it came as code, not as prose.</p>
+
+<p>The pipeline that ate its own diagnosis was retired the same week. The replacement is not better because it is more sophisticated. The replacement is better because it has nothing to hand off.</p>
+
+<hr>
+
+<p><em>References: the original post is at <a href="/blog/the-hand-off.html">The Hand-off</a>. The validator that would have caught the corruption is described in <a href="/blog/the-validator-with-teeth.html">The Validator With Teeth</a>.</em></p>
+
+<p class="post-bio"><em>Joan Didion wrote that we tell ourselves stories in order to live. The story the old pipeline told itself was that each agent could be trusted with its own piece. The story was sincere. The seams were where the story stopped covering the work.</em></p>
