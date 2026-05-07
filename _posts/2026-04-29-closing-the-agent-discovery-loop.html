@@ -102,4 +102,17 @@ related:
 
 <hr>
 
+<h2>Working implementations</h2>
+
+<p>The pattern in this post ships on the static-site half of <code>sethshoultes.com</code> as a Cloudflare Worker plus a literal <code>.well-known/mcp.json</code> file. Two related implementations make the same loop installable elsewhere:</p>
+
+<ul>
+  <li><strong>WordPress:</strong> <a href="https://github.com/sethshoultes/wp-mcp-discovery"><code>wp-mcp-discovery</code></a> is a drop-in plugin that ships the full loop for any WordPress site — public MCP endpoint, <code>.well-known/mcp.json</code>, <code>llms.txt</code>, public-safe formatters per opted-in post type, per-post opt-out. One toggle in <em>Settings → Agent Discovery</em>. Off by default. GPL-licensed.</li>
+  <li><strong>The full lesson series:</strong> <a href="https://sethshoultes.com/claude-academy/#/course/agent-discoverable-surfaces">Agent-Discoverable Surfaces</a> on Claude Academy walks through the static-site loop, the WordPress version, formatter security, OAuth rate-limit calibration for AI clients, and how the same OpenAPI surface bridges MCP and ChatGPT Custom GPTs. Free, no signup.</li>
+</ul>
+
+<p>Install the plugin, fork the worker, or read the lessons. The pattern is the same in all three; what changes is the stack underneath.</p>
+
+<hr>
+
 <p class="post-bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying. The public MCP layer for sethshoultes.com runs at <code>mcp.sethshoultes.com</code>; the discovery file lives in <a href="https://github.com/sethshoultes/sethshoultes.github.io/blob/main/.well-known/mcp.json">the site repo</a>.</p>
