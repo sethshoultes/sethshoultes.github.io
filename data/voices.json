@@ -32,6 +32,11 @@
       "voice": "didion",
       "slug": "the-hand-off-eats-its-own-pipeline",
       "date": "2026-05-07"
+    },
+    {
+      "voice": "morrison",
+      "slug": "force-overrides-are-test-surface",
+      "date": "2026-05-08"
     }
   ]
 }
