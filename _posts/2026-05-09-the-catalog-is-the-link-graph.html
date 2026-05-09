@@ -1,0 +1,40 @@
+---
+title: "The Catalog Is the Link Graph"
+subtitle: "An inline-link pass is only as honest as the list it reads from. Without an external catalog, the model invents authority and signs your name to it."
+date: 2026-05-09
+related:
+  - slug: personas-claim-facts-confidently
+    note: "the same failure mode at the prose layer — a confident voice citing things that were never quite true"
+  - slug: the-validator-with-teeth
+    note: "the companion argument: intention in memory is advice, structure on disk is constraint"
+  - slug: hooks-as-commitment-devices
+    note: "why the load-bearing piece is the contract, not the cleverness on top of it"
+---
+
+<img src="/blog/images/the-catalog-is-the-link-graph-featured.png" alt="A librarian's card catalog with one drawer pulled open, several index cards standing upright in the drawer, each card connected by a single taut thread to a specific book on the shelf above" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The first time I let a model add inline links to a post, it did beautiful work. Three cross-references, woven into the prose, each one phrased like the writer had been waiting all along to point you somewhere else. I read it twice before I clicked. Two of the three links went to slugs that did not exist. The third went to a slug that existed but pointed at the wrong piece — a post on a different subject with a similar-sounding title. The model had not lied to me. The model had done what models do when asked to be helpful without a list to read from. It had reached into the shape of what a link should look like and produced one.</p>
+
+<p>That is the whole problem in miniature. A made-up link is not a small bug. A made-up link is a forged citation, in your voice, signed with your name, pointing at an authority that does not exist. The reader trusts the link because the reader trusts the writer. The writer trusted the model. The model trusted the shape of the request.</p>
+
+<h2>What the catalog actually is</h2>
+
+<p>So we built a catalog. A plain file, maintained by hand at first and then by a small sync job — every published post, with its real slug, its real title, its real one-line description, its real URL. Nothing clever. A list. The linker reads the list before it touches the prose. If a post is not in the catalog, the linker cannot link to it. The model is not asked to remember; the model is asked to look.</p>
+
+<p>That sounds modest. It is modest. But the move it makes is not modest at all. It relocates the source of truth. Before the catalog, the source of truth was whatever the model believed about the archive at the moment it was asked. After the catalog, the source of truth is a file you can open and read and correct. The linker becomes a function over that file. The cleverness — and there is real cleverness in choosing which links to add and where — runs on top of a foundation that cannot drift.</p>
+
+<p>Once the catalog existed, something else became possible. The link pass could be aggressive. It could add four or five cross-references to a long post instead of one or two timid ones. Aggression was safe because invention was no longer in the room. The model could not hallucinate a target it had not been handed. The worst it could do was choose a real link clumsily, and a clumsy real link is a small problem. A confident fake link is a different category of harm.</p>
+
+<h2>The slug bug was the tell</h2>
+
+<p>For a while we ran with a quiet bug. The catalog used one slug for a post; the published URL used another, because a frontmatter override was being silently ignored by the sync. Two posts came out of that mismatch with broken cross-links — links that pointed at the catalog's idea of the slug, not the site's. The linker had done its job. The catalog had done its job. The contract between the catalog and the published URLs had not.</p>
+
+<p>That is the part worth sitting with. A reference catalog is only as load-bearing as the URL contract beneath it. If the slug in the catalog and the slug on the page can drift, the catalog becomes a confidently wrong map. The fix was four lines. The lesson was larger than four lines. Whatever names the targets must agree, byte for byte, with whatever serves the targets. Otherwise you have built a beautiful index of a library that does not match the shelves.</p>
+
+<p>The discipline this asks of you is small and unglamorous. Maintain the list. Make the publisher and the catalog read from the same field. Let the linker be aggressive only in the territory the list defines. Refuse, every time, to let the model invent a citation in your archive — because the archive is the one place where invention reads as authority, and authority you did not earn is the most expensive thing on the page.</p>
+
+<p>A model that almost-understands will fill any gap you leave it. The gap, here, is the list. Hand it the list. Then let it be clever.</p>
+
+<hr>
+
+<p><em>Borges imagined a library that contained every possible book, and noticed, almost in passing, that such a library would be indistinguishable from no library at all. The catalog is what makes a library a library. Without it, you are standing in a room full of confident shelves.</em></p>
