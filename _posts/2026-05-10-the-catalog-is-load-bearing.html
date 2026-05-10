@@ -1,0 +1,52 @@
+---
+title: "The Catalog Is Load-Bearing"
+subtitle: "An aggressive linker is a search engine pointed at a list. The list is the product."
+date: 2026-05-10
+related:
+  - slug: the-catalog-is-the-link-graph
+    note: "the prior move — establishing that the catalog exists at all. This post is what happens after, when the catalog has to carry weight."
+  - slug: the-validator-with-teeth
+    note: "the same lesson at the data layer: the artifact under test is the one the agent reads from, not the script that reads it."
+  - slug: hooks-as-commitment-devices
+    note: "why the contract is the load-bearing piece, and the cleverness on top is decoration."
+---
+
+<img src="/blog/images/the-catalog-is-load-bearing-featured.png" alt="A steel I-beam laid horizontally as a structural support, its flank stamped with a neatly engraved parts list, with smaller construction beams and rivets resting against it" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The linker got aggressive. That was the upgrade. Where it used to add three links to a post, it now adds eight. Where it used to skip a phrase it was unsure about, it now reaches. The retrofit pass touched twenty-three older posts in a single run. The diff was enormous. The prose looked, finally, like a blog that knew about itself.</p>
+
+<p>Then I read the links.</p>
+
+<p>A post about validators pointed at a post about personas. A phrase about pipelines pointed at a post about cron. The links were not wrong, exactly. They were adjacent. They were the kind of link a tired editor adds at midnight because the word matched.</p>
+
+<p>The script had not changed. The catalog had.</p>
+
+<h2>Where the behavior actually lives</h2>
+
+<p>An aggressive linker is a thin program. A few hundred lines. It reads a list, scans the prose, proposes matches, ranks them, inserts the winners. The cleverness is small. The list is everything.</p>
+
+<p>A thin catalog gives you irrelevant links, because the linker is forced to reach. A bloated catalog gives you noisy links, because every common phrase matches something. A stale catalog gives you confident links to posts whose arguments have shifted underneath the description. None of these failures look like bugs in the script. The script is doing its job. The script is doing exactly what the list told it to do.</p>
+
+<p>Which means the artifact under test is not the linker. It is the catalog.</p>
+
+<h2>Treating the list like code</h2>
+
+<p>That changes the work. A script gets versioned, reviewed, tested. A list, traditionally, gets edited. Someone adds a row. Someone fixes a typo. Nobody writes a test for a list.</p>
+
+<p>But this list decides what the model says about your archive. This list signs links in your name. This list is the difference between a reader trusting the next link they click and a reader closing the tab.</p>
+
+<p>So the catalog gets the same treatment as code. It lives in version control. Changes get reviewed. The descriptions get rewritten when the posts they describe drift. There is a check that flags entries whose one-line summary no longer matches the post's actual subtitle. There is a check that flags entries that have not been touched in six months while the post they describe has been updated four times. There is a check that flags entries with summaries so generic they would match anything — because they will.</p>
+
+<p>The script stays small. The catalog gets the budget.</p>
+
+<h2>The shape of the lesson</h2>
+
+<p>Every agentic workflow has a piece like this. A list of tools. A list of personas. A list of skills. A list of slugs. The agent looks clever because the list is good. The agent looks careless because the list is stale. The behavior people praise or blame is almost never in the code that runs. It is in the data that code reads.</p>
+
+<p>Find the list. That is the production system.</p>
+
+<hr>
+
+<p><em>References: the prior move is documented in <a href="/blog/2026/05/09/the-catalog-is-the-link-graph.html">The Catalog Is the Link Graph</a>, and the public skeleton lives at <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain</a>.</em></p>
+
+<p class="post-bio"><em>Borges imagined a library that contained every possible book. The problem was never finding the right one. The problem was the catalog.</em></p>
