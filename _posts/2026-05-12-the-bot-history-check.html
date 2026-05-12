@@ -1,0 +1,50 @@
+---
+title: "The Bot-History Check"
+subtitle: "A pipeline that skips by date respects the clock. A pipeline that skips by author respects the intent."
+date: 2026-05-12
+related:
+  - slug: skipping-is-a-feature
+    note: "The companion piece — skipping is good, but only if the skip condition matches the real question."
+  - slug: force-overrides-are-test-surface
+    note: "The override that proves the rule — once idempotency is honest, the force flag stops being a hack and starts being a gate."
+  - slug: the-pipeline-rate-limits-itself
+    note: "The same lesson at a different layer — governors must measure the right thing or they govern noise."
+---
+
+<img src="/blog/images/the-bot-history-check-featured.png" alt="An open ledger book lying flat, its facing pages divided into two columns — the left headed with a small calendar icon, the right headed with a signature flourish — with a hand resting at the edge, one finger pointing deliberately at an entry in the signature column" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The old check was a date stamp. If a post existed for today, the pipeline exited. Clean. Cheap. One line of logic.</p>
+
+<p>It was also wrong.</p>
+
+<p>The question the check was meant to answer was: <em>did the bot already publish today?</em> The question it actually answered was: <em>does any post exist with today's date?</em> Most days, those two questions return the same answer. The day they don't is the day the pipeline lies to you.</p>
+
+<p>I wrote a post by hand on a Sunday morning. Dated it Sunday. Pushed it. The scheduler woke up that afternoon, looked at the directory, saw a Sunday file, and went back to sleep. It thought it had done its job. It had done nothing. My post was on the page. Its post was not. The clock said today was handled. The author column said otherwise.</p>
+
+<p>The other failure was the opposite. To test the pipeline mid-week, I needed it to run on a day it had already run. So I added <code>FORCE_DATE</code>. I lied to the script about what day it was. The script believed me, because the script only knew about dates. The test passed. The test passed because I had fooled the check, not because I had satisfied it.</p>
+
+<p>Two failures, one shape. The unit of <em>already done</em> did not match the unit of <em>who is doing it</em>.</p>
+
+<h2>The fix is the noun</h2>
+
+<p>Switch the noun. Stop asking <em>is there a post today</em>. Start asking <em>did the bot publish today</em>. The bot signs its commits. The bot writes a marker file. The bot leaves a fingerprint somewhere only it can leave one. The check reads that fingerprint and answers the real question.</p>
+
+<p>Now the hand-written Sunday post does not block the scheduler. The bot looks at the ledger, sees no bot entries for Sunday, and runs. Two posts ship. Both authors did their work.</p>
+
+<p>Now the test does not need a date lie. It needs an override. <code>force_publish=true</code>. The flag does not pretend to be Tuesday. It says, in plain English, <em>publish anyway</em>. The reason is on the surface. The override is honest.</p>
+
+<h2>Idempotency and rate-limiting are two jobs</h2>
+
+<p>The date check was doing two things at once. It was preventing duplicates — idempotency. It was also enforcing one-post-per-day — rate-limiting. Conflating them meant you could not test one without breaking the other.</p>
+
+<p>The bot-history check does idempotency. The schedule does rate-limiting. The force flag does override. Three jobs, three surfaces. Each one can be reasoned about alone. Each one can be tested without lying to the others.</p>
+
+<p>The lesson is small and it is not small. When a check returns a boolean, ask what question the boolean answers. Then ask what question you meant to ask. If those two questions are not the same question, the check is a coincidence. It will hold until the day it doesn't.</p>
+
+<p>The unit of <em>already done</em> must match the unit of <em>who is doing it</em>. Otherwise the pipeline is keeping time, not keeping faith.</p>
+
+<hr>
+
+<p><em>References: the companion arguments in <a href="/blog/2025/skipping-is-a-feature.html">Skipping Is a Feature</a> and <a href="/blog/2025/force-overrides-are-test-surface.html">Force Overrides Are Test Surface</a>.</em></p>
+
+<p class="post-bio"><em>Hemingway said the writer's job is to sit down at the typewriter and bleed. The pipeline's job is smaller. Sit down. Check the ledger. Sign the work, or don't run.</em></p>
