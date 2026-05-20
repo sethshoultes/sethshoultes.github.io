@@ -369,6 +369,7 @@ def generate_image(prompt: str, out_path: Path) -> None:
 # ----- failure reporting --------------------------------------------------------
 
 def report_failure(stage: str, summary: str, details: str = "") -> None:
+    print(f"[fail] {stage}: {summary}\n{details}", file=sys.stderr)
     today_str = date.today().isoformat()
     FAILURES_DIR.mkdir(parents=True, exist_ok=True)
     failure_path = FAILURES_DIR / f"{today_str}.md"
@@ -386,7 +387,7 @@ def report_failure(stage: str, summary: str, details: str = "") -> None:
             ["gh", "issue", "create",
              "--title", f"Daily blog failed {today_str}: {summary[:60]}",
              "--body", failure_path.read_text(encoding="utf-8"),
-             "--label", "daily-blog,automated"],
+             "--label", "daily-blog"],
             cwd=REPO_ROOT, check=False, capture_output=True, text=True,
         )
     except Exception as e:
