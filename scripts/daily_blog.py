@@ -22,6 +22,7 @@ Exit codes:
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -48,7 +49,7 @@ VALIDATOR = REPO_ROOT / "scripts" / "validate_post.py"
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 
 ANTHROPIC_MODEL = "claude-opus-4-7"
-IMAGE_MODEL = "dall-e-3"
+IMAGE_MODEL = "gpt-image-1"
 
 # The fixed style suffix that gives every featured image the same pen-and-ink
 # editorial illustration look — established in skills-as-sops, whats-on-the-desk,
@@ -356,14 +357,11 @@ def generate_image(prompt: str, out_path: Path) -> None:
     result = client.images.generate(
         model=IMAGE_MODEL,
         prompt=prompt,
-        size="1792x1024",
-        quality="hd",
+        size="1536x1024",
+        quality="high",
         n=1,
     )
-    url = result.data[0].url
-    r = requests.get(url, timeout=60)
-    r.raise_for_status()
-    out_path.write_bytes(r.content)
+    out_path.write_bytes(base64.b64decode(result.data[0].b64_json))
 
 
 # ----- failure reporting --------------------------------------------------------
