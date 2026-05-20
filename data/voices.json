@@ -52,6 +52,11 @@
       "voice": "hemingway",
       "slug": "the-bot-history-check",
       "date": "2026-05-12"
+    },
+    {
+      "voice": "baldwin",
+      "slug": "alt-text-must-come-from-the-artifact",
+      "date": "2026-05-20"
     }
   ]
 }

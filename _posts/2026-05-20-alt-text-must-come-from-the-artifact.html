@@ -1,0 +1,48 @@
+---
+title: "Alt Text Must Come From the Artifact"
+subtitle: "The model that asked for the image and the model that drew it do not agree. Describe what was drawn, or lie on the page."
+date: 2026-05-20
+related:
+  - slug: the-validator-with-teeth
+    note: "The same lesson at the markup layer — intent is not output, and the artifact is the only honest source of truth."
+  - slug: the-catalog-is-load-bearing
+    note: "Another instance of the downstream consumer being only as truthful as the thing it reads from."
+  - slug: the-orchestrator-does-not-write
+    note: "On the separation of stages, and why each stage must answer for itself."
+---
+
+<img src="/blog/images/alt-text-must-come-from-the-artifact-featured.png" alt="A typed caption card pinned to a wall beneath a framed photograph, the handwritten or typed words on the card describing a scene that visibly does not match the picture hanging above it" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>I asked the pipeline for an image of a gate clamped down on a sheet of paper. The drafting model, working from the post's argument, wrote the alt text first — confidently, fluently, describing the gate, the bolt, the single character pinned in the feed. Then the image generator drew something close but not the same. A latch, not a bolt. Two pages, not one. The character was nowhere. The alt text described a picture nobody had made. The picture itself sat above the alt text, blameless, refusing to match its caption.</p>
+
+<p>I had not noticed. I had not noticed because the alt text read so well. It read well because the model that wrote it had never seen the image. It had only imagined the image. And the imagination of a language model, asked to describe what its sibling will draw, is a confident hallucination dressed as a description.</p>
+
+<p>The screen reader user, of course, would have noticed. The screen reader user would have heard the caption and looked, in their mind, for the bolt that was not there. The page would have lied to them in the exact register of help.</p>
+
+<p>Commit <code>81b1273</code> fixed this by doing the only thing that fixes it: it derived the alt text from the generated image, not from the prompt that requested the image. The describing model now reads the file on disk. It looks at what was actually drawn. It writes the caption from the artifact, not from the wish. The fix is one stage of pipeline rewiring and maybe forty lines of code. The lesson is larger than the fix.</p>
+
+<h2>The gap widened, and I had not been watching</h2>
+
+<p>When I switched to <em>gpt-image-1</em>, the gap between request and result widened. The new generator is better — more specific, more textured, more willing to interpret. <em>Willing to interpret</em> is the phrase that matters. It does not draw the prompt. It draws something in the neighborhood of the prompt, informed by its own sense of composition, lighting, what makes an image read. A description model writing alt text from the prompt, in this regime, is describing a draft that was discarded before the pencil touched the paper.</p>
+
+<p>This is not a quirk of one model swap. This is the shape of every multi-stage pipeline where a language model briefs another model and a third model annotates the result. Each stage has its own opinion. Each stage is, in some small way, an unreliable narrator about the stage downstream of it. The drafting model believes its prompt will be honored. The generating model honors what it can and improvises the rest. The describing model, if it reads the prompt instead of the result, becomes a press secretary for a meeting it did not attend.</p>
+
+<h2>Ground the metadata in the realized thing</h2>
+
+<p>The discipline is simple to state and easy to violate: <em>downstream metadata must be derived from the realized artifact, not the upstream intent.</em> Alt text from the image, not the image prompt. Summaries from the published post, not the outline. Tags from the rendered text, not the brief. Search indexes from the file on disk, not the plan that produced it. Every place in the pipeline where a description references something, the description must read the something, not the request for the something.</p>
+
+<p>Say it the other way and you can hear why it matters. Whenever you let metadata be generated from intent rather than from artifact, you are publishing a promise as if it were a report. You are letting the planning document stand in for the work. You are signing your name to a description of a thing you did not look at.</p>
+
+<p>I do not want to do that. Not to the reader who can see the image and notices the mismatch and quietly concludes the site is sloppy. Not to the reader who cannot see the image and is told a lie in the voice of accommodation. Not to myself, because the whole point of building this pipeline was to ship work I could stand behind when I was not at the keyboard to defend it.</p>
+
+<h2>What this asks of the pipeline</h2>
+
+<p>It asks one thing. At every seam where one stage describes another, the describing must come after the described, and it must read the described. Not the brief. Not the plan. The thing itself. If the artifact does not exist yet, the description waits. If the artifact changes, the description regenerates. The metadata is downstream, always, of the realized work.</p>
+
+<p>This is not a one-off bug. It is the rule the bug taught me. The next time I add a stage to the pipeline — a tagger, a summarizer, a thumbnail captioner, a social-card writer — the first question I will ask is what artifact it reads from. If the answer is <em>the prompt that produced the artifact</em>, I will throw the stage away and start over. The prompt is not the work. The work is the work. Describe the work.</p>
+
+<hr>
+
+<p><em>References: the fix lives at commit <a href="https://github.com/sethshoultes/building-with-ai-brain">81b1273</a> in the <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain skeleton</a>, alongside the broader pipeline notes.</em></p>
+
+<p class="post-bio"><em>Joan Didion said we tell ourselves stories in order to live. The pipeline tells itself stories in order to ship. The difference is that the pipeline can be made to stop, look at the photograph, and describe what is actually there.</em></p>
