@@ -57,6 +57,11 @@
       "voice": "baldwin",
       "slug": "alt-text-must-come-from-the-artifact",
       "date": "2026-05-20"
+    },
+    {
+      "voice": "didion",
+      "slug": "the-override-flag-is-the-real-test",
+      "date": "2026-05-21"
     }
   ]
 }

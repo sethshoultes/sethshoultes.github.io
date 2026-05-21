@@ -1,0 +1,48 @@
+---
+title: "The Override Flag Is the Real Test"
+subtitle: "A pipeline whose default behavior is to do nothing is invisible until production. The override is how you make it visible on purpose."
+date: 2026-05-21
+related:
+  - slug: the-bot-history-check
+    note: "The skip logic this override pairs with — the check that made the default path silent in the first place."
+  - slug: force-overrides-are-test-surface
+    note: "The companion argument — overrides as inspection gate, not escape hatch."
+  - slug: failure-visible-three-ways
+    note: "The other half of observability — surfacing the silent failure in CI when the override isn't there to flush it out."
+---
+
+<img src="/blog/images/the-override-flag-is-the-real-test-featured.png" alt="A maintenance hatch set into a long brick wall, propped open with a wooden wedge, with daylight spilling through onto a ledger resting on the threshold" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The bot-history check landed on a Tuesday. By Wednesday afternoon the pipeline had been green for thirty hours and had published nothing. This was correct behavior. I had pushed a hand-written post the night before. The bot-history check saw no bot commit for the day, but the skip condition was satisfied another way — there was a post for the date, authored by me, and the check, refined now, declined to write over the top of it.</p>
+
+<p>Correct behavior is the hardest thing to verify, because it looks like nothing happening.</p>
+
+<p>The scheduler ran at <code>13:00 UTC</code>. The job logged <code>skip: human post present for date</code> and exited zero. The GitHub Actions tab showed a green check. The blog showed yesterday's post. Everything was working. Everything looked exactly the same as it would look if the job had silently broken — if the import had failed, if the API key had rotated, if the model had timed out, if the publish step had thrown and been swallowed by a stale <code>try</code>.</p>
+
+<p>I did not know which one I was looking at. Green check, no post. That is the shape of success. It is also the shape of every failure mode the pipeline has.</p>
+
+<h2>The flag</h2>
+
+<p>The commit that followed added <code>FORCE_PUBLISH=1</code>. The flag does one thing: it bypasses the bot-history skip. It does not bypass the validator. It does not bypass the rate limiter. It does not lie about the date the way <code><a href="/blog/force-overrides-are-test-surface.html">FORCE_DATE</a></code> used to lie about the date. It says only: <em>run the pipeline end to end, write the post, and if there is already a post for today, write a second one and let me see it.</em></p>
+
+<p>The first time I ran it, the pipeline failed at the image step. A model name had changed under us — <code>gpt-image-1</code> was returning a 404 on a parameter the SDK had quietly deprecated. The job had been failing at that step for nine days. Nine days of green checks. Nine days of <code>skip: human post present for date</code>. The skip ran before the image step. The skip exited zero. The broken image step never executed, so it never failed, so CI never told me.</p>
+
+<p>The override surfaced a nine-day-old bug in under a minute. Not because the override is clever. Because the override is the only path through the code that actually runs the code.</p>
+
+<h2>What an override is for</h2>
+
+<p>The story we tell ourselves about override flags is that they are escape hatches — necessary evils, holes punched in the fence for the operator to climb through when something has gone wrong. The story is wrong in the direction that matters. The hole in the fence was already there. The default path is the hole. The default path does nothing, logs nothing interesting, and reports success regardless of whether the machinery behind the skip still works.</p>
+
+<p>The override is not a hole. The override is the inspection door. It is the only way to walk the line in daylight, with the foreman watching, and confirm that the parts that don't run on most days still run on the day they have to.</p>
+
+<p>A week later I added the other half. The CI job that runs the daily pipeline now surfaces a separate failure mode: if the pipeline exits zero but produces no new commit and no skip reason it recognizes, the workflow opens an issue. <code>force_publish</code> handles the manual case. The issue-opener handles the case where I forget to check. Together they make the silent path observable on demand and observable on schedule.</p>
+
+<p>The skip condition is still the right condition. I am not arguing for a pipeline that publishes on top of human work. I am arguing that a pipeline whose default behavior is silence cannot be trusted on the strength of its silence. The silence has to be falsifiable. The flag is what makes it falsifiable.</p>
+
+<p>The default path tells you nothing. The override is the test.</p>
+
+<hr>
+
+<p><em>References: the companion post on <a href="/blog/2026/05/12/the-bot-history-check.html">the bot-history check</a> and the brain learning on override flags as inspection surface at <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/force-overrides-as-test-surface.md">force-overrides-as-test-surface.md</a>.</em></p>
+
+<p class="post-bio"><em>Didion wrote that we tell ourselves stories in order to live. The story the green check tells is one of them. The override is what you reach for when you decide you would rather know.</em></p>
