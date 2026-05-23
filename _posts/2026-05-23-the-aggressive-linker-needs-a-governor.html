@@ -1,0 +1,44 @@
+---
+title: "The Aggressive Linker Needs a Governor"
+subtitle: "A pass that retrofits inline references across old posts is only as honest as the list it reads from. Without curation, aggression becomes noise injection in your own voice."
+date: 2026-05-23
+related:
+  - slug: the-catalog-is-the-prompt
+    note: "The pair to this post — the catalog reframed as the vocabulary the linker is permitted to speak. This post is what happens when that vocabulary is sloppy."
+  - slug: the-catalog-is-load-bearing
+    note: "The earlier diagnosis — the list is the product. This post is the consequence of forgetting that for an afternoon."
+  - slug: the-pipeline-rate-limits-itself
+    note: "The same shape at a different layer — an actuator without a governor will eat the system it is trying to serve."
+---
+
+<img src="/blog/images/the-aggressive-linker-needs-a-governor-featured.png" alt="A brass flyball governor sitting on a workbench beside an open card catalog drawer, its spinning weights stilled mid-rotation, with the cards behind it standing in tight, orderly ranks" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The linker ran across twenty-three posts in a single afternoon. It worked. It worked the way a fast worker works on a job nobody is watching — quickly, confidently, and with a few small lies stitched into the seam.</p>
+
+<p>I had turned the dial up the week before. The shy linker had been finding nothing, and finding nothing began to feel like a kind of failure. So I made it bold. I told it: when an argument here echoes an argument there, link it. When a phrase here is the doorway to a post there, open the door. Be the reader's better memory. Be aggressive.</p>
+
+<p>It was. It retrofitted inline references into essays I had written months ago. It found connections I had not seen. It also found connections that were not there.</p>
+
+<h2>The shape of the noise</h2>
+
+<p>An aggressive linker is a search engine pointed at a list. The list, on that day, was not yet curated. The list was whatever the catalog file happened to contain — slugs that existed, slugs that had once been drafted and abandoned, slugs whose summaries were stale, slugs whose titles described an argument the post no longer made. The linker read all of this with equal trust. It had no way to know which entries were load-bearing and which were ghosts.</p>
+
+<p>So an old post about hooks now pointed, in the middle of a paragraph, at a draft that had been cut. A post about overrides now linked to a summary that described a position I had argued <em>against</em>. The anchors looked correct. The hover text read fluently. The reader, clicking through, landed somewhere adjacent to but not quite the thing the sentence had promised. The page lied softly, in the register of help.</p>
+
+<p>This is the failure mode that does not announce itself. A broken link, at least, throws a 404. A wrong link sits inside your prose wearing your voice, and the reader trusts you, because why wouldn't they. You wrote it. Or rather, the linker wrote it on your behalf, from a list you had not yet treated as load-bearing.</p>
+
+<h2>The governor</h2>
+
+<p>The commits that followed did not slow the linker down. The linker stayed aggressive. What changed was the catalog. The catalog stopped being a YAML file you updated when you remembered. It became the thing you updated <em>first</em> — before the post shipped, before the linker ran, before any pass touched any prior page. Entries got pruned. Summaries got rewritten to describe what the post actually argues now, not what it argued in draft. Ghosts were removed. The list became small, accurate, and intentional.</p>
+
+<p>The linker did not need a governor. The catalog was the governor. A spinning weight on the end of a brass arm, slowing nothing down, only refusing to let the engine pull from a source that would shake it apart.</p>
+
+<p>The arc of the repo, if you read it in order, is the arc of that lesson learning itself. First the catalog appears, modest, a memory aid. Then the linker becomes aggressive, and the catalog is suddenly load-bearing, though it does not yet know it. Then the catalog becomes the link graph — the only thing keeping the linker from inventing authority. Then, finally, the catalog becomes the prompt: the vocabulary the model is allowed to speak. Each commit is the same realization, said one register deeper.</p>
+
+<p>The thing I want to leave you with is small. If you build a pass that touches your prior work — that reaches back across what you have already said and changes it — the discipline is not in the pass. The discipline is in what the pass is allowed to read. Curate that, and aggression is a gift. Skip that, and aggression is a stranger signing your name.</p>
+
+<hr>
+
+<p><em>References: the catalog pattern in practice at <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain</a>, and the companion arguments in <a href="/blog/the-catalog-is-load-bearing.html">The Catalog Is Load-Bearing</a> and <a href="/blog/the-catalog-is-the-prompt.html">The Catalog Is the Prompt</a>.</em></p>
+
+<p class="post-bio"><em>Toni Morrison once said she wrote the books she wanted to read. The linker writes the links it wants to find. The difference is that Morrison read everything twice before she let it stand.</em></p>
