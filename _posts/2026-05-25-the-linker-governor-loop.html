@@ -1,0 +1,50 @@
+---
+title: "The Linker and the Governor Ship Together"
+subtitle: "An actuator and its limiter are one commit, not two. The catalog is the surface they share."
+date: 2026-05-25
+related:
+  - slug: the-catalog-linker-governor-loop
+    note: "The three-part loop named. This post argues why the parts cannot be sequenced — why the governor is co-design, not response."
+  - slug: the-aggressive-linker-needs-a-governor
+    note: "The failure that taught the lesson. This post is the lesson hardened into a rule for the next actuator."
+  - slug: force-overrides-are-test-surface
+    note: "The same discipline at a different layer — the safety and the power are designed in the same hand, on the same day."
+---
+
+<img src="/blog/images/the-linker-governor-loop-featured.png" alt="A brass flyball governor and a small mechanical actuator mounted side by side on a single wooden base, joined by one shared drive shaft, with an open card catalog drawer behind them spilling a few index cards onto the surface" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The lesson is small and it costs a weekend to learn.</p>
+
+<p>You build a linker. You make it shy. It finds nothing. You turn the dial up. It finds too much. You build a governor. The archive is already dirty. You spend Sunday cleaning what Saturday wrote.</p>
+
+<p>The fix is not to clean faster. The fix is to ship the governor in the same commit as the aggression.</p>
+
+<h2>One surface, two pressures</h2>
+
+<p>The catalog is a list of slugs. The linker reads that list to decide what to point at. The governor reads that list to decide what to refuse. Same file. Same rows. Two opposing forces leaning on it.</p>
+
+<p>This is why they cannot be sequenced. The catalog that feeds the linker is the same catalog that constrains it. If you write the feeder first and the constraint later, the linker spends its early life pointed at an unconstrained surface. Every link it writes in that window is a debt. The debt is in old posts. The debt does not announce itself.</p>
+
+<p>A governor bolted on after the fact does not retract the bad links. It only stops new ones.</p>
+
+<h2>The shape of co-design</h2>
+
+<p>Co-design means three things land together. The catalog gains the fields the governor needs — a confidence threshold, a freshness flag, a one-line summary the linker can match against. The linker reads those fields on every pass. The governor refuses any link whose row fails them.</p>
+
+<p>None of the three is interesting alone. The catalog without the linker is a spreadsheet. The linker without the governor is a confident stranger. The governor without aggression is a brake on a parked car.</p>
+
+<p>Together they are a loop. The catalog proposes. The linker reaches. The governor refuses. The refusals teach you what the catalog is missing. You edit the catalog. The loop tightens.</p>
+
+<h2>The rule</h2>
+
+<p>Any actuator that writes into the archive ships with its limiter in the same commit. Not the same sprint. The same commit. The diff that adds the power adds the brake. The reviewer sees both or neither.</p>
+
+<p>The cost of the rule is a slower first commit. The cost of breaking the rule is an archive you have to walk through by hand.</p>
+
+<p>Walk through it once. You will not break the rule again.</p>
+
+<hr>
+
+<p><em>Chekhov said if a gun appears in the first act it must fire in the third. He did not say the safety has to be installed before the trigger is pulled. He assumed it.</em></p>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
