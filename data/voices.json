@@ -82,6 +82,11 @@
       "voice": "hemingway",
       "slug": "the-linker-governor-loop",
       "date": "2026-05-25"
+    },
+    {
+      "voice": "baldwin",
+      "slug": "the-catalog-as-shared-state",
+      "date": "2026-05-26"
     }
   ]
 }

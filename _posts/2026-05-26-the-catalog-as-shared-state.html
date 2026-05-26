@@ -1,0 +1,50 @@
+---
+title: "The Catalog as Shared State"
+subtitle: "Two agents pulling in opposite directions cannot hold a system together unless they are pulling against the same rope."
+date: 2026-05-26
+related:
+  - slug: the-linker-governor-loop
+    note: "The argument that the actuator and the limiter ship together. This post is what they ship into — and why that surface has to exist before either of them is honest."
+  - slug: the-catalog-is-the-prompt
+    note: "The catalog reframed as vocabulary. This post extends it: the vocabulary is also the contract, the place where two agents meet and disagree without lying."
+  - slug: nouns-and-verbs
+    note: "The shape underneath this — a system is not a stack of tools but the seams between them. The catalog is one of those seams, made load-bearing on purpose."
+---
+
+<img src="/blog/images/the-catalog-as-shared-state-featured.png" alt="A single wooden card catalog drawer positioned between two brass mechanisms — an actuator on the left and a governor on the right — both linked to the drawer by slender drive shafts, with the index cards inside standing in tight, orderly ranks" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>I want to be careful here, because the easy story is the wrong one, and the easy story is the one I almost told myself when I looked at the commits in order. The easy story is: I built a linker, the linker got greedy, I built a governor to restrain it, and now the archive is safe. That story is true the way a postcard is true. It leaves out the thing that actually did the work.</p>
+
+<p>What actually did the work was the catalog — and not the catalog as I had been thinking of it, which is to say a sidecar, a manifest, a little index file that the linker consulted on its way to doing the real job. That framing was the lie. The catalog is not a lookup table. The catalog is the place where two agents, each pulling in a direction the other distrusts, are forced to write down what they believe, in a form the other one can read.</p>
+
+<p>Let me say it more plainly. The linker wants to link. That is its disposition, its instinct, its reward function if you want to use that language — though I am tired of that language, because it makes the machine sound like an animal and the operator sound like a trainer, and the truth is messier than either. The linker, when I made it aggressive, became a thing that found connection everywhere, because I had told it that finding connection was the work. The governor wants to refuse. That is <em>its</em> disposition. It was built, by me, in a single afternoon, after the <a href="/blog/the-aggressive-linker-needs-a-governor.html">aggressive linker</a> spent a Saturday writing debts into twenty-three old posts. The governor's job is to say no.</p>
+
+<p>Two agents. Opposite pressures. If you sit them down at the same table and do not give them a shared piece of paper, they will not argue — they will simply produce contradictory outputs, and the contradictions will land in the archive, and you will not see them for weeks.</p>
+
+<p>The shared piece of paper is the catalog. And the moment I understood that <a href="/blog/the-catalog-linker-governor-loop.html">the catalog was the contract</a> — not a sidecar, not an index, but the artifact that both agents read <em>and</em> write against — was the moment the pair stopped corrupting each other and started disagreeing productively.</p>
+
+<h2>What "shared state" actually means</h2>
+
+<p>I do not use the phrase casually. Shared state is what lets two processes that distrust each other cooperate without one of them silently overwriting the other's work. In the database world this is plumbing. In the agent world it is, somehow, still a revelation each time it is rediscovered, and I include myself in that.</p>
+
+<p>The catalog has rows. Each row is a slug, a title, a one-line summary, a confidence flag, a freshness mark. The linker reads the row to decide whether to point at it. The governor reads the same row to decide whether to permit the pointing. They are reading the same fields. They are not reading the same fields through different lenses — they are reading the same fields, period, and reaching different conclusions, and the disagreement is visible because it happens on a surface I can inspect.</p>
+
+<p>This is what was missing before. The aggressive linker, in its bad afternoon, was not constrained because there was nothing for the constraint to attach to. The list it consulted was a list of slugs. Just slugs. The governor, when I built it the next morning, needed somewhere to stand. So the catalog grew — not as documentation, but as the place the governor could plant its feet.</p>
+
+<p>And then, because the catalog now had fields the governor cared about, the linker started reading them too. Not because I told it to. Because the fields were there, and the linker is a reader, and a reader reads what is in front of it. The catalog became the prompt. The prompt became the contract. The contract became the place where aggression and restraint met without either one having to win.</p>
+
+<h2>Why this matters past the linker</h2>
+
+<p>I am writing about a small thing. Twenty-three posts in an archive that fewer people read than I sometimes pretend. I know this. But the shape generalizes, and I want to name the shape, because the shape is what I keep finding underneath every honest agentic workflow I have built.</p>
+
+<p>Whenever two agents disagree on purpose — and they should, the whole point of pairing an actuator with a limiter is that they disagree on purpose — they need a surface. Not a message bus. Not a log. A surface. A piece of state both of them can read and write, that survives the run, that the operator can open and look at without invoking either agent. The surface is the truth. The agents are just two readings of it.</p>
+
+<p>If you do not build the surface, you have not built a system. You have built two processes that take turns shouting into the archive, and the archive cannot tell you which one was right.</p>
+
+<p>So the question, for whoever is reading this and building something with more than one agent in it — and I think that is most of us now, whether we admit it or not — is not <em>which agent do I trust</em>. The question is: where is the paper they are both writing on? Can you point at it? Can you open it in an editor? Can you read a row and know what both of them think about it?</p>
+
+<p>If you cannot, you do not have a loop. You have a hope.</p>
+
+<hr>
+
+<p class="post-bio"><em>Hannah Arendt wrote that the most radical thing a person can do is think about what they are doing. She was not talking about software. But she would have recognized the move — the refusal to let the tool be invisible, the insistence that the surface be named.</em></p>
