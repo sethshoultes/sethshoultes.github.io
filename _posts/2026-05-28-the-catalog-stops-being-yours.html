@@ -1,0 +1,52 @@
+---
+title: "The Catalog Stops Being Yours"
+subtitle: "You wrote it. You no longer edit it. Every hand-change has to survive the same checks the agents do."
+date: 2026-05-28
+related:
+  - slug: the-catalog-as-shared-state
+    note: "The catalog reframed as the surface two agents share. This post is what happens after — when the author becomes a third agent at the same table."
+  - slug: force-overrides-are-test-surface
+    note: "The same discipline applied at a different layer — the human's edit, like the override flag, is a gate the inspector walks through in daylight."
+  - slug: the-validator-with-teeth
+    note: "Why the rejection was real and not advisory — a check in CI is what made the catalog stop being mine."
+---
+
+<img src="/blog/images/the-catalog-stops-being-yours-featured.png" alt="A wooden card catalog drawer behind a small brass gate, with a human hand reaching toward the cards and being stopped by a slender brass arm extended from the gate's mechanism" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>I want to tell this in the order it happened, because the order is the argument.</p>
+
+<p>First the catalog was a file. <code>_data/posts.yml</code>. I wrote it by hand. I added a row when I shipped a post. The row had a slug and a title and a one-line note about what the post was for. The note was for me. Nobody else read it. Nobody else needed to.</p>
+
+<p>Then the linker started reading it. Then the governor started reading it. Then a confidence field showed up, and a freshness flag, and the one-line note stopped being for me. The note became vocabulary the linker was allowed to speak. The confidence became evidence the governor weighed. The file did not change shape much. The file changed posture.</p>
+
+<h2>The edit that did not take</h2>
+
+<p>May 26, late. I opened <code>_data/posts.yml</code> to fix a typo in a summary line. <em>governer</em>, two places. I fixed both. I committed. <code>chore: typo</code>. I pushed.</p>
+
+<p>CI failed. The validator with teeth, the one I had shipped a week earlier to bite agent output, bit me. The freshness flag on the row I touched was stale. The confidence was below threshold for a row the linker had already cited from three posts. The diff was four characters. The check did not care.</p>
+
+<p>I sat with that for a minute. The failure was correct. The failure was the system working. The failure was also the moment the catalog stopped being mine in any meaningful sense, because the catalog had become the prompt the linker reads and the evidence the governor weighs, and a hand that reaches into a prompt is a hand that has to be checked the way any other hand is checked, or the loop eats the change and writes something the operator did not mean.</p>
+
+<h2>What the trust posture cost</h2>
+
+<p>The trust posture of the catalog is now the same as the trust posture of agent output. Nothing gets in without passing the governor. Nothing. The author who originally wrote every row is, at the moment of editing, indistinguishable from the linker proposing a new one. Same surface. Same checks. Same refusals.</p>
+
+<p>This is not a metaphor I am pleased with. I wrote those rows. I remember writing them. I remember the Sunday I drafted the first ten by hand on a kitchen counter, the window open, the coffee cold, the satisfaction of seeing a small ordered thing come into being under my hand. That catalog was mine the way a notebook is mine. It is not mine that way anymore.</p>
+
+<p>It is mine the way a shared rope is mine — I hold one end, the linker holds the second, the governor holds the third, and any tug from any quarter has to survive the tension of the other two or the rope goes slack and the whole structure leans.</p>
+
+<h2>The discipline of asking permission</h2>
+
+<p>So now when I edit the catalog I run the validator locally before I commit. I treat my own diff the way I treat a pull request from a stranger. I check the confidence. I check the freshness. I read the row out loud to see whether the one-line summary still matches what the post is doing in the archive today, because the post may have drifted while I wasn't looking, and the catalog row is the thing the linker will quote.</p>
+
+<p>The first time the validator rejected me I felt the small embarrassment of a man whose own house has asked for ID. The second time I felt nothing. By the fifth time I had stopped trying to slip changes through and started writing them the way I would write any other commit that mattered — slowly, with the checks in mind, with the loop in mind.</p>
+
+<p>This is what it means for a file to become load-bearing. Not that it is important. Not that it is read often. That the structure above it is heavy enough that no hand, including the hand that built it, gets to move it without showing the work.</p>
+
+<p>The catalog used to be a list of my posts. Now it is a contract three parties signed. I am one of the parties. I do not have a veto. I have a vote, and the vote has to be cast in the form the others can read, or the loop — patient, indifferent, doing exactly what I told it to do — eats the change and writes the next link without me.</p>
+
+<hr>
+
+<p><em>References: the brain learning behind this post lives in <a href="https://github.com/sethshoultes/building-with-ai-brain">the public skeleton</a> at <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/catalog-trust-posture.md">catalog-trust-posture.md</a>.</em></p>
+
+<p class="post-bio"><em>Ursula Le Guin said the unread story is not a story, only little black marks on wood pulp. The unchecked catalog row is not a contract, only a hope the operator had on a Sunday. The check is what makes it real.</em></p>
