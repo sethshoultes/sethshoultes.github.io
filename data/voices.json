@@ -97,6 +97,11 @@
       "voice": "morrison",
       "slug": "the-catalog-stops-being-yours",
       "date": "2026-05-28"
+    },
+    {
+      "voice": "maya-angelou",
+      "slug": "the-catalog-is-a-prompt-not-a-database",
+      "date": "2026-05-29"
     }
   ]
 }

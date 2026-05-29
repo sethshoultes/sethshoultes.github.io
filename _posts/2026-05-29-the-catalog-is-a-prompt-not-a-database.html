@@ -1,0 +1,42 @@
+---
+title: "The Catalog Is a Prompt, Not a Database"
+subtitle: "Once your index feeds a writer through a linker, every field in it edits the prose — and must be reviewed like a system prompt, not a schema."
+date: 2026-05-29
+related:
+  - slug: the-catalog-is-the-prompt
+    note: "The earlier framing — the catalog as vocabulary the linker is allowed to speak. This post takes the next step and treats the file itself as prompt surface."
+  - slug: the-catalog-stops-being-yours
+    note: "The moment the human became a third agent at the catalog. This post is what that implies for how the human edits it."
+  - slug: force-overrides-are-test-surface
+    note: "The discipline imported here — a catalog edit, like an override flag, is a deliberate act that must pass the same checks the agents do."
+---
+
+<img src="/blog/images/the-catalog-is-a-prompt-not-a-database-featured.png" alt="A wooden card catalog drawer pulled half-open, with a single index card lifted out of it and clamped into the carriage of a small typewriter, the card's typed lines continuing seamlessly onto a sheet of paper rolling out the top" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>Yesterday I changed one word in a catalog row. I changed <em>note</em> from <em>a post about override flags</em> to <em>a post about override flags as <a href="/blog/force-overrides-are-test-surface.html">test surface</a></em>. Six words to ten. A description, not a behavior. I committed it the way you commit a typo fix — without ceremony, because the change felt cosmetic.</p>
+
+<p>This morning the linker linked that post from three new places. Two of the new links were good. One was a stretch. The phrase <em>test surface</em> had become a magnet, and the magnet was now pulling iron filings I had not meant to magnetize. I had not edited the linker. I had not edited the governor. I had edited a description in a YAML file. The prose on the site changed anyway.</p>
+
+<p>That is the thing I want to name, because once you see it you cannot stop seeing it. The catalog is not a database. A database is a thing you query. The catalog is a thing the agent <em>reads in</em>, holds in context, and writes from. Every field in it is a token the model has been told to consider authoritative. Every description is a phrase the linker is allowed to anchor to. Every confidence value is a weight on a decision that will appear, in plain English, in a paragraph somebody reads.</p>
+
+<p>That is not the posture of metadata. That is the posture of a prompt.</p>
+
+<h2>What changes when you accept this</h2>
+
+<p>Schema discipline says: the field is typed, the field is non-null, the field is one of an enumerated set. Schema discipline cares about shape. It does not care what the words inside the shape say, because to a database the words are opaque payload.</p>
+
+<p>Prompt discipline cares about the words. It asks: if I change <em>note</em> from six words to ten, what behavior shifts downstream? It asks: is this description neutral, or is it leading? It asks: when the linker reads this row tomorrow, will it weight this phrase more than the post itself warrants?</p>
+
+<p>The catalog needs both disciplines now, and the second one is the one I had been skipping. I had been editing description fields the way you edit a comment — for the human reader, for clarity, for a small pleasure of phrasing. But there is no human reader of <code>_data/posts.yml</code> anymore who matters as much as the linker does. The linker reads it every run. The linker reads it more carefully than I do.</p>
+
+<p>So the practice has to change. A catalog edit is a prompt edit. That means: diff the descriptions, not just the slugs. Read the diff aloud. Ask whether the new phrasing is going to pull links it should not pull. Pass the change through the same governor that limits the agent, because your hand is no steadier than the agent's hand when the surface you are touching is this live. Use an override flag when you mean to override, and let the validator bite you when you have not earned the change.</p>
+
+<p>The instinct to treat a YAML file as inert is hard to drop, because YAML files have been inert for most of our careers. You opened them, you fixed a comma, you closed them, the world did not move. This file moves the world. Every row is a sentence the writer might say in your voice tomorrow.</p>
+
+<p>Edit it like you would edit your own mouth.</p>
+
+<hr>
+
+<p><em>References: the catalog file in question lives at <code>_data/posts.yml</code> in this blog's repo, and the governor and validator that read it are described in <a href="/blog/2026/05/26/the-catalog-as-shared-state.html">The Catalog as Shared State</a> and <a href="/blog/the-validator-with-teeth.html">The Validator With Teeth</a>.</em></p>
+
+<p class="post-bio"><em>Toni Morrison said she wrote the books she wanted to read. The catalog is the opposite problem — you are writing the prompt you do not want to read, because you will not be the one reading it. The machine will. Write it for the reader you have, not the one you wish you had.</em></p>
