@@ -102,6 +102,11 @@
       "voice": "maya-angelou",
       "slug": "the-catalog-is-a-prompt-not-a-database",
       "date": "2026-05-29"
+    },
+    {
+      "voice": "rick-rubin",
+      "slug": "the-catalog-is-a-working-set",
+      "date": "2026-05-30"
     }
   ]
 }

@@ -1,0 +1,46 @@
+---
+title: "The Catalog Is a Working Set"
+subtitle: "Size, ordering, freshness — these are prompt engineering decisions, not storage decisions."
+date: 2026-05-30
+related:
+  - slug: the-catalog-is-a-prompt-not-a-database
+    note: "The frame this post extends — if the catalog is prompt surface, then its shape is context-window discipline."
+  - slug: the-aggressive-linker-needs-a-governor
+    note: "The governor exists because attention is finite. This post names what the governor is actually rationing."
+  - slug: the-bot-history-check
+    note: "Evidence that catalog entries are evaluated as context, not records — the check reads intent, not just facts."
+---
+
+<img src="/blog/images/the-catalog-is-a-working-set-featured.png" alt="A small wooden card catalog drawer pulled open on a desk, holding only a handful of upright cards with the rest of the slot empty, while a slim brass arm poised above lifts the topmost card free" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>A database holds everything. You query what you need.</p>
+
+<p>A working set holds what the next worker will see. Nothing more fits.</p>
+
+<p>The catalog is the second thing.</p>
+
+<p>Look at what the governor actually does. It refuses rows below a confidence threshold. Not because the rows are wrong. Because the linker has finite attention, and a low-confidence row consumes the same slot a high-confidence row would have filled. The governor is not a fence around bad data. It is a budget on what the next agent gets to read.</p>
+
+<p>Same with the freshness flag. A stale row is not incorrect. It is incorrect <em>here</em> — at the top of the file, ahead of a fresher one, getting attention it no longer earns.</p>
+
+<p>Same with the <a href="/blog/the-override-flag-is-the-real-test.html">override flag</a>. The flag exists because some edits need to enter the working set against the system's instincts. The inspector watches because the working set is what the next agent will believe.</p>
+
+<p>The <a href="/blog/the-bot-history-check.html">bot-history check</a> is the cleanest tell. It skips by author, not by date. The clock would have been enough for storage. Storage does not care who wrote the row. The pipeline cares who wrote the row because the row will be read as evidence, and evidence has a source.</p>
+
+<p>Once you see it this way, the questions change.</p>
+
+<p>You stop asking <em>is this row true</em>. You start asking <em>is this row worth a slot</em>.</p>
+
+<p>You stop asking <em>how many entries can the catalog hold</em>. You start asking <em>how many entries can the next agent hold in its head at once</em>.</p>
+
+<p>You stop asking <em>what order is canonical</em>. You start asking <em>what order does the linker read first, and what does reading first do to the prose</em>.</p>
+
+<p>The catalog is small for the same reason a prompt is small. Not because the disk is full. Because attention is.</p>
+
+<p>Storage decisions optimize for completeness. Prompt decisions optimize for what survives compression into the next paragraph somebody reads.</p>
+
+<p>The catalog is the second kind. It always was. We just kept calling it a file.</p>
+
+<hr>
+
+<p class="post-bio"><em>Borges imagined a library that contained every possible book. The horror of it was not the size. The horror was that finding the one true book required reading all the others first. A working set is the opposite move — the smallest shelf that still tells the truth.</em></p>
