@@ -1,0 +1,50 @@
+---
+title: "The Variable That Rode Through the System Prompt"
+subtitle: "Every SDK field failed. The system prompt was the only door the model was forced to open."
+date: 2026-06-05
+related:
+  - slug: switch-channels-dont-dig
+    note: "The same shape — when one channel won't carry the signal, you don't push harder, you switch channels. Here the only channel left was the prompt itself."
+  - slug: the-hand-off
+    note: "On the seams between vendors in an agentic stack — and what gets dropped at each one."
+---
+
+<img src="/blog/images/the-variable-that-rode-through-the-system-prompt-featured.png" alt="A small sealed envelope tucked inside a larger open envelope labeled &quot;Instructions,&quot; the pair mid-passage through a narrow mail slot in a paneled wall, with a wax seal on the inner envelope just visible past the outer envelope's flap" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>A user finishes a text chat on the homepage. Clicks the call button. The voice agent answers. Somewhere between the click and the hello, a session ID needs to ride along — from browser, through ElevenLabs, into a Custom LLM proxy I control.</p>
+
+<p>Where does it live on the way?</p>
+
+<p>The obvious answer is <code>metadata</code>. Every SDK has a metadata field. That is what metadata is for. I put the UUID there. The proxy logged the request. Metadata: empty. ElevenLabs accepted the field. Nothing downstream ever saw it.</p>
+
+<p>Next: <code>user_id</code>. A first-class identity field, plumbed end-to-end in most stacks. I put the UUID there. The proxy logged the request. The user_id field was present and held a value ElevenLabs had generated for itself. Mine was gone.</p>
+
+<p>Next: custom parameters. The SDK accepts a loose bag of key-value pairs at session start. I passed the UUID. The session refused to start. No error worth reading. Just dead air where a voice should be.</p>
+
+<p>Three doors. Three failures. One quiet, one overwritten, one locked.</p>
+
+<p>The door that opened was the one I had been treating as furniture.</p>
+
+<p>The agent has a system prompt. The system prompt is a template. The template can hold <code>{{variable_name}}</code> placeholders. The SDK accepts a <code>dynamicVariables</code> object at <code>startSession</code>. ElevenLabs substitutes the values into the template before sending it to the LLM. The LLM receives a system message with my UUID inlined into the English.</p>
+
+<p>The proxy reads <code>messages[0]</code>. Regex out the UUID. Correlate the call.</p>
+
+<p>It works because the system prompt is the one field the model is contractually required to receive. Metadata can be dropped. user_id can be rewritten. Custom params can be rejected. The system prompt is load-bearing. If it doesn't arrive, there is no agent.</p>
+
+<p>So the prompt becomes two things at once. Instructions to the model. Envelope for data the model was never meant to read. The model doesn't know the UUID is for me, not it. The model glances at the string, finds no instruction in it, moves on. The proxy, watching the same message go by, lifts the UUID off it like a passenger off a train.</p>
+
+<p>This is not documented. It is not clean. It treats a natural-language field as a transport layer.</p>
+
+<p>It is also the only thing that works.</p>
+
+<p>The lesson is older than the stack. In a multi-vendor pipeline, the channels that look like channels — labeled, typed, documented — are the channels the vendors feel free to break. The channel nobody can break is the one the product itself depends on. Hide your signal there.</p>
+
+<p>Where does a session ID actually live in a multi-vendor agent stack?</p>
+
+<p>In the only field the model is forced to read.</p>
+
+<hr>
+
+<p><em>References: the ElevenLabs Conversational AI <a href="https://elevenlabs.io/docs/conversational-ai/customization/personalization/dynamic-variables">dynamic variables</a> docs, which describe the <code>{{var}}</code> substitution mechanism without ever suggesting it as a transport for opaque session state.</em></p>
+
+<p class="post-bio"><em>Claude Shannon defined a channel as anything that carries a signal from sender to receiver. He did not specify that the channel had to be labeled as one. The engineers who built this stack drew the channels on the diagram. The signal found a different path.</em></p>
