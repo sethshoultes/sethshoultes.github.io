@@ -110,6 +110,83 @@ def mark_idea_consumed(text: str, slug: str) -> str:
     return pattern.sub(replace, text, count=1)
 
 
+# ----- brain warehouse (the curated idea source) --------------------------------
+
+# In CI, the daily-blog workflow shallow-clones the private brain repo into
+# BRAIN_DIR. Locally it defaults to ~/brain. The post-warehouse holds curated
+# candidate ideas, each a markdown file with YAML frontmatter (slug, status,
+# voice_candidates) and a `## Claim` thesis. The pipeline reads this in
+# preference to generating a topic from commits — generation was the source of
+# the "catalog loop": with an empty backlog it seeded on its own `Publish '...'`
+# commits and proposed the same noun every day.
+BRAIN_DIR = Path(os.environ.get("BRAIN_DIR", str(Path.home() / "brain"))).expanduser()
+WAREHOUSE_DIR = BRAIN_DIR / "post-warehouse"
+
+
+def _parse_frontmatter(text: str) -> dict:
+    """Parse a leading `---` YAML-ish frontmatter block. Flat key: value only."""
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}
+    fields = {}
+    for line in text[3:end].splitlines():
+        if ":" in line and not line.lstrip().startswith("-"):
+            k, v = line.split(":", 1)
+            fields[k.strip()] = v.strip()
+    return fields
+
+
+def _section(text: str, heading: str) -> str:
+    """Return the body of a `## <heading>` section, up to the next `##`."""
+    m = re.search(rf"^##\s*{re.escape(heading)}\s*\n(.*?)(?=^##\s|\Z)",
+                  text, re.MULTILINE | re.DOTALL)
+    return m.group(1).strip() if m else ""
+
+
+def pick_warehouse_idea() -> dict | None:
+    """Pick the newest unposted `status: idea` candidate from the brain warehouse.
+
+    "Unposted" is derived from _posts/ — if a post with the candidate's slug
+    already exists, it's been used. This is idempotent and needs no write-back
+    to the (read-only-from-CI) private brain repo: once published, the post file
+    exists and the next run advances to the next candidate.
+    """
+    if not WAREHOUSE_DIR.is_dir():
+        print(f"[info] no warehouse at {WAREHOUSE_DIR}")
+        return None
+    candidates = []
+    for path in WAREHOUSE_DIR.glob("*.md"):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except Exception:
+            continue
+        fm = _parse_frontmatter(text)
+        slug = fm.get("slug")
+        if not slug or fm.get("status") != "idea":
+            continue
+        if list(POSTS_DIR.glob(f"*-{slug}.html")):
+            continue  # already published
+        claim = _section(text, "Claim")
+        if not claim:
+            continue
+        notes_parts = [_section(text, "Material"), _section(text, "Possible angles / structures")]
+        notes = "\n\n".join(p for p in notes_parts if p).strip()
+        candidates.append({
+            "slug": slug,
+            "claim": claim,
+            "notes": notes,
+            "status": "warehouse",
+            "_date": fm.get("date_added", ""),
+        })
+    if not candidates:
+        return None
+    # MANIFEST is sorted newest-first; honor that via date_added desc.
+    candidates.sort(key=lambda c: c["_date"], reverse=True)
+    return candidates[0]
+
+
 # ----- voice rotation -----------------------------------------------------------
 
 def pick_voice(voices_state: dict) -> str:
@@ -194,25 +271,55 @@ def corpus_index(limit: int = 25) -> str:
 
 
 def recent_commits(n: int = 15) -> str:
+    """Recent commits, EXCLUDING the bot's own `Publish '...'` commits.
+
+    Seeding idea-generation on publish commits is what created the "catalog
+    loop": every published post became a commit, which became the seed for the
+    next idea, which proposed the same noun. The fallback must look at
+    engineering work, not its own publishing history — so pull a deeper window
+    and drop the publish/auto-commit lines.
+    """
     out = subprocess.run(
-        ["git", "log", f"-n{n}", "--pretty=format:%h %s"],
+        ["git", "log", "-n80", "--pretty=format:%h %s"],
         cwd=REPO_ROOT, capture_output=True, text=True,
     )
-    return out.stdout.strip()
+    skip = re.compile(r"^\S+\s+(Publish '|Add Working Implementations|Add inline links|Add references)")
+    kept = [ln for ln in out.stdout.strip().splitlines() if not skip.match(ln)]
+    return "\n".join(kept[:n])
+
+
+def recent_post_titles(n: int = 20) -> str:
+    """Titles of the most recent posts — the diversity guard for idea-generation."""
+    titles = []
+    for p in sorted(POSTS_DIR.glob("*.html"))[-n:]:
+        meta = _post_meta(p)
+        if meta and meta.get("title"):
+            titles.append(f"- {meta['title']}")
+    return "\n".join(titles)
 
 
 def generate_idea_from_repo() -> dict:
-    """When the backlog is empty, ask the API to propose one based on recent commits."""
+    """Last-resort idea generation when both the backlog and warehouse are empty.
+
+    Seeds on real engineering commits (publish commits filtered out) and is
+    given the recent post titles as an explicit do-not-repeat list, so it cannot
+    re-enter the single-noun loop.
+    """
     client = anthropic_client()
     commits = recent_commits(20)
+    avoid = recent_post_titles(20)
     msg = client.messages.create(
         model=ANTHROPIC_MODEL,
         max_tokens=600,
         messages=[{
             "role": "user",
             "content": (
-                "Recent commits on this blog repo:\n\n"
+                "Recent engineering commits on this blog repo:\n\n"
                 f"{commits}\n\n"
+                "Recent post titles — do NOT propose a topic that overlaps with, restates, "
+                "or is a variation on any of these. The new idea MUST introduce a distinct "
+                "subject and a noun that does not already dominate this list:\n\n"
+                f"{avoid}\n\n"
                 "Propose ONE blog post idea grounded in this work. The blog is about AI "
                 "agentic workflows, orchestration, prompting, hooks, memory — the small "
                 "disciplines of working with machines that almost-understand. The idea "
@@ -445,12 +552,19 @@ def main() -> int:
         except Exception as e:
             print(f"[warn] could not read voices history: {e}")
 
-    # 1. Pick idea
+    # 1. Pick idea. Priority: curated in-repo backlog -> brain warehouse ->
+    # last-resort generation. The warehouse is the primary source; generation
+    # exists only so a totally-empty backlog can't wedge the pipeline, and it is
+    # now guarded against the single-noun loop that produced the catalog posts.
     ideas_text = IDEAS_FILE.read_text(encoding="utf-8") if IDEAS_FILE.exists() else ""
     idea = pick_ready_idea(ideas_text) if ideas_text else None
     idea_was_generated = False
     if idea is None:
-        print("[info] no ready ideas, generating one from recent commits")
+        idea = pick_warehouse_idea()
+        if idea is not None:
+            print(f"[info] idea from brain warehouse: {idea['slug']}")
+    if idea is None:
+        print("[info] backlog and warehouse empty, generating from recent commits")
         try:
             idea = generate_idea_from_repo()
             idea_was_generated = True

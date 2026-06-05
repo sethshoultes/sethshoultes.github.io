@@ -52,6 +52,26 @@ jobs:
           git config user.name "daily-blog-bot"
           git config user.email "bot@users.noreply.github.com"
 
+      # The curated idea source. Sparse-clone only the post-warehouse from the
+      # private brain repo so the pipeline drafts from real, deduplicated ideas
+      # instead of seeding on its own publish history (which caused the catalog
+      # loop). Read-only: nothing is pushed back to brain. Degrades gracefully —
+      # if the token is absent, the pipeline falls back to commit-seeded
+      # generation (now guarded against repetition).
+      - name: Fetch brain warehouse (idea source)
+        env:
+          BRAIN_REPO_TOKEN: ${{ secrets.BRAIN_REPO_TOKEN }}
+        run: |
+          set -e
+          if [ -z "$BRAIN_REPO_TOKEN" ]; then
+            echo "::warning::BRAIN_REPO_TOKEN not set — falling back to commit-seeded idea generation."
+            exit 0
+          fi
+          git clone --depth 1 --filter=blob:none --sparse \
+            "https://x-access-token:${BRAIN_REPO_TOKEN}@github.com/sethshoultes/brain.git" .brain
+          git -C .brain sparse-checkout set post-warehouse
+          echo "Warehouse candidates: $(ls .brain/post-warehouse/*.md | wc -l)"
+
       - name: Run daily blog pipeline
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -60,6 +80,7 @@ jobs:
           NOTIFY_EMAIL: seth@caseproof.com
           NOTIFY_FROM: noreply@sethshoultes.com
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRAIN_DIR: ${{ github.workspace }}/.brain
           FORCE_DATE: ${{ inputs.force_date }}
           FORCE_PUBLISH: ${{ inputs.force_publish && '1' || '' }}
         run: |
