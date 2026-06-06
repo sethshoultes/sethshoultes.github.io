@@ -1,0 +1,44 @@
+---
+title: "The Discovery Loop Is One Loop, Two Doors"
+subtitle: "MCP and GPT Actions answer the same question. They answer it in opposite directions. Ship only one and a whole class of agents walks past you."
+date: 2026-06-06
+related:
+  - slug: nouns-and-verbs
+    note: "On stacks versus systems — and what changes when the seams between vendors are wired both ways, not one."
+  - slug: the-hand-off
+    note: "The seam between agent and service is a trust handoff. Two topologies, two handoffs, both need shipping."
+---
+
+<img src="/blog/images/the-discovery-loop-is-one-loop-two-doors-featured.png" alt="A long brick wall with two doors set into it side by side: the left door closed and bearing a small machine-readable plaque mounted at eye level, the right door standing ajar with a curling paper schema pinned to the bricks beside it" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>WordPress runs about forty percent of the web. In June 2026, no major SEO plugin ships an <a href="https://github.com/sethshoultes/building-with-ai-brain/blob/main/learnings/mcp-discovery-loop-three-file-pattern.md">MCP discovery layer</a>. All in One SEO Pro added <code>llms.txt</code>. It did not add <code>/.well-known/mcp.json</code>. Yoast did not. Rank Math did not. Forty percent of the web is invisible to agents that find their tools the way agents find their tools.</p>
+
+<p>The gap is not laziness. The gap is that the discovery problem has two shapes and the industry shipped one.</p>
+
+<h2>Two doors</h2>
+
+<p>MCP is server-mediated. The agent fetches <code>/.well-known/mcp.json</code>. It reads the manifest. It connects. No human is in the loop. Claude Desktop, Cursor, the local agents that run on a developer's machine — they all walk this hallway. The site advertises. The agent finds. The handshake is machine to machine.</p>
+
+<p>GPT Actions is user-mediated. A human builds a Custom GPT in the ChatGPT UI. The human pastes an OpenAPI 3.x schema. The human authorizes the connection. The agent never discovers anything. The user does the discovering and hands the schema to the agent like a key.</p>
+
+<p>Same problem. Opposite topology. One is a beacon. The other is a key cut by hand.</p>
+
+<h2>What it costs to skip one</h2>
+
+<p>Ship only MCP and the ChatGPT user has no door. They cannot wire you into their Custom GPT because there is no schema to paste. The MCP manifest does not help them. ChatGPT does not crawl <code>.well-known</code> for tools. The user wants to use you. The user cannot.</p>
+
+<p>Ship only GPT Actions and Claude Desktop walks past. So does every local agent that reads manifests at runtime. The OpenAPI schema sits on your site doing nothing for them. They were never going to ask a human to paste it.</p>
+
+<p>The two failures look identical from the inside. Traffic that should arrive does not. The logs show nothing because nothing was attempted. The agent that could not find you did not knock.</p>
+
+<h2>Why WordPress is the tell</h2>
+
+<p>WordPress is the tell because WordPress is where the long tail lives. Forty percent of the web is small sites, niche stores, local services, one-person publishers. These are the surfaces agents will want to reach on behalf of users. A plugin that ships both files — <code>/.well-known/mcp.json</code> for the autonomous side, an exportable OpenAPI schema for the human side — would wire the long tail into the agent economy in an afternoon.</p>
+
+<p>No plugin ships both. Most ship neither. The ones that ship anything ship <code>llms.txt</code>, which is a third thing — a hint for training, not a door for tools.</p>
+
+<p>The discovery loop is one loop. It has two doors. A site that opens one door is half-found. A site that opens neither is a rumor.</p>
+
+<hr>
+
+<p><em>Ernest Hemingway said the dignity of an iceberg is due to only one-eighth of it being above water. The protocol specs are the eighth above. The traffic you never see is the rest.</em></p>
