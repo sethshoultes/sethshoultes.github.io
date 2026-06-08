@@ -1,0 +1,62 @@
+---
+title: "The Prompt Tax You Pay on Every Session"
+subtitle: "Ten plugins, ninety personas, fifty skills — and nineteen thousand tokens spent before you type the first word."
+date: 2026-06-08
+related:
+  - slug: great-minds-constellation
+    note: "The constellation that makes the tax worth paying — and the reason the tax becomes a problem the moment you forget which scope you enabled it in."
+  - slug: whats-on-the-desk
+    note: "What's on the desk is the inventory. This post is about the inventory you carry into rooms that did not ask for it."
+  - slug: agentic-economy-nine-personas-in-a-folder
+    note: "Nine markdown files in a directory cost almost nothing to keep. The cost shows up at startup, in the prompt, in the tokens."
+---
+
+<img src="/blog/images/the-prompt-tax-you-pay-on-every-session-featured.png" alt="A printed receipt unspooling from a small mechanical cash register, the line items labeled with persona and skill names, the totals column trailing down the curling paper to a final sum at the bottom" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The session starts. I have not typed anything yet. The system prompt is already nineteen thousand tokens long.</p>
+
+<p>I know this because I counted. Ten plugins enabled at the user level in <code>~/.claude/settings.json</code>. Across those ten plugins, roughly ninety persona agents and fifty skills. Each persona ships a name, a description, a one-paragraph charter that tells the orchestrator when to delegate to it. Each skill ships a name and a description and a trigger condition. None of this is the persona's actual prompt — those load on invocation. This is only the metadata. The table of contents. The index that lets the top-level model know what is on the shelf.</p>
+
+<p>The index is nineteen thousand tokens.</p>
+
+<p>The session I opened was to rename a file.</p>
+
+<h2>What the tax buys</h2>
+
+<p>The tax is not waste in the abstract. It buys the thing that makes the constellation usable — the orchestrator's ability to look at a request and say, without me prompting it, <em>this is a job for the editor persona, then the validator, then the publisher</em>. The delegation is only as good as the index. Strip the index and the orchestrator does not know what it has. The personas still exist on disk. They are simply invisible to the model that is supposed to call them.</p>
+
+<p>So the metadata loads eagerly. The personas themselves load lazily. This is the right architecture for a session that uses many personas. It is the wrong architecture for a session that uses two.</p>
+
+<p>Most sessions use two.</p>
+
+<h2>Three scopes, three lifecycles</h2>
+
+<p>The <code>enabledPlugins</code> field appears in three places. Each one has different reach.</p>
+
+<p>User-level, at <code>~/.claude/settings.json</code> — the plugin is on for every project you open, every session you start, every prompt you send, until you turn it off. This is where I had put all ten.</p>
+
+<p>Project-level, at <code>.claude/settings.json</code> inside the repo — the plugin is on for sessions opened in this project. The setting is checked in. The team gets it. The plugin is off everywhere else.</p>
+
+<p>Local-only, at <code>.claude/settings.local.json</code> inside the repo — the plugin is on for sessions <em>you</em> open in this project, on this machine. The setting is gitignored. The team does not get it. Useful for the persona you are testing before you trust it enough to commit.</p>
+
+<p>Three knobs. I had been turning one.</p>
+
+<h2>The fix is accounting</h2>
+
+<p>I moved seven of the ten plugins out of the user-level config. The blogging constellation — editor, publisher, the persona pack that knows the house voice — went into <code>.claude/settings.json</code> in the blog repo. The WordPress persona pack went into the plugin repo it was built for. The voice-agent personas went into the voice-agent project. The three that stayed at the user level are the ones I genuinely reach for in any session, on any project, at any hour — the planner, the librarian, the one that reads logs.</p>
+
+<p>The user-level session prompt dropped from nineteen thousand tokens to about forty-one hundred. The blog repo's session prompt is still large, because in the blog repo I want all of that loaded — that is the whole point of opening the blog repo. The voice-agent repo's session prompt is small and fast and forgets nothing that matters to the voice agent.</p>
+
+<p>The personas did not move. They are still on disk, still in their plugins, still installable, still discoverable. Only the <em>enablement</em> moved. The inventory is the same. The receipt at the register changed.</p>
+
+<h2>The story we tell ourselves</h2>
+
+<p>The story we tell ourselves about plugins is that they are free until invoked. The story is wrong by a fixed amount per session, measurable in tokens, payable at startup, charged whether or not the persona is called. The story is wrong because we are thinking of plugins the way we think of npm packages — dormant on disk, costing nothing until <code>require</code>. Plugins are not npm packages. Plugins are line items on a receipt the model reads before it reads anything you wrote.</p>
+
+<p>The session that should be small feels slow and forgetful because half the window is a catalog of personas it will not summon. The personas were not the problem. The scope was.</p>
+
+<hr>
+
+<p><em>References: the constellation that makes this tax legible is described in <a href="/2026/05/29/great-minds-constellation.html">Great Minds Constellation</a>, and the persona-folder pattern it grew out of is in <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain</a>.</em></p>
+
+<p class="post-bio"><em>Didion wrote that we tell ourselves stories in order to live. We also tell ourselves stories in order to keep our config files tidy. The story that the plugin is free is the one that costs nineteen thousand tokens a session until somebody counts.</em></p>
