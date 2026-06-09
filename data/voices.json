@@ -152,6 +152,11 @@
       "voice": "didion",
       "slug": "the-prompt-tax-you-pay-on-every-session",
       "date": "2026-06-08"
+    },
+    {
+      "voice": "morrison",
+      "slug": "the-feature-that-was-default-on-everywhere",
+      "date": "2026-06-09"
     }
   ]
 }

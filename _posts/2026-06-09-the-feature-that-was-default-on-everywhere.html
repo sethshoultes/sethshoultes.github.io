@@ -1,0 +1,46 @@
+---
+title: "The Feature That Was Default-On Everywhere"
+subtitle: "A grader that knows code does not know reading, and a learner who does not yet know to distrust it will believe the rubric anyway."
+date: 2026-06-09
+related:
+  - slug: the-validator-with-teeth
+    note: "A check has authority. The question this post raises is what happens when the check is pointed at the wrong surface and keeps its authority anyway."
+  - slug: hooks-as-commitment-devices
+    note: "Same family — a feature whose correctness depends on a per-surface decision made by the author, not a global toggle made by the platform."
+  - slug: skipping-is-a-feature
+    note: "The most reliable behavior is sometimes the absence of behavior. A grader that does not appear on the wrong lesson is doing its best work."
+---
+
+<img src="/blog/images/the-feature-that-was-default-on-everywhere-featured.png" alt="A single light switch on a wall plate flipped to ON, with a long row of identical unlit switches extending behind it in shallow perspective, each one wired to the first by a single visible filament" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The instinct is old and the instinct is honest. Ship it everywhere. See what sticks. The flag goes in the global config, the green light comes on in every room of the building at once, and somewhere a dashboard fills with adoption numbers that say the feature is working because the feature is on. The instinct is honest because shipping is hard and visibility is harder and a feature that no one finds is a feature that did not happen.</p>
+
+<p>The instinct is also wrong. Not always. For this kind of feature, yes.</p>
+
+<h2>Two lessons, same grader</h2>
+
+<p>Claude Academy ships an AI grader for practice prompts. One model, one rubric scaffold, one button at the bottom of the submission box that says <em>Get feedback</em>. The grader was designed for coding-style submissions — write a function that returns the nth Fibonacci number, write a SQL query that joins these three tables, write a regex that matches these strings and not those. The grader reads the submission, runs it against the rubric, and returns notes. On those lessons the notes are useful. The grader catches the off-by-one. The grader notices the missing base case. The grader says <em>your join produces duplicates because you did not deduplicate on user_id</em>, and the learner reads it and fixes it and learns the thing the lesson was trying to teach.</p>
+
+<p>Open the next tab. Same platform. Same grader. Same model. The lesson is reading comprehension. <em>What is the narrator's relationship to her grandmother in paragraph three?</em> The learner writes two sentences. The grader returns a rubric. The rubric is confident. The rubric is wrong — not catastrophically, not in a way that trips an alarm, but in the small way where it praises a reading the text does not support and corrects a reading the text does support. The model is not equipped to grade this and the model does not know it is not equipped. It grades anyway. Confidently. With structure. With bullet points.</p>
+
+<p>Same grader. Same model. Opposite value. The difference is the surface.</p>
+
+<h2>What default-on does to the learner</h2>
+
+<p>The learner does not know yet which lessons the grader was built for. The learner is fourteen, or forty, and new to the material, and the green button at the bottom of the box looks the same on every page. The grader's voice is the same. The confidence is the same. The structure of the feedback — <em>strengths, areas for improvement, suggested next step</em> — is the same. There is no signal on the page that says <em>this feedback is reliable here and unreliable two tabs over</em>. The platform has flattened the distinction the way default-on always flattens distinctions: by making the feature present everywhere it could be rendered, regardless of whether the render means anything.</p>
+
+<p>So the noise surfaces wearing the costume of the signal. The learner reads a wrong rubric and revises toward it. The teacher, if there is a teacher, sees the revision and does not know it traces back to a grader that was not designed for the assignment. The dashboard says the feature is being used. The dashboard does not say the feature is being trusted in the rooms where it should not be trusted.</p>
+
+<h2>The opt-in is per surface, not per platform</h2>
+
+<p>The fix is small and structural and unglamorous. The grader does not ship default-on. The grader ships as a capability the lesson author opts into, lesson by lesson, with a field in the lesson's frontmatter or a toggle in the authoring tool. <code>grader: enabled</code> on the function-writing lesson. The field absent on the reading-comprehension lesson. The button at the bottom of the submission box appears or does not appear based on a decision made by the person who knows what the lesson is for.</p>
+
+<p>This is the same shape as the question of whether a reference selection persists across sessions, or whether a hook fires on a given event, or whether a chat widget appears on a given product page. The correctness of the feature is not a property of the feature. It is a property of the pairing between the feature and the surface. The only person who knows the pairing is the author of the surface. The platform does not know. The model does not know. Default-on is the platform pretending it knows.</p>
+
+<p>The cost of per-surface opt-in is that adoption is slower. Fewer lessons have the grader on day one. The dashboard number is smaller. The cost of default-on is that the feature is trusted where it should not be trusted, and the trust, once spent, is not easy to earn back. A learner who has been graded badly on a reading lesson does not separate the grader from the platform. They distrust the whole building.</p>
+
+<p>Ship the feature where it works. Withhold it where it does not. Let the author of the lesson be the one who decides, because the author is the one who knows. The green light on every door is not a sign of a working building. It is a sign of a building that has not yet asked itself which rooms the light belongs in.</p>
+
+<hr>
+
+<p class="post-bio"><em>Ursula Le Guin said the unread story is not a story, it is little black marks on wood pulp. The wrongly graded story is worse — it is little black marks on wood pulp that have been told, with confidence, what they meant.</em></p>
