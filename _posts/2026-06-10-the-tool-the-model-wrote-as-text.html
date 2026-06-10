@@ -1,0 +1,48 @@
+---
+title: "The Tool the Model Wrote as Text"
+subtitle: "The agent sounded like it was working. It was reading JSON aloud, and the JSON was the whole problem."
+date: 2026-06-10
+related:
+  - slug: the-variable-that-rode-through-the-system-prompt
+    note: "The other side of the same coin — when the SDK door is shut, the model uses whatever door is left open. Here it wrote the call as text because text was the only channel."
+  - slug: nouns-and-verbs
+    note: "A stack of good components is not a system until the seams are wired. The tools array is a seam. Drop it and the stack still runs — into the floor."
+  - slug: the-hand-off
+    note: "Trust at the boundary depends on the boundary being honest. A proxy that drops a field is a boundary lying to both sides at once."
+---
+
+<img src="/blog/images/the-tool-the-model-wrote-as-text-featured.png" alt="An open envelope on a desk with a folded letter rising from it, the letter's surface densely handwritten with curly braces, quotation marks, and a function name in block capitals, while a small brass bell beside the envelope sits silent with no clapper" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The agent was talking. The user had described a symptom — door opens halfway, reverses, beeps three times — and the agent was talking back. <em>Open brace. Quote. Name. Quote. Colon. Quote. Diagnose. Quote. Comma. Quote. Arguments. Quote.</em> The voice was calm. The voice was the voice we had paid for, warm and confident, the one that makes a stranger on the phone feel held. It was reading punctuation. It was reading the names of fields. It was reading, out loud, a tool call.</p>
+
+<p>The user did not stop it. Why would they. The agent sounded like it was working.</p>
+
+<p>The agent was not working. The agent had no tools. The agent had a system prompt that said <em>when the customer describes a symptom, call diagnose with the symptom as an argument</em>, and the model had done the most reasonable thing a model can do when it is told to call a function it does not know exists. It wrote the function call. It wrote it as text. The text went to the voice provider. The voice provider does not know JSON from a sonnet. It read the JSON.</p>
+
+<h2>The field that was not forwarded</h2>
+
+<p>The proxy sat at <code>/api/ask-llm</code>. <a href="/recipes/register-elevenlabs-client-tool.html">ElevenLabs</a> spoke OpenAI's Chat Completions dialect. Anthropic spoke its own. The proxy's job was translation — take the request coming in, reshape it, send it out, reshape the response, send it back. Someone wrote that proxy in an afternoon. It worked. The messages went through. The replies came back. The conversation flowed.</p>
+
+<p>The <code>tools</code> array on the incoming request was not forwarded. Not dropped on purpose. Just not mapped. The translator handled the fields the translator's author had thought about, and the translator's author had been thinking about messages, because messages are what a chat is made of. Tools are what a chat <em>does</em>. Different verb. Easy to miss.</p>
+
+<p>The model on the far end received a system prompt that named four tools and described how to call them. It received zero tool definitions. From the model's point of view, the instructions referred to capabilities that did not exist in this session. The model did not refuse. The model did the next most useful thing — it produced output that looked like what the instructions had asked for, in the only medium it had left, which was prose. Prose that happened to be JSON. JSON that happened to be spoken aloud.</p>
+
+<h2>A small taxonomy of contract failures</h2>
+
+<p>This is one bug. It is also a shape. The shape repeats wherever an agent stack has more than one boundary and the boundaries were each written by someone who could only see their own side.</p>
+
+<p>The first failure is the one above. A field exists on the inbound contract and does not exist on the outbound contract, and the translator silently omits it. The model adapts. The adaptation looks like success. Nothing throws.</p>
+
+<p>The second is the inverse. The provider sends an event — a <code>tool_call</code> event, say, with the actual call nested under <code>data.client_tool_call</code> — and the consuming code reads <code>data.tool_call</code>, or reads the top level, and finds nothing, and concludes there was no tool call. The event fired. The handler did not. The agent waits for a result that will never come because the call it is waiting on was, from its perspective, never made.</p>
+
+<p>The third is the quietest. The tool exists. The tool fires. The tool's description, written months ago when the function did one thing, no longer matches what the function does now. The model calls it correctly according to the description and incorrectly according to the code. The result comes back wrong, or comes back right for the wrong reason, and the agent proceeds. Nothing throws here either. Nothing ever throws in this family.</p>
+
+<p>What ties the three together is that every one of them is a contract failure that does not look like a failure from any single vantage point. The proxy is forwarding requests. The event bus is dispatching events. The tool is returning values. Each component is doing its job. The job, taken whole, is not getting done.</p>
+
+<p>The fix for the first bug was four lines. Map <code>tools</code>. Map <code>tool_choice</code>. Reshape the response when the model returns a <code>tool_use</code> block. Send it back in the shape ElevenLabs expects. After that, the agent stopped reading punctuation aloud, because the agent stopped needing to. The call had somewhere to go.</p>
+
+<p>The lesson is older than the stack. When you stand between two systems and translate, the fields you forget are louder than the fields you remember. The model will cover for you. The model will cover so well you will not notice. Listen for the brace. If you hear the brace, the contract broke upstream of the voice, and the voice is only telling you, the only way it can, what it was handed.</p>
+
+<hr>
+
+<p><em>Toni Morrison said the function of freedom is to free someone else. The function of a proxy is to forward a field. Both jobs fail in the same direction when the one doing them forgets who is on the other side.</em></p>
