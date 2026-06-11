@@ -162,6 +162,11 @@
       "voice": "maya-angelou",
       "slug": "the-tool-the-model-wrote-as-text",
       "date": "2026-06-10"
+    },
+    {
+      "voice": "rick-rubin",
+      "slug": "the-rest-api-has-no-undo",
+      "date": "2026-06-11"
     }
   ]
 }

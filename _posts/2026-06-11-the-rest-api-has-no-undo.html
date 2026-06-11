@@ -1,0 +1,50 @@
+---
+title: "The REST API Has No Undo"
+subtitle: "The front end rendered. The editor was broken. The revision history had nothing to say."
+date: 2026-06-11
+related:
+  - slug: the-validator-with-teeth
+    note: "A check in CI catches what memory forgets. A snapshot on disk catches what the database forgets."
+  - slug: force-overrides-are-test-surface
+    note: "Same instinct, different surface — make the dangerous path visible before you walk it, not after."
+  - slug: failure-visible-three-ways
+    note: "When the front end lies and the database agrees with it, you need a third witness. The snapshot is the witness."
+---
+
+<img src="/blog/images/the-rest-api-has-no-undo-featured.png" alt="A row of filing cabinets with one drawer pulled open, a single manila folder lifted out and laid flat on top labeled with a timestamp, while behind it the cabinet's interior shows empty hanging rails where revisions should be" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The page rendered fine. That was the problem.</p>
+
+<p>Thirty-nine scheduled posts. A bulk link-insertion pass. A regex that looked right in the test and was not right in the corpus. The script ran. The REST endpoint returned 200 across the board. The front end rendered every post correctly — headings in place, paragraphs intact, links live. The editor told a different story. Half the block comments were malformed. Gutenberg could not parse its own markup. The post body was a single freeform HTML block where there had been twenty-two structured ones.</p>
+
+<p>The front end did not care. The browser sees HTML. HTML rendered.</p>
+
+<p>The editor cared. The next human to open the post would find a corrupted document and no way back.</p>
+
+<h2>What revisions promise</h2>
+
+<p>WordPress promises a revision on every save. You edit in the admin, you click Update, a row lands in <code>wp_posts</code> with <code>post_type = 'revision'</code> and the prior content frozen inside it. Mistakes are reversible. The dashboard has a button. The button works.</p>
+
+<p>The promise is a UI promise. It lives in the save path the editor uses. The REST API is a different path.</p>
+
+<h2>What REST bypasses</h2>
+
+<p>A <code>POST</code> to <code>/wp-json/wp/v2/posts/{id}</code> with a <code>content</code> field can write to the database without producing a revision the dashboard will surface. Sometimes a revision lands. Sometimes it does not. The behavior depends on which fields you sent, which filters are registered, whether the content actually changed by the comparison the revision code uses, and which plugins have opinions about <code>wp_save_post_revision</code>. The rules are not a contract. They are a weather pattern.</p>
+
+<p>The case that hurts most is the one where the front-end render is preserved. The regex swapped a URL. The paragraph still reads the same. The block comments around the paragraph are now subtly wrong — a missing <code>/wp:paragraph</code>, a stray attribute, a closing tag the parser will not accept. The diff is real. The visible diff is zero. Revision logic that compares rendered output sees no change worth recording. The database keeps the broken version. The good version is gone.</p>
+
+<h2>What the snapshot restores</h2>
+
+<p>Before any REST mutation, write the current post to a local JSON file. Labeled by post ID, timestamped, kept in a directory the script owns. Not a backup of the database. A backup of the field you are about to touch, taken by the process that is about to touch it.</p>
+
+<p>The snapshot is cheap. A few kilobytes per post. A directory of thirty-nine files for a thirty-nine-post run. The snapshot is also the only artifact that survives the assumption you made about your regex. When the editor opens broken the next morning, the snapshot is the file you <code>cat</code> and pipe back through the same endpoint with the original content. The corruption unwinds in under a minute.</p>
+
+<p>Without it, the recovery is archaeology. Read the rendered HTML off the live site. Guess at the block structure. Reconstruct the comment markers by hand. Hope the post was simple. Apologize if it was not.</p>
+
+<p>The REST API does not have an undo button. It has a write. The undo is something you build, on your side, before you call the write. A directory of JSON files with timestamps in the names. Boring. Cheap. The only thing between a bad regex and an apology.</p>
+
+<hr>
+
+<p><em>References: the snapshot pattern pairs naturally with a <a href="/recipes/claude-code-brain-vault.html">brain vault</a> entry for the operation, so the next run starts with the lesson already loaded.</em></p>
+
+<p class="post-bio"><em>Borges wrote about a map the size of the territory it described. The snapshot is the opposite — a map small enough to fit in a folder, accurate only about the one thing you are about to break.</em></p>
