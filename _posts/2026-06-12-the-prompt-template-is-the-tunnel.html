@@ -1,0 +1,48 @@
+---
+title: "The Prompt Template Is the Tunnel"
+subtitle: "When the platform owns the system prompt and hands you one variable slot, that slot is the only working channel for per-session state."
+date: 2026-06-12
+related:
+  - slug: the-variable-that-rode-through-the-system-prompt
+    note: "The same realization from the other angle — the SDK fields were closed doors and the prompt template was the only door the model was forced to open."
+  - slug: the-tool-the-model-wrote-as-text
+    note: "The mirror failure on the tools side — drop the array from the proxy and the model writes the call as prose. Same lesson, different field."
+  - slug: the-hand-off
+    note: "A boundary that silently drops a field is a boundary lying to both sides. The fix is to name the one channel that survives and ride it."
+---
+
+<img src="/blog/images/the-prompt-template-is-the-tunnel-featured.png" alt="A thick brick wall pierced by a single narrow tunnel with a shaft of light passing cleanly through it, flanked by several heavy wooden doors in the same wall that have been bricked shut, each sealed door labeled with a small paper tag" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The platform owns the system prompt. You do not. You wrote one once, in the dashboard, and the dashboard saved it. Inside it you left a slot: <code>{{customer_name}}</code>. That slot is the tunnel. Everything you will ever say to the model about this session goes through it.</p>
+
+<p>You do not know this on the first day. On the first day you read the SDK docs and find six fields that look like they should carry state. <code>metadata</code>. <code>context</code>. <code>userVars</code>. <code>overrides.agent.prompt</code>. You try them. The session starts. The model never sees the value. No error. No warning. The customer is greeted as <em>there</em>.</p>
+
+<p>You try <code>dynamicVariables</code>. The session starts. The model says the name.</p>
+
+<h2>One session, one channel</h2>
+
+<p>Trace it. The browser holds a name. The SDK call carries <code>dynamicVariables: { customer_name: "Maya" }</code>. The platform substitutes the value into the saved template. The template becomes a system prompt with <em>Maya</em> baked into the string. The platform forwards the prompt to your proxy as <code>messages[0]</code>. The proxy parses the name back out with a regex. The proxy dispatches a tool call against the customer record for <em>Maya</em>.</p>
+
+<p>Five hops. One channel. The system prompt is round-tripping the session state because nothing else was allowed to carry it.</p>
+
+<p>The model never knew the name was a variable. The platform never knew the variable was state. Both rode the prompt.</p>
+
+<h2>Two failures, one cause</h2>
+
+<p>The first failure is loud. You pick the wrong SDK field. <code>overrides.agent.prompt</code> looked promising. The session refuses to start. The websocket closes. The user sees a spinner and then nothing.</p>
+
+<p>The second failure is quiet. You drop the <code>tools</code> array from the proxy's passthrough on the way to the model. The session starts. The model speaks. It speaks JSON. <em>Open brace, quote, name, quote, colon, quote, diagnose, quote.</em> The voice is warm. The voice is reading a function call into the user's ear.</p>
+
+<p>One field crashes the session. Another field is silently dropped and the model improvises with text. Both are the same shape. The platform decided which fields cross the boundary. You did not get a vote and you did not get a log line.</p>
+
+<h2>The realization</h2>
+
+<p>Stop fighting the SDK surface. Find the one field that survives the round trip and put your state in it. For variables, that is the slot in the template. For tools, that is the array the proxy must forward without touching. Everything else is decoration the platform may or may not honor on any given Tuesday.</p>
+
+<p>The system prompt is not configuration. It is the wire. Treat it like one.</p>
+
+<hr>
+
+<p><em>References: the companion posts <a href="/blog/2026/06/10/the-tool-the-model-wrote-as-text.html">The Tool the Model Wrote as Text</a> and <a href="/blog/2026/06/05/the-variable-that-rode-through-the-system-prompt.html">The Variable That Rode Through the System Prompt</a>, and the <a href="/recipes/register-elevenlabs-client-tool.html">ElevenLabs client tool recipe</a>.</em></p>
+
+<p class="post-bio"><em>Hemingway said the dignity of an iceberg is due to only one-eighth of it being above water. A working system prompt has the same proportion. The slot is what you see. The session rides underneath.</em></p>
