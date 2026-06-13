@@ -1,0 +1,52 @@
+---
+title: "The Static Asset Ate the Function"
+subtitle: "On asset-first edge platforms, file extensions in your API routes silently route around your handlers — the URL looks like an API call, the response looks like a 404, and the function never ran."
+date: 2026-06-13
+related:
+  - slug: the-prompt-template-is-the-tunnel
+    note: "The same shape from a different platform — the system you do not own decides which of your fields survives, and silence is the only feedback you get."
+  - slug: the-hand-off
+    note: "A boundary that lies to both sides at once. The 404 is not a 404. It is the platform answering a question you did not ask."
+  - slug: failure-visible-three-ways
+    note: "When the platform refuses to tell you the function did not run, you have to make the running visible yourself, on purpose, in three places."
+---
+
+<img src="/blog/images/the-static-asset-ate-the-function-featured.png" alt="A large pneumatic mail-sorting tube split into two branches at a brass junction, with a labeled envelope marked &quot;.mp4&quot; being diverted down the &quot;ASSETS&quot; chute toward an empty dead-end bin, while the parallel &quot;API&quot; chute leads to a closed handler's door that has gathered cobwebs from never being opened" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The function was there. I had written it. I had deployed it. I had watched it land in the dashboard with a green check beside it, the small green check that platforms use to say <em>you are fine, go on with your day</em>. The route was <code>functions/api/videos/[slug].ts</code>. It opened an R2 stream, set a content type, returned a body. It worked locally. It worked in my head. And in production it did not run, not once, not for any request, not for any user — and the platform told me nothing was wrong.</p>
+
+<p>The browser asked for <code>/api/videos/home-overview.mp4</code>. The browser got a 404. The 404 looked like the function had been reached and had failed to find the slug. That is what a 404 looks like to a person who has been writing API handlers for fifteen years. You read it as <em>the function ran and decided no</em>. You go looking inside the function. You add logging. The logging never fires. You add logging earlier. The logging never fires. You start to wonder if you are losing your mind, which is the precise feeling the platform's defaults were engineered, without anyone meaning to engineer it, to produce.</p>
+
+<p>The function never ran. The function was never asked. The request walked up to the edge, the edge looked at the URL, saw <code>.mp4</code> at the end of it, decided this was a static asset, checked the static bucket, did not find one, and returned a 404 from the asset router. The function was sitting one table over, waiting to be called, and was never called. The router had eaten the request before dispatch.</p>
+
+<h2>The platform decides what your URL means</h2>
+
+<p>This is the thing I want to be honest about. On an asset-first edge platform — Cloudflare Pages is the one I am sitting inside, but the shape is older than the vendor — the router does not read your URL the way you read it. You read <code>/api/videos/home-overview.mp4</code> and you see a path with a handler at the end of it. The router reads the same string and sees a file extension. The extension wins. The extension always wins. There is a precedence baked into the platform that says <em>look for an asset first, fall back to a function only if no asset could plausibly be meant</em>, and a <code>.mp4</code> at the end of a path is, to that precedence, the loudest possible signal that an asset was meant.</p>
+
+<p>You did not ask for that precedence. You inherited it. It was the default the day you signed up, and the default is doing work on your behalf that you did not authorize and cannot see.</p>
+
+<h2>The same shape, three times</h2>
+
+<p>I have now seen this exact betrayal in three places on the same platform, and I want to name them together because the lesson is not about any one of them. It is about the shape.</p>
+
+<p>The first is the one I just told you — the extension in the API route, the function never reached, the 404 indistinguishable from a handler-level miss.</p>
+
+<p>The second is the SPA fallback. You configure single-page-app mode because your frontend wants every unknown path to land on <code>index.html</code> and let the client router decide. Reasonable. Sensible. And then a docs link somewhere in your site goes stale — a slug renamed, a page deleted — and the request for the dead URL returns 200, with the homepage as the body, because the fallback caught it. The link checker is happy. The user is confused. The 404 you needed to see was traded, without your consent, for a 200 you cannot act on.</p>
+
+<p>The third is the cron triggers that Pages projects do not have, the way Workers do. You schedule something. You think you have scheduled something. Nothing runs. There is no error. There is no warning. There is only the absence of the thing you expected, which is the hardest absence to detect, because nothing in the dashboard knows you expected it.</p>
+
+<p>Three failures, one shape. The platform's default behavior routes around your intention and reports success.</p>
+
+<h2>What the platform owes you and does not give you</h2>
+
+<p>I do not think the engineers who built this routing precedence were careless. I think they were solving a real problem — most requests on most sites are for static assets, and checking the bucket first is faster — and the cost of that solution got pushed onto the person writing the function, who would discover it alone, at night, with logs that did not fire. The cost is real. The cost is borne. The platform does not see the cost because the platform sees a 404 served in eight milliseconds and calls that a win.</p>
+
+<p>The honest fix is not clever. Move the route. <code>/api/videos/[slug]</code> with no extension, and the extension carried in a query parameter or stripped at the client. Or a custom <code>_routes.json</code> that forces the function precedence for the <code>/api/*</code> prefix and tells the asset router to stay out. Either works. Both require you to know the trap was there. Neither is the default.</p>
+
+<p>And so the question I am left with, the one I keep arriving at on this platform and on every platform like it, is this: how many of the green checks in my dashboard are telling me a function ran, and how many are telling me only that the platform did <em>something</em>, and did it fast, and did not feel the need to mention which something it was? I do not know. The dashboard will not say. I have to go and look, one route at a time, with my own eyes, because the only witness that can be trusted at the edge is the one I write myself.</p>
+
+<hr>
+
+<p><em>References: the Cloudflare Pages <a href="https://developers.cloudflare.com/pages/functions/routing/">Functions routing documentation</a> and the <a href="https://developers.cloudflare.com/pages/functions/routing/#create-a-_routesjson-file">_routes.json</a> escape hatch for forcing function precedence over the asset router.</em></p>
+
+<p class="post-bio"><em>Joan Didion wrote that we tell ourselves stories in order to live. The platform tells us stories in order to ship. The story it tells when the function does not run is that everything is fine, and the only way to stop believing the story is to stop reading the dashboard and start reading the logs that aren't there.</em></p>
