@@ -1,0 +1,52 @@
+---
+title: "The Collapsed Section Was Not Silent"
+subtitle: "A <code>details</code> element hides its contents. It does not unmount them. The iframe inside loads, runs, and in this case spoke."
+date: 2026-06-14
+related:
+  - slug: the-static-asset-ate-the-function
+    note: "The platform's defaults decided the route before the handler ran. Here the browser's defaults decided the load before the user clicked."
+  - slug: the-tool-the-model-wrote-as-text
+    note: "Both posts turn on a category mistake about what 'inert' means — a tool call that is really prose, a closed section that is really a running iframe."
+  - slug: failure-visible-three-ways
+    note: "The audio was the unintended third witness. The page told the user what the developer had assumed it would not say."
+---
+
+<img src="/blog/images/the-collapsed-section-was-not-silent-featured.png" alt="A theater stage with the heavy velvet curtain drawn fully closed across the proscenium, while from behind the curtain a brass trumpet bell, a violin scroll, and a singer's outstretched hand protrude through the gap at the curtain's center, sound visibly spilling out into the empty auditorium below" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The user opened <code>/inspection</code> at 9:14 in the morning and heard a voice. The voice said, <em>Welcome to the walkthrough.</em> The user had not clicked anything. The page had finished loading two seconds earlier. There was a heading, a paragraph of intake copy, and below that a closed gray triangle next to the words <em>Watch the walkthrough</em>. The triangle pointed right. The section was collapsed. The narration kept going.</p>
+
+<p>The user closed the tab. The user filed a ticket. The ticket said: <em>audio plays on page load from a section I did not open.</em></p>
+
+<h2>What the markup said</h2>
+
+<p>The template was straightforward. A <code>details</code> element wrapping a <code>summary</code> and an <code>iframe</code>. The iframe pointed at a hosted walkthrough on a third-party domain — an animated explainer with a baked-in voiceover and <code>autoplay</code> in the embed URL. The author of the template had reasoned, plausibly, that <code>details</code> without the <code>open</code> attribute meant the contents were not shown. Not shown meant not active. Not active meant not playing.</p>
+
+<p>The browser disagreed. The browser had always disagreed. The HTML spec is precise on this point and the precision had been ignored because it had never had to be confronted. <code>details</code> is a visibility toggle. The contents are part of the document. They are parsed. The iframe is mounted. The iframe issues its request. The third-party page loads. The third-party page reads <code>autoplay=1</code> from its own query string. The audio element on that page begins to play. The audio reaches the user's speakers through a closed gray triangle.</p>
+
+<h2>What the developer meant</h2>
+
+<p>The developer meant <em>inert.</em> The developer meant <em>do not run until I say.</em> There is no attribute in HTML that means this for an iframe inside a <code>details</code>. There is <code>loading="lazy"</code>, which defers the fetch until the iframe is near the viewport, and the iframe inside a closed <code>details</code> is in the viewport — it has a position, it has a size of zero or near zero, and the lazy heuristic does not save you here in any browser tested. There is <code>hidden</code>, which also does not unmount. There is CSS <code>display: none</code> on a parent, which in some browsers will prevent the iframe from loading and in others will not, and which is not what <code>details</code> applies anyway.</p>
+
+<p>The only thing that means <em>do not run until I say</em> is: do not put the iframe in the DOM. Add it on the <code>toggle</code> event when <code>open</code> becomes true. Remove it when <code>open</code> becomes false, if you care about that direction. The mount is the switch. Nothing else is the switch.</p>
+
+<h2>The same shape, elsewhere</h2>
+
+<p>A tab UI with all four panels pre-rendered, three of them hidden by CSS. The video in tab two is buffering. The analytics ping in tab three has already fired. The form in tab four has registered its <code>beforeunload</code> handler and will now ask the user, on every navigation, whether they really want to leave a form they never saw.</p>
+
+<p>An accordion of FAQ entries, each one containing a YouTube embed. The page has opened twelve connections to <code>youtube.com</code> before the user has scrolled. The Network tab shows them. The user does not.</p>
+
+<p>A modal that pre-renders its contents for a faster open animation. The modal contains a map. The map's tile server is being hit on every page load by every user who will never click the button that reveals the map.</p>
+
+<p>In each case the author has used a visibility primitive — <code>hidden</code>, <code>display: none</code>, <code>details</code> without <code>open</code>, an <code>aria-hidden</code> panel — and has reasoned about it as if it were a mount primitive. The browser does not share the reasoning. The browser mounts what is in the document. The document is the contract. Whatever is in it, runs.</p>
+
+<h2>The fix on the page</h2>
+
+<p>The template now renders a placeholder inside the closed <code>details</code> — a still image and a caption. A short script listens for the <code>toggle</code> event on the element, checks <code>this.open</code>, and on the first true transition replaces the placeholder with the iframe. The iframe mounts at the moment of intent. The audio plays at the moment of intent. The closed section is silent because the closed section is, finally, empty.</p>
+
+<p>The user who filed the ticket has not come back. The ones who did not file the ticket are the ones the change was for.</p>
+
+<hr>
+
+<p><em>References: the HTML Living Standard on the <a href="https://html.spec.whatwg.org/multipage/interactive-elements.html#the-details-element">details element</a> and the <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element">iframe element</a>, which together describe the behavior this post ran into.</em></p>
+
+<p class="post-bio"><em>Joan Didion wrote that we tell ourselves stories in order to live. The story the developer told himself was that a closed section was a quiet section. The browser, which tells itself no stories, played the audio anyway.</em></p>
