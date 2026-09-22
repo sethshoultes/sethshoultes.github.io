@@ -119,6 +119,29 @@ not a sibling-path one, so it's safe to lift out and serve standalone (the
 CDN script keeps loading fine off any domain). No `localStorage` reads or
 writes — no client-side state to replicate.
 
+### AI Typing Star Game (arcade#56)
+
+Not a duplicate of Word Runner (arcade#55), despite the filename pairing
+(`typing-game-1.html` beside `typing-game.html`, the shape of a saved
+variant elsewhere in this repo, e.g. `flappybird-1.html`/`flappybird.html`).
+Read both files side by side: Canvas rendering here vs. Word Runner's DOM
+overlay; player is a drawn star that moves directly in canvas coordinates
+vs. Word Runner's floating circle positioned in the DOM; words are
+`FloatingWord` instances that drift with their own physics and trigger by
+proximity collision vs. Word Runner's fixed word list spawned on a random
+timer; word theme is AI/ML terms (`GPT`, `BERT`, `LLM`, model/company
+names) vs. Word Runner's general programming terms; scoring formula and
+scale also differ. Genuinely a separate game — hosted as its own game, not
+folded into Word Runner's manifest.
+
+Source: `typing-games/typing-game-1.html`, one self-contained HTML file —
+inline `<style>`, one inline `<script>` (Canvas rendering, WASD movement,
+proximity-based word collision). Grepping the file for `src=`, `href=`,
+`url(`, `fetch(`, `import`, `cdn.`, `https?://` finds exactly one match,
+the same CDN dependency as Word Runner:
+`<script src="https://cdn.tailwindcss.com"></script>` — not a sibling-path
+dependency, safe to serve standalone. No `localStorage` reads or writes.
+
 **No Jekyll front matter** — confirmed via `od -c` on the first bytes: the
 file starts directly with `<!DOCTYPE html>`, no `---` block.
 
@@ -149,3 +172,21 @@ zero page errors.
 Target: `/home/word-runner/htdocs/word-runner.adventurebuildr.com` — matches
 this script's default `$SLUG.adventurebuildr.com` formula exactly for slug
 `word-runner`, no `GAME_DEPLOY_PATH` override needed.
+
+Build — no script changes needed, same single-file path as the others:
+
+```bash
+scripts/deploy-game.sh ai-typing-star typing-games/typing-game-1.html
+```
+
+produces `build/ai-typing-star/index.html` — the whole servable root, one
+file. Verified by replicating the script's build step directly (`build/`
+output non-empty, 6952 bytes).
+
+Local verification: served `build/ai-typing-star/` from a local static
+server and loaded it with headless Playwright (chromium) — zero console
+errors, zero page errors.
+
+Target: `/home/ai-typing-star/htdocs/ai-typing-star.adventurebuildr.com` —
+matches this script's default `$SLUG.adventurebuildr.com` formula exactly
+for slug `ai-typing-star`, no `GAME_DEPLOY_PATH` override needed.
