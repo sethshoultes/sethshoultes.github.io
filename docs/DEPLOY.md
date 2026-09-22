@@ -64,3 +64,46 @@ produces `build/typerunner/index.html` — the whole servable root, one file.
 Target: `/home/typerunner/htdocs/typerunner.adventurebuildr.com` (CloudPanel
 layout, given directly for arcade#44 — matches this script's default for
 slug `typerunner`, no override needed).
+
+### Typing Invaders (arcade#46)
+
+Source: `typing-games/typinginvaders.html`, one self-contained HTML file —
+inline `<style>`, one inline `<script>` (game logic + Canvas rendering).
+Grepping the file for `src=`, `href=`, `url(`, `fetch(`, `import`, `cdn.`,
+`https?://` returns **zero matches** — no external assets or CDN calls of
+any kind, not even the file's own `<style>`/`<script>` tag attributes.
+Two `localStorage` reads/writes for high-score state, client-side only.
+
+**No Jekyll front matter** — confirmed via `od -c` on the first bytes: the
+file starts directly with `<!DOCTYPE html>`, no `---` block.
+
+Fixed: the source file was missing `<meta charset="UTF-8">` in `<head>`,
+which rendered the HUD's "♥" lives indicator as "â™¥" mojibake. Added the
+tag directly to `typing-games/typinginvaders.html` (typo-class, visible to
+players) and re-verified.
+
+Build — no script changes needed, same single-file path as Typewrunner:
+
+```bash
+scripts/deploy-game.sh typinginvaders typing-games/typinginvaders.html
+```
+
+produces `build/typinginvaders/index.html` — the whole servable root, one
+file.
+
+Local verification: served `build/typinginvaders/` from a local static
+server and loaded it with headless Playwright (chromium) — zero console
+errors, zero page errors. HUD (Score/Lives/Level/Active) rendered correctly,
+including the fixed "♥♥♥" lives indicator (was "â™¥â™¥â™¥" before the charset
+fix above; re-checked post-fix and confirmed clean).
+
+Target: `/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com`.
+Site-user `typinginvaders` has no hyphen but the domain
+`typing-invaders.adventurebuildr.com` does, so the script's default
+`$SLUG.adventurebuildr.com` formula can't produce both from one slug —
+needs the `GAME_DEPLOY_PATH` override, same as Speed Typing Adventure:
+
+```bash
+GAME_DEPLOY_PATH=/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com \
+  scripts/deploy-game.sh typinginvaders typing-games/typinginvaders.html
+```
