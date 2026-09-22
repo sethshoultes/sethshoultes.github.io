@@ -77,9 +77,10 @@ Two `localStorage` reads/writes for high-score state, client-side only.
 **No Jekyll front matter** — confirmed via `od -c` on the first bytes: the
 file starts directly with `<!DOCTYPE html>`, no `---` block.
 
-Known pre-existing gap, not fixed here: no `<meta charset="UTF-8">` tag in
-`<head>`. Cosmetic only (renders the HUD's "♥" lives indicator as "â™¥"
-mojibake); doesn't throw or block init, out of this task's scope.
+Fixed: the source file was missing `<meta charset="UTF-8">` in `<head>`,
+which rendered the HUD's "♥" lives indicator as "â™¥" mojibake. Added the
+tag directly to `typing-games/typinginvaders.html` (typo-class, visible to
+players) and re-verified.
 
 Build — no script changes needed, same single-file path as Typewrunner:
 
@@ -92,7 +93,9 @@ file.
 
 Local verification: served `build/typinginvaders/` from a local static
 server and loaded it with headless Playwright (chromium) — zero console
-errors, zero page errors. HUD (Score/Lives/Level/Active) rendered correctly.
+errors, zero page errors. HUD (Score/Lives/Level/Active) rendered correctly,
+including the fixed "♥♥♥" lives indicator (was "â™¥â™¥â™¥" before the charset
+fix above; re-checked post-fix and confirmed clean).
 
 Target: `/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com`.
 Site-user `typinginvaders` has no hyphen but the domain
