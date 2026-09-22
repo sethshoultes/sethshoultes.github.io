@@ -15,12 +15,19 @@
 # Build step: these pages have no Jekyll front matter (checked per-game
 # before adding them here) and are served byte-for-byte, no Jekyll
 # processing.
-#   - source-path is a single file  -> copied to build/<slug>/index.html
-#   - source-path is a directory    -> whole tree copied as-is into
-#                                       build/<slug>/ (must contain its
-#                                       own index.html)
+#   - source-path is a single file            -> copied to
+#                                                 build/<slug>/index.html
+#   - source-path is a directory, no build    -> whole tree copied as-is
+#     script in its package.json                 into build/<slug>/ (must
+#                                                 contain its own index.html)
+#   - source-path is a directory with a       -> `npm install && npm run
+#     package.json "build" script (e.g.          build` run in source-path,
+#     joust-1980, a Vite app, arcade#47)          then its dist/ is copied
+#                                                 into build/<slug>/
 # build/ is gitignored — it's regenerated from source-path each run, never
-# committed.
+# committed. node_modules/dist inside source-path are the game repo's own
+# concern (already gitignored there for joust-1980) — this script installs
+# and builds in place, never commits build output.
 #
 # arcade epic #41: this dev has no ssh access and does not run this script
 # itself — the arcade lead does, after confirming REMOTE_HOST/REMOTE_PATH
@@ -55,7 +62,17 @@ mkdir -p "$BUILD_DIR"
 if [ -f "$SOURCE" ]; then
   cp "$SOURCE" "$BUILD_DIR/index.html"
 elif [ -d "$SOURCE" ]; then
-  cp -R "$SOURCE"/. "$BUILD_DIR"/
+  if [ -f "$SOURCE/package.json" ] && grep -q '"build"[[:space:]]*:' "$SOURCE/package.json"; then
+    ( cd "$SOURCE" && npm install && npm run build )
+    DIST_DIR="$SOURCE/dist"
+    if [ ! -d "$DIST_DIR" ]; then
+      echo "deploy-game.sh: $DIST_DIR missing after npm run build" >&2
+      exit 1
+    fi
+    cp -R "$DIST_DIR"/. "$BUILD_DIR"/
+  else
+    cp -R "$SOURCE"/. "$BUILD_DIR"/
+  fi
 else
   echo "deploy-game.sh: $SOURCE not found" >&2
   exit 1
