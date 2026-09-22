@@ -107,3 +107,45 @@ needs the `GAME_DEPLOY_PATH` override, same as Speed Typing Adventure:
 GAME_DEPLOY_PATH=/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com \
   scripts/deploy-game.sh typinginvaders typing-games/typinginvaders.html
 ```
+
+### Word Runner (arcade#55)
+
+Source: `typing-games/typing-game.html`, one self-contained HTML file —
+inline `<style>`, one inline `<script>` (WASD player movement, timed word
+spawns, DOM-rendered — no Canvas). Grepping the file for `src=`, `href=`,
+`url(`, `fetch(`, `import`, `cdn.`, `https?://` finds exactly one match:
+`<script src="https://cdn.tailwindcss.com"></script>` — a CDN dependency,
+not a sibling-path one, so it's safe to lift out and serve standalone (the
+CDN script keeps loading fine off any domain). No `localStorage` reads or
+writes — no client-side state to replicate.
+
+**No Jekyll front matter** — confirmed via `od -c` on the first bytes: the
+file starts directly with `<!DOCTYPE html>`, no `---` block.
+
+**Live in a second place**: this same game is also served at
+`adventurebuildr.com/arcade/typing-game.html`, inside the WordPress site's
+own `/arcade/` mini-game hub (`docs/INVENTORY.md` in the arcade repo records
+that hub as an unrelated name collision with the arcade dashboard project).
+That site is out of scope here (`CLAUDE.md`: "The WordPress site at
+adventurebuildr.com stays as is") — noted for the arcade lead to decide
+whether the WordPress copy is left alone, redirected, or removed once this
+copy is live.
+
+Build — no script changes needed, same single-file path as Typewrunner and
+Typing Invaders:
+
+```bash
+scripts/deploy-game.sh word-runner typing-games/typing-game.html
+```
+
+produces `build/word-runner/index.html` — the whole servable root, one file.
+Verified by replicating the script's build step directly (`build/` output
+non-empty, 5009 bytes).
+
+Local verification: served `build/word-runner/` from a local static server
+and loaded it with headless Playwright (chromium) — zero console errors,
+zero page errors.
+
+Target: `/home/word-runner/htdocs/word-runner.adventurebuildr.com` — matches
+this script's default `$SLUG.adventurebuildr.com` formula exactly for slug
+`word-runner`, no `GAME_DEPLOY_PATH` override needed.
