@@ -3,9 +3,9 @@ layout: post
 title: "Terms of Service"
 description: "Terms for Seth's clone"
 permalink: /terms/
+date: 2026-10-11
 ---
 
-# Terms of Service
 
 *Last updated: October 11, 2026*
 
