@@ -3,9 +3,9 @@ layout: post
 title: "Privacy Policy"
 description: "How Seth's clone handles your data"
 permalink: /privacy/
+date: 2026-10-11
 ---
 
-# Privacy Policy
 
 *Last updated: October 11, 2026*
 
