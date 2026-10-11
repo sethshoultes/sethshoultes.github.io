@@ -29,7 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from daily_blog import (  # type: ignore
-    POSTS_DIR, REPO_ROOT, anthropic_client, ANTHROPIC_MODEL, _post_meta,
+    POSTS_DIR, REPO_ROOT, anthropic_client, ANTHROPIC_MODEL, _post_meta, first_text,
 )
 
 REFERENCES_FILE = REPO_ROOT / "data" / "references.md"
@@ -186,7 +186,7 @@ def main() -> int:
         max_tokens=2500,
         messages=[{"role": "user", "content": prompt}],
     )
-    response = msg.content[0].text.strip()
+    response = first_text(msg).strip()
     response = re.sub(r"^```(?:json)?\s*\n", "", response)
     response = re.sub(r"\n```\s*$", "", response)
 

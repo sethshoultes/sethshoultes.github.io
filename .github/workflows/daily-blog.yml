@@ -1,6 +1,6 @@
 name: Daily blog
 
-# Single-shot daily pipeline: pick idea -> draft -> image -> validate -> commit/push.
+# Twice-weekly publish pipeline: pick idea -> draft -> image -> validate -> commit/push.
 # This workflow only consumes `secrets.*` — no untrusted github.event.* user input
 # is interpolated into shell commands.
 # On failure: opens an issue and sends an email via Resend. The script handles both —
@@ -8,8 +8,8 @@ name: Daily blog
 
 on:
   schedule:
-    # 13:00 UTC = 09:00 ET (EDT). During EST (winter) this is 08:00 ET — accept the drift.
-    - cron: "0 13 * * *"
+    # Tue/Fri 13:00 UTC = 09:00 ET (EDT). During EST (winter) this is 08:00 ET — accept the drift.
+    - cron: "0 13 * * 2,5"
   workflow_dispatch:
     inputs:
       force_date:
@@ -49,8 +49,8 @@ jobs:
 
       - name: Configure git identity
         run: |
-          git config user.name "daily-blog-bot"
-          git config user.email "bot@users.noreply.github.com"
+          git config user.name "Seth"
+          git config user.email "seth@smartwebutah.com"
 
       # The curated idea source. Sparse-clone only the post-warehouse from the
       # private brain repo so the pipeline drafts from real, deduplicated ideas

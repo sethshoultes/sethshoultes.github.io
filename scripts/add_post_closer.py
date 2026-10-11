@@ -23,7 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from daily_blog import (  # type: ignore
-    POSTS_DIR, anthropic_client, corpus_index, ANTHROPIC_MODEL, _post_meta,
+    POSTS_DIR, anthropic_client, corpus_index, ANTHROPIC_MODEL, _post_meta, first_text,
 )
 
 
@@ -172,7 +172,7 @@ def main() -> int:
         max_tokens=800,
         messages=[{"role": "user", "content": prompt}],
     )
-    response = msg.content[0].text
+    response = first_text(msg)
 
     related, closer = parse_response(response)
     print("RELATED:")

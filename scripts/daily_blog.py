@@ -48,7 +48,7 @@ VALIDATOR = REPO_ROOT / "scripts" / "validate_post.py"
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 
-ANTHROPIC_MODEL = "claude-opus-4-7"
+ANTHROPIC_MODEL = "claude-opus-5-5"
 IMAGE_MODEL = "gpt-image-1"
 
 # The fixed style suffix that gives every featured image the same pen-and-ink
@@ -216,6 +216,17 @@ def anthropic_client() -> anthropic.Anthropic:
     return anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 
+def first_text(msg) -> str:
+    """content[0] is no longer reliably the text block — newer models (e.g.
+    claude-opus-5-5) emit a leading thinking block in the same content array
+    even when extended thinking wasn't requested. Find the actual text block
+    instead of indexing position 0."""
+    for block in msg.content:
+        if getattr(block, "type", None) == "text":
+            return block.text
+    raise RuntimeError(f"no text block in response (types: {[getattr(b, 'type', None) for b in msg.content]})")
+
+
 def openai_client() -> OpenAI:
     return OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
@@ -331,7 +342,7 @@ def generate_idea_from_repo() -> dict:
             ),
         }],
     )
-    text = msg.content[0].text.strip()
+    text = first_text(msg).strip()
     fields = {}
     for line in text.splitlines():
         if ":" in line:
@@ -421,7 +432,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         system=system_prompt,
         messages=[{"role": "user", "content": user}],
     )
-    return msg.content[0].text.strip()
+    return first_text(msg).strip()
 
 
 def generate_image_prompt(idea: dict, post_text: str) -> str:
@@ -455,7 +466,7 @@ def generate_image_prompt(idea: dict, post_text: str) -> str:
             ),
         }],
     )
-    subject = msg.content[0].text.strip().strip('"').strip("'")
+    subject = first_text(msg).strip().strip('"').strip("'")
     return f"{subject} {IMAGE_STYLE_SUFFIX}"
 
 
@@ -697,8 +708,8 @@ def main() -> int:
 
     subprocess.run(["git", "add"] + paths, cwd=REPO_ROOT, check=True)
 
-    git_user = os.environ.get("GIT_AUTHOR_NAME", "daily-blog-bot")
-    git_email = os.environ.get("GIT_AUTHOR_EMAIL", "bot@users.noreply.github.com")
+    git_user = os.environ.get("GIT_AUTHOR_NAME", "Seth")
+    git_email = os.environ.get("GIT_AUTHOR_EMAIL", "seth@smartwebutah.com")
     env = {**os.environ,
            "GIT_AUTHOR_NAME": git_user, "GIT_AUTHOR_EMAIL": git_email,
            "GIT_COMMITTER_NAME": git_user, "GIT_COMMITTER_EMAIL": git_email}

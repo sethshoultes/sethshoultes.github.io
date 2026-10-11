@@ -9,3 +9,6 @@ vendor/
 .great-minds/
 .wolf/
 .playwright-mcp/
+
+__pycache__/
+*.pyc
