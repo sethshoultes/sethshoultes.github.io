@@ -62,13 +62,16 @@ jobs:
         env:
           BRAIN_REPO_TOKEN: ${{ secrets.BRAIN_REPO_TOKEN }}
         run: |
-          set -e
           if [ -z "$BRAIN_REPO_TOKEN" ]; then
             echo "::warning::BRAIN_REPO_TOKEN not set — falling back to commit-seeded idea generation."
             exit 0
           fi
-          git clone --depth 1 --filter=blob:none --sparse \
-            "https://x-access-token:${BRAIN_REPO_TOKEN}@github.com/sethshoultes/brain.git" .brain
+          if ! git clone --depth 1 --filter=blob:none --sparse \
+            "https://x-access-token:${BRAIN_REPO_TOKEN}@github.com/sethshoultes/brain.git" .brain; then
+            echo "::warning::BRAIN_REPO_TOKEN clone failed (expired/invalid?) — falling back to commit-seeded idea generation."
+            rm -rf .brain
+            exit 0
+          fi
           git -C .brain sparse-checkout set post-warehouse
           echo "Warehouse candidates: $(ls .brain/post-warehouse/*.md | wc -l)"
 
