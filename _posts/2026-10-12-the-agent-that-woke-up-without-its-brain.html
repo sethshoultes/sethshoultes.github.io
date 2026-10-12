@@ -1,0 +1,52 @@
+---
+title: "If the Agent Forgets, It Should Say So"
+subtitle: "When the daily blog job can't load its memory, it should still write, but it should write like someone who knows they've forgotten, and leave a note saying so."
+date: 2026-10-12
+related:
+  - slug: failure-visible-three-ways
+    note: "The same instinct applied to outright failure. If the pipeline breaks, it should tell you loudly. This post covers the quieter case where nothing breaks but something is missing."
+  - slug: whats-on-the-desk
+    note: "A tour of the brain vault this post depends on, and why an agent's memory living in a separate repo is both the strength and the weak point."
+  - slug: the-hand-off-eats-its-own-pipeline
+    note: "A pipeline that shipped confidently while getting something wrong. That is exactly the outcome a silent amnesiac run would produce."
+---
+
+<img src="/blog/images/the-agent-that-woke-up-without-its-brain-featured.png" alt="An open wooden index-card box sits empty on a desk except for a single handwritten card propped at the front reading &quot;ran without memory today,&quot; while beside it a fountain pen rests on a half-written page" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The job that writes this blog failed one morning before it wrote a single word. It wasn't the model and it wasn't the prose. The very first step, where it fetches its memory, failed, and everything after that step never got a chance to run.</p>
+
+<p>Some background. The agent that drafts these posts keeps its accumulated context in a separate git repository I call the brain. That repo holds notes on what's been written, lessons learned, and things I've decided I don't want repeated. Each run copies the brain down before it starts. Because the repo is private, the copy needs a password, which lives in a secret called <code>BRAIN_REPO_TOKEN</code>. If that token is wrong, missing, or expired, the copy fails.</p>
+
+<p>Before commit <code>772238a</code>, a failed copy killed the whole run. That's the honest way to fail, and it's still a bad one. One flaky dependency took down a job that could have mostly worked. So I changed it. Now, if the brain doesn't load, the run keeps going.</p>
+
+<p>That raised the real question: what should the agent <em>do</em> once it knows it's working without its memory?</p>
+
+<h2>The failure I was actually worried about</h2>
+
+<p>Crashing isn't the worst outcome. The worst outcome is that the token quietly expires and nothing complains. The copy fails, the agent shrugs, and it writes the post anyway, in the same confident voice, as if it remembered everything.</p>
+
+<p>Then it repeats an argument from three weeks ago because it can't see it already made it. It links to a post with a stale description. It restates a lesson I've since walked back, because the note where I walked it back lives in the brain it never loaded. Every one of those posts looks fine. You'd only notice the drift if you sat down and read a month of them side by side, and by then you'd have a month of them.</p>
+
+<p>Between a loud crash and that kind of quiet drift, I'll take the crash every time. The point of the change was to find something better than both.</p>
+
+<h2>Treat it like a cache miss</h2>
+
+<p>The way I think about it now: the brain is a dependency with a degraded mode, the same as a cache. When a cache misses, you don't crash, and you don't make up a value. You fall back to something slower or more limited, and you count the miss so you can tell when misses start piling up.</p>
+
+<p>For the agent, that works out to three things.</p>
+
+<p>First, skip the steps that only make sense with memory. If a step is "check whether we've covered this before," and the agent can't see what we've covered, the step doesn't run. A guess dressed up as a check is worse than no check.</p>
+
+<p>Second, write more carefully. Without the brain, the agent shouldn't confidently restate things it can no longer verify. Writing from what's in front of it is fine. Claiming it has a history it can't actually see is not.</p>
+
+<p>Third, leave a note. The run log says "ran without brain" in plain words, and so does the output. Then the next person to look at it knows exactly what kind of morning that post came from. Usually that next person is me, and sometimes it's the agent on its following run.</p>
+
+<p>That third piece carries most of the weight. Skipping steps and hedging claims shrink the damage. The note is what turns a silent failure into a visible one. One run without the brain is fine. Five in a row tells me the token has expired, and I can fix it in a minute instead of discovering weeks of drift.</p>
+
+<p>If you build anything that leans on an external memory, whether that's a notes repo, a vector store, or a config file somewhere else, decide ahead of time what it does when that memory isn't there. Don't let it crash and don't let it pretend. Let it work, and make it say out loud that it's working without the memory.</p>
+
+<hr>
+
+<p><em>References: the <a href="/recipes/claude-code-brain-vault.html">brain vault recipe</a> and the example structure at <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain</a>.</em></p>
+
+<p class="post-bio"><em>Oliver Sacks wrote about Clive Wearing, a musician whose memory lasted only seconds, who filled diary pages with "now I am truly awake" and crossed out each earlier entry. He couldn't remember, but he never stopped writing down that he couldn't.</em></p>
