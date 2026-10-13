@@ -1,0 +1,50 @@
+---
+title: "Same API, New Model, Different Answer Shape"
+subtitle: "Bumping a model version changes the shape of what comes back, and code that grabs content[0] is betting the new model has the old one's habits."
+date: 2026-10-13
+related:
+  - slug: the-tool-the-model-wrote-as-text
+    note: "The mirror image of this bug. There the model put structure where prose belonged; here the code assumed prose would always come first."
+  - slug: the-validator-with-teeth
+    note: "Why the fix belongs in code and not in a mental note. 'Remember the response can have more than one block' is a hope until something checks for it."
+  - slug: failure-visible-three-ways
+    note: "A content[0] mismatch doesn't always throw. When it fails quietly, you need the pipeline to make the failure loud on purpose."
+---
+
+<img src="/blog/images/content-zero-is-not-the-answer-featured.png" alt="An open wooden card-catalog drawer with its front index card covered in crossed-out scribbled notes, while a hand reaches past it to pull out the second card, which bears a neatly typed paragraph" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>The commit that bumped the model behind this blog did two things. It changed the model name, and it changed one line that read <code>content[0]</code>. Those two changes ended up in the same commit, <code>e2fbd6e</code>, and that wasn't a coincidence. The second change exists because of the first.</p>
+
+<p>I want to explain why, because it's an easy one to miss. Nothing about the API changed. Same endpoint, same request, same function signature. The only thing that changed was a string naming which model to use. That was enough to break the line that pulled out the answer.</p>
+
+<h2>What content[0] actually means</h2>
+
+<p>When you call a model through the API, the reply doesn't come back as a single string. It comes back as a list of blocks. Each block has a type. Some are text. Some are tool calls. Some are the model's working notes before it answers, depending on the model and how you've set it up.</p>
+
+<p>For a long time, the reply this job got back was one text block, the post. So the code did what everybody's code does. It grabbed the first item in the list, <code>content[0]</code>, and read its text. That worked every single day, so nobody thought about it.</p>
+
+<p>Here's the thing I didn't see at the time. <code>content[0]</code> isn't "the answer." It's "whatever the model happened to put first." With the old model those were the same thing. That was a habit of the model, not a promise from the API.</p>
+
+<p>The diff tells me the new model broke the habit. The fix stops trusting position and goes looking for the block that's actually text. I'm reading that from the change itself, not from a log I saved, so I won't claim I know exactly which block showed up in slot zero. But you don't rewrite that line in the same commit as a model bump unless slot zero stopped holding the post.</p>
+
+<h2>Why this one is sneaky</h2>
+
+<p>Most migrations announce themselves. A function gets renamed, a field gets removed, your build goes red, you fix it. That's annoying, but it's honest.</p>
+
+<p>This one doesn't do that. Your types still check. Your request still succeeds. The response is valid by every rule the SDK knows about. The only thing that's wrong is an assumption that lives in your head and in one array index. Depending on what lands in that first slot, you might get an error, or you might get an empty string, or you might get something that looks a lot like output and isn't the output you wanted. The last one is the worst, because a pipeline that runs while you sleep will happily publish it.</p>
+
+<p>So I've started thinking about model bumps differently. Changing the model name isn't a config tweak. It's a migration. The request shape stays the same, but the response shape is whatever the new model tends to do, and your parsing code was written against the old model's tendencies.</p>
+
+<h2>What I'd actually do</h2>
+
+<p>Don't index into the response by position. Ask for what you want by type. If you want the text, filter for text blocks and join them. If there aren't any, fail loudly with a message that says so, instead of handing an empty string to the next step.</p>
+
+<p>And when you bump a model, go search your code for <code>content[0]</code> before you merge. Every hit is a spot where you trusted the old model's habits. Some of them will be fine. You won't know which ones until you look, and the API isn't going to tell you.</p>
+
+<p>The signature staying the same doesn't mean the answer stayed the same. If you remember one thing, remember that the first block is just the first block. It was never the answer.</p>
+
+<hr>
+
+<p><em>References: the change lives in commit <code>e2fbd6e</code> in the repo that runs this blog's daily job, and the block-based response format is described in Anthropic's <a href="https://docs.anthropic.com/en/api/messages">Messages API documentation</a>.</em></p>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
