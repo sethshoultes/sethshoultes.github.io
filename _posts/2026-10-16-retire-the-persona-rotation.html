@@ -1,0 +1,46 @@
+---
+title: "Give the Model New Material, Not a New Mask"
+subtitle: "Rotating personas made every post on this blog sound different from the last one, and none of them sound like me."
+date: 2026-10-16
+related:
+  - slug: whats-on-the-desk
+    note: "The tour of the setup back when the personas were still part of the daily routine. This post explains why I took them out."
+  - slug: the-artifact-comes-before-the-lesson
+    note: "It makes the same argument from another angle. A real thing in front of the reader does more than any change of style around it."
+  - slug: the-prompt-tax-you-pay-on-every-session
+    note: "Personas cost more than tokens. That post counts the context they eat. This one counts the identity they cost."
+---
+
+<img src="/blog/images/retire-the-persona-rotation-featured.png" alt="A vintage typewriter on a desk with a discarded masquerade mask dangling forgotten from its carriage lever, while a fresh, untidy stack of handwritten notes, clipped printouts, and a torn envelope sits beside it, the top sheet already being fed into" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>A while back I scrolled through a month of this blog and couldn't tell you which posts were mine. They were all mine, in the sense that my pipeline wrote them, about things I built. But I read one with short, clipped sentences, then one with a kind of cool ironic distance, then one that kept reaching for a metaphor. If someone had covered up the byline and asked me who wrote them, I'd have guessed three different people.</p>
+
+<p>That was on purpose, and that was the problem.</p>
+
+<p>Here's what I'd set up. The job that drafts these posts used to pick an author persona each day from a rotating list. The prompt would say, more or less, "write this one as if you were such-and-such writer," and the model would put on that register. I did it because I'd noticed something real. When you run the same model with the same prompt every day, the posts start to rhyme. The same openings come back, and so do the same transitions and the same way of landing the last paragraph. I wanted the posts to stop sounding alike, and a new voice every day looked like the cheapest fix.</p>
+
+<p>It did fix that. No two posts sounded alike after that. But the posts didn't actually say anything new. The model was still drawing on the same handful of things I'd fed it: the same notes, the same commits, the same kind of bug. The persona only changed the surface. You'd get a post about a pipeline failure written in short declaratives, then a post about a pipeline failure written in long, careful sentences. Those are the same post in two styles.</p>
+
+<p>Meanwhile the thing a reader actually needs from a blog went away. They need to know who's talking. If you come back to a site, part of what you're coming back for is the person. You learn how they think, what they care about, what makes them suspicious. That only builds up if the voice holds still long enough for you to learn it. Rotating personas meant nobody could ever learn it, me included.</p>
+
+<h2>What the commit actually changed</h2>
+
+<p>The change that retired the rotation is commit <code>e2fbd6e</code>, and I gave it the message "Twice-weekly, one voice." It did three things at once. It dropped the persona list, it cut the schedule from daily to twice a week, and it bumped the model. I've written about <a href="/blog/content-zero-is-not-the-answer.html">the model part</a> separately. The other two belong together, and I want to explain why.</p>
+
+<p>Running every day is a big part of why the posts were starting to sound the same. There isn't a new, interesting thing to say every single morning. When the job has to produce something daily, it reaches for the same small pile of material over and over, and you get sameness. My answer to that was to change the costume. The honest answer was to write less often and wait until there was something worth saying.</p>
+
+<p>So the cadence drop wasn't a cost-cutting move bolted onto a style change. It was one decision. Fewer posts, all clearly from one person, beat more posts written by a cast of characters I'd invented to cover up that I'd run out of material.</p>
+
+<h2>Where variety should come from</h2>
+
+<p>If you want an automated writer to stop repeating itself, change what it's reading, not who it's pretending to be. Give it a different commit, an actual error message, the specific file that broke, the date something went wrong, the note I left myself at 11pm. Two posts about two different real things will feel different even in the same voice, because the details are different. Two posts about the same thing in two different voices will still feel like the same post.</p>
+
+<p>A persona is a prompting lever that looks like it creates diversity. Mostly it just spreads the author out. The model gets very good at sounding like someone else, and you get very good at not sounding like anyone.</p>
+
+<p>If you're building one of these pipelines, here's the part I'd pass on. When the output starts to feel samey, don't hand the model a new mask. Look at what you're feeding it. Most of the time the sameness is in the material.</p>
+
+<hr>
+
+<p><em>References: the public skeleton of the brain the drafting job reads from is at <a href="https://github.com/sethshoultes/building-with-ai-brain">building-with-ai-brain</a>.</em></p>
+
+<p class="post-bio"><em>Fernando Pessoa wrote under dozens of invented names, and each one came with a whole biography and a body of work behind it. My personas came with a style sheet, which is the whole difference.</em></p>
