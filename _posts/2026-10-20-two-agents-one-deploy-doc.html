@@ -1,0 +1,48 @@
+---
+title: "Two Agents Wrote in the Same Spot and Neither Was Wrong"
+subtitle: "When parallel branches each add their own section to a shared file, the conflict isn't a disagreement, so keep both, and if it keeps happening, give each item its own file."
+date: 2026-10-20
+related:
+  - slug: agentic-economy-three-sessions-running
+    note: "The setup where several agent sessions run side by side. That's what makes collisions like this one routine instead of rare."
+  - slug: the-validator-with-teeth
+    note: "The same instinct from another direction. If you keep resolving the same problem by hand, you should change the structure so it can't come up."
+  - slug: the-catalog-is-load-bearing
+    note: "Another case where the shape of a shared list matters more than what's in any one entry."
+---
+
+<img src="/blog/images/two-agents-one-deploy-doc-featured.png" alt="An open ledger lies on a desk with two different handwritten entries crammed onto its last line, while beside it a small wooden card-file drawer stands open, each of the same two entries now written on its own index card filed neatly one behind the other" style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />
+
+<p>I had two agents building two games for the arcade at the same time. One was working on Word Runner on a branch called <code>e6-11</code>. The other was working on AI Typing Star on <code>e6-12</code>. A branch is just a separate copy of the code where work can happen without stepping on anyone else. Each agent finished its game, and each one did the responsible thing and wrote down how to deploy it.</p>
+
+<p>They both wrote those notes in the same file, <code>DEPLOY.md</code>, and they both put them at the bottom.</p>
+
+<p>When it came time to bring the two branches back together, git stopped and reported a conflict. That's git telling you two changes touched the same lines and it can't decide which one wins. It marks the spot and leaves the decision to you.</p>
+
+<h2>A conflict that wasn't a disagreement</h2>
+
+<p>The word "conflict" sounds like an argument, and usually you treat it like one. Somebody changed a timeout to 30, somebody else changed it to 60, and you have to pick. One of them is right and one of them has to go.</p>
+
+<p>This wasn't that. The Word Runner section said how to deploy Word Runner. The AI Typing Star section said how to deploy AI Typing Star. Neither one edited the other. They didn't even share a sentence. The only thing they had in common was where they landed: the same spot at the end of the same file. Git doesn't read what you wrote. It sees two edits on the same lines and stops.</p>
+
+<p>So the fix was easy, and it's right there in the merge commit, <code>21c1f60</code>: "keep both game sections." I took both of them. I didn't choose a winner or blend them into one section. I put one after the other.</p>
+
+<p>That's the first thing I want you to take from this. When two parallel pieces of work each <em>add</em> their own thing to a shared file, the resolution is the union, meaning you keep everything from both sides. If you find yourself picking between two sections that describe different things, stop. You're about to delete somebody's work because of where it was placed.</p>
+
+<h2>The second time is the real signal</h2>
+
+<p>Here's what bothered me after I'd fixed it. The fix was mechanical. Any time two game branches finish around the same time, I'll get the same conflict in the same file and resolve it the same way. Keep both. Keep both again. That isn't judgment. It's a chore the file keeps handing me.</p>
+
+<p>And with agents running in parallel, it's going to happen a lot. The whole point of running several sessions side by side is that they finish at overlapping times. A single shared list of deploy notes is basically a spot where they're set up to collide.</p>
+
+<p>The conflict was never about the content. It was about the layout. Every new game has to append to the same place, so every pair of new games fights over the last few lines. If a collision is caused by structure, you fix the structure.</p>
+
+<p>The fix is to give each game its own file. Something like <code>deploy/word-runner.md</code> and <code>deploy/ai-typing-star.md</code>, with no shared bottom to fight over. Two agents adding two games would touch two different files, and git wouldn't have anything to stop on. If you still want one page that lists everything, generate it from the folder, or keep a short index that links out. The index rarely changes, so it rarely collides.</p>
+
+<p>I don't think you should split every shared doc the first time it conflicts. One collision is just a collision. Keep both and move on. But when you notice you're resolving the same kind of conflict a second or third time, and every time the answer is "keep both," the file is telling you it holds a list of separate things pretending to be one thing.</p>
+
+<p>The one-liner I'd give a friend: if the answer to a merge conflict is always "keep both," stop merging and split the file.</p>
+
+<hr>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>

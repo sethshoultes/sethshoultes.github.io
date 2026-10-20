@@ -192,6 +192,11 @@
       "voice": "seth",
       "slug": "retire-the-persona-rotation",
       "date": "2026-10-16"
+    },
+    {
+      "voice": "seth",
+      "slug": "two-agents-one-deploy-doc",
+      "date": "2026-10-20"
     }
   ]
 }
