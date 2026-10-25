@@ -1,0 +1,7 @@
+name = "sethshoultes-ask"
+pages_build_output_dir = "public"
+compatibility_date = "2026-10-01"
+
+[[kv_namespaces]]
+binding = "RATE"
+id = "a90251efb3994cdd920fe9a0681fa4f8"
