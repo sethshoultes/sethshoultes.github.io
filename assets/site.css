@@ -288,3 +288,19 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .chat-form .btn { border: 0; cursor: pointer; font: inherit; font-weight: 700; }
 .chat-form .btn:disabled { opacity: 0.5; cursor: wait; }
 .small-note { color: var(--muted); font-size: 0.85rem; margin-top: 0.75rem; }
+
+/* readiness check */
+.stack { display: grid; gap: 1.1rem; }
+.stack label { display: grid; gap: 0.4rem; font-weight: 600; }
+.stack input, .stack select, .stack textarea { font: inherit; font-weight: 400; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid #4a515c; background: var(--surface); color: var(--text); width: 100%; }
+.stack .opt { color: var(--muted); font-weight: 400; }
+.stack .btn { border: 0; cursor: pointer; font: inherit; font-weight: 700; justify-self: start; }
+.stack .btn:disabled { opacity: 0.6; cursor: wait; }
+.rc-error { margin-top: 1.25rem; color: #ffb4a0; }
+.rc-error[hidden], .rc-result[hidden] { display: none; }
+.rc-result { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.rc-score { font-size: 3.5rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin: 0.5rem 0 1rem; color: var(--text); }
+.rc-score small { font-size: 1.2rem; color: var(--muted); font-weight: 500; margin: 0 0.75rem 0 0.15rem; letter-spacing: 0; }
+.rc-opps { margin: 1rem 0 1.5rem 1.25rem; color: var(--muted); }
+.rc-opps li { margin-bottom: 0.9rem; }
+.rc-opps strong { color: var(--text); }
