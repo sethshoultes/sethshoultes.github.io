@@ -6,7 +6,7 @@ description: "Ask an AI assistant about Seth Shoultes, his AI consulting plans a
 <div class="page-head">
   <div class="wrap">
     <p class="eyebrow">Ask Seth's AI</p>
-    <h1>Ask me anything about working together.</h1>
+    <h1>Ask me about working with Seth.</h1>
     <p class="lead" style="margin-top:1rem">I'm an AI assistant that knows what's on this site: Seth's background, the plans and prices, and what he's built. I'm not Seth, and I can be wrong, so for anything important <a href="/consulting/#contact">book a call</a>.</p>
   </div>
 </div>
@@ -26,7 +26,7 @@ description: "Ask an AI assistant about Seth Shoultes, his AI consulting plans a
       <input id="chat-input" name="q" maxlength="1000" placeholder="Type your question" required>
       <button class="btn" type="submit" id="chat-send">Ask</button>
     </form>
-    <p class="small-note">Your question goes to an AI service to be answered. Please don't include private information.</p>
+    <p class="small-note">Your question is sent to an AI service, so please don't type anything private.</p>
   </div></div>
 </section>
 
@@ -56,15 +56,16 @@ description: "Ask an AI assistant about Seth Shoultes, his AI consulting plans a
     try {
       var res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
       var data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      if (res.status === 429) throw new Error(data.error);
+      if (!res.ok) throw new Error();
       wait.textContent = data.answer;
       history.push({ role: 'assistant', content: data.answer });
     } catch (err) {
       history.pop();
-      wait.textContent = err.message || 'Something went wrong. Please try again, or email seth@smartwebutah.com.';
+      wait.textContent = err.message || "I couldn't answer that just now. You can email seth@smartwebutah.com or book a call.";
     }
     send.disabled = false;
-    input.focus();
+    if (window.matchMedia('(pointer: fine)').matches) input.focus();
   }
 
   form.addEventListener('submit', function (e) {
