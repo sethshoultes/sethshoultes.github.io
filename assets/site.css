@@ -12,7 +12,9 @@ a:hover { text-decoration: underline; }
 /* nav */
 .site-nav { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(11, 13, 16, 0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 1.25rem; }
 .nav-inner { max-width: var(--max); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 64px; }
-.logo { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.03em; color: var(--text); }
+.logo { font-size: 1.4rem; letter-spacing: -0.03em; color: var(--text); }
+.logo b { font-weight: 700; }
+.logo span { font-weight: 200; color: var(--accent); margin-left: 0.3em; }
 .logo:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 1.5rem; }
 .nav-links a { color: var(--muted); font-size: 0.95rem; font-weight: 500; }
