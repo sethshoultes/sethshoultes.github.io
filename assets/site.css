@@ -246,8 +246,7 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .service-sec { padding: 1.5rem 0; }
 .service-sec h2 { margin-bottom: 1rem; }
 .service ul { padding-left: 1.2rem; color: var(--muted); }
-.service ul, .prose ul { margin: 0 0 1.5rem; }
-.prose ul li, .service ul li { margin-bottom: 0.4rem; }
-.prose h2 { margin-top: 2.5rem; }
-.prose ul { padding-left: 1.2rem; color: var(--muted); }
+.service ul, .hub ul { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
+.service ul li, .hub ul li { margin-bottom: 0.4rem; }
+.hub h2 { margin-top: 2.5rem; }
 .service-sec p + p, .service-sec ul + p { margin-top: 1rem; }
