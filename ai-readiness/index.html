@@ -15,7 +15,7 @@ description: "Answer four quick questions about your business and get a short, h
   <div class="wrap"><div class="prose">
     <form id="rc-form" class="stack">
       <label>What kind of business do you run?
-        <input name="business" required maxlength="160" placeholder="For example: a plumbing company, a bakery, a yoga studio">
+        <input name="business" required maxlength="160" placeholder="For example: a plumbing company">
       </label>
       <label>How big is your team?
         <select name="size" required>
@@ -32,8 +32,8 @@ description: "Answer four quick questions about your business and get a short, h
       <label>Which tasks eat the most of your time?
         <textarea name="timeSinks" required minlength="10" maxlength="800" rows="4" placeholder="For example: answering the same customer questions, writing quotes, posting on social media"></textarea>
       </label>
-      <label>Anything you'd love AI to do for you? <span class="opt">(optional)</span>
-        <input name="goal" maxlength="400">
+      <label><span>Anything you'd love AI to do for you? <span class="opt">(optional)</span></span>
+        <input name="goal" maxlength="400" placeholder="For example: answer my email">
       </label>
       <button class="btn" type="submit" id="rc-go">Get my readiness check</button>
       <p class="small-note">Your answers are sent to an AI service to write your check, and aren't saved. Please don't include private information.</p>
@@ -41,9 +41,10 @@ description: "Answer four quick questions about your business and get a short, h
     <p id="rc-error" class="rc-error" role="alert" hidden></p>
     <div id="rc-result" class="rc-result" hidden aria-live="polite">
       <p class="eyebrow">Your result</p>
-      <p class="rc-score"><span id="rc-score"></span><small>/100</small> <span id="rc-level" class="tag"></span></p>
+      <p class="rc-score"><span id="rc-score"></span><small>/100</small></p>
+      <p class="rc-level" id="rc-level"></p>
       <p id="rc-summary" class="lead"></p>
-      <h2>Three places to start</h2>
+      <h3 class="rc-h">Three places to start</h3>
       <ol id="rc-opps" class="rc-opps"></ol>
       <p><strong>Your first step:</strong> <span id="rc-first"></span></p>
       <div class="btn-row"><a class="btn" href="/consulting/#contact">Talk it through with Seth</a><a class="btn ghost" href="/ask/">Ask the AI a question</a></div>
@@ -78,7 +79,8 @@ description: "Answer four quick questions about your business and get a short, h
       data.opportunities.forEach(function (o) {
         var li = document.createElement('li');
         var b = document.createElement('strong'); b.textContent = o.title;
-        li.appendChild(b); li.appendChild(document.createTextNode(' ' + o.why));
+        var w = document.createElement('span'); w.textContent = o.why;
+        li.appendChild(b); li.appendChild(w);
         list.appendChild(li);
       });
       out.hidden = false;
