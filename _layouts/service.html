@@ -33,6 +33,15 @@ layout: site
     </section>
 
     <section class="service-sec">
+      <h2>What else I do</h2>
+      <ul>
+        {%- for o in site.data.services %}{% unless o[1].slug == s.slug %}
+        <li><a href="/{{ o[1].slug }}/">{{ o[1].title }}</a></li>
+        {%- endunless %}{% endfor %}
+      </ul>
+    </section>
+
+    <section class="service-sec">
       <h2>Where I work</h2>
       <ul>
         {%- for c in site.data.cities %}
