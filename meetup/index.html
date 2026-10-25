@@ -1,0 +1,42 @@
+---
+layout: site
+title: "Meetup: Southern Utah WordPress and AI"
+description: "Seth Shoultes hosts a meetup for AI and WordPress in Southern Utah. See the next event and past ones, and RSVP on Meetup."
+---
+{%- assign m = site.data.meetup -%}
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Meetup</p>
+    <h1>Meet people working through the same questions.</h1>
+    <p class="lead" style="margin-top:1rem">A meetup for AI and WordPress in Southern Utah. Business owners, their teams and people from the local community have come, and everyone is welcome.</p>
+  </div>
+</div>
+
+<section style="padding-top:1rem" id="next">
+  <div class="wrap"><div class="prose">
+    <p class="eyebrow reveal">Next event</p>
+    {%- if m.upcoming.size > 0 %}
+    {%- assign next = m.upcoming | first %}
+    <h2 class="reveal">{{ next.title | escape }}</h2>
+    <p class="lead reveal">{{ next.date | date: "%A, %B %-d, %Y, %-I:%M %p" }}</p>
+    <div class="btn-row reveal"><a class="btn" href="{{ next.url | escape }}" target="_blank" rel="noopener">RSVP on Meetup</a></div>
+    {%- else %}
+    <h2 class="reveal">Nothing is scheduled right now.</h2>
+    <p class="lead reveal">{% if m.past.size > 0 %}The last meetup was {{ m.past.first.date | date: "%B %Y" }}. {% endif %}Follow the group on Meetup and you'll get a note when the next one is posted.</p>
+    <div class="btn-row reveal"><a class="btn" href="{{ m.group_url | escape }}" target="_blank" rel="noopener">Follow the group on Meetup</a></div>
+    {%- endif %}
+  </div></div>
+</section>
+
+{%- if m.past.size > 0 %}
+<section class="band" id="past">
+  <div class="wrap">
+    <h2 class="reveal">Past events</h2>
+    <ul class="post-list reveal">
+      {%- for e in m.past limit: 5 %}
+      <li><a href="{{ e.url | escape }}" target="_blank" rel="noopener"><time datetime="{{ e.date }}">{{ e.date | date: "%b %-d, %Y" }}</time><div><h3>{{ e.title | escape }}</h3></div></a></li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+{%- endif %}
