@@ -209,7 +209,6 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .plan li { padding-left: 1.6rem; position: relative; margin-bottom: 0.55rem; font-size: 0.95rem; color: var(--muted); }
 .plan li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
 .plan .btn { width: 100%; text-align: center; }
-.consulting .small-note { margin-top: 0.75rem; }
 .table-wrap { overflow-x: auto; }
 .consulting table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--border); font-size: 0.95rem; }
 .consulting th, .consulting td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); text-align: center; }
@@ -229,5 +228,15 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 #form-status { font-size: 0.95rem; min-height: 1.4em; }
 #form-status.ok { color: #7ee2b8; }
 #form-status.err { color: #ffb4a0; }
-.thanks { padding-top: 9rem; padding-bottom: 5rem; max-width: 680px; }
+.thanks { padding-top: 8rem; padding-bottom: 5rem; }
+.thanks > * { max-width: 680px; }
+.thanks h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); margin-top: 0.5rem; }
 .talk { padding-top: 8rem; padding-bottom: 3rem; } .talk h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); margin-top: 0.5rem; }
+
+.small-note { color: var(--muted); font-size: 0.9rem; margin-top: 1.5rem; }
+.small-note a { text-decoration: underline; text-underline-offset: 3px; }
+.consulting form { max-width: none; }
+.consulting form .btn, .contact-form .btn { margin-bottom: 0; }
+.consulting form, .contact-form { padding-bottom: 1.25rem; }
+#form-status:empty { display: none; }
+.plan.featured { padding: calc(1.75rem - 1px) calc(1.5rem - 1px); }
