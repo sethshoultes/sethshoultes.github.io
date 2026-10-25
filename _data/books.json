@@ -3,14 +3,6 @@
   "group": "Business and strategy",
   "books": [
    {
-    "title": "Traction",
-    "author": "Gino Wickman"
-   },
-   {
-    "title": "Rocket Fuel",
-    "author": "Gino Wickman and Mark C. Winters"
-   },
-   {
     "title": "Profit First",
     "author": "Mike Michalowicz"
    },
@@ -81,6 +73,39 @@
    {
     "title": "The Art of War",
     "author": "Sun Tzu"
+   }
+  ]
+ },
+ {
+  "group": "The EOS (Traction) library",
+  "books": [
+   {
+    "title": "Traction",
+    "author": "Gino Wickman"
+   },
+   {
+    "title": "Rocket Fuel",
+    "author": "Gino Wickman and Mark C. Winters"
+   },
+   {
+    "title": "Get a Grip",
+    "author": "Gino Wickman and Mike Paton"
+   },
+   {
+    "title": "What the Heck Is EOS?",
+    "author": "Gino Wickman and Tom Bouwer"
+   },
+   {
+    "title": "How to Be a Great Boss",
+    "author": "Gino Wickman and René Boer"
+   },
+   {
+    "title": "The EOS Life",
+    "author": "Gino Wickman"
+   },
+   {
+    "title": "Process!",
+    "author": "Mike Paton and Lisa González"
    }
   ]
  },
