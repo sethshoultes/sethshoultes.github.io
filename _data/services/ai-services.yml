@@ -1,0 +1,39 @@
+name: "AI Services"
+slug: ai-services
+title: "AI Services for Small Businesses in Southern Utah"
+description: "AI services with SEO built in for Southern Utah small businesses: content, media and interactive websites, from a local with 25 years building on the web."
+service_type: "AI services"
+summary: "AI services with SEO built in: content, media and interactive websites."
+lead: "I offer AI services that come with SEO built in, so what I build for you is made to be found."
+sections:
+  - id: what
+    heading: "What I build with AI"
+    paragraphs:
+      - "I offer AI services with SEO built in, plus content generation, media production and interactive website development."
+      - "**Content generation.** Pages, posts and answers written in your voice, about your town and your customers."
+      - "**Media production.** Images and video for your site and your listings, made so they load fast and say what you do."
+      - "**Interactive website development.** Sites and tools that do something: a quote tool, a booking flow, a page that answers the questions your customers keep asking."
+  - id: how
+    heading: "How we work together"
+    paragraphs:
+      - "Every month I work alongside you to find where AI saves you hours and wins you customers, then build it and keep it running. You can start with advice, have me lead the work with you, or have my team of AI agents do the building."
+      - "[See the plans](/consulting/) and book a call. You do not need a technical team."
+  - id: proof
+    heading: "Work I have done"
+    paragraphs:
+      - "**A local service company.** Three years with A+ Garage Doors: research-backed neighborhood pages, a rank report for every neighborhood, staff apps for the warehouse and sales, and a company knowledge base the team asks questions of."
+      - "**A software product.** MemberPress.ai: an AI assistant that runs a membership site, and the content, videos and launches around it."
+      - "**My own team of AI agents.** I run it for my own sites first, so I have already hit the problems. Read the [case studies](/case-studies/)."
+  - id: why
+    heading: "Why me"
+    paragraphs:
+      - "I have been building websites and running businesses for over 25 years, and I have worked on search for almost 20. I know what a small business needs from AI because I have been one."
+faq:
+  - q: "What AI services do you offer?"
+    a: "AI services with SEO built in, plus content generation, media production and interactive website development."
+  - q: "Do I need a technical team to work with you?"
+    a: "No. I build and run the tools for you and train your people on them. That is included on the Fractional AI Lead and Embedded AI Team plans."
+  - q: "What does it cost?"
+    a: "I work on monthly plans, and you can also start with a single project. The current plans and prices are on my consulting page."
+  - q: "Where do I start?"
+    a: "Book a call and tell me about your business. I reply within two business days."

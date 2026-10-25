@@ -1,0 +1,27 @@
+---
+layout: null
+permalink: /ai-search-optimization.md
+sitemap: false
+---
+{%- assign s = site.data.services["ai-search-optimization"] -%}
+# {{ s.title }}
+
+{{ s.lead }}
+
+Page: {{ site.url }}/{{ s.slug }}/
+
+{% for sec in s.sections %}## {{ sec.heading }}
+
+{% for p in sec.paragraphs %}{{ p }}
+
+{% endfor %}{% endfor %}## Questions
+
+{% for item in s.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+Plans: {{ site.url }}/consulting/

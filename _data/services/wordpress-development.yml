@@ -1,0 +1,33 @@
+name: "WordPress Development"
+slug: wordpress-development
+title: "WordPress Development in Southern Utah"
+description: "WordPress development in Southern Utah from the co-founder of Event Espresso, with over 25 years in WordPress products and a monthly AI and WordPress meetup."
+service_type: "WordPress development"
+summary: "WordPress plugins and sites from the co-founder of Event Espresso."
+lead: "I have built WordPress products for over 25 years. I can build or improve yours."
+sections:
+  - id: proof
+    heading: "A WordPress veteran in Southern Utah"
+    paragraphs:
+      - "From 2009 to 2021 I co-founded and built [Event Espresso](https://eventespresso.com/), an event management plugin for WordPress. In 2011 we won the $40,000 grand prize in the Utah Entrepreneur Challenge."
+      - "Today I am a Senior Project Manager for several leading WordPress tools, including AccessAlly, MemberMouse, Wishlist Member and PrettyLinks."
+      - "I have organized WordPress meetups for over 15 years, and I run the monthly AI and WordPress meetup. See the [meetup page](/meetup/)."
+  - id: what
+    heading: "What I build"
+    paragraphs:
+      - "**Plugins and features** for your WordPress site."
+      - "**WordPress and AI together.** Tools that write inside the editor in your voice, and assistants that run parts of a membership site."
+      - "**Sites built to be found,** with SEO built in."
+  - id: start
+    heading: "How we start"
+    paragraphs:
+      - "We start with a call about your site. I tell you what I would build and what I would leave alone. For sites and tools that do not need WordPress, see [web development](/web-development/)."
+faq:
+  - q: "Do you build WordPress plugins?"
+    a: "Yes. I co-founded and built Event Espresso, a WordPress plugin, from 2009 to 2021."
+  - q: "Can you add AI to my WordPress site?"
+    a: "Yes. I build AI features for WordPress, and my projects page shows some of them."
+  - q: "Do you work outside Southern Utah?"
+    a: "Yes. Southern Utah is home, and I work with businesses anywhere."
+  - q: "Where do I start?"
+    a: "Book a call and tell me about your site. I reply within two business days."

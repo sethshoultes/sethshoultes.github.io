@@ -1,0 +1,32 @@
+name: "Web Development"
+slug: web-development
+title: "Web Development in Southern Utah"
+description: "Web development in Southern Utah from a local who owned a website development agency and has built on the web for over 25 years: fast sites and interactive tools."
+service_type: "Web development"
+summary: "Fast sites and interactive tools, from someone who ran a web agency."
+lead: "I build websites and web tools that load fast, are made to be found and do something for your customers."
+sections:
+  - id: what
+    heading: "What I build"
+    paragraphs:
+      - "**Websites** that are fast, clear and made to be found."
+      - "**Interactive tools.** A quote tool, a booking flow, a page that answers the questions your customers keep asking."
+      - "**Content and media** to fill them, so the site is not an empty shell."
+  - id: proof
+    heading: "Why you can trust the build"
+    paragraphs:
+      - "I have been building websites for over 25 years. I owned a website development agency, and I have run web businesses of my own."
+      - "I also build for fun and for work. See what I have made on my [projects page](/projects/)."
+  - id: how
+    heading: "How we start"
+    paragraphs:
+      - "We start with a call about what you need the site to do. I tell you what I would build and what I would leave out. If WordPress is the right fit, see [WordPress development](/wordpress-development/)."
+faq:
+  - q: "What kind of websites do you build?"
+    a: "Fast business sites and interactive tools, with SEO built in so they are made to be found."
+  - q: "Do you only work with Southern Utah businesses?"
+    a: "Southern Utah is home, and I work with businesses anywhere."
+  - q: "Will my site rank?"
+    a: "I build with nearly 20 years of SEO behind me. I will tell you plainly what I think is realistic for your market."
+  - q: "Where do I start?"
+    a: "Book a call and tell me about your business. I reply within two business days."
