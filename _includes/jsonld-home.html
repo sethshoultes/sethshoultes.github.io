@@ -1,0 +1,30 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "{{ site.url }}/#person",
+      "name": "Seth Shoultes",
+      "url": "{{ site.url }}/",
+      "image": "{{ site.url }}/assets/seth.jpg",
+      "jobTitle": "AI consultant and product leader",
+      "description": "{{ site.description }}",
+      "sameAs": [
+        "https://www.linkedin.com/in/shoultes/",
+        "https://github.com/sethshoultes"
+      ]
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": "{{ site.url }}/#service",
+      "name": "Seth Shoultes AI Consulting",
+      "url": "{{ site.url }}/consulting/",
+      "description": "Monthly AI consulting for small businesses: strategy, a fractional AI lead, or an AI agent team building for you.",
+      "founder": { "@id": "{{ site.url }}/#person" },
+      "areaServed": "US",
+      "serviceType": ["AI consulting", "Fractional AI lead", "AI strategy workshops"]
+    }
+  ]
+}
+</script>

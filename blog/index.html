@@ -1,0 +1,29 @@
+---
+layout: site
+title: "Writing"
+description: "Essays on building with AI agents, WordPress, and running a small business, by Seth Shoultes."
+---
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Writing</p>
+    <h1>What I'm learning as I build.</h1>
+    <p class="lead" style="margin-top:1rem">{{ site.posts.size }} essays on AI agents, WordPress and running a small business. Newest first.</p>
+  </div>
+</div>
+<section style="padding-top:1rem">
+  <div class="wrap">
+    <ul class="post-list">
+      {%- for post in site.posts %}
+      <li>
+        <a href="{{ post.url }}">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+          <div>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.subtitle | default: post.description }}</p>
+          </div>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
