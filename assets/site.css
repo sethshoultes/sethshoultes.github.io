@@ -165,3 +165,24 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
   .about-photos { grid-template-columns: 1fr 1fr; align-items: start; }
   .about-photos img { width: 100% !important; }
 }
+
+/* designer fixes: hero text column and stats scrim, phone fold, about photos */
+.hero-grid { grid-template-columns: minmax(0, min(620px, 52%)); }
+.hero .lead { max-width: 520px; }
+.hero::after { background: linear-gradient(90deg, rgba(11,13,16,0.92) 0%, rgba(11,13,16,0.75) 35%, rgba(11,13,16,0) 62%), linear-gradient(0deg, var(--bg) 0%, rgba(11,13,16,0.85) 14%, rgba(11,13,16,0) 34%); }
+.stat span { color: #c2c7ce; }
+.about-grid { align-items: center; }
+.about-photos { grid-template-columns: 1fr; }
+.about-photos figure:first-child img, .about-photos figure:last-child img { width: 260px; }
+.about-photos figure:first-child img { aspect-ratio: 1 / 1; object-fit: cover; }
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-bg { height: 300px; }
+  .hero::after { height: 300px; }
+  .hero .lead { margin-top: 1rem; }
+  .hero-grid { padding-top: 1rem; }
+  .about-photos { grid-template-columns: 1fr 1fr; align-items: end; }
+  .about-photos figure:first-child img { aspect-ratio: 900 / 1054; }
+}
+.page-head .byline { margin-top: 0.75rem; }
+@media (min-width: 861px) and (max-width: 1180px) { .hero .lead { max-width: 440px; } }
