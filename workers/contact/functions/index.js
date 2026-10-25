@@ -4,7 +4,7 @@
 // reply-to. RESEND_API_KEY is a Pages secret.
 
 const TO_EMAIL = 'seth@smartwebutah.com';
-const FROM_EMAIL = 'Seth Shoultes website <website@adventurebuildr.com>';
+const FROM_EMAIL = 'Seth Shoultes website <website@sethshoultes.com>';
 const ALLOWED_ORIGIN = 'https://sethshoultes.com';
 const LIMITS = { name: 120, email: 254, company: 160, interest: 80, message: 5000 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
