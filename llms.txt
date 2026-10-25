@@ -1,0 +1,22 @@
+# Seth Shoultes
+
+> Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years, and he now offers monthly AI consulting to small businesses: strategy, a fractional AI lead, or an AI agent team building for you.
+
+## Key facts
+- Name: Seth Shoultes. Role: AI consultant, product leader, AI developer, WordPress product veteran.
+- Co-founded Event Espresso (2009 to 2021), a WordPress event plugin that won the Utah Entrepreneur Challenge in 2011.
+- Has organized WordPress meetups for over 15 years and runs a monthly AI and WordPress meetup.
+- Currently a Senior Project Manager for several WordPress tools (AccessAlly, MemberMouse, Wishlist Member, PrettyLinks).
+
+## Key pages
+- [Home](https://sethshoultes.com/): who Seth is, what he offers, answers to common questions
+- [AI consulting plans and booking](https://sethshoultes.com/consulting/): Advisor $1,500/month, Fractional AI Lead $4,000/month, Embedded AI Team $8,000/month, AI Audit $2,500 one time, Team Workshop $1,500 one time
+- [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
+- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, games and videos
+- [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone
+- [Sitemap](https://sethshoultes.com/sitemap.xml)
+
+## Contact
+- Book a call: https://sethshoultes.com/consulting/#contact
+- LinkedIn: https://www.linkedin.com/in/shoultes/
+- GitHub: https://github.com/sethshoultes
