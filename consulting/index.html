@@ -32,8 +32,8 @@
     .proof p { color: var(--text-secondary); font-size: 0.95rem; }
     .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; align-items: stretch; }
     .plan { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
-    .plan.featured { border: 2px solid var(--accent); }
-    .plan .tag { align-self: flex-start; background: var(--accent-light); color: var(--accent); font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.6rem; border-radius: 999px; margin-bottom: 0.75rem; }
+    .plan.featured { border: 2px solid var(--accent); position: relative; }
+    .plan .tag { position: absolute; top: 0; left: 1.5rem; transform: translateY(-50%); background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.7rem; border-radius: 999px; }
     .plan h3 { font-size: 1.2rem; }
     .plan .for { color: var(--text-secondary); font-size: 0.95rem; margin: 0.25rem 0 1rem; }
     .price { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -52,6 +52,7 @@
     thead th { background: #f3f4f6; font-weight: 600; }
     tbody tr:last-child td { border-bottom: 0; }
     .table-wrap { overflow-x: auto; }
+    @media (max-width: 640px) { #compare { display: none; } }
     .once { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
     .once .plan ul { flex: 0; }
     form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; margin-top: 1.5rem; max-width: 680px; display: grid; gap: 1rem; }
@@ -84,7 +85,7 @@
     <div class="proof">
       <div><strong>A local service company</strong><p>Three years with A+ Garage Doors: research-backed neighborhood pages, a rank report for every neighborhood, staff apps for the warehouse and sales, and a company knowledge base the team asks questions of.</p></div>
       <div><strong>A software product</strong><p>MemberPress.ai: an AI assistant that runs a membership site, and the content, videos and launches around it.</p></div>
-      <div><strong>A team of AI agents</strong><p>I run a fleet of AI agents that write code, review it, publish and report back. On the top plan, that team works for you.</p></div>
+      <div><strong>A team of AI agents</strong><p>On the top plan you get more than me: my AI agent team writes, checks and publishes your sites, content and apps, and reports back to you every step of the way.</p></div>
     </div>
   </section>
 
@@ -133,7 +134,7 @@
     <p class="small">Not sure which fits? <a href="#contact">Book a call</a> and we'll work it out together.</p>
   </section>
 
-  <section>
+  <section id="compare">
     <h2>Compare the plans</h2>
     <div class="table-wrap">
       <table>
@@ -163,7 +164,7 @@
           <li>Two weeks looking at how your business runs</li>
           <li>A written plan of where AI pays off first</li>
         </ul>
-        <a class="btn" href="https://buy.stripe.com/7sYdR8atBgXNgCY5GXgbm03">Book an AI Audit</a>
+        <a class="btn" href="https://buy.stripe.com/7sYdR8atBgXNgCY5GXgbm03">Buy an AI Audit</a>
       </div>
       <div class="plan">
         <h3>Team Workshop</h3>
@@ -172,7 +173,7 @@
           <li>A half-day, hands-on session for your team</li>
           <li>Everyone leaves using AI on their real work</li>
         </ul>
-        <a class="btn" href="https://buy.stripe.com/6oU6oG1X5ePF4Ug0mDgbm04">Book a Workshop</a>
+        <a class="btn" href="https://buy.stripe.com/6oU6oG1X5ePF4Ug0mDgbm04">Buy a Workshop</a>
       </div>
     </div>
   </section>
