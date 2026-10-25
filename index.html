@@ -122,7 +122,23 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div></div>
 </section>
 
-<section class="band" id="apps">
+<section class="band" id="faq">
+  <div class="wrap"><div class="prose">
+    <p class="eyebrow reveal">Questions</p>
+    <h2 class="reveal">Straight answers.</h2>
+    <div class="faq reveal">
+      {%- for item in site.data.faq %}
+      <details>
+        <summary>{{ item.q }}</summary>
+        <p>{{ item.a }}</p>
+      </details>
+      {%- endfor %}
+    </div>
+    <a class="btn reveal" href="/consulting/#contact">Book a call</a>
+  </div></div>
+</section>
+
+<section id="apps">
   <div class="wrap"><div class="prose">
     <p class="eyebrow">SWS Management Services</p>
     <h2>Our apps, and why they use Google sign-in</h2>
@@ -134,7 +150,7 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div></div>
 </section>
 
-<section id="contact">
+<section class="band" id="contact">
   <div class="wrap">
     <p class="eyebrow reveal">Get in touch</p>
     <h2 class="reveal">Tell me what you'd like AI to do for your business.</h2>

@@ -9,6 +9,8 @@
       "url": "{{ site.url }}/",
       "image": "{{ site.url }}/assets/seth.jpg",
       "jobTitle": "AI consultant and product leader",
+      "address": { "@type": "PostalAddress", "addressRegion": "UT", "addressCountry": "US" },
+      "knowsAbout": ["AI consulting", "AI agents", "WordPress", "Product management", "SEO"],
       "description": "{{ site.description }}",
       "sameAs": [
         "https://www.linkedin.com/in/shoultes/",
@@ -23,7 +25,16 @@
       "description": "Monthly AI consulting for small businesses: strategy, a fractional AI lead, or an AI agent team building for you.",
       "founder": { "@id": "{{ site.url }}/#person" },
       "areaServed": "US",
+      "address": { "@type": "PostalAddress", "addressRegion": "UT", "addressCountry": "US" },
       "serviceType": ["AI consulting", "Fractional AI lead", "AI strategy workshops"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for item in site.data.faq %}
+        { "@type": "Question", "name": {{ item.q | jsonify }}, "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | jsonify }} } }{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      ]
     }
   ]
 }

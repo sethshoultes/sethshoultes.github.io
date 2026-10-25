@@ -13,8 +13,10 @@
   {%- if page.url == '/' %}
   {% include jsonld-home.html %}
   {%- endif %}
+  {% include gtm-head.html %}
 </head>
 <body>
+{% include gtm-body.html %}
 {% include nav.html %}
 <main>
 {{ content }}

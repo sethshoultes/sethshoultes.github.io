@@ -1,9 +1,18 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Consulting — Seth Shoultes</title>
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  <meta property="og:title" content="AI Consulting — Seth Shoultes">
+  <meta property="og:description" content="Monthly AI consulting for small businesses: strategy, a fractional AI lead, or a whole AI team building for you.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:image" content="{{ '/assets/og-default.png' | absolute_url }}">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="description" content="Monthly AI consulting for small businesses: strategy, a fractional AI lead, or a whole AI team building for you.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,8 +75,10 @@
     footer { border-top: 1px solid var(--border); padding: 2rem 1rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
     footer a { margin: 0 0.5rem; color: var(--text-secondary); }
   </style>
+  {% include gtm-head.html %}
 </head>
 <body>
+{% include gtm-body.html %}
 <nav>
   <div class="nav-inner">
     <a href="/" class="logo">Seth Shoultes</a>

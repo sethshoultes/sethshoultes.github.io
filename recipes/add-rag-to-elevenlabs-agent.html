@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,8 +19,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/recipes/recipe.css" />
+  {% include gtm-head.html %}
 </head>
 <body>
+{% include gtm-body.html %}
 
 <nav class="recipe-nav">
   <div class="recipe-nav-inner">
@@ -152,7 +156,7 @@ jobs:
 
       - name: Re-create knowledge base entries
         env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_API_KEY: {% raw %}${{ secrets.ELEVENLABS_API_KEY }}{% endraw %}
         run: |
           # Delete old entries (optional — or just update in place)
           # This script re-creates and re-attaches knowledge base documents
@@ -160,7 +164,7 @@ jobs:
 
       - name: Vectorize
         env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_API_KEY: {% raw %}${{ secrets.ELEVENLABS_API_KEY }}{% endraw %}
         run: |
           # Poll until vectorization is complete
           python3 scripts/vectorize_kb.py</code></pre>
