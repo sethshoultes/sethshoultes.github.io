@@ -1,0 +1,23 @@
+---
+layout: site
+title: "AI and SEO Services in Southern Utah"
+description: "AI services with SEO built in for Southern Utah businesses, starting in Washington City: content, media and interactive websites."
+permalink: /southern-utah/
+---
+<div class="wrap">
+  <section>
+    <p class="eyebrow">Southern Utah</p>
+    <h1>AI and SEO Services in Southern Utah</h1>
+    <p class="lead">I live along the Virgin River in Washington City. I help local businesses get found online and get more done with AI: content, media and interactive websites, with SEO built in.</p>
+    <div class="prose" style="margin-top:2.5rem">
+      <h2>Where I work</h2>
+      <ul>
+        {%- for c in site.data.cities %}
+        <li><a href="/{{ c[1].slug }}/">{{ c[1].title }}</a></li>
+        {%- endfor %}
+      </ul>
+      <p>More Southern Utah pages are on the way. In the meantime I work with businesses across the region, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
+    </div>
+  </section>
+</div>
