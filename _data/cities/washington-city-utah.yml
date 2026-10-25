@@ -21,7 +21,7 @@ scenes:
     body: "Here is what I do for businesses in Washington City, and why I do it the way I do."
     cta_label: "Read on"
     cta_href: "#services"
-flyover_note: "The flyover above is generated scenery, not a photo or video of Washington City. I will replace it with my own footage."
+flyover_note: "The scenery above is generated. It is not a photo or video of Washington City."
 sections:
   - id: services
     heading: "What I do for Washington City businesses"
