@@ -1,0 +1,79 @@
+name: "Washington City"
+slug: washington-city-utah
+title: "AI and SEO Services in Washington City, Utah"
+description: "AI services with SEO built in for Washington City, Utah businesses: content, media and interactive websites, from a local with nearly 20 years of SEO."
+clip: river
+poster_alt: "A desert river winding past red cliffs and cottonwood trees"
+scenes:
+  - eyebrow: "Washington City, Utah"
+    heading: "AI and SEO Services in Washington City, Utah"
+    body: "I live here, along the Virgin River. I help local businesses get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The river"
+    heading: "This town grew up along the Virgin River."
+    body: "Washington City was settled in 1857 by families sent here to grow cotton. I live along the same river, and I build for the people who live and work beside it."
+  - eyebrow: "Landmarks"
+    heading: "Mill, river and temple."
+    body: "The Washington Cotton Factory, built in 1865 to 1867, still stands here and is on the National Register of Historic Places. Just next door, in the Washington Fields area of St. George, is the Red Cliffs Utah Temple."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in Washington City, and why I do it the way I do."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of Washington City."
+sections:
+  - id: services
+    heading: "What I do for Washington City businesses"
+    paragraphs:
+      - "I offer AI services that come with SEO built in. That means the work you pay me for is made to be found, not just made."
+      - "**Content generation.** Pages, posts and answers written in your voice, about your town and your customers, so people searching in Washington City find you first."
+      - "**Media production.** Images and video for your site and your listings, made so they load fast and say what you do."
+      - "**Interactive website development.** Sites and tools that do something: a quote tool, a booking flow, a page that answers the questions your customers keep asking."
+      - "Every one of these starts with the same question: who is searching, what are they typing, and what do they need to see to call you?"
+  - id: seo
+    heading: "Nearly twenty years of SEO"
+    paragraphs:
+      - "I have worked on search for almost 20 years, for companies and for services. I owned a website development agency, I worked inside a marketing department, and I ran SEO for Espresso."
+      - "So when I say a page will be found, I am not guessing. I have done this work for companies, for services and for my own business."
+  - id: proof
+    heading: "What I did for a Southern Utah garage door company"
+    paragraphs:
+      - "I bought Garage Door Pro Services in Southern Utah and took it to number one within the first three months."
+      - "I grew its reviews. I built neighborhood locality pages and a checklist. Once the company was outranking everyone else, I sold it to a competitor."
+      - "That is the same playbook I bring to a local business in Washington City: be the one customers in your neighborhood see first, and give them every reason to trust you."
+  - id: numbers
+    heading: "Washington City, by the numbers"
+    paragraphs:
+      - "Washington City is a young, busy place. The Census Bureau's 2019 to 2023 American Community Survey, as reported by Point2Homes, counts about 32,300 people and about 13,750 homes. About three in four households own their home, and roughly 72 percent of homes were built in 2000 or later."
+      - "Many people here are new to town, and new neighbors search for a plumber, a dentist or a landscaper. The business that shows up with a clear page and good reviews is the one they call."
+facts:
+  - label: "People"
+    value: "32,348"
+  - label: "Homes"
+    value: "13,751"
+  - label: "Owner-occupied"
+    value: "74.6%"
+  - label: "Built 2000 or later"
+    value: "About 72%"
+facts_source: "Census Bureau American Community Survey 2019 to 2023, via Point2Homes."
+faq:
+  - q: "What AI and SEO services do you offer in Washington City, Utah?"
+    a: "AI services with SEO built in, plus content generation, media production and interactive website development. We start with a call about your business and work out where AI and search will pay off first."
+  - q: "Do you live in Washington City?"
+    a: "Yes. I live along the Virgin River in Washington City, and I work with businesses in Washington City and around Southern Utah."
+  - q: "Do you only work with local businesses?"
+    a: "I focus on small businesses, and Southern Utah is home. I also work with businesses elsewhere. The monthly plans on my consulting page work from anywhere."
+  - q: "What did you do for Garage Door Pro Services?"
+    a: "I bought it in Southern Utah and took it to number one within the first three months. I grew its reviews, built neighborhood locality pages and a checklist, then sold it to a competitor once it was outranking everyone."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "Washington, Utah (settled 1857)"
+    href: "https://en.wikipedia.org/wiki/Washington,_Utah"
+  - label: "Washington Cotton Factory (built 1865 to 1867, National Register 1971)"
+    href: "https://en.wikipedia.org/wiki/Washington_Cotton_Factory"
+  - label: "Red Cliffs Utah Temple site announcement, The Church of Jesus Christ of Latter-day Saints"
+    href: "https://newsroom.churchofjesuschrist.org/article/temple-site-announced-for-washington-county-utah-temple"
+  - label: "Washington City housing figures: Census Bureau American Community Survey 2019 to 2023, as reported by Point2Homes"
+affiliation: "This page is not affiliated with The Church of Jesus Christ of Latter-day Saints. The temple is named only as a local landmark."

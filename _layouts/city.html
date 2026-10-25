@@ -1,0 +1,78 @@
+---
+layout: site
+---
+{%- assign c = site.data.cities[page.city] %}
+<div class="scrub">
+  <div class="scrub-stage">
+    <img src="/assets/lab/{{ c.clip }}-poster.webp" width="1280" height="720" alt="{{ c.poster_alt }}" fetchpriority="high">
+    <video muted playsinline preload="none" aria-hidden="true" data-sources='[{"src":"/assets/lab/{{ c.clip }}.webm","type":"video/webm; codecs=av01.0.05M.08"},{"src":"/assets/lab/{{ c.clip }}.mp4","type":"video/mp4"}]'></video>
+  </div>
+  {%- for s in c.scenes %}
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">{{ s.eyebrow }}</p>
+      {%- if forloop.first %}
+      <h1>{{ s.heading }}</h1>
+      {%- else %}
+      <h2>{{ s.heading }}</h2>
+      {%- endif %}
+      <p class="lead">{{ s.body }}</p>
+      {%- if s.cta_href %}
+      <p><a class="btn" href="{{ s.cta_href }}">{{ s.cta_label }}</a></p>
+      {%- endif %}
+    </div>
+  </section>
+  {%- endfor %}
+</div>
+
+<div class="city-body">
+  <div class="wrap"><div class="prose">
+    <p class="flyover-note">{{ c.flyover_note }}</p>
+    {%- for sec in c.sections %}
+    <section id="{{ sec.id }}" class="city-sec">
+      <h2>{{ sec.heading }}</h2>
+      {%- for p in sec.paragraphs %}
+      <p>{{ p | markdownify | remove: '<p>' | remove: '</p>' | strip }}</p>
+      {%- endfor %}
+      {%- if sec.id == 'numbers' %}
+      <div class="stats">
+        {%- for f in c.facts %}
+        <div class="stat"><strong>{{ f.value }}</strong><span>{{ f.label }}</span></div>
+        {%- endfor %}
+      </div>
+      <p class="source">Source: {{ c.facts_source }}</p>
+      {%- endif %}
+    </section>
+    {%- endfor %}
+
+    <section id="faq" class="city-sec">
+      <p class="eyebrow">Questions</p>
+      <h2>Straight answers.</h2>
+      <div class="faq">
+        {%- for item in c.faq %}
+        <details>
+          <summary>{{ item.q }}</summary>
+          <p>{{ item.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </section>
+
+    <section class="city-sec">
+      <h2>Let's talk about your business.</h2>
+      <p>Tell me what you would like AI and search to do for you. I reply within two business days.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+      <p>More places I work: <a href="/southern-utah/">AI and SEO services across Southern Utah</a>.</p>
+    </section>
+
+    <section class="city-sec small">
+      <h3>Sources</h3>
+      <ul>
+        {%- for s in c.sources %}
+        <li>{% if s.href %}<a href="{{ s.href }}" rel="noopener">{{ s.label }}</a>{% else %}{{ s.label }}{% endif %}</li>
+        {%- endfor %}
+      </ul>
+      <p>{{ c.affiliation }}</p>
+    </section>
+  </div></div>
+</div>
