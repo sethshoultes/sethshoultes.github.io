@@ -1,94 +1,14 @@
 ---
+layout: site
+title: "AI Consulting"
+description: "Monthly AI consulting for small businesses: strategy, a fractional AI lead, or a whole AI team building for you."
+permalink: /consulting/
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Consulting — Seth Shoultes</title>
-  <link rel="canonical" href="{{ page.url | absolute_url }}">
-  <meta property="og:title" content="AI Consulting — Seth Shoultes">
-  <meta property="og:description" content="Monthly AI consulting for small businesses: strategy, a fractional AI lead, or a whole AI team building for you.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ page.url | absolute_url }}">
-  <meta property="og:image" content="{{ '/assets/og-default.png' | absolute_url }}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="description" content="Monthly AI consulting for small businesses: strategy, a fractional AI lead, or a whole AI team building for you.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #fafafa; --surface: #ffffff; --text: #1a1a1a; --text-secondary: #6b7280;
-      --accent: #0f766e; --accent-light: #ccfbf1; --border: #e5e7eb; --radius: 12px;
-    }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
-    a { color: var(--accent); }
-    nav { border-bottom: 1px solid var(--border); padding: 0 1rem; background: var(--bg); }
-    nav .nav-inner { max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 60px; }
-    nav .logo { font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; }
-    nav .nav-inner a.back { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-    main { max-width: 1080px; margin: 0 auto; padding: 3.5rem 1rem 4rem; }
-    .label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 0.5rem 0 1rem; letter-spacing: -0.02em; }
-    h2 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 0.75rem; letter-spacing: -0.01em; }
-    .lead { font-size: 1.15rem; color: var(--text-secondary); max-width: 680px; }
-    section { margin-top: 4rem; }
-    .proof { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-    .proof div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
-    .proof strong { display: block; margin-bottom: 0.25rem; }
-    .proof p { color: var(--text-secondary); font-size: 0.95rem; }
-    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; align-items: stretch; }
-    .plan { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
-    .plan.featured { border: 2px solid var(--accent); position: relative; }
-    .plan .tag { position: absolute; top: 0; left: 1.5rem; transform: translateY(-50%); background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.7rem; border-radius: 999px; }
-    .plan h3 { font-size: 1.2rem; }
-    .plan .for { color: var(--text-secondary); font-size: 0.95rem; margin: 0.25rem 0 1rem; }
-    .price { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; }
-    .price span { font-size: 1rem; font-weight: 500; color: var(--text-secondary); }
-    .plan ul { list-style: none; margin: 1.25rem 0 1.5rem; flex: 1; }
-    .plan li { padding-left: 1.6rem; position: relative; margin-bottom: 0.55rem; font-size: 0.95rem; }
-    .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-    .btn { display: inline-block; text-align: center; background: var(--text); color: #fff; padding: 0.8rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; border: 0; font: inherit; font-weight: 600; cursor: pointer; }
-    .btn:hover { opacity: 0.85; }
-    .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .plan .btn { width: 100%; }
-    .small { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.75rem; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; font-size: 0.95rem; }
-    th, td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); text-align: center; }
-    th:first-child, td:first-child { text-align: left; }
-    thead th { background: #f3f4f6; font-weight: 600; }
-    tbody tr:last-child td { border-bottom: 0; }
-    .table-wrap { overflow-x: auto; }
-    @media (max-width: 640px) { #compare { display: none; } }
-    .once { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
-    .once .plan ul { flex: 0; }
-    form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 1.5rem; margin-top: 1.5rem; max-width: 680px; display: grid; gap: 1rem; }
-    label { font-weight: 500; font-size: 0.95rem; display: grid; gap: 0.35rem; }
-    input, select, textarea { font: inherit; padding: 0.65rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); width: 100%; }
-    textarea { min-height: 140px; resize: vertical; }
-    .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-    #form-status { font-size: 0.95rem; }
-    #form-status.ok { color: var(--accent); }
-    #form-status.err { color: #b91c1c; }
-    footer { border-top: 1px solid var(--border); padding: 2rem 1rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
-    footer a { margin: 0 0.5rem; color: var(--text-secondary); }
-  </style>
-  {% include analytics.html %}
-</head>
-<body>
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="logo">Seth Shoultes</a>
-    <a href="/" class="back">Back to home</a>
-  </div>
-</nav>
-<main>
-  <p class="label">AI Consulting</p>
+<div class="wrap consulting">
+<p class="eyebrow">AI Consulting</p>
   <h1>Put AI to work in your business, with someone who has done it.</h1>
   <p class="lead">You know AI could save you hours and win you customers. You don't have time to work out where to start, which tools to trust, or how to keep it running. That's what I do, every month, alongside you.</p>
-  <p style="margin-top:1.5rem"><a class="btn" href="#plans">See the plans</a> &nbsp; <a class="btn secondary" href="#contact">Book a call</a></p>
+  <p class="btn-row"><a class="btn" href="#plans">See the plans</a> <a class="btn ghost" href="#contact">Book a call</a></p>
 
   <section id="background">
     <h2>Why work with me</h2>
@@ -151,7 +71,7 @@
         <a class="btn" href="https://buy.stripe.com/fZu7sKcBJ9vlfyU2uLgbm02">Start Embedded AI Team</a>
       </div>
     </div>
-    <p class="small">Not sure which fits? <a href="#contact">Book a call</a> and we'll work it out together.</p>
+    <p class="small-note">Not sure which fits? <a href="#contact">Book a call</a> and we'll work it out together.</p>
   </section>
 
   <section id="meetup">
@@ -226,10 +146,7 @@
       <p id="form-status" role="status"></p>
     </form>
   </section>
-</main>
-<footer>
-  <a href="/">Home</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a>
-</footer>
+</div>
 <script>
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
@@ -259,5 +176,3 @@
     }
   });
 </script>
-</body>
-</html>
