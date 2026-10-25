@@ -364,3 +364,5 @@ footer .footer-links a:hover { color: var(--accent); }
   }
   footer .footer-links a:first-child { margin-left: 0; }
 }
+
+.post-content img { height: auto; }
