@@ -10,6 +10,12 @@ permalink: /southern-utah/
     <h1>AI and SEO Services in Southern Utah</h1>
     <p class="lead" style="margin-top:1rem">I live along the Virgin River in Washington City. I help local businesses get found online and get more done with AI: content, media and interactive websites, with SEO built in.</p>
     <div class="prose" style="margin-top:2.5rem">
+      <h2>What I do</h2>
+      <ul>
+        {%- for s in site.data.services %}
+        <li><a href="/{{ s[1].slug }}/">{{ s[1].title }}</a>: {{ s[1].summary }}</li>
+        {%- endfor %}
+      </ul>
       <h2>Where I work</h2>
       <ul>
         {%- for c in site.data.cities %}
