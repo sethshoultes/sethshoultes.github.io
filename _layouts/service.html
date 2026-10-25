@@ -1,0 +1,45 @@
+---
+layout: site
+---
+{%- assign s = site.data.services[page.service] %}
+<div class="wrap service">
+  <section class="service-hero">
+    <p class="eyebrow">Services</p>
+    <h1>{{ s.title }}</h1>
+    <p class="lead">{{ s.lead }}</p>
+    <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+  </section>
+  <div class="prose">
+    {%- for sec in s.sections %}
+    <section id="{{ sec.id }}" class="service-sec">
+      <h2>{{ sec.heading }}</h2>
+      {%- for p in sec.paragraphs %}
+      {{ p | markdownify }}
+      {%- endfor %}
+    </section>
+    {%- endfor %}
+
+    <section id="faq" class="service-sec">
+      <p class="eyebrow">Questions</p>
+      <h2>Straight answers.</h2>
+      <div class="faq">
+        {%- for item in s.faq %}
+        <details>
+          <summary>{{ item.q }}</summary>
+          <p>{{ item.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </section>
+
+    <section class="service-sec">
+      <h2>Where I work</h2>
+      <ul>
+        {%- for c in site.data.cities %}
+        <li><a href="/{{ c[1].slug }}/">{{ c[1].title }}</a></li>
+        {%- endfor %}
+      </ul>
+      <p style="margin-top:1rem"><a href="/southern-utah/">See every place and service</a>.</p>
+    </section>
+  </div>
+</div>

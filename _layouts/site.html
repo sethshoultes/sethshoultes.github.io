@@ -20,6 +20,9 @@
   {%- if page.city %}
   {% include jsonld-city.html %}
   {%- endif %}
+  {%- if page.service %}
+  {% include jsonld-service.html %}
+  {%- endif %}
   {% include analytics.html %}
 </head>
 <body>
