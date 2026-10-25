@@ -41,7 +41,7 @@
   }
   function play() {
     var p = video.play();
-    if (p && p.catch) p.catch(function () { auto = false; setPressed(true); });
+    if (p && p.catch) p.catch(function (e) { if (e && e.name === 'NotAllowedError') { auto = false; setPressed(true); } });
   }
   function onButton() {
     auto = !auto;
