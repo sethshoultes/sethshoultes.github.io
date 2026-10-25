@@ -25,6 +25,10 @@ SWS Management Services is Seth Shoultes' company. This policy covers the apps i
 
 For Garage Door Science and A+ Brain: your account details (name, email, company), what you enter in the apps, and your plan and billing status. Payments are handled by Stripe; we never see or store your card number.
 
+## Consulting contact form and payments
+
+If you send the "Book a call" form on [sethshoultes.com/consulting](/consulting/), we receive what you type (name, email, company, your message) and use it only to reply to you. It is sent to Seth by email through Resend and not stored anywhere else. If you buy a consulting plan, Stripe handles the payment; we receive your name, email and billing details from Stripe, never your card number.
+
 ## Where your data lives
 
 In our own hosting and databases (Vercel, Neon, Cloudflare and Google Cloud). Sign-in tokens and keys are kept in secret stores, never in code. We do not sell, rent or share your data, and we do not use it for advertising.
