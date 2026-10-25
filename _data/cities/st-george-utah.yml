@@ -1,0 +1,64 @@
+name: "St. George"
+slug: st-george-utah
+title: "AI and SEO Services in St. George, Utah"
+description: "AI and SEO services for St. George, Utah businesses that serve neighbors and visitors: content, media and interactive websites, from a Washington City neighbor."
+clip: st-george
+poster_alt: "Red sandstone cliffs and a black lava ridge above a desert valley"
+scenes:
+  - eyebrow: "St. George, Utah"
+    heading: "AI and SEO Services in St. George, Utah"
+    body: "I live next door in Washington City. I help St. George businesses get found by neighbors and by visitors, and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The city"
+    heading: "The biggest city in Southern Utah."
+    body: "St. George was settled in 1861 and is the seat of Washington County. About 95,000 people lived here at the 2020 census."
+  - eyebrow: "Visitors"
+    heading: "Many of your customers have not arrived yet."
+    body: "The St. George Marathon and Ironman races bring people to town who search before they come. They are choosing where to eat, stay and shop from their phone."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in St. George, and how I would think about yours."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of St. George."
+sections:
+  - id: services
+    heading: "What I do for St. George businesses"
+    paragraphs:
+      - "I offer AI services that come with SEO built in, plus content generation, media production and interactive website development. In a city this size, most of the work is helping a business be the clear answer in a crowded set of results."
+      - "**For businesses that serve neighbors.** St. George is growing fast, with new homes and new households arriving all the time. I build pages about your service and your area that a new resident can find on day one."
+      - "**For businesses that serve visitors.** Tourism is a large part of the local economy, with golf, parks and races drawing people from out of town. Visitors search before they travel. I make sure your business shows up when they do, with clear pages and answers that AI assistants can quote."
+      - "**For businesses that sit between the two.** Restaurants, shops and services that serve both groups need pages for each."
+  - id: numbers
+    heading: "St. George by the numbers"
+    paragraphs:
+      - "St. George had 95,342 people at the 2020 census, and an estimate of 106,288 for 2024. Its economy leans on tourism, manufacturing and new-home construction. It has a university, a regional airport and the only 24-hour trauma center between Las Vegas and the Wasatch Front."
+      - "That mix of residents, students and visitors means your customers search in different ways. One page rarely serves them all."
+  - id: track
+    heading: "My track record"
+    paragraphs:
+      - "I have worked on search for almost 20 years, and I took a Southern Utah garage door company to number one within the first three months. The full story is on my [SEO services page](/seo-services/)."
+facts:
+  - label: "People, 2020 census"
+    value: "95,342"
+  - label: "Estimate, 2024"
+    value: "106,288"
+  - label: "Settled"
+    value: "1861"
+  - label: "Utah Tech students, 2023"
+    value: "12,567"
+facts_source: "Wikipedia, St. George, Utah (2020 census and 2024 estimate, university enrollment)."
+faq:
+  - q: "What AI and SEO services do you offer in St. George, Utah?"
+    a: "AI services with SEO built in, plus content generation, media production and interactive website development. We start with a call about your business and where your customers come from."
+  - q: "Are you based in St. George?"
+    a: "I live next door in Washington City, along the Virgin River, and I work with businesses around Southern Utah."
+  - q: "Can you help a business that serves tourists?"
+    a: "Yes. Tell me about your visitors and when they decide. I will build pages and answers for the questions they ask before they arrive."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "St. George, Utah (settled 1861, 2020 census, 2024 estimate, economy)"
+    href: "https://en.wikipedia.org/wiki/St._George,_Utah"
+affiliation: "I am not affiliated with the City of St. George, Utah Tech University or the events named on this page. They are named only as local facts."
