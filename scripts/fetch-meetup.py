@@ -34,12 +34,14 @@ def main():
     for e in fetch_events():
         if e.get("status") == "CANCELLED":
             continue
-        item = {
-            "title": e["title"].strip(),
-            "date": e["dateTime"],
-            "url": e["eventUrl"],
-        }
-        when = datetime.fromisoformat(e["dateTime"])
+        url = e.get("eventUrl", "")
+        if not url.startswith(f"https://www.meetup.com/{GROUP}/events/"):
+            continue  # only this group's own event pages
+        try:
+            when = datetime.fromisoformat(e["dateTime"])
+        except (KeyError, ValueError):
+            continue
+        item = {"title": e["title"].strip(), "date": e["dateTime"], "url": url}
         (upcoming if when > now and e.get("status") != "PAST" else past).append(item)
     upcoming.sort(key=lambda i: i["date"])
     past.sort(key=lambda i: i["date"], reverse=True)

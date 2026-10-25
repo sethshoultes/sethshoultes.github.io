@@ -1,6 +1,6 @@
 ---
 layout: site
-title: "The monthly meetup"
+title: "Meetup: Southern Utah WordPress and AI"
 description: "Seth Shoultes hosts a meetup for AI and WordPress in Southern Utah. See the next event and past ones, and RSVP on Meetup."
 ---
 {%- assign m = site.data.meetup -%}
@@ -8,7 +8,7 @@ description: "Seth Shoultes hosts a meetup for AI and WordPress in Southern Utah
   <div class="wrap">
     <p class="eyebrow">Meetup</p>
     <h1>Meet people working through the same questions.</h1>
-    <p class="lead" style="margin-top:1rem">A meetup for AI and WordPress. Business owners, their teams and people from the local community come, and everyone is welcome. Every consulting plan includes it.</p>
+    <p class="lead" style="margin-top:1rem">A meetup for AI and WordPress in Southern Utah. Business owners, their teams and people from the local community have come, and everyone is welcome.</p>
   </div>
 </div>
 
@@ -17,13 +17,13 @@ description: "Seth Shoultes hosts a meetup for AI and WordPress in Southern Utah
     <p class="eyebrow reveal">Next event</p>
     {%- if m.upcoming.size > 0 %}
     {%- assign next = m.upcoming | first %}
-    <h2 class="reveal">{{ next.title }}</h2>
+    <h2 class="reveal">{{ next.title | escape }}</h2>
     <p class="lead reveal">{{ next.date | date: "%A, %B %-d, %Y, %-I:%M %p" }}</p>
-    <div class="btn-row reveal"><a class="btn" href="{{ next.url }}" target="_blank" rel="noopener">RSVP on Meetup</a></div>
+    <div class="btn-row reveal"><a class="btn" href="{{ next.url | escape }}" target="_blank" rel="noopener">RSVP on Meetup</a></div>
     {%- else %}
-    <h2 class="reveal">No date is set right now.</h2>
-    <p class="lead reveal">When the next one is scheduled, it shows up here with an RSVP link. You can also follow the group on Meetup.</p>
-    <div class="btn-row reveal"><a class="btn" href="{{ m.group_url }}" target="_blank" rel="noopener">Follow the group on Meetup</a></div>
+    <h2 class="reveal">Nothing is scheduled right now.</h2>
+    <p class="lead reveal">{% if m.past.size > 0 %}The last meetup was {{ m.past.first.date | date: "%B %Y" }}. {% endif %}Follow the group on Meetup and you'll get a note when the next one is posted.</p>
+    <div class="btn-row reveal"><a class="btn" href="{{ m.group_url | escape }}" target="_blank" rel="noopener">Follow the group on Meetup</a></div>
     {%- endif %}
   </div></div>
 </section>
@@ -31,11 +31,10 @@ description: "Seth Shoultes hosts a meetup for AI and WordPress in Southern Utah
 {%- if m.past.size > 0 %}
 <section class="band" id="past">
   <div class="wrap">
-    <p class="eyebrow reveal">Past events</p>
-    <h2 class="reveal">Where we've met.</h2>
+    <h2 class="reveal">Past events</h2>
     <ul class="post-list reveal">
-      {%- for e in m.past limit: 8 %}
-      <li><a href="{{ e.url }}" target="_blank" rel="noopener"><time datetime="{{ e.date }}">{{ e.date | date: "%b %-d, %Y" }}</time><div><h3>{{ e.title }}</h3></div></a></li>
+      {%- for e in m.past limit: 5 %}
+      <li><a href="{{ e.url | escape }}" target="_blank" rel="noopener"><time datetime="{{ e.date }}">{{ e.date | date: "%b %-d, %Y" }}</time><div><h3>{{ e.title | escape }}</h3></div></a></li>
       {%- endfor %}
     </ul>
   </div>
