@@ -132,6 +132,9 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .prose a.btn { text-decoration: none; }
 
 /* illustrations */
-.art { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 1.5rem; }
-.art-banner { aspect-ratio: 3 / 1; object-fit: cover; }
+.art { display: block; width: 100%; height: auto; aspect-ratio: 16 / 7; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+.art-banner { aspect-ratio: 3 / 1; }
 .card-img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 0.5rem; }
+#next-art, .meetup-art { max-height: 300px; aspect-ratio: 16 / 5; }
+.card-img { aspect-ratio: 3 / 1; object-fit: cover; }
+@media (max-width: 640px) { .card-img { aspect-ratio: 4 / 1; } }
