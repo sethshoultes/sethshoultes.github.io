@@ -266,3 +266,9 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .shelf .count { color: var(--muted); font-weight: 400; font-size: 0.9rem; }
 .shelf .books { margin-top: 0; padding-bottom: 0.75rem; }
 .shelf .books li { border-top: 0; padding: 0.45rem 0; }
+
+.shelves { max-width: 980px; }
+.shelf .books { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 0 2rem; align-items: start; }
+.shelf .books li { align-content: start; gap: 0.15rem; }
+.shelf summary { scroll-margin-top: 80px; }
+.shelf summary:hover { color: var(--accent); }
