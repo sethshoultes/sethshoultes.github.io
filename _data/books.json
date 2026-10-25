@@ -1,236 +1,228 @@
 [
- {
-  "group": "Business and strategy",
-  "books": [
-   {
-    "title": "Profit First",
-    "author": "Mike Michalowicz"
-   },
-   {
-    "title": "Profit First for Contractors",
-    "author": "Shawn Van Dyke and Mike Michalowicz"
-   },
-   {
-    "title": "The Lean Startup",
-    "author": "Eric Ries"
-   },
-   {
-    "title": "Rework",
-    "author": "Jason Fried and David Heinemeier Hansson"
-   },
-   {
-    "title": "Built to Last",
-    "author": "Jim Collins and Jerry I. Porras"
-   },
-   {
-    "title": "Blue Ocean Strategy",
-    "author": "W. Chan Kim and Renée Mauborgne"
-   },
-   {
-    "title": "The Innovator's Dilemma",
-    "author": "Clayton M. Christensen"
-   },
-   {
-    "title": "Free",
-    "author": "Chris Anderson"
-   },
-   {
-    "title": "The New Rules of Marketing and PR",
-    "author": "David Meerman Scott"
-   },
-   {
-    "title": "Made to Stick",
-    "author": "Chip Heath and Dan Heath"
-   },
-   {
-    "title": "Decisive",
-    "author": "Chip Heath and Dan Heath"
-   },
-   {
-    "title": "The Power of Moments",
-    "author": "Chip Heath and Dan Heath"
-   },
-   {
-    "title": "Crucial Conversations",
-    "author": "Kerry Patterson, Joseph Grenny, Ron McMillan and Al Switzler"
-   },
-   {
-    "title": "The Career Game Loop",
-    "author": "Lindl"
-   },
-   {
-    "title": "The Power of Ethical Management",
-    "author": "Ken Blanchard and Norman Vincent Peale"
-   },
-   {
-    "title": "The Bogleheads' Guide to Investing",
-    "author": "Taylor Larimore, Mel Lindauer and Michael LeBoeuf"
-   },
-   {
-    "title": "The General Theory of Employment, Interest and Money",
-    "author": "John Maynard Keynes"
-   },
-   {
-    "title": "The Art of War",
-    "author": "Sun Tzu"
-   }
-  ]
- },
- {
-  "group": "The EOS (Traction) library",
-  "books": [
-   {
-    "title": "Traction",
-    "author": "Gino Wickman"
-   },
-   {
-    "title": "Rocket Fuel",
-    "author": "Gino Wickman and Mark C. Winters"
-   },
-   {
-    "title": "Get a Grip",
-    "author": "Gino Wickman and Mike Paton"
-   },
-   {
-    "title": "What the Heck Is EOS?",
-    "author": "Gino Wickman and Tom Bouwer"
-   },
-   {
-    "title": "How to Be a Great Boss",
-    "author": "Gino Wickman and René Boer"
-   },
-   {
-    "title": "The EOS Life",
-    "author": "Gino Wickman"
-   },
-   {
-    "title": "Process!",
-    "author": "Mike Paton and Lisa González"
-   }
-  ]
- },
- {
-  "group": "Building software",
-  "books": [
-   {
-    "title": "Professional WordPress",
-    "author": "Hal Stern, David Damstra and Brad Williams"
-   },
-   {
-    "title": "Professional WordPress Plugin Development",
-    "author": "Brad Williams, Ozh Richard and Justin Tadlock"
-   },
-   {
-    "title": "Building Web Apps with WordPress",
-    "author": "Brian Messenlehner and Jason Coleman"
-   },
-   {
-    "title": "Programming PHP",
-    "author": "Rasmus Lerdorf, Kevin Tatroe and Peter MacIntyre"
-   },
-   {
-    "title": "JavaScript Bible",
-    "author": "Danny Goodman"
-   },
-   {
-    "title": "High Performance Web Sites",
-    "author": "Steve Souders"
-   },
-   {
-    "title": "CSS: The Definitive Guide",
-    "author": "Eric Meyer"
-   },
-   {
-    "title": "Python Crash Course",
-    "author": "Eric Matthes"
-   },
-   {
-    "title": "The Big Book of Small Python Projects",
-    "author": "Al Sweigart"
-   },
-   {
-    "title": "How to Make a Video Game All by Yourself",
-    "author": "Matt Hackett"
-   }
-  ]
- },
- {
-  "group": "Mind and life",
-  "books": [
-   {
-    "title": "The Myth of Normal",
-    "author": "Gabor Maté with Daniel Maté"
-   },
-   {
-    "title": "It Didn't Start with You",
-    "author": "Mark Wolynn"
-   },
-   {
-    "title": "Feeling Good",
-    "author": "David D. Burns"
-   },
-   {
-    "title": "How to ADHD",
-    "author": "Jessica McCabe"
-   },
-   {
-    "title": "The Art of Peace",
-    "author": "Morihei Ueshiba"
-   },
-   {
-    "title": "Einstein: His Life and Universe",
-    "author": "Walter Isaacson"
-   },
-   {
-    "title": "Relativity",
-    "author": "Albert Einstein"
-   },
-   {
-    "title": "The Federalist Papers",
-    "author": "Alexander Hamilton, James Madison and John Jay"
-   }
-  ]
- },
- {
-  "group": "Stories",
-  "books": [
-   {
-    "title": "Atlas Shrugged",
-    "author": "Ayn Rand"
-   },
-   {
-    "title": "Animal Farm",
-    "author": "George Orwell"
-   },
-   {
-    "title": "A Man Called Ove",
-    "author": "Fredrik Backman"
-   },
-   {
-    "title": "Into the Wild",
-    "author": "Jon Krakauer"
-   },
-   {
-    "title": "Treasure Island",
-    "author": "Robert Louis Stevenson"
-   },
-   {
-    "title": "Beloved",
-    "author": "Toni Morrison"
-   },
-   {
-    "title": "Johnny Cash: The Life in Lyrics",
-    "author": ""
-   }
-  ]
- },
- {
-  "group": "Just for fun",
-  "books": [
-   {
-    "title": "The Pizza Bible",
-    "author": "Tony Gemignani"
-   }
-  ]
- }
+  {
+    "group": "Business and strategy",
+    "books": [
+      {
+        "title": "Profit First",
+        "author": "Mike Michalowicz"
+      },
+      {
+        "title": "Profit First for Contractors",
+        "author": "Shawn Van Dyke and Mike Michalowicz"
+      },
+      {
+        "title": "The Lean Startup",
+        "author": "Eric Ries"
+      },
+      {
+        "title": "Rework",
+        "author": "Jason Fried and David Heinemeier Hansson"
+      },
+      {
+        "title": "Built to Last",
+        "author": "Jim Collins and Jerry I. Porras"
+      },
+      {
+        "title": "Blue Ocean Strategy",
+        "author": "W. Chan Kim and Renée Mauborgne"
+      },
+      {
+        "title": "The Innovator's Dilemma",
+        "author": "Clayton M. Christensen"
+      },
+      {
+        "title": "Free",
+        "author": "Chris Anderson"
+      },
+      {
+        "title": "The New Rules of Marketing and PR",
+        "author": "David Meerman Scott"
+      },
+      {
+        "title": "Made to Stick",
+        "author": "Chip Heath and Dan Heath"
+      },
+      {
+        "title": "Decisive",
+        "author": "Chip Heath and Dan Heath"
+      },
+      {
+        "title": "The Power of Moments",
+        "author": "Chip Heath and Dan Heath"
+      },
+      {
+        "title": "Crucial Conversations",
+        "author": "Kerry Patterson, Joseph Grenny, Ron McMillan and Al Switzler"
+      },
+      {
+        "title": "The Power of Ethical Management",
+        "author": "Ken Blanchard and Norman Vincent Peale"
+      },
+      {
+        "title": "The Bogleheads' Guide to Investing",
+        "author": "Taylor Larimore, Mel Lindauer and Michael LeBoeuf"
+      },
+      {
+        "title": "The General Theory of Employment, Interest and Money",
+        "author": "John Maynard Keynes"
+      },
+      {
+        "title": "The Art of War",
+        "author": "Sun Tzu"
+      }
+    ]
+  },
+  {
+    "group": "The EOS (Traction) library",
+    "books": [
+      {
+        "title": "Traction",
+        "author": "Gino Wickman"
+      },
+      {
+        "title": "Rocket Fuel",
+        "author": "Gino Wickman and Mark C. Winters"
+      },
+      {
+        "title": "Get a Grip",
+        "author": "Gino Wickman and Mike Paton"
+      },
+      {
+        "title": "What the Heck Is EOS?",
+        "author": "Gino Wickman and Tom Bouwer"
+      },
+      {
+        "title": "How to Be a Great Boss",
+        "author": "Gino Wickman and René Boer"
+      },
+      {
+        "title": "The EOS Life",
+        "author": "Gino Wickman"
+      },
+      {
+        "title": "Process!",
+        "author": "Mike Paton and Lisa González"
+      }
+    ]
+  },
+  {
+    "group": "Building software",
+    "books": [
+      {
+        "title": "Professional WordPress",
+        "author": "Hal Stern, David Damstra and Brad Williams"
+      },
+      {
+        "title": "Professional WordPress Plugin Development",
+        "author": "Brad Williams, Ozh Richard and Justin Tadlock"
+      },
+      {
+        "title": "Building Web Apps with WordPress",
+        "author": "Brian Messenlehner and Jason Coleman"
+      },
+      {
+        "title": "Programming PHP",
+        "author": "Rasmus Lerdorf, Kevin Tatroe and Peter MacIntyre"
+      },
+      {
+        "title": "JavaScript Bible",
+        "author": "Danny Goodman"
+      },
+      {
+        "title": "High Performance Web Sites",
+        "author": "Steve Souders"
+      },
+      {
+        "title": "CSS: The Definitive Guide",
+        "author": "Eric Meyer"
+      },
+      {
+        "title": "Python Crash Course",
+        "author": "Eric Matthes"
+      },
+      {
+        "title": "The Big Book of Small Python Projects",
+        "author": "Al Sweigart"
+      },
+      {
+        "title": "How to Make a Video Game All by Yourself",
+        "author": "Matt Hackett"
+      }
+    ]
+  },
+  {
+    "group": "Mind and life",
+    "books": [
+      {
+        "title": "The Myth of Normal",
+        "author": "Gabor Maté with Daniel Maté"
+      },
+      {
+        "title": "It Didn't Start with You",
+        "author": "Mark Wolynn"
+      },
+      {
+        "title": "Feeling Good",
+        "author": "David D. Burns"
+      },
+      {
+        "title": "How to ADHD",
+        "author": "Jessica McCabe"
+      },
+      {
+        "title": "The Art of Peace",
+        "author": "Morihei Ueshiba"
+      },
+      {
+        "title": "Einstein: His Life and Universe",
+        "author": "Walter Isaacson"
+      },
+      {
+        "title": "Relativity",
+        "author": "Albert Einstein"
+      },
+      {
+        "title": "The Federalist Papers",
+        "author": "Alexander Hamilton, James Madison and John Jay"
+      }
+    ]
+  },
+  {
+    "group": "Stories",
+    "books": [
+      {
+        "title": "Atlas Shrugged",
+        "author": "Ayn Rand"
+      },
+      {
+        "title": "Animal Farm",
+        "author": "George Orwell"
+      },
+      {
+        "title": "A Man Called Ove",
+        "author": "Fredrik Backman"
+      },
+      {
+        "title": "Into the Wild",
+        "author": "Jon Krakauer"
+      },
+      {
+        "title": "Treasure Island",
+        "author": "Robert Louis Stevenson"
+      },
+      {
+        "title": "Beloved",
+        "author": "Toni Morrison"
+      }
+    ]
+  },
+  {
+    "group": "Just for fun",
+    "books": [
+      {
+        "title": "The Pizza Bible",
+        "author": "Tony Gemignani"
+      }
+    ]
+  }
 ]
