@@ -1,0 +1,82 @@
+---
+layout: site
+title: "Ask Seth's AI"
+description: "Ask an AI assistant about Seth Shoultes, his AI consulting plans and how AI could help your business. Answers come from what is on this site."
+---
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Ask Seth's AI</p>
+    <h1>Ask me anything about working together.</h1>
+    <p class="lead" style="margin-top:1rem">I'm an AI assistant that knows what's on this site: Seth's background, the plans and prices, and what he's built. I'm not Seth, and I can be wrong, so for anything important <a href="/consulting/#contact">book a call</a>.</p>
+  </div>
+</div>
+
+<section style="padding-top:1rem">
+  <div class="wrap"><div class="prose">
+    <div id="chat" class="chat" aria-live="polite">
+      <div class="msg bot">Hi! What would you like to know? You could ask what Seth does, which plan fits a small business, or what an AI Audit includes.</div>
+    </div>
+    <div class="chips" id="chips">
+      <button type="button" class="chip">What does Seth actually do for a business like mine?</button>
+      <button type="button" class="chip">How much does it cost?</button>
+      <button type="button" class="chip">What's in an AI Audit?</button>
+    </div>
+    <form id="chat-form" class="chat-form" autocomplete="off">
+      <label for="chat-input" class="sr-only">Your question</label>
+      <input id="chat-input" name="q" maxlength="1000" placeholder="Type your question" required>
+      <button class="btn" type="submit" id="chat-send">Ask</button>
+    </form>
+    <p class="small-note">Your question goes to an AI service to be answered. Please don't include private information.</p>
+  </div></div>
+</section>
+
+<script>
+(function () {
+  var ENDPOINT = 'https://ask.sethshoultes.com/chat';
+  var chat = document.getElementById('chat');
+  var form = document.getElementById('chat-form');
+  var input = document.getElementById('chat-input');
+  var send = document.getElementById('chat-send');
+  var history = [];
+
+  function add(role, text) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + (role === 'user' ? 'me' : 'bot');
+    d.textContent = text;
+    chat.appendChild(d);
+    d.scrollIntoView({ block: 'nearest' });
+    return d;
+  }
+
+  async function ask(q) {
+    add('user', q);
+    history.push({ role: 'user', content: q });
+    send.disabled = true;
+    var wait = add('assistant', 'Thinking…');
+    try {
+      var res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+      wait.textContent = data.answer;
+      history.push({ role: 'assistant', content: data.answer });
+    } catch (err) {
+      history.pop();
+      wait.textContent = err.message || 'Something went wrong. Please try again, or email seth@smartwebutah.com.';
+    }
+    send.disabled = false;
+    input.focus();
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    document.getElementById('chips').hidden = true;
+    ask(q);
+  });
+  document.getElementById('chips').addEventListener('click', function (e) {
+    if (e.target.classList.contains('chip')) { document.getElementById('chips').hidden = true; ask(e.target.textContent); }
+  });
+})();
+</script>
