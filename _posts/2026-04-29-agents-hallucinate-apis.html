@@ -16,7 +16,7 @@ related:
     note: "the structural defense — procedures written down so the agent does not have to invent"
 ---
 
-<img src="/blog/images/agents-hallucinate-apis-featured.png" alt="Pen-and-ink illustration: a wooden card-catalog drawer pulled open at a three-quarter angle, index cards inside filled with neat confident handwriting that has the cadence of technical documentation — but the words are invented non-words that only resemble English. The catalog system is intact; the references don't refer to anything." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
+<img width="1536" height="1024" src="/blog/images/agents-hallucinate-apis-featured.png" alt="Pen-and-ink illustration: a wooden card-catalog drawer pulled open at a three-quarter angle, index cards inside filled with neat confident handwriting that has the cadence of technical documentation — but the words are invented non-words that only resemble English. The catalog system is intact; the references don't refer to anything." style="width:100%;max-width:780px;display:block;margin:1.5rem auto;border-radius:6px" />
 
 <p>The plugin was 3,600 lines. It had been written autonomously, committed to main, and was sitting in the repository when someone finally ran it. There were 121 calls to <code>throw new Response()</code>. Fourteen references to a global called <code>rc.user</code>. Several uses of <code>process.env</code> for reading configuration variables. None of these exist in Emdash's plugin sandbox. The plugin had been written for a runtime that did not exist.</p>
 
