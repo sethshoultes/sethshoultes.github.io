@@ -46,3 +46,5 @@ body.lab { background: #0b0d10; }
   .scrub-stage video { display: none; }
 }
 .scene .lead { color: #f2ede8; }
+.scene ul.plain a { color: #f2ede8; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; text-shadow: 0 1px 14px rgba(0,0,0,0.85); }
+.scene .eyebrow { text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 1px 16px rgba(0,0,0,0.9); }

@@ -1,0 +1,74 @@
+---
+layout: lab
+title: Southern Utah from above
+description: "Prototype writing page: a flyover that moves as you scroll."
+permalink: /lab/flyover/
+---
+<div class="scrub">
+  <div class="scrub-stage">
+    <img src="/assets/lab/flyover-poster.webp" width="1280" height="720" alt="Aerial view of a blue reservoir among pine forest, with red rock canyon country beyond" fetchpriority="high">
+    <video muted playsinline preload="none" aria-hidden="true" data-sources='[{"src":"/assets/lab/flyover.webm","type":"video/webm; codecs=av01.0.05M.08"},{"src":"/assets/lab/flyover.mp4","type":"video/mp4"}]'></video>
+  </div>
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">Writing</p>
+      <h2>What I'm learning as I build.</h2>
+      <p class="lead">Fly over the posts. Each stop is a group.</p>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">Stop one</p>
+      <h2>When agents forget, or collide.</h2>
+      <ul class="plain">
+        <li><a href="/blog/the-agent-that-woke-up-without-its-brain.html">If the Agent Forgets, It Should Say So</a></li>
+        <li><a href="/blog/retire-the-persona-rotation.html">Give the Model New Material, Not a New Mask</a></li>
+        <li><a href="/blog/two-agents-one-deploy-doc.html">Two Agents Wrote in the Same Spot and Neither Was Wrong</a></li>
+      </ul>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">Stop two</p>
+      <h2>Models and APIs that surprise you.</h2>
+      <ul class="plain">
+        <li><a href="/blog/content-zero-is-not-the-answer.html">Same API, New Model, Different Answer Shape</a></li>
+        <li><a href="/blog/the-rest-api-has-no-undo.html">The REST API Has No Undo</a></li>
+        <li><a href="/blog/the-prompt-template-is-the-tunnel.html">The Prompt Template Is the Tunnel</a></li>
+      </ul>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">Stop three</p>
+      <h2>Building on WordPress.</h2>
+      <ul class="plain">
+        <li><a href="/blog/the-static-asset-ate-the-function.html">The Static Asset Ate the Function</a></li>
+        <li><a href="/blog/the-collapsed-section-was-not-silent.html">The Collapsed Section Was Not Silent</a></li>
+        <li><a href="/blog/wordpress-is-not-ending.html">WordPress Is Not Ending. It Is Being Asked to Grow Up.</a></li>
+      </ul>
+    </div>
+  </section>
+  <section class="scene">
+    <div class="card-text">
+      <p class="eyebrow">All of it</p>
+      <h2>Want more?</h2>
+      <p class="lead">Every post is on the writing page.</p>
+      <p><a class="btn" href="/blog/">Read my writing</a></p>
+    </div>
+  </section>
+  <section class="lab-notes">
+    <div class="inner">
+      <p class="eyebrow">About this prototype</p>
+      <h2>How it works</h2>
+      <dl>
+        <dt>What it is</dt><dd>A ten-second flight over high forest and red rock country. Where you are on the page decides which moment you see, so scrolling down flies you forward and scrolling up flies you back. Each stop holds a group of posts.</dd>
+        <dt>How heavy</dt><dd>The page itself is under 60 KB. The video comes after the page is ready: 786 KB in the small format, 821 KB for browsers that need the older one.</dd>
+        <dt>How fast</dt><dd>100 out of 100 on Google's mobile speed test, measured on my laptop.</dd>
+        <dt>If you want less motion</dt><dd>Phones and laptops can ask for it. Then the video never loads: you get one still picture and plain scrolling.</dd>
+        <dt>The footage</dt><dd>Made with AI: a general view of southern Utah country, not a photo and not a named place. I'll swap in drone footage of the real route when I have it.</dd>
+      </dl>
+      <p class="lead">This notes block is for the lab only and comes out when a prototype moves into the real site.</p>
+    </div>
+  </section>
+</div>
