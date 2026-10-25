@@ -1,0 +1,36 @@
+name: "Learn AI"
+slug: learn-ai
+national: true
+title: "Learn AI and Succeed With It"
+description: "Learn AI and do well with it: one-on-one coaching, team workshops and a Southern Utah AI and WordPress meetup, from someone who has taught for over 20 years."
+service_type: "AI coaching and training"
+summary: "One-on-one coaching, team workshops, the meetup and my writing, for anyone who wants to learn AI."
+lead: "You do not have to be technical to learn AI and do well with it. I help you learn it by doing real work."
+sections:
+  - id: who
+    heading: "Who this is for"
+    paragraphs:
+      - "**Business owners** who want AI working in their business, not just a demo."
+      - "**People changing careers** who want to learn what matters and skip what does not."
+      - "**Anyone curious** who wants a guide who has done it."
+  - id: ways
+    heading: "Ways to learn with me"
+    paragraphs:
+      - "**One-on-one coaching.** [Book a call](/consulting/#contact), tell me where you are and where you want to be, and we work out a plan together."
+      - "**A workshop for your team.** A hands-on session for you and your people. See the Team Workshop on the [consulting page](/consulting/)."
+      - "**The monthly meetup.** A meetup for AI and WordPress in Southern Utah. Business owners, their teams and people from the local community have come, and everyone is welcome. See the [meetup page](/meetup/)."
+      - "**My writing.** I write about what works and what goes wrong as I build with AI. Read the [essays](/blog/)."
+  - id: why
+    heading: "Why learn from me"
+    paragraphs:
+      - "I have spoken at small events and run workshops inside companies, on and off, for over 20 years."
+      - "I also build with a team of AI agents I created, so I teach what I actually use."
+faq:
+  - q: "Do I need to be technical?"
+    a: "No. I teach in plain words, and we start from your real work."
+  - q: "Is the meetup open to everyone?"
+    a: "Yes. Business owners, their teams and people from the local community have come, and everyone is welcome."
+  - q: "Do you teach teams?"
+    a: "Yes. I run workshops inside companies. See the Team Workshop on my consulting page."
+  - q: "How do I start?"
+    a: "Book a call and tell me where you are with AI. I reply within two business days."
