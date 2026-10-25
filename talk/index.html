@@ -5,11 +5,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Talk to Seth — Live Avatar</title>
-  <meta name="description" content="A live, voice-driven conversation with Seth Shoultes — a HeyGen LiveAvatar that looks like Seth, voiced by an ElevenLabs clone of his actual voice." />
+  <title>Talk to Seth — Video chat paused</title>
+  <meta name="description" content="The live video chat with Seth is paused for now. Book a call instead." />
 
-  <meta property="og:title" content="Talk to Seth — Live Avatar" />
-  <meta property="og:description" content="A live, voice-driven conversation with Seth's avatar — HeyGen LiveAvatar + an ElevenLabs voice clone." />
+  <meta property="og:title" content="Talk to Seth — video chat paused" />
+  <meta property="og:description" content="The live video chat with Seth is paused for now. Book a call instead." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://sethshoultes.com/talk/" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -409,6 +409,12 @@
       footer { padding: 1.5rem 1.25rem 2.5rem; }
       footer a { margin-right: 1rem; }
     }
+      .paused-note { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; max-width: 640px; }
+    .paused-note[hidden] { display: none; }
+    .paused-note p { color: var(--text); margin-bottom: 1rem; }
+    .paused-note p:last-child { margin-bottom: 0; }
+    .paused-link { display: inline-block; background: var(--accent); color: #fff; padding: 0.7rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    main.paused > :not(h1):not(.paused-note) { display: none; }
   </style>
   {% include analytics.html %}
 </head>
@@ -427,6 +433,10 @@
 <main>
   <span class="eyebrow">Beta · Voice + Video</span>
   <h1>Talk to Seth.</h1>
+  <div id="paused-note" class="paused-note" hidden>
+    <p>The live video conversation is switched off for now. If you'd like to talk, you can book a call with me and I'll reply within two business days.</p>
+    <p><a class="paused-link" href="/consulting/#contact">Book a call</a></p>
+  </div>
   <p class="lede">
     A live conversation with a HeyGen LiveAvatar of Seth, voiced by an ElevenLabs clone of his actual voice. Click start, allow microphone access, and ask anything. Or pick a starter below — same agent, opens with a guided walkthrough on whichever pattern.
   </p>
@@ -511,6 +521,13 @@
 </footer>
 
 <script src="config.js"></script>
+<script>
+  if (window.AVATAR_PAUSED) {
+    document.querySelector("main").classList.add("paused");
+    document.querySelector("main h1").textContent = "The video chat is paused.";
+    document.getElementById("paused-note").hidden = false;
+  }
+</script>
 <script type="module">
   const stage = document.getElementById("stage");
   const startBtn = document.getElementById("start-btn");
