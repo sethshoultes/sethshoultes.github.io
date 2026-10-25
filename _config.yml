@@ -42,6 +42,10 @@ plugins:
 
 defaults:
   - scope:
+      path: "lab"
+    values:
+      sitemap: false
+  - scope:
       path: "admin"
     values:
       sitemap: false
