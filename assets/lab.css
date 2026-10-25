@@ -69,3 +69,5 @@ body.lab { background: #0b0d10; }
 .city-body .btn-row { margin: 1.5rem 0; }
 .site-nav .lab-play { margin: 0 0 0 0.75rem; }
 .site-footer { position: relative; z-index: 1; background: var(--bg); }
+.city-sec ul { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
+.city-sec ul li { margin-bottom: 0.4rem; }

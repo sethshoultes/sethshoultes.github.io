@@ -26,19 +26,15 @@ sections:
   - id: services
     heading: "What I do for St. George businesses"
     paragraphs:
-      - "I offer AI services that come with SEO built in, plus content generation, media production and interactive website development. In a city this size, most of the work is helping a business be the clear answer in a crowded set of results."
+      - "In a city this size, being found means standing out in a crowded set of results. That is the work I do: AI and SEO together, so what I build for you is made to be found. In a city this size, most of the work is helping a business be the clear answer in a crowded set of results."
       - "**For businesses that serve neighbors.** St. George is growing fast, with new homes and new households arriving all the time. I build pages about your service and your area that a new resident can find on day one."
-      - "**For businesses that serve visitors.** Tourism is a large part of the local economy, with golf, parks and races drawing people from out of town. Visitors search before they travel. I make sure your business shows up when they do, with clear pages and answers that AI assistants can quote."
+      - "**For businesses that serve visitors.** Tourism is a large part of the local economy, with golf, parks and races drawing people from out of town. Visitors search before they travel. I work to make your business show up when they do, with clear pages and answers that AI assistants can quote."
       - "**For businesses that sit between the two.** Restaurants, shops and services that serve both groups need pages for each."
   - id: numbers
     heading: "St. George by the numbers"
     paragraphs:
       - "St. George had 95,342 people at the 2020 census, and an estimate of 106,288 for 2024. Its economy leans on tourism, manufacturing and new-home construction. It has a university, a regional airport and the only 24-hour trauma center between Las Vegas and the Wasatch Front."
       - "That mix of residents, students and visitors means your customers search in different ways. One page rarely serves them all."
-  - id: track
-    heading: "My track record"
-    paragraphs:
-      - "I have worked on search for almost 20 years, and I took a Southern Utah garage door company to number one within the first three months. The full story is on my [SEO services page](/seo-services/)."
 facts:
   - label: "People, 2020 census"
     value: "95,342"
@@ -50,12 +46,12 @@ facts:
     value: "12,567"
 facts_source: "Wikipedia, St. George, Utah (2020 census and 2024 estimate, university enrollment)."
 faq:
-  - q: "What AI and SEO services do you offer in St. George, Utah?"
-    a: "AI services with SEO built in, plus content generation, media production and interactive website development. We start with a call about your business and where your customers come from."
+  - q: "What can you do for my St. George business?"
+    a: "Help it be found by neighbors and by visitors, with pages, answers and tools built for your customers. We start with a call about your business and where your customers come from."
   - q: "Are you based in St. George?"
     a: "I live next door in Washington City, along the Virgin River, and I work with businesses around Southern Utah."
   - q: "Can you help a business that serves tourists?"
-    a: "Yes. Tell me about your visitors and when they decide. I will build pages and answers for the questions they ask before they arrive."
+    a: "Yes. Races, golf and the nearby parks bring people who search before they come. I build pages and answers for what they ask before they arrive."
   - q: "How do we get started?"
     a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
 sources:

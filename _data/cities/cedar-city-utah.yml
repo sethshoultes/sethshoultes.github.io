@@ -26,7 +26,7 @@ sections:
   - id: services
     heading: "What I do for Cedar City businesses"
     paragraphs:
-      - "I offer AI services that come with SEO built in, plus content generation, media production and interactive website development."
+      - "Cedar City runs on a university, a festival and the road to the parks. I help businesses here be found by all three, with AI and SEO built into the work."
       - "**A university town.** Southern Utah University is the city's largest employer. Students, staff and families search for places to eat, rent, shop and get help, and I help local businesses be found by them."
       - "**Festival and park visitors.** The Utah Shakespeare Festival and the nearby parks bring visitors who plan ahead. A restaurant, a shop or a lodging business here wins or loses on whether it shows up when they search."
       - "**Local trades and manufacturing.** Cedar City also has a small manufacturing base and steady home construction. I help trades and service companies be the clear answer for their own area."
@@ -34,10 +34,6 @@ sections:
     heading: "Cedar City by the numbers"
     paragraphs:
       - "Cedar City had 35,235 people at the 2020 census, up from 28,857 in 2010. Its largest employers are Southern Utah University, the Iron County School District and Intermountain Health."
-  - id: track
-    heading: "My track record"
-    paragraphs:
-      - "I have worked on search for almost 20 years, and I took a Southern Utah garage door company to number one within the first three months. The story is on my [SEO services page](/seo-services/)."
 facts:
   - label: "People, 2020 census"
     value: "35,235"
@@ -49,8 +45,8 @@ facts:
     value: "Southern Utah University"
 facts_source: "Wikipedia, Cedar City, Utah (2010 and 2020 census, founding, employers, economy)."
 faq:
-  - q: "What AI and SEO services do you offer in Cedar City, Utah?"
-    a: "AI services with SEO built in, plus content generation, media production and interactive website development. We start with a call about your business and where your customers come from."
+  - q: "What can you do for my Cedar City business?"
+    a: "Help it be found by students, families and visitors, with pages, answers and tools built for your customers. We start with a call about your business."
   - q: "Are you based in Cedar City?"
     a: "No. I live in Washington City, about an hour south, and I work with businesses around Southern Utah and beyond."
   - q: "Can you help a business that serves students or festival visitors?"

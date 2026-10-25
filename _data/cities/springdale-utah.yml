@@ -26,18 +26,14 @@ sections:
   - id: services
     heading: "What I do for Springdale and Zion businesses"
     paragraphs:
-      - "I offer AI services that come with SEO built in, plus content generation, media production and interactive website development."
-      - "**Your customers are not local.** Many of the people who find a Springdale business are planning a trip from somewhere else. They search for where to sleep, eat and book a guide before they arrive."
-      - "**Answers they can quote.** Some visitors ask an AI assistant for a plan. I build pages that give clear, accurate answers about your business, so assistants can quote you. See [AI search optimization](/ai-search-optimization/)."
-      - "**I know the canyon.** I am an avid hiker and I hike in Zion a lot, so I understand what visitors want to know before they go."
+      - "Springdale is a very small town with a very large audience, and most of it finds you on a screen first. I help businesses here be found, with AI and SEO built into the work."
+      - "**Many of your customers are not local.** They are planning a trip from somewhere else. They search for where to sleep, eat and book a guide before they arrive."
+      - "**Answers they can quote.** I build pages that give clear, accurate answers about your business, so search and AI assistants can quote you. See [AI search optimization](/ai-search-optimization/)."
+      - "**I know the canyon.** I am an avid hiker, and I hike in Zion a lot."
   - id: numbers
     heading: "Springdale by the numbers"
     paragraphs:
       - "Springdale had 514 residents at the 2020 census. It is a very small town with a very large audience, which makes being found online matter a great deal."
-  - id: track
-    heading: "My track record"
-    paragraphs:
-      - "I have worked on search for almost 20 years, and I took a Southern Utah garage door company to number one within the first three months. The story is on my [SEO services page](/seo-services/)."
 facts:
   - label: "Residents, 2020 census"
     value: "514"
@@ -49,8 +45,8 @@ facts:
     value: "North Fork Virgin River"
 facts_source: "Wikipedia, Springdale, Utah (2020 census, settlement, location)."
 faq:
-  - q: "What AI and SEO services do you offer in Springdale, Utah?"
-    a: "AI services with SEO built in, plus content generation, media production and interactive website development. We start with a call about your business and where your customers come from."
+  - q: "What can you do for my Springdale or Zion-area business?"
+    a: "Help it be found by people planning a trip, with pages, answers and tools built for them. We start with a call about your business."
   - q: "Are you based in Springdale?"
     a: "No. I live down the river in Washington City and I hike in Zion a lot. I work with businesses around Southern Utah."
   - q: "Can you help a business that serves park visitors?"
@@ -60,4 +56,4 @@ faq:
 sources:
   - label: "Springdale, Utah (settlement, population, location)"
     href: "https://en.wikipedia.org/wiki/Springdale,_Utah"
-affiliation: "I am not affiliated with the Town of Springdale or the National Park Service. Zion National Park is named only as a local fact. They are named only as local facts."
+affiliation: "I am not affiliated with the Town of Springdale or the National Park Service. Zion National Park is named only as a local fact."
