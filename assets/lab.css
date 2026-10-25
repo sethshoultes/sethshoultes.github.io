@@ -1,6 +1,6 @@
 /* /lab/ prototypes: scroll-scrubbed southern Utah pages */
 body.lab { background: #0b0d10; }
-.lab-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.25rem; background: linear-gradient(#0b0d10cc, #0b0d1000); }
+.lab-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.25rem; background: rgba(11,13,16,0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .lab-back { font-size: 0.85rem; color: var(--text); opacity: 0.8; }
 
 .scrub { position: relative; }
@@ -14,7 +14,8 @@ body.lab { background: #0b0d10; }
 .scene .card-text { max-width: 34rem; margin-left: max(0px, calc((100vw - 72rem) / 2)); }
 .scene h1, .scene h2 { margin: 0.4rem 0 1rem; text-shadow: 0 2px 24px rgba(0,0,0,0.5); }
 .scene p { text-shadow: 0 1px 16px rgba(0,0,0,0.6); }
-.scene .eyebrow { color: var(--accent); }
+.scene .eyebrow { color: var(--accent); text-shadow: 0 1px 12px rgba(0,0,0,0.85); }
+.scene .btn { margin-top: 1rem; }
 .scene ul.plain { list-style: none; padding: 0; margin: 1rem 0 1.5rem; display: grid; gap: 0.6rem; }
 .scene ul.plain li { padding-left: 1.1rem; position: relative; }
 .scene ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--accent); }
@@ -27,16 +28,16 @@ body.lab { background: #0b0d10; }
 
 /* library index */
 .lab-index { padding: 7rem 1.25rem 4rem; max-width: 72rem; margin: 0 auto; }
-.lab-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 2rem; }
+.lab-grid { display: grid; align-items: start; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 2rem; }
 .lab-tile { display: block; border: 1px solid #ffffff1f; border-radius: 14px; overflow: hidden; background: #12151a; color: var(--text); }
-.lab-tile img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; }
+.lab-tile img { width: 100%; height: auto; aspect-ratio: 16/10; object-fit: cover; display: block; }
 .lab-tile .body { padding: 1rem 1.1rem 1.25rem; }
 .lab-tile h3 { margin: 0 0 0.3rem; }
 .lab-tile p { margin: 0; opacity: 0.8; font-size: 0.95rem; }
-.lab-tile.soon { opacity: 0.55; }
+.lab-tile.soon { opacity: 0.8; }
 
 @media (max-width: 640px) {
-  .scrub-stage::after { background: linear-gradient(rgba(11,13,16,0.35), rgba(11,13,16,0.7)); }
+  .scrub-stage::after { background: linear-gradient(rgba(11,13,16,0.5), rgba(11,13,16,0.62) 50%, rgba(11,13,16,0.75)); }
   .lab-notes dl { grid-template-columns: 1fr; }
 }
 
