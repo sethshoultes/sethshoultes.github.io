@@ -138,7 +138,27 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div>
 </section>
 
-<section class="band" id="faq">
+<section class="band" id="books">
+  <div class="wrap"><div class="prose">
+    <p class="eyebrow reveal">Reading list</p>
+    <h2 class="reveal">Books that shaped me.</h2>
+    <div class="shelves reveal">
+      {%- for g in site.data.books %}
+      <details class="shelf" open>
+        <summary>{{ g.group }} <span class="count">{{ g.books.size }}</span></summary>
+        <ul class="books">
+          {%- for b in g.books %}
+          <li><span class="bk-title">{{ b.title }}</span>{% if b.author != "" %}<span class="bk-author">{{ b.author }}</span>{% endif %}</li>
+          {%- endfor %}
+        </ul>
+      </details>
+      {%- endfor %}
+    </div>
+  </div></div>
+  <script>if (window.matchMedia('(max-width: 760px)').matches) document.querySelectorAll('#books .shelf').forEach(function (d) { d.open = false; });</script>
+</section>
+
+<section id="faq">
   <div class="wrap"><div class="prose">
     <p class="eyebrow reveal">Questions</p>
     <h2 class="reveal">Straight answers.</h2>
@@ -154,7 +174,7 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div></div>
 </section>
 
-<section id="apps">
+<section class="band" id="apps">
   <div class="wrap"><div class="prose">
     <p class="eyebrow">SWS Management Services</p>
     <h2>Our apps, and why they use Google sign-in</h2>
@@ -166,7 +186,7 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div></div>
 </section>
 
-<section class="band" id="contact">
+<section id="contact">
   <div class="wrap">
     <p class="eyebrow reveal">Get in touch</p>
     <h2 class="reveal">Tell me what you'd like AI to do for your business.</h2>

@@ -251,3 +251,18 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .service ul li, .hub ul li { margin-bottom: 0.4rem; }
 .hub h2 { margin-top: 2.5rem; }
 .service-sec p + p, .service-sec ul + p { margin-top: 1rem; }
+
+.books { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 0.25rem 2rem; margin-top: 1.5rem; }
+.books li { padding: 0.8rem 0; border-top: 1px solid var(--border); display: grid; gap: 0.1rem; }
+.bk-title { font-weight: 600; }
+.bk-author { color: var(--muted); font-size: 0.92rem; }
+
+.shelf { border-top: 1px solid var(--border); padding: 0.4rem 0; }
+.shelf:last-child { border-bottom: 1px solid var(--border); }
+.shelf summary { cursor: pointer; font-weight: 700; font-size: 1.1rem; padding: 0.8rem 0; list-style: none; display: flex; align-items: center; gap: 0.6rem; }
+.shelf summary::-webkit-details-marker { display: none; }
+.shelf summary::after { content: "+"; margin-left: auto; color: var(--accent); font-weight: 400; font-size: 1.4rem; line-height: 1; }
+.shelf[open] summary::after { content: "\2212"; }
+.shelf .count { color: var(--muted); font-weight: 400; font-size: 0.9rem; }
+.shelf .books { margin-top: 0; padding-bottom: 0.75rem; }
+.shelf .books li { border-top: 0; padding: 0.45rem 0; }
