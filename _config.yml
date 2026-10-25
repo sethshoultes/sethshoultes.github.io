@@ -2,9 +2,9 @@ title: Seth Shoultes
 description: AI consulting for small businesses, from a product leader with 25 years in WordPress.
 url: https://sethshoultes.com
 
-# Google Tag Manager container (GTM-XXXXXXX). Leave empty and no tag is loaded.
-# GA4 is configured inside the container, so its measurement ID is not needed here.
-gtm_id: ""
+# Google Analytics 4 measurement ID (G-XXXXXXXX), loaded with gtag.js on every page.
+# Leave empty and no tag loads.
+ga4_id: "G-6WQ08C27LP"
 
 # Preserve the existing /blog/<slug>.html URL shape so nothing breaks.
 permalink: /blog/:slug:output_ext
