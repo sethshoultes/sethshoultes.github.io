@@ -5,6 +5,9 @@ url: https://sethshoultes.com
 # Google Tag Manager container (GTM-XXXXXXX). Leave empty and no tag is loaded.
 # GA4 is configured inside the container, so its measurement ID is not needed here.
 gtm_id: ""
+# GA4 measurement ID, loaded directly with gtag.js while there is no GTM container.
+# Once gtm_id is set, configure GA4 inside the container and clear this.
+ga4_id: "G-6WQ08C27LP"
 
 # Preserve the existing /blog/<slug>.html URL shape so nothing breaks.
 permalink: /blog/:slug:output_ext
