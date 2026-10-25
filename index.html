@@ -1,1097 +1,147 @@
 ---
-layout: null
+layout: site
+title: "AI consultant for small businesses"
+description: "I help small businesses put AI to work. Monthly consulting, built on 25 years of shipping WordPress products and running real businesses."
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="description" content="Seth Shoultes — AI Developer, Product Leader, WordPress Pioneer" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seth Shoultes — AI Developer &amp; Product Leader</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #fafafa;
-      --surface: #ffffff;
-      --text: #1a1a1a;
-      --text-secondary: #6b7280;
-      --accent: #0f766e;
-      --accent-light: #ccfbf1;
-      --border: #e5e7eb;
-      --radius: 12px;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* --- NAV --- */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(250, 250, 250, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
-      padding: 0 2rem;
-    }
-
-    nav .nav-inner {
-      max-width: 1080px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 60px;
-    }
-
-    nav .logo {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.02em;
-    }
-
-    nav .nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-left: 2rem;
-      transition: color 0.2s;
-    }
-
-    nav .nav-links a:hover { color: var(--accent); }
-
-    /* Hamburger toggle — hidden on desktop, visible on mobile. */
-    .nav-toggle {
-      display: none;
-      background: transparent;
-      border: 0;
-      padding: 0.5rem;
-      margin: 0 -0.5rem 0 0;
-      cursor: pointer;
-      color: var(--text);
-    }
-    .nav-toggle svg { width: 22px; height: 22px; display: block; }
-
-    /* --- HERO --- */
-    .hero {
-      padding: 10rem 2rem 6rem;
-      max-width: 1080px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 4rem;
-    }
-
-    .hero-text { flex: 1; }
-
-    .hero-photo {
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: center top;
-      flex-shrink: 0;
-      border: 4px solid var(--border);
-    }
-
-    .hero-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      background: var(--accent-light);
-      padding: 0.35rem 0.85rem;
-      border-radius: 100px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 3.75rem);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      max-width: 720px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--text-secondary);
-      max-width: 560px;
-      margin-bottom: 2rem;
-    }
-
-    .hero-ctas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--text);
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
-    }
-
-    .hero-cta:hover { opacity: 0.85; }
-
-    .hero-cta svg { width: 16px; height: 16px; }
-
-    .hero-cta-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .hero-cta-secondary:hover {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-color: var(--accent);
-      opacity: 1;
-    }
-
-    /* --- SECTIONS --- */
-    section {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 5rem 2rem;
-    }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-    }
-
-    section h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-
-    section > p {
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin-bottom: 3rem;
-    }
-
-    /* --- SKILLS --- */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .skill-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .skill-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .skill-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--accent-light);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.25rem;
-      color: var(--accent);
-    }
-
-    .skill-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .skill-card p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-
-    /* --- COMPANIES --- */
-    .companies-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .company-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem 2rem;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .company-link:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-      color: var(--accent);
-    }
-
-    /* --- PROJECTS --- */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .project-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .project-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-card p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      flex: 1;
-    }
-
-    .project-card .project-links {
-      margin-top: 1.25rem;
-      display: flex;
-      gap: 1rem;
-    }
-
-    .project-card .project-links a {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: opacity 0.2s;
-    }
-
-    .project-card .project-links a:hover { opacity: 0.7; }
-
-    /* --- FEATURED WRITING (hero card) --- */
-    .featured-writing {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 0;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .featured-writing:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .featured-writing .fw-video {
-      background: #000;
-      position: relative;
-      aspect-ratio: 9 / 16;
-    }
-
-    .featured-writing .fw-video iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .featured-writing .fw-text {
-      padding: 2.25rem 2.25rem 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .featured-writing .fw-eyebrow {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-    }
-
-    .featured-writing .fw-title {
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 0.75rem;
-      color: var(--text);
-    }
-
-    .featured-writing .fw-subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .featured-writing .fw-meta {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-    }
-
-    .featured-writing .fw-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--text);
-      color: #fff;
-      padding: 0.65rem 1.25rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.875rem;
-      transition: opacity 0.2s;
-      align-self: flex-start;
-    }
-
-    .featured-writing .fw-cta:hover { opacity: 0.85; }
-
-    .featured-writing .fw-cta svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    @media (max-width: 720px) {
-      .featured-writing {
-        grid-template-columns: 1fr;
-      }
-      .featured-writing .fw-video {
-        max-height: 560px;
-      }
-      .featured-writing .fw-text {
-        padding: 1.75rem;
-      }
-    }
-
-    /* --- WRITING GRID (older posts) --- */
-    .writing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .writing-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-      color: var(--text);
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .writing-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .writing-card .wc-eyebrow {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 0.65rem;
-    }
-
-    .writing-card h3 {
-      font-size: 1.125rem;
-      font-weight: 700;
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-      margin-bottom: 0.65rem;
-    }
-
-    .writing-card p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.55;
-      flex: 1;
-      margin-bottom: 1rem;
-    }
-
-    .writing-card .wc-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* --- VIDEOS --- */
-    .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .video-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .video-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .video-card .video-embed {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-    }
-
-    .video-card .video-embed iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .video-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 1rem 1.25rem;
-    }
-
-    /* --- GAMES --- */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .game-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .game-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    }
-
-    .game-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .game-card p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      flex: 1;
-    }
-
-    .game-card a {
-      margin-top: 1.25rem;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: opacity 0.2s;
-    }
-
-    .game-card a:hover { opacity: 0.7; }
-
-    .game-card a svg { width: 14px; height: 14px; }
-
-    /* --- ABOUT --- */
-    .about-content {
-      max-width: 680px;
-    }
-
-    .about-content p {
-      color: var(--text-secondary);
-      margin-bottom: 1.25rem;
-      font-size: 0.95rem;
-    }
-
-    .about-content p:last-child { margin-bottom: 0; }
-
-    /* --- DIVIDER --- */
-    .divider {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .divider hr {
-      border: none;
-      border-top: 1px solid var(--border);
-    }
-
-    /* --- FOOTER --- */
-    footer {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 3rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    footer p {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-    }
-
-    footer .footer-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.85rem;
-      margin-left: 1.5rem;
-      transition: color 0.2s;
-    }
-
-    footer .footer-links a:hover { color: var(--accent); }
-
-    /* --- MOBILE NAV (hamburger) --- */
-    @media (max-width: 820px) {
-      nav { padding: 0 1.25rem; }
-      .nav-toggle { display: inline-flex; align-items: center; }
-
-      nav .nav-links {
-        position: absolute;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background: rgba(250, 250, 250, 0.97);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border);
-        padding: 0.5rem 1.25rem 1rem;
-        display: none;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-      nav .nav-links.open { display: flex; }
-
-      nav .nav-links a {
-        margin: 0;
-        padding: 0.7rem 0.25rem;
-        font-size: 0.95rem;
-        border-bottom: 1px solid var(--border);
-        color: var(--text);
-      }
-      nav .nav-links a:last-child { border-bottom: 0; }
-    }
-
-    /* --- MOBILE LAYOUT --- */
-    @media (max-width: 640px) {
-      .hero { padding: 8rem 1.25rem 4rem; flex-direction: column-reverse; gap: 2rem; text-align: center; }
-      .hero-photo { width: 180px; height: 180px; }
-      .hero-label { margin-bottom: 1rem; }
-      .hero-ctas { justify-content: center; }
-      section { padding: 3.5rem 1.25rem; }
-      .videos-grid { grid-template-columns: 1fr; }
-      .skills-grid, .projects-grid, .games-grid {
-        grid-template-columns: 1fr;
-      }
-      footer {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      footer .footer-links a:first-child { margin-left: 0; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <a href="#" class="logo">Seth Shoultes</a>
-    <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
-      <svg id="nav-icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-      <svg id="nav-icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
-    </button>
-    <div id="nav-links" class="nav-links">
-      <a href="/talk/">Talk</a>
-      <a href="/skills/">Skills</a>
-      <a href="/recipes/">Recipes</a>
-      <a href="#writing">Writing</a>
-      <a href="#projects">Projects</a>
-      <a href="#games">Games</a>
-      <a href="#videos">Videos</a>
-      <a href="/consulting/">Consulting</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">AI consulting for small business</p>
+      <h1>You have a business to run. <span class="accent">Let me handle the AI.</span></h1>
+      <p class="lead">I have built and run web businesses for 25 years. Every month I work alongside you to find where AI saves you hours and wins you customers, then build it and keep it running.</p>
+      <div class="btn-row">
+        <a class="btn" href="/consulting/">See how we'd work together</a>
+        <a class="btn ghost" href="/blog/">Read my writing</a>
+      </div>
+    </div>
+    <img class="hero-photo" src="/assets/seth.jpg" width="900" height="1020" alt="Seth Shoultes">
+  </div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat reveal"><strong>Since 2001</strong><span>building and managing websites</span></div>
+      <div class="stat reveal"><strong>15+ years</strong><span>organizing WordPress meetups</span></div>
+      <div class="stat reveal"><strong>2+ years</strong><span>running AI meetups</span></div>
+      <div class="stat reveal"><strong>20+ years</strong><span>teaching and running workshops</span></div>
     </div>
   </div>
-</nav>
-<script>
-  // Mobile nav toggle. Closes on link click, on outside-click, on Escape.
-  (function () {
-    var btn = document.getElementById('nav-toggle');
-    var menu = document.getElementById('nav-links');
-    var iconOpen = document.getElementById('nav-icon-open');
-    var iconClose = document.getElementById('nav-icon-close');
-    if (!btn || !menu) return;
+</section>
 
-    function setOpen(open) {
-      menu.classList.toggle('open', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      iconOpen.style.display = open ? 'none' : '';
-      iconClose.style.display = open ? '' : 'none';
-    }
-
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      setOpen(!menu.classList.contains('open'));
-    });
-
-    menu.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') setOpen(false);
-    });
-
-    document.addEventListener('click', function (e) {
-      if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== btn) {
-        setOpen(false);
-      }
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.classList.contains('open')) setOpen(false);
-    });
-  })();
-</script>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-text">
-    <span class="hero-label">AI Developer &bull; Product Leader &bull; Visionary</span>
-    <h1>Building tools that empower creators and businesses.</h1>
-    <p>25+ years shipping products, leading teams, and turning ideas into platforms people love — from award-winning WordPress plugins to AI-driven experiences.</p>
-    <div class="hero-ctas">
-      <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta">
-        Connect on LinkedIn
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-      </a>
-      <a href="/talk/" class="hero-cta hero-cta-secondary">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
-        Talk to my AI clone
-      </a>
+<section id="work">
+  <div class="wrap">
+    <p class="eyebrow reveal">What it looks like</p>
+    <h2 class="reveal">Real businesses, real results.</h2>
+    <div class="grid two">
+      <div class="card reveal">
+        <span class="tag">Local service company</span>
+        <h3>A+ Garage Doors</h3>
+        <p>Three years together. Research-backed neighborhood pages, a rank report for every neighborhood, staff apps for the warehouse and sales, and a company knowledge base the team asks questions of.</p>
+        <div class="links"><a href="https://aplusgaragedoor.com/" target="_blank" rel="noopener">Visit the site &rarr;</a></div>
+      </div>
+      <div class="card reveal">
+        <span class="tag">Software product</span>
+        <h3>MemberPress.ai</h3>
+        <p>An AI assistant that runs a membership site for you, plus the content, videos and launches around it.</p>
+        <div class="links"><a href="https://memberpress.ai/" target="_blank" rel="noopener">Visit the site &rarr;</a></div>
+      </div>
+      <div class="card reveal">
+        <span class="tag">AI agent team</span>
+        <h3>A fleet that does the work</h3>
+        <p>My own team of AI agents writes, checks and publishes sites, content and apps, and reports back at every step. On the top plan, it works for you.</p>
+      </div>
+      <div class="card reveal">
+        <span class="tag">Search and AI answers</span>
+        <h3>Garage Door Science</h3>
+        <p>Guides for homeowners that are picking up search traffic and showing up in AI answers.</p>
+        <div class="links"><a href="https://garagedoorscience.com/" target="_blank" rel="noopener">Visit the site &rarr;</a></div>
+      </div>
     </div>
   </div>
-  <img src="seth-shoultes.jpg" alt="Seth Shoultes" class="hero-photo">
-</div>
+</section>
 
-<!-- FEATURED WRITING -->
-<div class="divider"><hr></div>
+<section class="band" id="plans">
+  <div class="wrap">
+    <p class="eyebrow reveal">Ways to work together</p>
+    <h2 class="reveal">Pick how much help you want.</h2>
+    <div class="grid">
+      <a class="card reveal" href="/consulting/#plans">
+        <h3>Advisor</h3>
+        <p>A clear plan and someone to ask. A monthly strategy call and answers in between.</p>
+        <span class="meta">From $1,500 a month</span>
+      </a>
+      <a class="card reveal" href="/consulting/#plans">
+        <h3>Fractional AI Lead</h3>
+        <p>I build and run your AI tools and automations, and train your team on them.</p>
+        <span class="meta">$4,000 a month</span>
+      </a>
+      <a class="card reveal" href="/consulting/#plans">
+        <h3>Embedded AI Team</h3>
+        <p>Me plus my AI agent team, building your sites, content and apps, ongoing.</p>
+        <span class="meta">$8,000 a month</span>
+      </a>
+    </div>
+    <p class="lead reveal" style="margin-top:2rem">Every plan includes the monthly meetup for AI and WordPress, for you and your team. <a href="/consulting/#contact">Book a call</a> and we'll work out which fits.</p>
+  </div>
+</section>
+
 <section id="writing">
-  <p class="section-label">Latest Writing</p>
-  <h2>Recent essays</h2>
-  <p>Notes from building an AI-first platform. New posts ship here as they're written.</p>
-
-  {%- assign featured = site.posts | where: "featured", true | first -%}
-  {%- if featured == nil -%}
-    {%- assign featured = site.posts | first -%}
-  {%- endif -%}
-
-  {%- if featured -%}
-  <a href="{{ featured.url }}" class="featured-writing" style="text-decoration: none;">
-    {%- if featured.hero_video %}
-    <div class="fw-video">
-      <iframe src="{{ featured.hero_video }}" title="{{ featured.hero_video_title | default: featured.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+  <div class="wrap">
+    <p class="eyebrow reveal">Writing</p>
+    <h2 class="reveal">What I'm learning as I build.</h2>
+    <div class="grid">
+      {%- for post in site.posts limit: 3 %}
+      <a class="card reveal" href="{{ post.url }}">
+        <span class="tag">{{ post.date | date: "%B %-d, %Y" }}</span>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.subtitle | default: post.description }}</p>
+      </a>
+      {%- endfor %}
     </div>
-    {%- endif %}
-    <div class="fw-text">
-      <span class="fw-eyebrow">Essay &middot; {{ featured.read_time }}</span>
-      <h3 class="fw-title">{{ featured.title }}</h3>
-      <p class="fw-subtitle">{{ featured.subtitle | default: featured.description }}</p>
-      <p class="fw-meta">{{ featured.date | date: "%B %-d, %Y" }}</p>
-      <span class="fw-cta">
-        Read the full post
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-      </span>
-    </div>
-  </a>
-  {%- endif %}
-
-  <div class="writing-grid">
-    {%- for post in site.posts %}
-      {%- if post.url == featured.url %}{% continue %}{% endif %}
-    <a href="{{ post.url }}" class="writing-card">
-      <span class="wc-eyebrow">Essay &middot; {{ post.read_time }}</span>
-      <h3>{{ post.title }}</h3>
-      <p>{{ post.subtitle | default: post.description }}</p>
-      <span class="wc-meta">{{ post.date | date: "%B %-d, %Y" }} &middot; Read &rarr;</span>
-    </a>
-    {%- endfor %}
+    <a class="more reveal" href="/blog/">All {{ site.posts.size }} essays &rarr;</a>
   </div>
 </section>
 
-<!-- SKILLS -->
-<div class="divider"><hr></div>
-<section id="skills">
-  <p class="section-label">Expertise</p>
-  <h2>What I Do</h2>
-  <p>Bridging the gap between emerging technology and real-world product delivery.</p>
-  <div class="skills-grid">
-    <div class="skill-card">
-      <div class="skill-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"/></svg>
-      </div>
-      <h3>AI Development</h3>
-      <p>Building intelligent agents, interactive AI experiences, and LLM-powered tools. From conversational interfaces to autonomous workflows, I design systems that put AI to practical use.</p>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
-      </div>
-      <h3>Product Management</h3>
-      <p>Leading cross-functional teams to ship products that matter. Experienced with AccessAlly, MemberMouse, Wishlist Member, PrettyLinks, and Event Espresso — shaping roadmaps and driving outcomes.</p>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
-      </div>
-      <h3>Vision &amp; Strategy</h3>
-      <p>Identifying opportunities where technology meets market need. From winning the Utah Entrepreneur Challenge to pioneering WordPress event management, I turn bold ideas into shipped products.</p>
-    </div>
+<section class="band" id="build">
+  <div class="wrap">
+    <p class="eyebrow reveal">Projects and games</p>
+    <h2 class="reveal">Things I've built for fun and for work.</h2>
+    <p class="lead reveal">AI storytelling, WordPress plugins, a classic-car assistant, and browser games.</p>
+    <a class="btn reveal" style="margin-top:2rem" href="/projects/">See the projects</a>
   </div>
 </section>
 
-<!-- COMPANIES -->
-<div class="divider"><hr></div>
-<section id="companies">
-  <p class="section-label">Clients &amp; Partners</p>
-  <h2>Companies I Work With</h2>
-  <p>Trusted by leading brands across WordPress, SaaS, and local business.</p>
-  <div class="companies-grid">
-    <a href="https://memberpress.com/" target="_blank" class="company-link">MemberPress</a>
-    <a href="https://prettylinks.com/" target="_blank" class="company-link">PrettyLinks</a>
-    <a href="https://accessally.com/" target="_blank" class="company-link">AccessAlly</a>
-    <a href="/smartweb-plugins/" class="company-link">SmartWebUtah Plugins</a>
-    <a href="https://smartwebutah.com/" target="_blank" class="company-link">Smart Web Utah</a>
-    <a href="https://aplusgaragedoor.com/" target="_blank" class="company-link">A Plus Garage Door</a>
-    <a href="https://garagedoorproservices.com/" target="_blank" class="company-link">Garage Door Pro Services</a>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<div class="divider"><hr></div>
-<section id="projects">
-  <p class="section-label">Work</p>
-  <h2>Recent Projects</h2>
-  <p>Tools and platforms designed to empower creators and businesses.</p>
-  <div class="projects-grid">
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>AdventureBuildr AI</h3>
-      <p>AI-first interactive storytelling platform. Describe a premise, watch AI generate a branching story graph on a visual canvas. Cinematic reader with typewriter text and animated choices. Built with Next.js, ReactFlow, and Claude.</p>
-      <div class="project-links">
-        <a href="https://adventurebuildr.com/" target="_blank">Visit Site &rarr;</a>
-        <a href="https://github.com/sethshoultes/adventurebuildr-ai" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>SmartWebUtah Plugin Ecosystem</h3>
-      <p>A suite of 4 WordPress plugins powered by AI — feature generation, content creation with voice matching, child theme generation, and a white-label client portal. Shared Cloudflare Worker proxy with credit system. Built by the Great Minds agency.</p>
-      <div class="project-links">
-        <a href="/smartweb-plugins/" target="_blank">Marketplace &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-feature-builder" target="_blank">Feature Builder &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-content-engine" target="_blank">Content Engine &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>WP Feature Builder</h3>
-      <p>Describe what you want in plain English, get production-ready WordPress code. Generates CPTs, shortcodes, REST endpoints, meta boxes, and Gutenberg blocks — all WPCS-compliant with pre-activation safety checks.</p>
-      <div class="project-links">
-        <a href="/smartweb-plugins/feature-builder/" target="_blank">Learn More &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-feature-builder" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>WP Content Engine</h3>
-      <p>AI content generation that lives in the WordPress block editor. Learns your voice from existing posts, integrates with Yoast SEO, and outputs native Gutenberg blocks — not clipboard paste.</p>
-      <div class="project-links">
-        <a href="/smartweb-plugins/content-engine/" target="_blank">Learn More &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-content-engine" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>WP Theme Forge</h3>
-      <p>Generate production-ready WordPress child themes from a description and logo. Color extraction, typography pairing, WCAG AA accessibility, and support for Twenty Twenty-Four and GeneratePress.</p>
-      <div class="project-links">
-        <a href="/smartweb-plugins/theme-forge/" target="_blank">Learn More &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-theme-forge" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>WP Agency Hub</h3>
-      <p>White-label client portal for WordPress agencies. Branded login, project dashboard, approval workflow, file sharing, and async messaging — all self-hosted with no SaaS dependency.</p>
-      <div class="project-links">
-        <a href="/smartweb-plugins/agency-hub/" target="_blank">Learn More &rarr;</a>
-        <a href="https://github.com/sethshoultes/wp-agency-hub" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card" style="border-left: 4px solid var(--accent);">
-      <h3>Great Minds Agency</h3>
-      <p>A multi-agent AI agency powered by 10 personas (Steve Jobs, Elon Musk, Jensen Huang, and more). Debates PRDs, produces specs, and builds products autonomously through a structured pipeline.</p>
-      <div class="project-links">
-        <a href="https://github.com/sethshoultes/great-minds" target="_blank">GitHub &rarr;</a>
-        <a href="https://github.com/sethshoultes/great-minds-plugin" target="_blank">Plugin &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>AdventureBuildr</h3>
-      <p>A platform for creating interactive, branching stories and text-based adventures. Authors and gamers can build, share, and experience dynamic, narrative-driven content.</p>
-      <div class="project-links">
-        <a href="https://adventurebuildr.com/" target="_blank">Visit Site &rarr;</a>
-        <a href="https://github.com/sethshoultes/cyoa-interactive-story-builder" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>PrettyLinks Chrome Extension</h3>
-      <p>Transforms messy URLs into shorter, trackable, and readable links. Perfect for social media sharing and professional documents.</p>
-      <div class="project-links">
-        <a href="https://chromewebstore.google.com/detail/prettylinks-manager/ipjnclnabeemjgflpepndokpemfibehc" target="_blank">Chrome Web Store &rarr;</a>
-        <a href="https://github.com/caseproof/pretty-links-chrome-extension" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>MemberPress AI Course Generator</h3>
-      <p>An AI-powered add-on that helps course creators build complete curricula through conversational chat, automatically generating lesson content and quiz questions ready to publish.</p>
-      <div class="project-links">
-        <a href="https://memberpress.com/blog/ai-course-generator/" target="_blank">Learn More &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>Think Like ___</h3>
-      <p>An AI-powered learning app that teaches the mental models and decision-making frameworks of iconic tech leaders through interactive lessons, scenario simulations, and personalized practice.</p>
-      <div class="project-links">
-        <a href="https://www.think-like.com/" target="_blank">Visit Site &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>CrawlPress</h3>
-      <p>AI Visibility Analytics and optimized content delivery for WordPress. Detects AI crawlers, tracks visits, scores AI readiness, and serves AI-optimized content.</p>
-      <div class="project-links">
-        <a href="https://crawlpress.com/" target="_blank">Visit Site &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>Automotive LLM System</h3>
-      <p>A local AI assistant for classic cars with voice control and vehicle integration. Raspberry Pi 5 powered with OBD-II and CAN bus protocols — modern AI while preserving authentic character.</p>
-      <div class="project-links">
-        <a href="https://github.com/sethshoultes/Automotive-LLM-Systems" target="_blank">GitHub &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>Quilting Queen</h3>
-      <p>An AI-powered quilting chatbot that provides instant expert advice on techniques, troubleshooting, fabric selection, and project planning.</p>
-      <div class="project-links">
-        <a href="https://quilting-queen.com/" target="_blank">Visit Site &rarr;</a>
-      </div>
-    </div>
-    <div class="project-card">
-      <h3>Garage Door Science Hub</h3>
-      <p>An interactive educational platform exploring the physics, engineering, and safety of residential garage door systems through hands-on experiments and simulations.</p>
-      <div class="project-links">
-        <a href="https://sethshoultes.github.io/garage-door-science-hub/" target="_blank">Visit Site &rarr;</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GAMES -->
-<div class="divider"><hr></div>
-<section id="games">
-  <p class="section-label">Fun Stuff</p>
-  <h2>Featured Games</h2>
-  <p>Browser-based games built for fun and a little friendly competition.</p>
-  <div class="games-grid">
-    <div class="game-card">
-      <h3>TypeRunner</h3>
-      <p>Test your typing speed and accuracy with fun challenges for all skill levels.</p>
-      <a href="https://adventurebuildr.com/arcade/typerunner.html" target="_blank">Play Now <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg></a>
-    </div>
-    <div class="game-card">
-      <h3>Flappy Bird</h3>
-      <p>Simple browser game where you control a bird and avoid obstacles.</p>
-      <a href="https://adventurebuildr.com/flappy-bird/" target="_blank">Play Now <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg></a>
-    </div>
-    <div class="game-card">
-      <h3>Speed Typing Adventure</h3>
-      <p>Embark on a journey where your typing skills decide your fate!</p>
-      <a href="https://adventurebuildr.com/arcade/typing-game.html" target="_blank">Play Now <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg></a>
-    </div>
-  </div>
-</section>
-
-<!-- VIDEOS -->
-<div class="divider"><hr></div>
-<section id="videos">
-  <p class="section-label">Watch</p>
-  <h2>Videos</h2>
-  <p>Presentations, demos, and creative projects.</p>
-  <div class="videos-grid">
-    <div class="video-card">
-      <div class="video-embed">
-        <iframe src="https://www.youtube.com/embed/91lK6t5oir0" title="AI Done Right: The Full First Principles Masterclass" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <h3>AI Done Right: The Full First Principles Masterclass</h3>
-    </div>
-    <div class="video-card">
-      <div class="video-embed">
-        <iframe src="https://www.youtube.com/embed/aMkmhg8fMe8" title="The Science of Garage Doors: Pop Art Physics" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <h3>The Science of Garage Doors: Pop Art Physics</h3>
-    </div>
-    <div class="video-card">
-      <div class="video-embed">
-        <iframe src="https://www.youtube.com/embed/hWT0Fga8qvQ" title="The Science of Garage Door Springs: Physics Doesn't Negotiate" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <h3>The Science of Garage Door Springs: Physics Doesn't Negotiate</h3>
-    </div>
-    <div class="video-card">
-      <div class="video-embed">
-        <iframe src="https://www.youtube.com/embed/Od84YIAwrEk" title="Exploring Zion 2024" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-      </div>
-      <h3>Exploring Zion 2024</h3>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<div class="divider"><hr></div>
 <section id="about">
-  <p class="section-label">Background</p>
-  <h2>About Me</h2>
-  <div class="about-content">
-    <p>I've been building websites for over 25 years and running businesses even longer — 35 years and counting. I'm passionate about creating tools that make a difference, whether it's helping businesses thrive or giving people a way to explore their creativity.</p>
-    <p>From 2009 to 2021, I co-founded and built <a href="https://eventespresso.com/" target="_blank">Event Espresso</a>, an event management plugin for WordPress. In 2011, our work was recognized when we won the grand prize of $40,000 in the Utah Entrepreneur Challenge — an incredible milestone and a testament to the impact of what we created.</p>
-    <p>After Event Espresso, I ventured into new opportunities, including purchasing <a href="https://garagedoorproservices.com/" target="_blank">a garage door company</a>. I ramped up its SEO and online presence, leading to significant growth before selling the business and returning to my roots in WordPress product development.</p>
-    <p>Currently, I'm a Senior Project Manager for several leading WordPress tools, including AccessAlly, MemberMouse, Wishlist Member, and PrettyLinks. I also built the <a href="/smartweb-plugins/">SmartWebUtah plugin ecosystem</a> — a suite of 4 AI-powered WordPress plugins (Feature Builder, Content Engine, Theme Forge, and Agency Hub) designed and developed by the <a href="https://github.com/sethshoultes/great-minds">Great Minds agency</a>, a multi-agent AI system I created. One of my favorite projects is AdventureBuildr, a platform I created to let anyone design immersive, AI-driven, choose-your-own-adventure experiences.</p>
-    <p>At the end of the day, I love solving problems, building innovative solutions, and sharing what I've learned along the way.</p>
-  </div>
+  <div class="wrap"><div class="prose">
+    <p class="eyebrow reveal">About</p>
+    <h2 class="reveal">Twenty-five years, still building.</h2>
+    <div class="reveal">
+      <p>I have been building websites for over 25 years and running businesses even longer. I like making tools that help a business thrive, or give people a way to be creative.</p>
+      <p>From 2009 to 2021 I co-founded and built <a href="https://eventespresso.com/" target="_blank" rel="noopener">Event Espresso</a>, an event management plugin for WordPress. In 2011 we won the $40,000 grand prize in the Utah Entrepreneur Challenge.</p>
+      <p>After that I bought <a href="https://garagedoorproservices.com/" target="_blank" rel="noopener">a garage door company</a>, grew its search traffic and online presence, then sold it and went back to WordPress products.</p>
+      <p>Today I'm a Senior Project Manager for several leading WordPress tools, including AccessAlly, MemberMouse, Wishlist Member and PrettyLinks. I also run the monthly AI and WordPress meetup, and I build with a team of AI agents I created.</p>
+    </div>
+  </div></div>
 </section>
 
-<!-- APPS (Google sign-in) -->
-<div class="divider"><hr></div>
-<section id="apps">
-  <p class="section-label">SWS Management Services</p>
-  <h2>Our apps, and why they use Google sign-in</h2>
-  <div class="about-content">
+<section class="band" id="apps">
+  <div class="wrap"><div class="prose">
+    <p class="eyebrow">SWS Management Services</p>
+    <h2>Our apps, and why they use Google sign-in</h2>
     <p>SWS Management Services is my company. It runs these apps, and "Sign in with Google" is how people log in to them.</p>
-    <p><strong><a href="https://garagedoorscience.com/" target="_blank">Garage Door Science</a></strong> has garage door guides for homeowners, plus team apps for garage door companies: rewards, warehouse, sales coach and inspections. Company staff sign in with Google to reach their team's apps.</p>
+    <p><strong><a href="https://garagedoorscience.com/" target="_blank" rel="noopener">Garage Door Science</a></strong> has garage door guides for homeowners, plus team apps for garage door companies: rewards, warehouse, sales coach and inspections. Company staff sign in with Google to reach their team's apps.</p>
     <p><strong>A+ Brain</strong> (aplusbrain.app) is the private workspace for A+ Garage Doors staff, with reports, marketing data and a searchable company knowledge base. Staff sign in with Google.</p>
     <p><strong>Seth's clone</strong> is a private assistant that reads only my own Gmail and Google Calendar, to sort my email and write me a daily summary. No one else can connect to it.</p>
     <p>For sign-in we receive only your email address and Google account ID, and use them only to log you in. We never sell or share your data. Read the <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p>
-  </div>
+  </div></div>
 </section>
 
-<!-- CONTACT -->
-<div class="divider"><hr></div>
 <section id="contact">
-  <p class="section-label">Get in Touch</p>
-  <h2>Let's Connect</h2>
-  <p>Interested in working together or just want to say hello? I'd love to hear from you.</p>
-  <a href="https://www.linkedin.com/in/shoultes/" target="_blank" class="hero-cta" style="margin-top: 0.5rem;">
-    Connect on LinkedIn
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
-  </a>
-</section>
-
-<!-- FOOTER -->
-<div class="divider"><hr></div>
-<footer>
-  <p>&copy; 2026 Seth Shoultes</p>
-  <div class="footer-links">
-    <a href="https://www.linkedin.com/in/shoultes/" target="_blank">LinkedIn</a>
-    <a href="https://github.com/sethshoultes" target="_blank">GitHub</a>
-    <a href="https://adventurebuildr.com/" target="_blank">AdventureBuildr</a>
-    <a href="/privacy/">Privacy</a>
-    <a href="/terms/">Terms</a>
+  <div class="wrap">
+    <p class="eyebrow reveal">Get in touch</p>
+    <h2 class="reveal">Tell me what you'd like AI to do for your business.</h2>
+    <p class="lead reveal">I reply within two business days.</p>
+    <div class="btn-row reveal">
+      <a class="btn" href="/consulting/#contact">Book a call</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/shoultes/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+    </div>
   </div>
-</footer>
-
-</body>
-</html>
+</section>

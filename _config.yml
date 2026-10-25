@@ -1,5 +1,5 @@
 title: Seth Shoultes
-description: AI Developer, Product Leader, WordPress Pioneer
+description: AI consulting for small businesses, from a product leader with 25 years in WordPress.
 url: https://sethshoultes.com
 
 # Preserve the existing /blog/<slug>.html URL shape so nothing breaks.
@@ -36,6 +36,46 @@ plugins:
   - jekyll-seo-tag
 
 defaults:
+  - scope:
+      path: "admin"
+    values:
+      sitemap: false
+  - scope:
+      path: "docs"
+    values:
+      sitemap: false
+  - scope:
+      path: "data"
+    values:
+      sitemap: false
+  - scope:
+      path: "advanced-typing-games"
+    values:
+      sitemap: false
+  - scope:
+      path: "game-center"
+    values:
+      sitemap: false
+  - scope:
+      path: "garage-door-science-hub/CLAUDE.md"
+    values:
+      sitemap: false
+  - scope:
+      path: "wordpress-plugins"
+    values:
+      sitemap: false
+  - scope:
+      path: "build"
+    values:
+      sitemap: false
+  - scope:
+      path: "ops"
+    values:
+      sitemap: false
+  - scope:
+      path: ""
+    values:
+      image: /assets/og-default.png
   - scope:
       path: ""
       type: posts

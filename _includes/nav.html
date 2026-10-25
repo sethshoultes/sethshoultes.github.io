@@ -1,0 +1,14 @@
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">Seth Shoultes</a>
+    <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    </button>
+    <div id="nav-links" class="nav-links">
+      <a href="/blog/"{% if page.url == '/blog/' %} aria-current="page"{% endif %}>Writing</a>
+      <a href="/projects/"{% if page.url == '/projects/' %} aria-current="page"{% endif %}>Projects</a>
+      <a href="/talk/">Talk</a>
+      <a href="/consulting/" class="nav-cta">Work with me</a>
+    </div>
+  </div>
+</nav>
