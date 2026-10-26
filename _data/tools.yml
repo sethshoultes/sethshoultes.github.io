@@ -198,3 +198,43 @@
       a: "Some may, some do not yet. It costs nothing and it keeps your own description of your site in plain view."
     - q: "Is there a WordPress plugin that does this automatically?"
       a: "Yes, CrawlPress, my plugin. It writes your llms.txt and keeps it current."
+- slug: does-ai-know-your-business
+  order: 1
+  name: "Does AI know your business?"
+  title: "Free Check: Does ChatGPT, Perplexity or Google AI Recommend Your Business?"
+  description: "Free check: enter your business, service and city. We ask ChatGPT, Perplexity and Google AI who to hire there, and show whether you are named, who is named instead, and what to fix."
+  summary: "Enter your business, service and city. We ask ChatGPT, Perplexity and Google AI who to hire, then show whether you are named and who is named instead."
+  lead: "More people now ask an AI assistant who to hire. Enter your business, your service and your city. We ask ChatGPT, Perplexity and Google AI the same question a customer would, and show you what they say."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "We ask each assistant, with its web search turned on: \"Who are the best [your service] businesses in [your city]?\" Your business name is not in the question, so the answer is not nudged toward you."
+        - "Then we check whether your name appears in each answer, and list the businesses it named instead. The answers are the assistants' own, shown as they came back. If an assistant cannot answer, the tool says so."
+    - id: how
+      heading: "How to read the result"
+      paragraphs:
+        - "**Named** means your business name appears in that assistant's answer. **Not named** means it did not, this time. Assistants can answer differently from one run to the next, so one result is a snapshot, not a ranking."
+        - "A name close to yours in the list may be you under a slightly different name. Check the list."
+        - "Being named is not luck. Assistants quote businesses with a clear website, consistent details across the web, and good reviews."
+    - id: fix
+      heading: "What to fix if you are not named"
+      paragraphs:
+        - "**1. Say clearly what you do and where.** Put your service and city on your home page and a page for each service. The [local business schema generator](/tools/local-business-schema-generator/) writes the code that spells it out."
+        - "**2. Let the crawlers in.** Run the [AI crawler access check](/tools/ai-crawler-access-check/) to see that ChatGPT, Claude and Perplexity are allowed to read your site."
+        - "**3. Add an llms.txt.** The [llms.txt generator](/tools/llms-txt-generator/) builds one."
+        - "**4. Keep your listings and reviews consistent.** Your name, address and phone should read the same everywhere."
+        - "If you want me to do this with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. Each check uses real AI queries, so each visitor gets a few an hour and there is a daily limit."
+    - q: "Is this what customers really see?"
+      a: "It is close. We ask the assistants through their developer connections with web search on. The app a customer uses can answer a little differently, and so can the same assistant a minute later."
+    - q: "Do you keep what I enter?"
+      a: "No. Your business, service and city are used for the check and are not saved. The service and city are sent to the AI companies as part of the question. Your business name is not."
+    - q: "Why am I not named when I am a good business?"
+      a: "Assistants name businesses they can find clear, consistent information about. Being good is not enough if the web does not say so. The steps above are where to start."
+    - q: "Why was a business I know missing from the list?"
+      a: "Each assistant names about five. It is a short list, and it changes from run to run."
+    - q: "Can you make AI recommend me?"
+      a: "Nobody can promise that. I can make your business easy to find, read and trust, which is what moves the odds."

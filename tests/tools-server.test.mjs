@@ -290,3 +290,48 @@ test('llms-txt: sitemap and robots input is bounded and stays on the site', asyn
     globalThis.fetch = realFetch;
   }
 });
+
+import { splitAnswer, isNamed, isSame } from '../workers/tools/functions/_lib/names.js';
+
+test('names: splitAnswer takes the NAMES line out of the prose', () => {
+  const r = splitAnswer('Top picks:\n1. **Red Rock Plumbing**\n\nNAMES: **Red Rock Plumbing** | [Marlin](https://x.com) | S&S Mechanical');
+  assert.deepEqual(r.names, ['Red Rock Plumbing', 'Marlin', 'S&S Mechanical']);
+  assert.ok(!/NAMES/.test(r.prose));
+  assert.equal(splitAnswer('Only prose').names, null);
+});
+
+test('names: isNamed needs whole words; ignores LLC and punctuation', () => {
+  assert.ok(isNamed('Red Rock Plumbing, LLC', 'Try **Red Rock Plumbing** in town'));
+  assert.ok(isNamed('S&S Mechanical', 'S and S Mechanical - Plumbing Heating'));
+  assert.ok(!isNamed('Rock', 'Red Rocket Plumbing'));
+  assert.ok(!isNamed('Zion Plumbing', 'Marlin Plumbing and Zion Heating'));
+  assert.ok(isSame('Marlin Plumbing', 'Marlin Plumbing Services'));
+});
+
+test('ai-knows-you handler: three stubbed assistants, one failing, and bad input', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (input, init) => {
+    const url = String(input);
+    const q = JSON.parse(init.body);
+    assert.ok(!/Red Rock/.test(JSON.stringify(q)), 'the business name must not be sent to the models');
+    if (url.includes('openai.com')) return Response.json({ output: [{ type: 'message', content: [{ text: 'Try Red Rock Plumbing.\nNAMES: Red Rock Plumbing | Marlin Plumbing' }] }] });
+    if (url.includes('openrouter.ai')) return Response.json({ choices: [{ message: { content: 'Marlin is best.\nNAMES: Marlin Plumbing | Copperhead' } }] });
+    return new Response('{}', { status: 500 });
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/ai-knows-you.js');
+    const env = { OPENAI_API_KEY: 'k', OPENROUTER_API_KEY: 'k', GEMINI_API_KEY: 'k' };
+    const out = await (await onRequestPost({ env, data: { body: { business: 'Red Rock Plumbing', service: 'plumber', city: 'St. George' } } })).json();
+    const by = Object.fromEntries(out.results.map((r) => [r.id, r]));
+    assert.equal(by.chatgpt.named, true);
+    assert.deepEqual(by.chatgpt.others, ['Marlin Plumbing']);
+    assert.equal(by.perplexity.named, false);
+    assert.deepEqual(by.perplexity.others, ['Marlin Plumbing', 'Copperhead']);
+    assert.equal(by.google.state, 'failed');
+    assert.equal((await onRequestPost({ env, data: { body: { business: '<script>', service: 'x', city: 'y' } } })).status, 400);
+    const none = await onRequestPost({ env: {}, data: { body: { business: 'Red Rock', service: 'plumber', city: 'Ogden' } } });
+    assert.equal(none.status, 502);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
