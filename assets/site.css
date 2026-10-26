@@ -345,3 +345,5 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .apps-bundle .btn { width: auto; }
 .apps-status { display: inline-block; min-width: 6.2rem; margin-right: 0.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
 .tool-actions { margin-top: 0; }
+.tool-sublist { margin: 0.6rem 0 0; padding-left: 1.2rem; color: var(--muted); font-size: 0.92rem; }
+.tool-sublist li { margin-bottom: 0.3rem; }

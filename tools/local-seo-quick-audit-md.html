@@ -1,0 +1,27 @@
+---
+layout: null
+permalink: /tools/local-seo-quick-audit.md
+sitemap: false
+---
+{%- assign t = site.data.tools | where: "slug", "local-seo-quick-audit" | first -%}
+# {{ t.title }}
+
+{{ t.lead }}
+
+Tool: {{ site.url }}/tools/{{ t.slug }}/
+
+{% for sec in t.sections %}## {{ sec.heading }}
+
+{% for p in sec.paragraphs %}{{ p }}
+
+{% endfor %}{% endfor %}## Questions
+
+{% for item in t.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+All free tools: {{ site.url }}/tools/
