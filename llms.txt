@@ -11,6 +11,7 @@
 ## Key pages
 - [Home](https://sethshoultes.com/): who Seth is, what he offers, answers to common questions
 - [AI consulting plans and booking](https://sethshoultes.com/consulting/): Advisor $1,500/month, Fractional AI Lead $4,000/month, Embedded AI Team $8,000/month, AI Audit $2,500 one time, Team Workshop $1,500 one time
+- [Services](https://sethshoultes.com/services/): every service Seth offers, AI, SEO, AI search, web and WordPress development, and learning AI
 - [AI and SEO services in Southern Utah](https://sethshoultes.com/southern-utah/): the places Seth serves, starting with Washington City
 - [SEO services in Southern Utah](https://sethshoultes.com/seo-services/): local search, neighborhood pages, reviews and content; plain-text version at https://sethshoultes.com/seo-services.md
 - [AI Services for Small Businesses in Southern Utah](https://sethshoultes.com/ai-services/): AI services with SEO built in: content, media and interactive websites. Plain-text version at https://sethshoultes.com/ai-services.md

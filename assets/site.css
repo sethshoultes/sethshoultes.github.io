@@ -250,6 +250,9 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .service ul, .hub ul { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
 .service ul li, .hub ul li { margin-bottom: 0.4rem; }
 .hub h2 { margin-top: 2.5rem; }
+.hub .lead { margin-top: 1rem; }
+.hub .prose { margin-top: 2.5rem; }
+.hub .hub-note { margin-top: 1.5rem; }
 .service-sec p + p, .service-sec ul + p { margin-top: 1rem; }
 
 .books { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 0.25rem 2rem; margin-top: 1.5rem; }

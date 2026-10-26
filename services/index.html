@@ -1,0 +1,24 @@
+---
+layout: site
+title: "AI, SEO and Web Development Services"
+description: "Seth Shoultes's services: AI services, SEO, AI search optimization, web and WordPress development, and learning AI. Based in Southern Utah, working with businesses anywhere."
+permalink: /services/
+---
+<div class="wrap hub">
+  <section>
+    <p class="eyebrow">Services</p>
+    <h1>AI, SEO and Web Development Services</h1>
+    <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
+    <div class="prose">
+      <h2>What I do</h2>
+      <ul>
+        {%- for s in site.data.services %}
+        <li><a href="/{{ s[1].slug }}/">{{ s[1].name }}</a>: {{ s[1].summary }}</li>
+        {%- endfor %}
+      </ul>
+      <h2>Where I work</h2>
+      <p>I live in Washington City and work with businesses across <a href="/southern-utah/">Southern Utah</a>, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
+    </div>
+  </section>
+</div>
