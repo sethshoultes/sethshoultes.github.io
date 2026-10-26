@@ -304,3 +304,10 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .tool-table th, .tool-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); text-align: right; }
 .tool-table th:first-child, .tool-table td:first-child { text-align: left; }
 @media (max-width: 760px) { .tool-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); } .tool-row label:first-child { grid-column: 1 / -1; } .tool-row .tool-link { grid-column: 1 / -1; justify-self: start; padding-bottom: 0; } }
+.tool-wrap { white-space: pre-wrap; overflow-wrap: anywhere; }
+.tool-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+.tool-tabs button { font: inherit; font-weight: 600; background: var(--bg); color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0.45rem 1rem; cursor: pointer; }
+.tool-tabs button[aria-selected="true"] { color: #0b0d10; background: var(--accent); border-color: var(--accent); }
+.tool-panel { color: var(--muted); }
+.tool-panel strong { color: var(--text); }
+.tool-panel[hidden] { display: none; }

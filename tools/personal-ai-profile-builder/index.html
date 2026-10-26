@@ -1,0 +1,91 @@
+---
+layout: tool
+tool: personal-ai-profile-builder
+permalink: /tools/personal-ai-profile-builder/
+title: "Free Personal AI Profile Builder for ChatGPT, Claude, Gemini and Perplexity"
+description: "Free personal AI profile builder. Pick your tone, detail and humor, copy a ready-made profile, and paste it into ChatGPT, Claude, Gemini or Perplexity so every answer sounds right. Runs in your browser."
+---
+<form id="profile-form" class="contact-form tool-form" autocomplete="off">
+  <div class="tool-cols">
+    <label>Your name
+      <input type="text" name="name" placeholder="Dana">
+    </label>
+    <label>What you do
+      <input type="text" name="role" placeholder="I own a small landscaping company in St. George">
+    </label>
+  </div>
+  <div class="tool-cols">
+    <label>Tone
+      <select name="tone">
+        <option value="">No preference</option>
+        <option value="warm and friendly">Warm and friendly</option>
+        <option value="plain and direct">Plain and direct</option>
+        <option value="professional and polished">Professional and polished</option>
+        <option value="casual and relaxed">Casual and relaxed</option>
+      </select>
+    </label>
+    <label>How much detail
+      <select name="detail">
+        <option value="">No preference</option>
+        <option value="Keep answers short. Give the answer first, then only the detail I need.">Short</option>
+        <option value="Give a medium-length answer with the key reasons.">Medium</option>
+        <option value="Be thorough. Explain your reasoning and cover the edge cases.">Thorough</option>
+      </select>
+    </label>
+    <label>How much humor
+      <select name="humor">
+        <option value="">No preference</option>
+        <option value="No jokes.">None</option>
+        <option value="A light touch of humor is welcome.">A little</option>
+        <option value="Feel free to be funny.">A lot</option>
+      </select>
+    </label>
+    <label>Format
+      <select name="format">
+        <option value="">No preference</option>
+        <option value="Prefer short paragraphs.">Short paragraphs</option>
+        <option value="Prefer bullet points and short lists.">Bullet points</option>
+        <option value="Prefer step-by-step numbered lists when I ask how to do something.">Numbered steps</option>
+      </select>
+    </label>
+  </div>
+  <label>Anything the assistant should always do
+    <textarea name="always" rows="2" placeholder="Ask me a question if you are missing something important."></textarea>
+  </label>
+  <label>Anything it should never do
+    <textarea name="never" rows="2" placeholder="No jargon. Do not use the word delve."></textarea>
+  </label>
+</form>
+
+<div class="tool-result">
+  <div class="tool-result-head">
+    <h2>Your profile</h2>
+    <button type="button" class="btn" id="profile-copy" disabled>Copy the profile</button>
+  </div>
+  <p id="profile-status" class="tool-status" role="status"></p>
+  <pre class="tool-code tool-wrap"><code id="profile-output">Fill in a field or pick an option to start.</code></pre>
+</div>
+
+<div class="tool-result">
+  <h2>Where to paste it</h2>
+  <div class="tool-tabs" role="tablist" aria-label="Choose your assistant">
+    <button type="button" role="tab" id="tab-chatgpt" aria-controls="panel-chatgpt" aria-selected="true">ChatGPT</button>
+    <button type="button" role="tab" id="tab-claude" aria-controls="panel-claude" aria-selected="false" tabindex="-1">Claude</button>
+    <button type="button" role="tab" id="tab-gemini" aria-controls="panel-gemini" aria-selected="false" tabindex="-1">Gemini</button>
+    <button type="button" role="tab" id="tab-perplexity" aria-controls="panel-perplexity" aria-selected="false" tabindex="-1">Perplexity</button>
+  </div>
+  <div class="tool-panel" role="tabpanel" id="panel-chatgpt" aria-labelledby="tab-chatgpt">
+    <p>Open <strong>Settings</strong>, then <strong>Personalization</strong>, and find <strong>Custom instructions</strong>. Paste the profile in the box about how ChatGPT should respond, and save.</p>
+  </div>
+  <div class="tool-panel" role="tabpanel" id="panel-claude" aria-labelledby="tab-claude" hidden>
+    <p>Open <strong>Settings</strong>, then <strong>Profile</strong>, and find the box for your personal preferences. Paste the profile there and save. To use it for one project only, paste it into that project's instructions instead.</p>
+  </div>
+  <div class="tool-panel" role="tabpanel" id="panel-gemini" aria-labelledby="tab-gemini" hidden>
+    <p>Open <strong>Settings</strong>, then look for <strong>Instructions for Gemini</strong> (it may sit under saved info). Add the profile there and save.</p>
+  </div>
+  <div class="tool-panel" role="tabpanel" id="panel-perplexity" aria-labelledby="tab-perplexity" hidden>
+    <p>Open <strong>Settings</strong>, then <strong>Personalize</strong> (or your profile). Paste the profile into the introduction box and save.</p>
+  </div>
+  <p class="small-note">These companies rename menus now and then. If you do not see these names, look for personalization, custom instructions or preferences.</p>
+</div>
+<script src="/assets/tools/personal-ai-profile-builder.js" defer></script>
