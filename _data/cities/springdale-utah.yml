@@ -33,7 +33,7 @@ sections:
   - id: numbers
     heading: "Springdale by the numbers"
     paragraphs:
-      - "Springdale had 514 residents at the 2020 census. It is a very small town with a very large audience, which makes being found online matter a great deal."
+      - "Springdale had 514 residents at the 2020 census. That makes being found online matter a great deal."
 facts:
   - label: "Residents, 2020 census"
     value: "514"
