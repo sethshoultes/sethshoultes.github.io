@@ -18,6 +18,11 @@
 - [Web Development in Southern Utah](https://sethshoultes.com/web-development/): Fast sites and interactive tools, from someone who ran a web agency. Plain-text version at https://sethshoultes.com/web-development.md
 - [WordPress Development in Southern Utah](https://sethshoultes.com/wordpress-development/): WordPress plugins and sites from the co-founder of Event Espresso. Plain-text version at https://sethshoultes.com/wordpress-development.md
 - [Learn AI and succeed with it](https://sethshoultes.com/learn-ai/): coaching, team workshops, the meetup and writing, for anyone learning AI. Plain-text version at https://sethshoultes.com/learn-ai.md
+- [AI and SEO services in St. George, Utah](https://sethshoultes.com/st-george-utah/): What Seth offers St. George businesses that serve neighbors and visitors. Plain-text version at https://sethshoultes.com/st-george-utah.md
+- [AI and SEO services in Hurricane, Utah](https://sethshoultes.com/hurricane-utah/): What Seth offers businesses in a fast-growing city near Zion. Plain-text version at https://sethshoultes.com/hurricane-utah.md
+- [AI and SEO services in Ivins and Santa Clara, Utah](https://sethshoultes.com/ivins-santa-clara-utah/): What Seth offers resort, arts and neighborhood businesses. Plain-text version at https://sethshoultes.com/ivins-santa-clara-utah.md
+- [AI and SEO services in Cedar City, Utah](https://sethshoultes.com/cedar-city-utah/): What Seth offers a university town and gateway to national parks. Plain-text version at https://sethshoultes.com/cedar-city-utah.md
+- [AI and SEO services in Springdale, Utah (Zion)](https://sethshoultes.com/springdale-utah/): What Seth offers gateway businesses beside Zion National Park. Plain-text version at https://sethshoultes.com/springdale-utah.md
 - [AI and SEO services in Washington City, Utah](https://sethshoultes.com/washington-city-utah/): what Seth offers locals; plain-text version at https://sethshoultes.com/washington-city-utah.md
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
 - [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, games and videos

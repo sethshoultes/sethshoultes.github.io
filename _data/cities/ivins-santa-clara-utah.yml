@@ -1,0 +1,61 @@
+name: "Ivins and Santa Clara"
+slug: ivins-santa-clara-utah
+title: "AI and SEO Services in Ivins and Santa Clara, Utah"
+description: "AI and SEO services for Ivins and Santa Clara, Utah businesses: content, media and interactive websites for resorts, arts, and neighborhood services near Snow Canyon."
+clip: ivins-santa-clara
+poster_alt: "A red rock ridge and black lava rock fields in a high desert"
+scenes:
+  - eyebrow: "Ivins and Santa Clara, Utah"
+    heading: "AI and SEO Services in Ivins and Santa Clara, Utah"
+    body: "I live nearby in Washington City. I help businesses in Ivins and Santa Clara get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "Santa Clara"
+    heading: "Founded in 1854 by Jacob Hamblin."
+    body: "Santa Clara was settled in 1854, and the Jacob Hamblin Home still stands as a house museum. A flood on the Santa Clara River destroyed the first fort in 1862."
+  - eyebrow: "Ivins"
+    heading: "Red rock, art and a big outdoor stage."
+    body: "Ivins became a city in 1998. It is home to Tuacahn, the largest professional outdoor theater in Utah, and is close to Snow Canyon State Park."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in Ivins and Santa Clara."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of Ivins and Santa Clara."
+sections:
+  - id: services
+    heading: "What I do for Ivins and Santa Clara businesses"
+    paragraphs:
+      - "Two small cities, one big neighbor: that is the setting I build for, with AI and SEO together so a local business can be found without a big budget."
+      - "**Resorts and visitors.** Ivins has several resorts, including Red Mountain, Movara, Sentierre and Black Desert, and a PGA Tour event at Black Desert since 2024. Guests look for places to eat, shop and play, and I help local businesses be found when they do."
+      - "**Arts and events.** Tuacahn and the Kayenta Art Village bring audiences who plan a visit around a show. I build pages and answers for the questions those visitors ask."
+      - "**Neighborhood services.** Both towns are part of the St. George metro area. A plumber, a dentist or a landscaper here is one of many in the St. George area, so a clear page about your own neighborhood matters."
+  - id: numbers
+    heading: "Ivins and Santa Clara by the numbers"
+    paragraphs:
+      - "Ivins had 8,978 people at the 2020 census, up from 6,753 in 2010. Santa Clara had 7,553, up from 6,003. Together they are about 16,500 people, in two small cities next to a much bigger one."
+facts:
+  - label: "Ivins, 2020 census"
+    value: "8,978"
+  - label: "Santa Clara, 2020 census"
+    value: "7,553"
+  - label: "Santa Clara settled"
+    value: "1854"
+  - label: "Ivins a city since"
+    value: "1998"
+facts_source: "Wikipedia, Ivins, Utah and Santa Clara, Utah (2010 and 2020 census, settlement)."
+faq:
+  - q: "What can you do for my Ivins or Santa Clara business?"
+    a: "Help it be found by the resort guests, theater audiences and neighbors who search for what you offer, with pages, answers and tools built for them. We start with a call."
+  - q: "Are you based in Ivins or Santa Clara?"
+    a: "I live nearby in Washington City, along the Virgin River, and I work with businesses around Southern Utah."
+  - q: "Can you help a business near the resorts, Tuacahn or Snow Canyon?"
+    a: "Yes. Tell me who your visitors are. I will build pages and answers for the questions they ask before they arrive."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "Ivins, Utah (city, Tuacahn, resorts, population)"
+    href: "https://en.wikipedia.org/wiki/Ivins,_Utah"
+  - label: "Santa Clara, Utah (settlement, Jacob Hamblin Home, population)"
+    href: "https://en.wikipedia.org/wiki/Santa_Clara,_Utah"
+affiliation: "I am not affiliated with the cities of Ivins or Santa Clara, Tuacahn, the resorts or the church that runs the Jacob Hamblin Home. They are named only as local facts."

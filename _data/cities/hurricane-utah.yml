@@ -1,0 +1,59 @@
+name: "Hurricane"
+slug: hurricane-utah
+title: "AI and SEO Services in Hurricane, Utah"
+description: "AI and SEO services for Hurricane, Utah businesses: content, media and interactive websites for a fast-growing city near Zion, from a neighbor in Washington City."
+clip: hurricane
+poster_alt: "A turquoise desert reservoir with red sandstone shoreline and sand dunes"
+scenes:
+  - eyebrow: "Hurricane, Utah"
+    heading: "AI and SEO Services in Hurricane, Utah"
+    body: "I live nearby in Washington City. I help Hurricane businesses get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The name"
+    heading: "Say it HURR-ih-kən."
+    body: "Hurricane was settled in 1896 as part of the cotton mission. The name comes from a whirlwind that took the top off Erastus Snow's buggy."
+  - eyebrow: "The water"
+    heading: "A canal, a river and two reservoirs."
+    body: "The Hurricane Canal was finished in 1904, and the Virgin River runs along nearly all of the city's north edge. Sand Hollow and Quail Creek state parks are close by."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in Hurricane."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of Hurricane."
+sections:
+  - id: services
+    heading: "What I do for Hurricane businesses"
+    paragraphs:
+      - "Hurricane is changing fast, and the businesses that grow with it are the ones people find first. That is what I help with: AI and SEO together."
+      - "**Growth.** Hurricane had 20,036 people at the 2020 census, up almost 46 percent in ten years. A fast-growing city fills with new households that do not yet know who to call. I build pages that answer them first."
+      - "**Outdoor visitors.** With two state park reservoirs, a river park and a mountain bike festival, people come here to play. Visitors often search before they go, and your pages and answers can be there when they do."
+      - "**Distribution and trades.** Several distribution centers have set up here. I help the businesses around them show up for the jobs they want."
+  - id: numbers
+    heading: "Hurricane by the numbers"
+    paragraphs:
+      - "Hurricane's population grew from 13,748 in 2010 to 20,036 in 2020. It is the kind of growth that changes who is searching for your business, and what they type."
+facts:
+  - label: "People, 2020 census"
+    value: "20,036"
+  - label: "People, 2010 census"
+    value: "13,748"
+  - label: "Settled"
+    value: "1896"
+  - label: "Canal finished"
+    value: "1904"
+facts_source: "Wikipedia, Hurricane, Utah (2010 and 2020 census, settlement, canal)."
+faq:
+  - q: "What can you do for my Hurricane business?"
+    a: "Help it be found by the new households moving in and by the visitors heading to the parks, with pages, answers and tools built for your customers. We start with a call."
+  - q: "Are you based in Hurricane?"
+    a: "I live nearby in Washington City, along the Virgin River, and I work with businesses around Southern Utah."
+  - q: "Can you help a business near the reservoirs or the trails?"
+    a: "Yes. Tell me who comes and when they decide. I build pages and answers for the questions they ask before they arrive."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "Hurricane, Utah (settlement, canal, population, parks, economy)"
+    href: "https://en.wikipedia.org/wiki/Hurricane,_Utah"
+affiliation: "I am not affiliated with the City of Hurricane or the parks and companies named on this page. They are named only as local facts."

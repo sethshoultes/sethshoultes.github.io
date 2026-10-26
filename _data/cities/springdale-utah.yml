@@ -1,0 +1,59 @@
+name: "Springdale"
+slug: springdale-utah
+title: "AI and SEO Services in Springdale, Utah (Zion)"
+description: "AI and SEO services for Springdale, Utah and Zion area businesses: content, media and interactive websites for a gateway town, from a Zion hiker in Washington City."
+clip: springdale
+poster_alt: "A red rock canyon with a shallow river and golden cottonwood trees"
+scenes:
+  - eyebrow: "Springdale and Zion"
+    heading: "AI and SEO Services in Springdale, Utah (Zion)"
+    body: "I hike in Zion a lot, and I live down the river in Washington City. I help Springdale businesses get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The town"
+    heading: "Settled in 1862, set in Zion Canyon."
+    body: "Springdale began as a farming community. Mount Kinesava stands to the west and The Watchman to the east, and the North Fork of the Virgin River runs through town."
+  - eyebrow: "The gateway"
+    heading: "Next door to a national park."
+    body: "Springdale sits right beside the boundary of Zion National Park, and is called a gateway community. About 500 people live here."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in Springdale and around Zion."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of Springdale."
+sections:
+  - id: services
+    heading: "What I do for Springdale and Zion businesses"
+    paragraphs:
+      - "Springdale is a very small town with a very large audience, and most of it finds you on a screen first. I help businesses here be found, with AI and SEO built into the work."
+      - "**Many of your customers are not local.** They are planning a trip from somewhere else. They search for where to sleep, eat and book a guide before they arrive."
+      - "**Answers they can quote.** I build pages that give clear, accurate answers about your business, so search and AI assistants can quote you. See [AI search optimization](/ai-search-optimization/)."
+      - "**I know the canyon.** I am an avid hiker, and I hike in Zion a lot."
+  - id: numbers
+    heading: "Springdale by the numbers"
+    paragraphs:
+      - "Springdale had 514 residents at the 2020 census. That makes being found online matter a great deal."
+facts:
+  - label: "Residents, 2020 census"
+    value: "514"
+  - label: "Settled"
+    value: "1862"
+  - label: "Beside"
+    value: "Zion National Park"
+  - label: "River"
+    value: "North Fork Virgin River"
+facts_source: "Wikipedia, Springdale, Utah (2020 census, settlement, location)."
+faq:
+  - q: "What can you do for my Springdale or Zion-area business?"
+    a: "Help it be found by people planning a trip, with pages, answers and tools built for them. We start with a call about your business."
+  - q: "Are you based in Springdale?"
+    a: "No. I live down the river in Washington City and I hike in Zion a lot. I work with businesses around Southern Utah."
+  - q: "Can you help a business that serves park visitors?"
+    a: "Yes. Tell me who your visitors are and when they decide. I will build pages and answers for the questions they ask before they arrive."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "Springdale, Utah (settlement, population, location)"
+    href: "https://en.wikipedia.org/wiki/Springdale,_Utah"
+affiliation: "I am not affiliated with the Town of Springdale or the National Park Service. Zion National Park is named only as a local fact."

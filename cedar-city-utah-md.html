@@ -1,0 +1,44 @@
+---
+layout: null
+permalink: /cedar-city-utah.md
+sitemap: false
+---
+{%- assign c = site.data.cities["cedar-city-utah"] -%}
+# {{ c.title }}
+
+{{ c.scenes[0].body }}
+
+Page: {{ site.url }}/{{ c.slug }}/
+
+{% for sec in c.sections %}## {{ sec.heading }}
+
+{% for p in sec.paragraphs %}{{ p }}
+
+{% endfor %}{% if sec.id == "numbers" %}{% for f in c.facts %}- {{ f.label }}: {{ f.value }}
+{% endfor %}
+Source: {{ c.facts_source }}
+
+{% endif %}{% endfor %}## {{ c.scenes[2].heading }}
+
+{{ c.scenes[2].body }}
+
+## Questions
+
+{% for item in c.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+Plans: {{ site.url }}/consulting/
+
+More places: {{ site.url }}/southern-utah/
+
+## Sources
+
+{% for s in c.sources %}{% if s.href %}- [{{ s.label }}]({{ s.href }})
+{% else %}- {{ s.label }}
+{% endif %}{% endfor %}
+{{ c.affiliation }}
