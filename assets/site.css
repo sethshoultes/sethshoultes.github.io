@@ -323,3 +323,15 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .tool-check-unknown { border-left-color: #6b7280; }
 .tool-badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-right: 0.6rem; }
 .tool-cp { margin-top: 1.25rem; font-weight: 600; }
+
+
+
+/* Spacing utilities (replace inline styles). !important keeps the precedence the inline styles had. */
+.mt-05 { margin-top: 0.5rem !important; }
+.mt-075 { margin-top: 0.75rem !important; }
+.mt-1 { margin-top: 1rem !important; }
+.mt-15 { margin-top: 1.5rem !important; }
+.mt-2 { margin-top: 2rem !important; }
+.mt-25 { margin-top: 2.5rem !important; }
+.pt-1 { padding-top: 1rem !important; }
+.grid-wide { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important; }

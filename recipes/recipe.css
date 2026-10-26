@@ -257,3 +257,5 @@ main.recipe blockquote p:last-child { margin-bottom: 0; }
   main.recipe h2 { font-size: 1.35rem; }
   main.recipe pre { font-size: 0.78rem; padding: 0.85rem 0.95rem; }
 }
+
+.divider { border: 0; border-top: 1px solid var(--border); margin: 3rem 0; }

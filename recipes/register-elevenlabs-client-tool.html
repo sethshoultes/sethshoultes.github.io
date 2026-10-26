@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  {% include agent-hints.html %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register an ElevenLabs Client Tool — Recipe</title>
   <meta name="description" content="Step-by-step recipe for letting an ElevenLabs agent invoke functions that run inside a visitor's browser to display UI elements like cards, modals, or scroll actions." />
@@ -68,7 +69,7 @@
     <li>Basic JavaScript and DOM manipulation knowledge.</li>
   </ul>
 
-  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+  <hr class="divider" />
 
   <h2>Step 1 — Define the client tool</h2>
 
