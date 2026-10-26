@@ -1,0 +1,61 @@
+name: "Coral Canyon"
+slug: coral-canyon-utah
+title: "AI and SEO Services in Coral Canyon, Washington, Utah"
+description: "AI and SEO services for Coral Canyon, Washington, Utah businesses: content, media and interactive websites for a golf community and its neighbors, from a Washington City local."
+clip: coral-canyon
+poster_alt: "A green golf fairway between red sandstone hills and black lava rock"
+scenes:
+  - eyebrow: "Coral Canyon, Washington, Utah"
+    heading: "AI and SEO Services in Coral Canyon, Washington, Utah"
+    body: "I live in Washington City, close to Coral Canyon. I help businesses here get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The community"
+    heading: "A golf community inside Washington City."
+    body: "Coral Canyon is a master-planned golf community in the city of Washington, not in St. George. Development began in 2000."
+  - eyebrow: "The setting"
+    heading: "Red rock, trails and a public course."
+    body: "About 2,600 acres and roughly 1,338 homes, with 10.7 miles of trails, two city parks and six pocket parks. The golf course is open to the public."
+  - eyebrow: "Home"
+    heading: "New homes, new businesses."
+    body: "Here is what I do for businesses in and around Coral Canyon."
+    cta_label: "Read on"
+    cta_href: "#services"
+flyover_note: "The scenery above is generated. It is not a photo or video of Coral Canyon."
+sections:
+  - id: services
+    heading: "What I do for Coral Canyon businesses"
+    paragraphs:
+      - "Coral Canyon has new homes and new businesses, and the people who live here are new to the neighborhood. I help the businesses around them be found."
+      - "**New neighbors.** A new homeowner does not have a go-to plumber, painter or landscaper yet. They search, and a clear page about your service and your area is what they find."
+      - "**Golf and visitors.** The public course, a clubhouse with a restaurant, and nightly-rental communities nearby bring people who are not local. I build pages and answers for the questions visitors ask before they arrive."
+      - "**Businesses along the corridor.** Coral Canyon sits on the I-15 corridor between St. George and Hurricane. Businesses here serve both, and need pages that say so."
+      - "I offer AI services with SEO built in, plus content generation, media production and interactive website development."
+  - id: numbers
+    heading: "Coral Canyon by the numbers"
+    paragraphs:
+      - "The City of St. George describes Coral Canyon as one of the largest and most established master-planned golf communities in Washington County. It covers about 2,600 acres with roughly 1,338 homes, where the original agreement called for about 2,000."
+      - "It is not gated and is open to all ages. The clubhouse has indoor and outdoor pools, a fitness center, pickleball and tennis. Coral Canyon is about ten minutes from central St. George and about 45 minutes from Zion National Park."
+facts:
+  - label: "Homes"
+    value: "About 1,338"
+  - label: "Area"
+    value: "About 2,600 acres"
+  - label: "Trails"
+    value: "10.7 miles"
+  - label: "Development began"
+    value: "2000"
+facts_source: "City of St. George, Coral Canyon neighborhood page."
+faq:
+  - q: "What can you do for my Coral Canyon business?"
+    a: "Help it be found by new neighbors and by visitors, with pages, answers and tools built for your customers. We start with a call about your business."
+  - q: "Is Coral Canyon in St. George?"
+    a: "No. Coral Canyon is inside the city of Washington, between St. George and Hurricane."
+  - q: "Do you live near Coral Canyon?"
+    a: "I live in Washington City, close by, along the Virgin River."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "Coral Canyon neighborhood (type, size, trails, amenities, location), City of St. George"
+    href: "https://www.stgeorge.us/real-estate/neighborhoods/coral-canyon"
+affiliation: "I am not affiliated with the Coral Canyon Community Association, the golf course or its operator, or the City of St. George. They are named only as local facts."
