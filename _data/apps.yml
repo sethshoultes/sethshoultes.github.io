@@ -38,7 +38,7 @@ how:
   heading: "How you get access"
   paragraphs:
     - "Pay with the Stripe link. Use the email address of the Google account you will sign in with, because access is tied to that email."
-    - "Right now I turn access on by hand within one business day of your payment. You will get an email when it is on."
+    - "CrawlPress Pro turns on by itself within a few minutes of your payment. Sign in to CrawlPress with Google, using the email you paid with, add your site, and it is Pro. The other parts of Seth's Apps are still being built, and I will email you when each one is ready."
     - "Apps that have a sign-in use Google sign-in. I only receive your email address and Google account ID."
 faq:
   - q: "What do I get with Seth's Apps?"
@@ -48,7 +48,7 @@ faq:
   - q: "How much does it cost?"
     a: "Seth's Apps is $19 a month or $190 a year. CrawlPress Pro alone is $9 a month for each site. AI visibility monitoring alone is $7 a month for each business."
   - q: "How soon do I get access?"
-    a: "I turn it on by hand within one business day of your payment, and email you when it is on."
+    a: "CrawlPress Pro turns on by itself within a few minutes of your payment, for the site you add under the email you paid with. If it has not turned on after an hour, email me and I will fix it by hand. The premium parts of the free tools are still being built."
   - q: "How do I cancel?"
     a: "Stripe sends a receipt with a link to manage or cancel your subscription. Cancel any time and you keep access until the end of what you paid for."
   - q: "Do the free tools stay free?"
