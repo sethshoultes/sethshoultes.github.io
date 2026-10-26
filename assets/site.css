@@ -340,8 +340,7 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .apps-bundle .tag { white-space: normal; }
 .apps-bundle h2 { margin: 0.5rem 0 0.25rem; font-size: 1.8rem; }
 .apps-includes { list-style: none; margin: 1.25rem 0; padding: 0; }
-.apps-includes li { padding-left: 0; }
+.apps-includes li { padding-left: 0; margin-bottom: 0.6rem; }
 .apps-includes li::before { content: none; }
 .apps-bundle .btn { width: auto; }
 .apps-status { display: inline-block; min-width: 6.2rem; margin-right: 0.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
-.apps-includes li { margin-bottom: 0.6rem; }
