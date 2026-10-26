@@ -68,6 +68,14 @@ layout: site
         <li><a href="/{{ s[1].slug }}/">{{ s[1].title }}</a></li>
         {%- endfor %}
       </ul>
+      {%- if c.see_also %}
+      <p>Inside this city:</p>
+      <ul>
+        {%- for l in c.see_also %}
+        <li><a href="{{ l.href }}">{{ l.label }}</a></li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
       <p>More places I work: <a href="/southern-utah/">AI and SEO services across Southern Utah</a>.</p>
     </section>
 

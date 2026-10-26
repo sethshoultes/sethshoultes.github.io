@@ -15,7 +15,7 @@ scenes:
     body: "Washington City was settled in 1857 by families sent here to grow cotton. I live along the same river, and I build for the people who live and work beside it."
   - eyebrow: "Landmarks"
     heading: "Mill, river and temple."
-    body: "The Washington Cotton Factory, built in 1865 to 1867, still stands here and is on the National Register of Historic Places. Just next door, in the Washington Fields area of St. George, is the Red Cliffs Utah Temple."
+    body: "The Washington Cotton Factory, built in 1865 to 1867, still stands here and is on the National Register of Historic Places. Just next door, in the Washington Fields area of St. George, is the Red Cliffs Utah Temple. Coral Canyon, a golf community with new homes, is part of the city too, and has its own page."
   - eyebrow: "Home"
     heading: "Your business, found and growing."
     body: "Here is what I do for businesses in Washington City, and why I do it the way I do."
@@ -76,4 +76,7 @@ sources:
   - label: "Red Cliffs Utah Temple site announcement, The Church of Jesus Christ of Latter-day Saints"
     href: "https://newsroom.churchofjesuschrist.org/article/temple-site-announced-for-washington-county-utah-temple"
   - label: "Washington City housing figures: Census Bureau American Community Survey 2019 to 2023, as reported by Point2Homes"
+see_also:
+  - label: "Coral Canyon, a golf community inside Washington City"
+    href: "/coral-canyon-utah/"
 affiliation: "This page is not affiliated with The Church of Jesus Christ of Latter-day Saints. The temple is named only as a local landmark."
