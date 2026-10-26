@@ -1,0 +1,24 @@
+---
+layout: tool
+tool: ai-crawler-access-check
+permalink: /tools/ai-crawler-access-check/
+title: "Free AI Crawler Access Check: Can ChatGPT, Claude and Perplexity Read Your Site?"
+description: "Free AI crawler access check. Enter your website and see whether GPTBot, ClaudeBot, PerplexityBot and Google-Extended are allowed in, and whether you have llms.txt, a markdown version and JSON-LD."
+---
+<form id="crawl-form" class="contact-form tool-form" autocomplete="off">
+  <label>Your website
+    <input type="text" name="url" placeholder="example.com" inputmode="url" required>
+  </label>
+  <label class="hp" aria-hidden="true">Leave this empty
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </label>
+  <button type="submit" class="btn" id="crawl-go">Check this site</button>
+</form>
+
+<div class="tool-result" id="crawl-result" hidden>
+  <h2 id="crawl-title">Results</h2>
+  <p id="crawl-status" class="tool-status" role="status"></p>
+  <ul id="crawl-list" class="tool-checks"></ul>
+  <p id="crawl-cp" class="tool-cp" hidden>On WordPress? <a href="https://crawlpress.com/" target="_blank" rel="noopener">CrawlPress does this automatically, every day.</a></p>
+</div>
+<script src="/assets/tools/ai-crawler-access-check.js" defer></script>

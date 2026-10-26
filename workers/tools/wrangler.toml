@@ -1,0 +1,9 @@
+name = "sethshoultes-tools"
+pages_build_output_dir = "public"
+compatibility_date = "2026-10-01"
+
+# Rate limits and the daily cap live in the KV namespace "sws-tools-limits"
+# in the SWS Cloudflare account.
+[[kv_namespaces]]
+binding = "TOOLS_KV"
+id = "13a822e816a6487fa9eec8770cdc2bcc"

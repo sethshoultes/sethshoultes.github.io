@@ -26,6 +26,7 @@ exclude:
   - .ruby-version
   - scripts
   - workers
+  - tests
 
 # Jekyll skips dotfiles and dotted directories by default; force-include
 # the .well-known directory so /.well-known/mcp.json is served at the

@@ -311,3 +311,15 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .tool-panel { color: var(--muted); }
 .tool-panel strong { color: var(--text); }
 .tool-panel[hidden] { display: none; }
+
+.tool-form .btn:disabled { opacity: 0.6; cursor: wait; }
+.tool-status-err { color: #ffb4a0; }
+.tool-checks { list-style: none; display: grid; gap: 0.75rem; margin-top: 1rem; }
+.tool-check { background: var(--bg); border: 1px solid var(--border); border-left-width: 4px; border-radius: 10px; padding: 0.9rem 1rem; }
+.tool-check p { color: var(--muted); font-size: 0.95rem; margin-top: 0.35rem; overflow-wrap: anywhere; }
+.tool-check-ok { border-left-color: #7ee2b8; }
+.tool-check-warn { border-left-color: #f2c14e; }
+.tool-check-bad, .tool-check-block { border-left-color: #ff7a59; }
+.tool-check-unknown { border-left-color: #6b7280; }
+.tool-badge { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-right: 0.6rem; }
+.tool-cp { margin-top: 1.25rem; font-weight: 600; }
