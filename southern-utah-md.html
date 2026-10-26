@@ -1,0 +1,24 @@
+---
+layout: null
+permalink: /southern-utah.md
+sitemap: false
+---
+# AI and SEO Services in Southern Utah
+
+I live along the Virgin River in Washington City. I help local businesses get found online and get more done with AI: content, media and interactive websites, with SEO built in.
+
+Page: {{ site.url }}/southern-utah/
+
+## What I do
+
+{% for s in site.data.services %}- [{{ s[1].title }}]({{ site.url }}/{{ s[1].slug }}/): {{ s[1].summary }}
+{% endfor %}
+## Where I work
+
+{% for c in site.data.cities %}- [{{ c[1].title }}]({{ site.url }}/{{ c[1].slug }}/)
+{% endfor %}
+## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+Plans: {{ site.url }}/consulting/

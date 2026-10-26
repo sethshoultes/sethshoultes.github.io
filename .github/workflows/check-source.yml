@@ -1,0 +1,14 @@
+name: Check source
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  inline-styles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No inline styles
+        run: scripts/check-inline-styles.sh

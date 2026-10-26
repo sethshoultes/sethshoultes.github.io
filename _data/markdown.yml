@@ -1,0 +1,4 @@
+# Pages whose plain-text markdown version is not named after a city or service data file.
+# The layout links each one with <link rel="alternate" type="text/markdown">.
+"/southern-utah/": /southern-utah.md
+"/services/": /services.md

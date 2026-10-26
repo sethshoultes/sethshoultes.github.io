@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  {% include agent-hints.html %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wire RAG into an ElevenLabs Agent — Recipe</title>
   <meta name="description" content="Step-by-step recipe for connecting external documents to an ElevenLabs Conversational AI agent via retrieval-augmented generation. API calls, vectorization, and the GitHub Action gotcha." />
@@ -69,7 +70,7 @@
     <li>If your site is on GitHub Pages: a repo with GitHub Actions enabled.</li>
   </ul>
 
-  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+  <hr class="divider" />
 
   <h2>Step 1 — Create knowledge-base entries</h2>
 

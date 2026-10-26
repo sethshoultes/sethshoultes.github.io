@@ -366,3 +366,19 @@ footer .footer-links a:hover { color: var(--accent); }
 }
 
 .post-content img { height: auto; }
+
+/* Post images, tables and notes (were inline styles) */
+.post-content .post-img { width: 100%; max-width: 780px; display: block; margin: 1.5rem auto; border-radius: 6px; }
+.post-content .post-img-lead { margin: 0 auto 2rem; }
+.post-content .post-img-tight { margin: 1.5rem auto 0.5rem; }
+.post-content .post-img-dark { background: #000; }
+.post-content .post-img-narrow { max-width: 420px; }
+.post-content .post-table { width: 100%; max-width: 780px; margin: 1.5rem auto; border-collapse: collapse; font-size: 0.95rem; }
+.post-content .post-table tr { border-bottom: 1px solid #eee; }
+.post-content .post-table tbody tr:last-child { border-bottom: 0; }
+.post-content .post-table thead tr { border-bottom: 1px solid #ccc; }
+.post-content .post-table th, .post-content .post-table td { padding: 0.5rem; }
+.post-content .post-table th { text-align: left; }
+.post-content .post-caption-pulled { text-align: center; font-size: 0.9rem; color: #666; margin-top: -0.5rem; }
+.post-content .post-note { text-align: center; font-size: 0.85rem; color: #6b7280; margin-bottom: 1.5rem; }
+.post-content .post-footnotes { font-size: 0.875rem; color: #555; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; }

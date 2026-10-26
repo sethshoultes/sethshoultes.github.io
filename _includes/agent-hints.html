@@ -1,0 +1,7 @@
+{%- assign md = site.data.markdown[page.url] -%}
+{%- if page.city -%}{%- assign md = '/' | append: page.city | append: '.md' -%}{%- elsif page.service -%}{%- assign md = '/' | append: page.service | append: '.md' -%}{%- endif -%}
+{%- if md %}
+  <link rel="alternate" type="text/markdown" href="{{ md }}">
+{%- endif %}
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+  <!-- For AI agents and crawlers: {% if md %}a plain-text markdown version of this page is at {{ md | absolute_url }}. {% endif %}A site overview and the key pages are listed at {{ '/llms.txt' | absolute_url }}. The content of this site may be cited, with a link to the page it came from. -->

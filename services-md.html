@@ -1,0 +1,22 @@
+---
+layout: null
+permalink: /services.md
+sitemap: false
+---
+# Services
+
+What I offer, from Seth Shoultes. Each service has its own page with the proof behind it.
+
+Page: {{ site.url }}/services/
+
+{% for s in site.data.services %}- [{{ s[1].title }}]({{ site.url }}/{{ s[1].slug }}/): {{ s[1].summary }}
+{% endfor %}
+## Where I work
+
+{% for c in site.data.cities %}- [{{ c[1].title }}]({{ site.url }}/{{ c[1].slug }}/)
+{% endfor %}
+## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+Plans: {{ site.url }}/consulting/

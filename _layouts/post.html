@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ page.title }} — Seth Shoultes</title>
   <link rel="canonical" href="{{ page.url | absolute_url }}" />
+  {% include agent-hints.html %}
   <meta name="description" content="{{ page.description | default: page.subtitle | escape }}" />
 
   <meta property="og:title" content="{{ page.og_title | default: page.title }}" />

@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  {% include agent-hints.html %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add a Real-Time Avatar to a Static Site — Recipe</title>
   <meta name="description" content="Step-by-step recipe for embedding a synchronous, speaking avatar into a webpage using HeyGen and ElevenLabs. Cloudflare Worker token exchange, SDK integration, and gotchas." />
@@ -70,7 +71,7 @@
     <li>Node.js 18+ and <code>wrangler</code> CLI installed for the Worker.</li>
   </ul>
 
-  <hr style="border:0; border-top:1px solid var(--border); margin: 3rem 0;" />
+  <hr class="divider" />
 
   <h2>Step 1 — Gather credentials</h2>
 
