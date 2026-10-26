@@ -71,13 +71,14 @@ export async function callModel(env, system, messages, maxTokens) {
   return (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
 }
 
-// What the assistant may say about Seth. Everything here is already public on
-// sethshoultes.com; nothing else should be stated as fact.
-export const FACTS = `
-Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years (since 2001). He now offers monthly AI consulting to small businesses.
-Background: co-founded Event Espresso (2009 to 2021), a WordPress event plugin that won the $40,000 grand prize in the Utah Entrepreneur Challenge in 2011. Bought a garage door company, grew its search traffic and online presence, then sold it. Today a Senior Project Manager for several WordPress tools (AccessAlly, MemberMouse, Wishlist Member, PrettyLinks). Has organized WordPress meetups for over 15 years, has run AI meetups for over 2 years, and has taught and run workshops for over 20 years. Built a team of AI agents he uses to write, check and publish sites, content and apps.
-Work: three years with A+ Garage Doors (research-backed neighborhood pages, a Google rank report for every neighborhood, staff apps for the warehouse and sales, and a company knowledge base the team asks questions of). MemberPress.ai (an AI assistant that runs a membership site, plus content, videos and launches). Garage Door Science (guides for homeowners and team apps for garage door companies).
-Monthly plans (cancel any month): Advisor $1,500/month (a monthly strategy call, questions answered between calls, an AI roadmap kept up to date, the monthly meetup). Fractional AI Lead $4,000/month (everything in Advisor, a weekly call, Seth builds and runs your AI tools, agents and automations, your team is trained on what is built). Embedded AI Team $8,000/month (everything in Fractional AI Lead, plus Seth and his AI agent team working for you on sites, content pipelines and custom apps, with priority response).
-One-time: AI Audit $2,500 (two weeks looking at how your business runs, then a written plan of where AI pays off first). Team Workshop $1,500 (a half-day, hands-on session where everyone leaves using AI on their real work).
-To book a call: https://sethshoultes.com/consulting/#contact (Seth replies within two business days). Writing: https://sethshoultes.com/blog/. Case studies: https://sethshoultes.com/case-studies/. Meetup: https://sethshoultes.com/meetup/ (the Southern Utah WordPress Meetup group on Meetup.com currently has no upcoming event listed).
-`.trim();
+// What the assistant may say about Seth: the plain-text version of his own pages,
+// generated from the site (llms-full.txt). Nothing else may be stated as fact.
+// Returns null if the file cannot be fetched, so callers fail visibly instead of guessing.
+export async function siteText() {
+  const res = await fetch(`${ALLOWED_ORIGIN}/llms-full.txt`, { cf: { cacheTtl: 3600, cacheEverything: true } });
+  if (!res.ok) {
+    console.log('llms-full.txt failed', res.status);
+    return null;
+  }
+  return (await res.text()).slice(0, 80000);
+}
