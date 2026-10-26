@@ -20,6 +20,20 @@ export function reply(status, body) {
   });
 }
 
+export const UNAVAILABLE = 'The assistant is unavailable right now. Please email seth@smartwebutah.com.';
+
+// Any thrown error becomes a JSON answer the page can show, never a bare Cloudflare 502.
+export function safely(handler) {
+  return async (context) => {
+    try {
+      return await handler(context);
+    } catch (err) {
+      console.log('ask failed', err && err.message);
+      return reply(502, { error: UNAVAILABLE });
+    }
+  };
+}
+
 export function preflight() {
   return new Response(null, { headers: CORS });
 }
@@ -54,6 +68,10 @@ export function clean(value, max) {
 }
 
 export async function callModel(env, system, messages, maxTokens) {
+  if (!env.GEMINI_API_KEY) {
+    console.log('GEMINI_API_KEY is not set');
+    return null;
+  }
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
     method: 'POST',
     headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
