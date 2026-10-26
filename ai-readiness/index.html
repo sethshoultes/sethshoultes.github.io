@@ -1,0 +1,95 @@
+---
+layout: site
+title: "Free AI readiness check"
+description: "Answer four quick questions about your business and get a short, honest readiness score with three places AI could help first. Free, no sign-up."
+---
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Free AI readiness check</p>
+    <h1>Is your business ready for AI?</h1>
+    <p class="lead mt-1">Answer four quick questions and get a short, honest scorecard with three places AI could help first. It takes about two minutes, and there's nothing to sign up for.</p>
+  </div>
+</div>
+
+<section class="pt-1">
+  <div class="wrap"><div class="prose">
+    <form id="rc-form" class="stack">
+      <label>What kind of business do you run?
+        <input name="business" required maxlength="160" placeholder="For example: a plumbing company">
+      </label>
+      <label>How big is your team?
+        <select name="size" required>
+          <option value="">Choose one</option>
+          <option>Just me</option><option>2 to 10 people</option><option>11 to 50 people</option><option>More than 50 people</option>
+        </select>
+      </label>
+      <label>Are you using AI today?
+        <select name="aiUse" required>
+          <option value="">Choose one</option>
+          <option>Not at all yet</option><option>A little (for example ChatGPT now and then)</option><option>Regularly, in a few tasks</option><option>It is part of how we run</option>
+        </select>
+      </label>
+      <label>Which tasks eat the most of your time?
+        <textarea name="timeSinks" required minlength="10" maxlength="800" rows="4" placeholder="For example: answering the same customer questions, writing quotes, posting on social media"></textarea>
+      </label>
+      <label><span>Anything you'd love AI to do for you? <span class="opt">(optional)</span></span>
+        <input name="goal" maxlength="400" placeholder="For example: answer my email">
+      </label>
+      <button class="btn" type="submit" id="rc-go">Get my readiness check</button>
+      <p class="small-note">Your answers are sent to an AI service to write your check, and aren't saved. Please don't include private information.</p>
+    </form>
+    <p id="rc-error" class="rc-error" role="alert" hidden></p>
+    <div id="rc-result" class="rc-result" hidden aria-live="polite">
+      <p class="eyebrow">Your result</p>
+      <p class="rc-score"><span id="rc-score"></span><small>/100</small></p>
+      <p class="rc-level" id="rc-level"></p>
+      <p id="rc-summary" class="lead"></p>
+      <h3 class="rc-h">Three places to start</h3>
+      <ol id="rc-opps" class="rc-opps"></ol>
+      <p><strong>Your first step:</strong> <span id="rc-first"></span></p>
+      <div class="btn-row"><a class="btn" href="/consulting/#contact">Talk it through with Seth</a><a class="btn ghost" href="/ask/">Ask the AI a question</a></div>
+    </div>
+  </div></div>
+</section>
+
+<script>
+(function () {
+  var ENDPOINT = 'https://ask.sethshoultes.com/readiness';
+  var form = document.getElementById('rc-form');
+  var go = document.getElementById('rc-go');
+  var err = document.getElementById('rc-error');
+  var out = document.getElementById('rc-result');
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    err.hidden = true; out.hidden = true;
+    go.disabled = true; go.textContent = 'Working on it…';
+    var body = {};
+    new FormData(form).forEach(function (v, k) { body[k] = v; });
+    try {
+      var res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      var data = await res.json();
+      if (res.status === 429 || res.status === 400) throw new Error(data.error);
+      if (!res.ok) throw new Error();
+      document.getElementById('rc-score').textContent = data.score;
+      document.getElementById('rc-level').textContent = data.level;
+      document.getElementById('rc-summary').textContent = data.summary;
+      document.getElementById('rc-first').textContent = data.first_step;
+      var list = document.getElementById('rc-opps');
+      list.textContent = '';
+      data.opportunities.forEach(function (o) {
+        var li = document.createElement('li');
+        var b = document.createElement('strong'); b.textContent = o.title;
+        var w = document.createElement('span'); w.textContent = o.why;
+        li.appendChild(b); li.appendChild(w);
+        list.appendChild(li);
+      });
+      out.hidden = false;
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (ex) {
+      err.textContent = ex.message || "I couldn't put your check together just now. Please try again in a minute, or email seth@smartwebutah.com.";
+      err.hidden = false;
+    }
+    go.disabled = false; go.textContent = 'Get my readiness check';
+  });
+})();
+</script>
