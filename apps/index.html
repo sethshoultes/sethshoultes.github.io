@@ -1,0 +1,124 @@
+---
+layout: site
+permalink: /apps/
+title: "Seth's Apps: One Subscription for CrawlPress Pro and My Paid Tools"
+description: "One subscription, $19 a month or $190 a year with 14 days free, for CrawlPress Pro and the paid side of Seth Shoultes's free tools. Or buy CrawlPress Pro or AI visibility monitoring alone."
+---
+{%- assign a = site.data.apps %}
+<div class="wrap service apps">
+  <section class="service-hero">
+    <p class="eyebrow">Apps</p>
+    <h1>{{ a.heading }}</h1>
+    <p class="lead">{{ a.lead }}</p>
+  </section>
+
+  <section class="plan featured apps-bundle" id="bundle">
+    <span class="tag">{{ a.bundle.trial }}</span>
+    <h2>{{ a.bundle.name }}</h2>
+    <div class="price">{{ a.bundle.monthly.price }}<span> {{ a.bundle.monthly.unit }}</span></div>
+    <p class="for">or {{ a.bundle.yearly.price }} {{ a.bundle.yearly.unit }}</p>
+    <ul class="apps-includes">
+      {%- for i in a.bundle.includes %}
+      <li><span class="apps-status">{{ i.status }}</span> {{ i.text }}</li>
+      {%- endfor %}
+    </ul>
+    <p class="btn-row">
+      <a class="btn" href="{{ a.bundle.monthly.url }}" rel="noopener" data-buy="seths-apps-monthly">Start free, {{ a.bundle.monthly.price }} a month</a>
+      <a class="btn ghost" href="{{ a.bundle.yearly.url }}" rel="noopener" data-buy="seths-apps-yearly">Start free, {{ a.bundle.yearly.price }} a year</a>
+    </p>
+  </section>
+
+  <section class="service-sec">
+    <h2>Or buy one on its own</h2>
+    <div class="plans">
+      {%- for p in a.alacarte %}
+      <div class="plan">
+        <h3>{{ p.name }}</h3>
+        <div class="price">{{ p.price }}<span> {{ p.unit }}</span></div>
+        <p class="for">{{ p.text }}</p>
+        <p class="small-note">{{ p.note }}</p>
+        <a class="btn" href="{{ p.url }}" rel="noopener" data-buy="{{ p.name | slugify }}">Buy {{ p.name }}</a>
+      </div>
+      {%- endfor %}
+    </div>
+  </section>
+
+  <div class="prose">
+    <section class="service-sec">
+      <h2>{{ a.free.heading }}</h2>
+      {{ a.free.text | markdownify }}
+    </section>
+    <section class="service-sec">
+      <h2>{{ a.how.heading }}</h2>
+      {%- for p in a.how.paragraphs %}
+      {{ p | markdownify }}
+      {%- endfor %}
+      <p class="small-note">Read the <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p>
+    </section>
+    <section id="faq" class="service-sec">
+      <p class="eyebrow">Questions</p>
+      <h2>Straight answers.</h2>
+      <div class="faq">
+        {%- for item in a.faq %}
+        <details>
+          <summary>{{ item.q }}</summary>
+          <p>{{ item.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </section>
+    <section class="service-sec">
+      <h2>Want it done for you?</h2>
+      <p>My monthly consulting plans put me, or my AI agent team, on your business.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/tools/">Free tools</a></p>
+    </section>
+  </div>
+</div>
+<script src="/assets/apps.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "{{ site.url }}/apps/#page",
+      "name": {{ a.title | jsonify }},
+      "description": {{ a.description | jsonify }},
+      "url": "{{ site.url }}/apps/",
+      "publisher": { "@id": "{{ site.url }}/#person" }
+    },
+    {
+      "@type": "Product",
+      "name": {{ a.bundle.name | jsonify }},
+      "description": "CrawlPress Pro for one WordPress site, and the paid side of Seth Shoultes's free tools as they launch.",
+      "brand": { "@id": "{{ site.url }}/#person" },
+      "offers": [
+        { "@type": "Offer", "name": "Monthly, 14 days free", "price": "19", "priceCurrency": "USD", "url": {{ a.bundle.monthly.url | jsonify }}, "availability": "https://schema.org/InStock" },
+        { "@type": "Offer", "name": "Yearly, 14 days free", "price": "190", "priceCurrency": "USD", "url": {{ a.bundle.yearly.url | jsonify }}, "availability": "https://schema.org/InStock" }
+      ]
+    },
+    {
+      "@type": "Product",
+      "name": "CrawlPress Pro",
+      "description": {{ a.alacarte[0].text | jsonify }},
+      "brand": { "@id": "{{ site.url }}/#person" },
+      "offers": { "@type": "Offer", "price": "9", "priceCurrency": "USD", "url": {{ a.alacarte[0].url | jsonify }}, "availability": "https://schema.org/InStock" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site.url }}/" },
+        { "@type": "ListItem", "position": 2, "name": "Apps", "item": "{{ site.url }}/apps/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for item in a.faq %}
+        { "@type": "Question", "name": {{ item.q | jsonify }}, "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | jsonify }} } }{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      ]
+    }
+  ]
+}
+</script>
