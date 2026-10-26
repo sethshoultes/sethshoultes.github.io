@@ -358,3 +358,168 @@ test('ai-knows-you handler: named, not named, cannot tell, failed; generic and b
     globalThis.fetch = realFetch;
   }
 });
+
+test('neighborhood-planner: city step finds the city (not the county); join step ranks, reports gaps, rejects bad lists', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.includes('nominatim')) return Response.json([
+      { osm_type: 'relation', osm_id: 1744372, class: 'boundary', type: 'administrative', addresstype: 'county', display_name: 'Washington County, Utah, United States' },
+      { osm_type: 'relation', osm_id: 198783, class: 'boundary', type: 'administrative', addresstype: 'city', display_name: 'Washington, Washington County, Utah, 84780, United States' },
+    ]);
+    if (url.includes('overpass')) throw new Error('the Worker must not call Overpass');
+    if (url.includes('geocoding.geo.census.gov')) {
+      const y = new URL(url).searchParams.get('y');
+      if (y === '37.3') return Response.json({ result: { geographies: { 'Census Tracts': [] } } });
+      const tract = y === '37.1' ? '000100' : '000200';
+      return Response.json({ result: { geographies: { 'Census Tracts': [{ STATE: '49', COUNTY: '053', TRACT: tract, NAME: `Census Tract ${tract}` }] } } });
+    }
+    if (url.includes('censusreporter')) return Response.json({ release: { name: 'ACS 2024 5-year' }, data: {
+      '14000US49053000100': { B25035: { estimate: { B25035001: 1975 } }, B25001: { estimate: { B25001001: 2000 } }, B25077: { estimate: { B25077001: 300000 } } },
+      '14000US49053000200': { B25035: { estimate: { B25035001: 2015 } }, B25001: { estimate: { B25001001: 4000 } }, B25077: { estimate: { B25077001: null } } },
+    } });
+    throw new Error('unexpected ' + url);
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/neighborhood-planner.js');
+    const city = await (await onRequestPost({ data: { body: { city: 'Washington, Utah' } } })).json();
+    assert.deepEqual(city, { city: 'Washington, Washington County', osmId: 198783 });
+
+    const hoods = [{ name: 'Old Town', lat: 37.1, lon: -113.5 }, { name: 'New Estates', lat: 37.2, lon: -113.4 }, { name: 'Nowhere', lat: 37.3, lon: -113.3 }, { name: 'old town', lat: 37.1, lon: -113.5 }];
+    const out = await (await onRequestPost({ data: { body: { step: 'join', city: 'Washington, Utah', neighborhoods: hoods } } })).json();
+    assert.deepEqual(out.neighborhoods.map((n) => n.name), ['Old Town', 'New Estates', 'Nowhere']);
+    assert.equal(out.neighborhoods[0].medianYearBuilt, 1975);
+    assert.equal(out.neighborhoods[1].medianValue, null);
+    assert.equal(out.neighborhoods[2].tract, null);
+    assert.equal(out.unmatched, 1);
+    assert.equal(out.sources.census, 'ACS 2024 5-year');
+
+    const join = (neighborhoods) => onRequestPost({ data: { body: { step: 'join', city: 'X', neighborhoods } } });
+    assert.equal((await join([])).status, 400);
+    assert.equal((await join('nope')).status, 400);
+    assert.equal((await join([{ name: 'A', lat: 0, lon: 0 }])).status, 400);
+    assert.equal((await join([{ name: 'A'.repeat(200), lat: 37, lon: -113 }])).status, 400);
+    assert.equal((await join(Array.from({ length: 41 }, (_, i) => ({ name: `N${i}`, lat: 37, lon: -113 })))).status, 400);
+    assert.equal((await onRequestPost({ data: { body: { city: '<x>' } } })).status, 400);
+
+    globalThis.fetch = async (input) => (String(input).includes('nominatim') ? Response.json([]) : Response.json({}));
+    const none = await onRequestPost({ data: { body: { city: 'Nowhereville, Utah' } } });
+    assert.equal(none.status, 502);
+    assert.match((await none.json()).error, /could not find that city/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+import { readJson, placesFrom } from '../workers/tools/functions/_lib/maps.js';
+
+test('maps: readJson reads fenced and bare JSON, placesFrom keeps only real place chunks', () => {
+  assert.deepEqual(readJson('```json\n{"a":1}\n```'), { a: 1 });
+  assert.deepEqual(readJson('Here you go: [{"a":1}]'), [{ a: 1 }]);
+  assert.equal(readJson('no json here'), null);
+  const places = placesFrom({ groundingChunks: [
+    { maps: { uri: 'https://maps.google.com/maps?cid=1', title: 'Walker Plumbing - Google Maps', placeId: 'P1' } },
+    { maps: { uri: 'https://www.google.com/maps/reviews/data=x', title: 'Review of Walker Plumbing - Google Maps', placeId: 'P1' } },
+    { maps: { uri: 'https://evil.example/', title: 'Crystal Clear Plumbing - Google Maps', placeId: 'P2' } },
+    { web: { uri: 'https://x.com', title: 'x' } },
+  ] });
+  assert.deepEqual(places.map((p) => [p.placeId, p.name, p.url]), [['P1', 'Walker Plumbing', 'https://maps.google.com/maps?cid=1'], ['P2', 'Crystal Clear Plumbing', null]]);
+});
+
+function mapsFetch({ profileReply, competitorReply, profilePlaces, competitorPlaces }) {
+  return async (input, init) => {
+    const url = String(input);
+    if (url.includes('nominatim')) return Response.json([{ osm_type: 'relation', osm_id: 198783, class: 'boundary', type: 'administrative', addresstype: 'city', display_name: 'St. George, Washington County, Utah, United States' }]);
+    if (url.includes('generativelanguage.googleapis.com')) {
+      const prompt = JSON.parse(init.body).contents[0].parts[0].text;
+      const isProfile = /Find the Google Maps listing/.test(prompt);
+      const chunks = (isProfile ? profilePlaces : competitorPlaces).map((p, i) => ({ maps: { uri: `https://maps.google.com/maps?cid=${i}`, title: `${p} - Google Maps`, placeId: `${isProfile ? 'A' : 'B'}${i}` } }));
+      return Response.json({ candidates: [{ content: { parts: [{ text: isProfile ? profileReply : competitorReply }] }, groundingMetadata: { groundingChunks: chunks } }] });
+    }
+    throw new Error('unexpected ' + url);
+  };
+}
+
+test('local-seo-audit lookup: found listing, grounded competitors, traps refused', async () => {
+  const realFetch = globalThis.fetch;
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/local-seo-audit.js');
+    const run = (business, fetchImpl, env = { GEMINI_API_KEY: 'k' }) => {
+      globalThis.fetch = fetchImpl;
+      return onRequestPost({ env, data: { body: { business, service: 'plumber', city: 'St. George, Utah' } } });
+    };
+    const competitors = '```json\n[{"name":"Walker Plumbing, Heating & Air","rating":4.8,"reviews":2209},{"name":"Crystal Clear Plumbing","rating":4.9,"reviews":507},{"name":"Made Up Plumbing","rating":5,"reviews":9999},{"name":"Red Rock Plumbing","rating":4.5,"reviews":87}]\n```';
+
+    // 1. our business is found, matched by whole name; competitors drop the invented name and the business itself
+    let out = await (await run('Red Rock Plumbing', mapsFetch({
+      profileReply: '{"found":true,"name":"Red Rock Plumbing","rating":4.5,"reviews":87,"address":"1 Main St","phone":"+1 435","website":"https://rr.example","hoursShown":true}',
+      competitorReply: competitors, profilePlaces: ['Red Rock Plumbing'], competitorPlaces: ['Walker Plumbing, Heating & Air', 'Crystal Clear Plumbing', 'Red Rock Plumbing'],
+    }))).json();
+    assert.equal(out.profile.state, 'found');
+    assert.equal(out.profile.reviews, 87);
+    assert.equal(out.profile.hoursShown, true);
+    assert.deepEqual(out.competitors.list.map((c) => [c.name, c.reviews]), [['Walker Plumbing, Heating & Air', 2209], ['Crystal Clear Plumbing', 507]]);
+    assert.equal(out.osmId, 198783);
+
+    // 2. Maps shows a similar but different business: not "found"
+    out = await (await run('St George Plumbing', mapsFetch({
+      profileReply: '{"found":true,"name":"St George Plumbing Pros","rating":4.9,"reviews":300}', competitorReply: '[]',
+      profilePlaces: ['St George Plumbing Pros'], competitorPlaces: [],
+    }))).json();
+    assert.equal(out.profile.state, 'other');
+    assert.equal(out.profile.closest.name, 'St George Plumbing Pros');
+    assert.equal(out.competitors.state, 'none');
+
+    // 3. the model names a listing Maps never returned: not found
+    out = await (await run('Ghost Plumbing', mapsFetch({
+      profileReply: '{"found":true,"name":"Ghost Plumbing","rating":5,"reviews":10}', competitorReply: 'not json', profilePlaces: ['Someone Else'], competitorPlaces: [],
+    }))).json();
+    assert.equal(out.profile.state, 'notfound');
+    assert.equal(out.competitors.state, 'unreadable');
+
+    // 4. bad input is refused; no key is a plain 502
+    assert.equal((await run('<script>', mapsFetch({}))).status, 400);
+    const nokey = await run('Red Rock Plumbing', mapsFetch({ profileReply: '', competitorReply: '', profilePlaces: [], competitorPlaces: [] }), {});
+    assert.equal(nokey.status, 502);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test('local-seo-audit pages: matches neighborhoods to sitemap addresses, reports a missing sitemap, rejects bad lists', async () => {
+  const realFetch = globalThis.fetch;
+  let hasSitemap = true;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.startsWith('https://cloudflare-dns.com/')) return Response.json({ Answer: /type=A$/.test(url) ? [{ type: 1, data: '93.184.216.34' }] : [] });
+    if (url.endsWith('/robots.txt')) return new Response('', { status: 404 });
+    if (url.endsWith('/sitemap.xml') && hasSitemap) return new Response('<urlset><url><loc>https://a.com/</loc></url><url><loc>https://a.com/plumber-coral-canyon-utah/</loc></url><url><loc>https://a.com/areas/green-spring</loc></url><url><loc>https://a.com/canyon-cove-guide</loc></url><url><loc>https://evil.example/millcreek</loc></url></urlset>', { headers: { 'Content-Type': 'application/xml' } });
+    return new Response('', { status: 404 });
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/local-seo-audit.js');
+    const call = (neighborhoods, website = 'a.com') => onRequestPost({ env: {}, data: { body: { step: 'pages', site: website, neighborhoods } } });
+    const hoods = ['Coral Canyon', 'Green Spring', 'Millcreek', 'Canyon Cove', 'Canyon', 'Coral'].map((name) => ({ name, lat: 37, lon: -113 }));
+    const out = await (await call(hoods)).json();
+    assert.equal(out.state, 'checked');
+    assert.deepEqual(out.have.map((h) => h.name), ['Coral Canyon', 'Green Spring', 'Canyon Cove'], 'Canyon and Coral are not credited with the pages of Canyon Cove and Coral Canyon');
+    assert.deepEqual(out.missing, ['Millcreek', 'Canyon', 'Coral']);
+    assert.equal(out.sitemapPages, 4, 'only addresses on the checked site count');
+    assert.equal((await call([])).status, 400);
+    assert.equal((await call('x')).status, 400);
+    assert.equal((await call(hoods, '127.0.0.1')).status, 400);
+    hasSitemap = false;
+    assert.equal((await (await call(hoods)).json()).state, 'nositemap');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test('local-seo-audit: the pages step passes the shared guard (its site field is not the honeypot)', async () => {
+  const body = { step: 'pages', site: 'example.com', neighborhoods: [{ name: 'Coral Canyon', lat: 37, lon: -113 }] };
+  const r = await guard(request(body, { path: '/local-seo-audit' }), { TOOLS_KV: new FakeKV() });
+  assert.ok(r.body, 'passes the guard');
+  assert.equal(r.tool, 'local-seo-audit');
+  const bot = await guard(request({ ...body, website: 'spam' }, { path: '/local-seo-audit' }), { TOOLS_KV: new FakeKV() });
+  assert.equal(bot.response.status, 200, 'a filled website field is still dropped as a bot');
+});

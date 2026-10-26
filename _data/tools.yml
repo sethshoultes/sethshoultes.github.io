@@ -242,3 +242,84 @@
       a: "A name that is only your service, your city or a word like LLC, for example \"Plumbing\" or \"St. George Utah\", would match any competitor. Enter your full, distinctive name, such as \"Red Rock Plumbing\"."
     - q: "Can you make AI recommend me?"
       a: "Nobody can promise that. I can make your business easy to find, read and trust, which is what moves the odds."
+- slug: neighborhood-page-planner
+  order: 5
+  name: "Neighborhood page planner"
+  title: "Free Neighborhood Page Planner: Which Local Pages to Build First"
+  description: "Free neighborhood page planner. Enter a city and see its mapped neighborhoods with the age of the homes, the number of homes and the median home value from public Census data, ranked by where older homes cluster."
+  summary: "Enter a city and see its neighborhoods with home age, home counts and values from public Census data, ranked to show which local pages to build first."
+  lead: "Local pages win when they speak to a real neighborhood. Enter a city and see its neighborhoods with the age of the homes around them, from public Census data, and which to build pages for first."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "The tool asks OpenStreetMap for the named neighborhoods mapped inside your city, finds the Census tract each one sits in, and reads that tract's median year homes were built, number of homes and median home value from the American Community Survey."
+        - "It then ranks the neighborhoods by homes times the age of those homes. It is a way to order the list, not a measurement. More homes and older homes both push a neighborhood up, which suits services like roofing, plumbing, heating and garage doors."
+    - id: how
+      heading: "How to read it"
+      paragraphs:
+        - "**The Census figures describe the tract, not the neighborhood.** A tract can hold several neighborhoods, and they will share its numbers. Treat them as the area around the neighborhood."
+        - "**The list is only as complete as the map.** If a neighborhood you know is missing, it has not been mapped yet. The tool lists what exists and does not guess."
+        - "A neighborhood with no Census figures is shown with dashes. It is never filled in."
+    - id: build
+      heading: "How to use the list"
+      paragraphs:
+        - "Start with the top five. For each, build a page that names the neighborhood, the services you offer there, the age of its homes and the jobs you have done nearby. Real details beat generic text."
+        - "The [local business schema generator](/tools/local-business-schema-generator/) writes the code that tells search engines which areas you serve. If you want me to research and build these pages with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. Each visitor gets a few lookups an hour."
+    - q: "Where does the data come from?"
+      a: "Neighborhood names and places come from OpenStreetMap contributors, asked straight from your browser. Home age, home counts and values come from the American Community Survey, five-year estimates, from the US Census Bureau."
+    - q: "Why is it slow the first time?"
+      a: "The public map service can take up to a minute, and your browser asks it directly. After the first lookup for a city, your browser keeps the list for a week, so the next one is quick."
+    - q: "Why are some neighborhoods missing?"
+      a: "Only neighborhoods that someone has mapped appear. Local mappers add them over time."
+    - q: "Why do two neighborhoods show the same numbers?"
+      a: "They sit in the same Census tract. The Census does not publish figures for a single neighborhood."
+    - q: "Does this cover cities outside the United States?"
+      a: "No. It uses US Census data."
+    - q: "Can you build the pages for me?"
+      a: "Yes. That is part of my local SEO work. Book a call and tell me your city and services."
+- slug: local-seo-quick-audit
+  order: 4
+  name: "Local SEO quick audit"
+  title: "Free Local SEO Quick Audit: Your Google Profile, Reviews and Neighborhood Pages"
+  description: "Free local SEO quick audit. Enter your business, service and city: see your Google Maps listing, how your review count compares with nearby competitors, and which neighborhoods have a page on your site."
+  summary: "Enter your business, service and city to see your Google listing, how your reviews compare with nearby competitors, and which neighborhoods have a page on your site."
+  lead: "Three things decide whether local customers find you: your Google listing, your reviews next to the competition, and pages that speak to the neighborhoods you serve. Enter your business and see where you stand on each."
+  sections:
+    - id: what
+      heading: "What this checks"
+      paragraphs:
+        - "**Your Google listing.** Whether Google Maps shows a listing under your exact name, with its star rating, review count, address, phone, website and hours."
+        - "**Your reviews against nearby competitors.** The review counts and ratings of other businesses offering your service in your city, from Google Maps, and where you rank among them."
+        - "**Neighborhood pages.** If you give your website, the tool reads its sitemap and checks which of your city's neighborhoods have a page whose address names them. This is the method I use for local service companies: one useful page for each neighborhood you serve."
+    - id: how
+      heading: "How to read it"
+      paragraphs:
+        - "**The figures come from Google Maps**, read for you through Gemini, Google's AI. Every listing links to its Google Maps page so you can check the numbers. A listing is shown only if Google Maps returned it, and your own listing counts only when the name matches yours exactly. A similar name is shown as a different business."
+        - "**The competitor list is a sample**, up to eight businesses, not every one in town. It changes a little from run to run."
+        - "**A neighborhood counts as covered** when its name appears in the address of a page in your sitemap, such as /plumber-coral-canyon/. A page that covers a neighborhood under another address will show as missing. The page checks your sitemap, not the words on each page."
+    - id: fix
+      heading: "What to do with it"
+      paragraphs:
+        - "**No listing found?** Claim or create your Google Business Profile first. Nothing else matters as much."
+        - "**Fewer reviews than the competition?** Ask every happy customer, the same day you finish the job, with a direct link to your review page."
+        - "**Missing neighborhood pages?** Start with the neighborhoods with the oldest homes and the most of them. The [neighborhood page planner](/tools/neighborhood-page-planner/) ranks them for you from public Census data."
+        - "If you want me to do this with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. Each check reads Google Maps, so each visitor gets a few an hour and there is a daily limit."
+    - q: "Where do the numbers come from?"
+      a: "From Google Maps, through Gemini, Google's AI assistant, which reads the listing for us. Each business links to its Google Maps page, so you can check any figure yourself."
+    - q: "Why does it say it could not find my listing?"
+      a: "Google Maps did not return a listing with exactly your name in your city. Try your name as it appears on Google, or the listing may not exist yet. A listing with a similar name is shown separately as a different business."
+    - q: "Is the competitor list complete?"
+      a: "No. It is up to eight businesses Google Maps returns for your service and city, and it can change from run to run."
+    - q: "Do you keep what I enter?"
+      a: "No. Your business, service, city and website are used for the check and are not saved. The service and city, and your business name, are sent to Google to look up the listing."
+    - q: "My site has a neighborhood page but it shows as missing. Why?"
+      a: "The tool matches the neighborhood's name to the address of pages in your sitemap. A page at an address that does not include the neighborhood's name will not be found. It also cannot see pages that are not in your sitemap."
+    - q: "Can you build the neighborhood pages for me?"
+      a: "Yes. That is part of my local SEO work. Book a call and tell me your city and services."

@@ -383,3 +383,5 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .rc-opps strong { color: var(--text); }
 
 .site-footer a { white-space: nowrap; }
+.tool-sublist { margin: 0.6rem 0 0; padding-left: 1.2rem; color: var(--muted); font-size: 0.92rem; }
+.tool-sublist li { margin-bottom: 0.3rem; }

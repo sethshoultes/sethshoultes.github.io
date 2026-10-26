@@ -1,0 +1,25 @@
+---
+layout: tool
+tool: neighborhood-page-planner
+permalink: /tools/neighborhood-page-planner/
+title: "Free Neighborhood Page Planner: Which Local Pages to Build First"
+description: "Free neighborhood page planner. Enter a city and see its mapped neighborhoods with the age of the homes, the number of homes and the median home value from public Census data, ranked by where older homes cluster."
+---
+<form id="hood-form" class="contact-form tool-form" autocomplete="off">
+  <label>Your city
+    <input type="text" name="city" placeholder="St. George, Utah" maxlength="80" required>
+  </label>
+  <label class="hp" aria-hidden="true">Leave this empty
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </label>
+  <button type="submit" class="btn" id="hood-go">Plan my pages</button>
+</form>
+
+<div class="tool-result" id="hood-result" hidden>
+  <h2 id="hood-title">Neighborhoods</h2>
+  <p id="hood-status" class="tool-status" role="status"></p>
+  <div id="hood-table" class="table-wrap"></div>
+  <p id="hood-note" class="small-note" hidden></p>
+</div>
+<script src="/assets/tools/neighborhood-map.js" defer></script>
+<script src="/assets/tools/neighborhood-page-planner.js" defer></script>

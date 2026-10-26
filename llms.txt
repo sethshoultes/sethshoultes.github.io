@@ -36,6 +36,8 @@
 - [Does AI know your business?](https://sethshoultes.com/tools/does-ai-know-your-business/): enter a business, service and city to see whether ChatGPT, Perplexity and Google AI name it, and who they name instead. Plain-text version at https://sethshoultes.com/tools/does-ai-know-your-business.md
 - [Ask Seth's AI](https://sethshoultes.com/ask/): an AI assistant that answers questions about Seth and his plans, only from the text of this site. Plain-text version at https://sethshoultes.com/ask.md
 - [Free AI readiness check](https://sethshoultes.com/ai-readiness/): four questions about your business and a short scorecard with three places AI could help first. Plain-text version at https://sethshoultes.com/ai-readiness.md
+- [Neighborhood page planner](https://sethshoultes.com/tools/neighborhood-page-planner/): enter a US city and see its neighborhoods with home age, home counts and values from Census data. Plain-text version at https://sethshoultes.com/tools/neighborhood-page-planner.md
+- [Local SEO quick audit](https://sethshoultes.com/tools/local-seo-quick-audit/): enter a business, service and city to see its Google Maps listing, its reviews against nearby competitors, and which neighborhoods have a page on its site. Plain-text version at https://sethshoultes.com/tools/local-seo-quick-audit.md
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
 - [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, games and videos
 - [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone
