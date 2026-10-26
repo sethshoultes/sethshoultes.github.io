@@ -1,0 +1,56 @@
+---
+layout: null
+sitemap: false
+---
+{%- comment -%}
+The full text of the pages that describe Seth and his work, as plain text for AI assistants.
+Ask Seth's AI (workers/ask) answers only from this file, so it can say nothing the site does not.
+{%- endcomment -%}
+{% include_relative llms.txt %}
+
+# Plans and prices (from {{ site.url }}/consulting/)
+
+- Advisor, $1,500 a month: a monthly strategy call, questions answered between calls, an AI roadmap kept up to date, and the monthly meetup. Cancel any month.
+- Fractional AI Lead, $4,000 a month: everything in Advisor, a weekly call, Seth builds and runs your AI tools, agents and automations, and your team is trained on what is built.
+- Embedded AI Team, $8,000 a month: everything in Fractional AI Lead, plus Seth and his AI agent team working for you on sites, content pipelines and custom apps, with priority response.
+- AI Audit, $2,500 one time: two weeks looking at how your business runs, then a written plan of where AI pays off first.
+- Team Workshop, $1,500 one time: a half-day, hands-on session where everyone leaves using AI on their real work.
+
+# Work (from {{ site.url }}/case-studies/)
+
+- A+ Garage Doors, three years: research-backed neighborhood pages, a Google rank report for every neighborhood, staff apps for the warehouse and sales, and a company knowledge base the team asks questions of.
+- MemberPress.ai: an AI assistant that runs a membership site, plus the content, videos and launches around it.
+- Garage Door Science: plain garage door guides for homeowners and team apps for garage door companies.
+- Seth's own team of AI agents, which write, check and publish his sites, content and apps.
+
+# Common questions (from {{ site.url }}/)
+{% for item in site.data.faq %}
+Q: {{ item.q }}
+A: {{ item.a }}
+{% endfor %}
+# Services
+{% for s in site.data.services %}
+## {{ s[1].title }} ({{ site.url }}/{{ s[1].slug }}/)
+
+{{ s[1].lead }}
+{% for sec in s[1].sections %}
+### {{ sec.heading }}
+{% for p in sec.paragraphs %}
+{{ p }}
+{% endfor %}{% endfor %}{% for item in s[1].faq %}
+Q: {{ item.q }}
+A: {{ item.a }}
+{% endfor %}{% endfor %}
+# Places
+{% for c in site.data.cities %}
+## {{ c[1].title }} ({{ site.url }}/{{ c[1].slug }}/)
+{% for sc in c[1].scenes %}
+{{ sc.heading }} {{ sc.body }}
+{% endfor %}{% for sec in c[1].sections %}
+### {{ sec.heading }}
+{% for p in sec.paragraphs %}
+{{ p }}
+{% endfor %}{% endfor %}{% for item in c[1].faq %}
+Q: {{ item.q }}
+A: {{ item.a }}
+{% endfor %}{% endfor %}
