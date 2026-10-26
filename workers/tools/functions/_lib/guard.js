@@ -13,6 +13,7 @@ export const CORS = {
 // perIpPerHour: one visitor. perDay: every visitor together, per UTC day.
 export const LIMITS = {
   'crawler-check': { perIpPerHour: 10, perDay: 500 },
+  'llms-txt': { perIpPerHour: 5, perDay: 200 },
 };
 
 export function reply(status, body) {

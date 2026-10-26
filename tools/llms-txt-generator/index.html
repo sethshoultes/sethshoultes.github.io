@@ -1,0 +1,31 @@
+---
+layout: tool
+tool: llms-txt-generator
+permalink: /tools/llms-txt-generator/
+title: "Free llms.txt Generator: Build the File AI Assistants Read"
+description: "Free llms.txt generator. Enter your website and get a ready-to-upload llms.txt built from your own sitemap, with each page's real title and description."
+---
+<form id="llms-form" class="contact-form tool-form" autocomplete="off">
+  <label>Your website
+    <input type="text" name="url" placeholder="example.com" inputmode="url" required>
+  </label>
+  <label class="hp" aria-hidden="true">Leave this empty
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </label>
+  <button type="submit" class="btn" id="llms-go">Build my llms.txt</button>
+</form>
+
+<div class="tool-result" id="llms-result" hidden>
+  <div class="tool-result-head">
+    <h2 id="llms-title">Your llms.txt</h2>
+    <div class="btn-row tool-actions">
+      <button type="button" class="btn" id="llms-copy" disabled>Copy</button>
+      <button type="button" class="btn ghost" id="llms-download" disabled>Download llms.txt</button>
+    </div>
+  </div>
+  <p id="llms-status" class="tool-status" role="status"></p>
+  <pre class="tool-code tool-wrap" id="llms-code" hidden><code id="llms-output"></code></pre>
+  <p id="llms-note" class="small-note" hidden></p>
+  <p id="llms-cp" class="tool-cp" hidden>On WordPress? <a href="https://crawlpress.com/" target="_blank" rel="noopener">CrawlPress does this automatically, every day.</a></p>
+</div>
+<script src="/assets/tools/llms-txt-generator.js" defer></script>
