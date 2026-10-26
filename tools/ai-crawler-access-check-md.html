@@ -1,0 +1,31 @@
+---
+layout: null
+permalink: /tools/ai-crawler-access-check.md
+sitemap: false
+---
+{%- assign t = site.data.tools | where: "slug", "ai-crawler-access-check" | first -%}
+# {{ t.title }}
+
+{{ t.lead }}
+
+Tool: {{ site.url }}/tools/{{ t.slug }}/
+
+{% for sec in t.sections %}## {{ sec.heading }}
+
+{% for p in sec.paragraphs %}{{ p }}
+
+{% endfor %}{% endfor %}## Questions
+
+{% for item in t.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## On WordPress?
+
+CrawlPress does this automatically, every day: https://crawlpress.com/
+
+## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+All free tools: {{ site.url }}/tools/

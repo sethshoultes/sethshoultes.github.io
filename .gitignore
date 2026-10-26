@@ -17,3 +17,6 @@ __pycache__/
 # ~/.local/share/seth-li-share/ outside the launchd runner's worktree,
 # the same way memberpress-ai-cast's data/x-posts.log is never tracked.
 data/li-shared.log
+
+# Cloudflare wrangler local cache
+.wrangler/

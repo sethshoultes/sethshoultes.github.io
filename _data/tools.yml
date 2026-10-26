@@ -116,3 +116,45 @@
       a: "The tabs above the profile list the place for ChatGPT, Claude, Gemini and Perplexity. Menu names change, so look for personalization, custom instructions or preferences."
     - q: "Can I use the same profile in more than one assistant?"
       a: "Yes. Paste the same text into each one."
+- slug: ai-crawler-access-check
+  order: 2
+  name: "AI crawler access check"
+  title: "Free AI Crawler Access Check: Can ChatGPT, Claude and Perplexity Read Your Site?"
+  description: "Free AI crawler access check. Enter your website and see whether GPTBot, ClaudeBot, PerplexityBot and Google-Extended are allowed in, and whether you have llms.txt, a markdown version and JSON-LD."
+  summary: "Enter your website and see whether ChatGPT, Claude, Perplexity and Google's AI crawlers are allowed in, and whether you have llms.txt, a markdown version and JSON-LD."
+  lead: "AI assistants can only recommend what they can read. Enter your website and see which AI crawlers your robots.txt lets in, and whether you have the files that help them understand you."
+  sections:
+    - id: what
+      heading: "What this checks"
+      paragraphs:
+        - "**robots.txt.** Whether GPTBot (OpenAI), ClaudeBot (Anthropic), PerplexityBot and Google-Extended are allowed to read your site, blocked from all of it, or blocked from some paths."
+        - "**llms.txt.** A plain file at the top of your site that tells AI assistants what you do and where to look."
+        - "**A markdown version.** A clean text copy of your page that is easy for AI to read."
+        - "**JSON-LD.** The code that spells out your business details in a form machines understand."
+        - "The tool reads your public pages the way a crawler would. It only reports what it finds, and when it cannot tell, it says so."
+    - id: how
+      heading: "How to read the result"
+      paragraphs:
+        - "**Open** means the crawler may read your whole site. **Partly open** means it may read your pages but some paths are closed, which is usually fine for admin areas. **Blocked** means your robots.txt tells that crawler to stay out of everything."
+        - "If a crawler is blocked and you want to be recommended by that assistant, ask whoever manages your site to remove or change that rule."
+        - "Google-Extended is the switch for Gemini. Blocking it does not remove you from Google Search."
+    - id: why
+      heading: "Why it matters"
+      paragraphs:
+        - "Some hosts and security plugins block AI crawlers by default, and the site owner never finds out. If the crawler cannot read you, the assistant has nothing to say about you."
+        - "If you want me to fix what this finds, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. To stop abuse, each visitor gets a limited number of checks an hour."
+    - q: "What does the tool fetch from my site?"
+      a: "Your robots.txt, your llms.txt, your home page, and a possible markdown copy of it, once each, the way a crawler would. It does not log in or change anything."
+    - q: "Do you keep my website address?"
+      a: "No. The address is used for the check and is not saved."
+    - q: "Does allowed mean ChatGPT will recommend me?"
+      a: "No. It means the door is open. Whether an assistant names you depends on what it can find and trust about your business."
+    - q: "My robots.txt allows everything but a crawler shows as blocked. Why?"
+      a: "The check follows the robots.txt rules the way crawlers do: a rule written for one crawler by name replaces the general rules for that crawler. Read the rule shown under the result."
+    - q: "A check says it could not read something. What now?"
+      a: "The site may have blocked the tool, been slow, or been down. Try again in a few minutes, or book a call and I will look at it by hand."
+    - q: "Is there a WordPress plugin that does this automatically?"
+      a: "Yes, CrawlPress, my plugin. It checks every day, shows which AI crawlers visit your site and writes your llms.txt."
