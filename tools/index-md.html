@@ -1,0 +1,28 @@
+---
+layout: null
+permalink: /tools.md
+sitemap: false
+---
+{%- assign page_data = site.data.tools_page -%}
+{%- assign tools = site.data.tools | sort: "order" -%}
+# {{ page_data.title }}
+
+{{ page_data.lead }}
+
+Page: {{ site.url }}/tools/
+
+{% for t in tools %}## {{ t.name }}
+
+{{ t.summary }}
+
+{% if t.external %}Link: {{ t.external }}{% else %}Tool: {{ site.url }}/tools/{{ t.slug }}/ (plain text: {{ site.url }}/tools/{{ t.slug }}.md){% endif %}
+
+{% endfor %}## Questions
+
+{% for item in page_data.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact

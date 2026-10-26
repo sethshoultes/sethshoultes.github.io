@@ -1,0 +1,43 @@
+- slug: local-business-schema-generator
+  order: 6
+  name: "Local business schema generator"
+  title: "Free Local Business Schema Generator (JSON-LD)"
+  description: "Free local business schema generator. Fill in your name, address, hours and services and copy ready-to-paste JSON-LD for Google and AI search. Runs in your browser."
+  summary: "Fill in your business details and copy the code that tells Google and AI assistants who you are, where you are and when you are open."
+  lead: "Fill in what you know about your business. You get the code that tells Google, ChatGPT and Perplexity your name, address, hours and services, ready to paste into your site."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "Search engines and AI assistants read a small block of code called JSON-LD to learn the basics about a business. This tool writes that block for you from a simple form."
+        - "It runs in your browser. What you type never leaves this page, and the tool only writes down what you type. Leave a box empty and it stays out of the code."
+    - id: how
+      heading: "How to use it"
+      paragraphs:
+        - "**1. Fill in the form.** Start with your name and business type. Add your address, phone, hours and the services you offer."
+        - "**2. Copy the code.** The button copies the whole block."
+        - "**3. Paste it into your site.** On WordPress, a header and footer plugin or your theme's custom code box will do. Put it on your home page and your contact page."
+        - "**4. Check it.** Paste your page address into [Google's Rich Results Test](https://search.google.com/test/rich-results) or the [Schema.org validator](https://validator.schema.org/)."
+    - id: why
+      heading: "Why it matters"
+      paragraphs:
+        - "AI assistants answer \"who should I hire\" from what they can read about you. When your name, address and services are written in a form they understand, they have less to guess."
+        - "If you would rather have someone set this up across your whole site, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay."
+    - q: "Does my information leave my browser?"
+      a: "No. The code is built on this page and nothing is sent to a server."
+    - q: "Where do I paste the code?"
+      a: "Anywhere in the head or body of the page. On WordPress, use a header and footer plugin or your theme's custom code box. Put it on your home page and your contact page."
+    - q: "Will this get me to the top of Google?"
+      a: "No tool can promise that. It helps search engines and AI assistants understand your business correctly, which is the first step."
+    - q: "What business type should I pick?"
+      a: "Pick the closest one in the list. If nothing fits, leave it as Local business, which is always valid."
+    - q: "How do I know the code works?"
+      a: "Test your page in Google's Rich Results Test or the Schema.org validator. Both are free."
+- slug: crawlpress
+  order: 99
+  name: "CrawlPress"
+  external: "https://crawlpress.com/"
+  summary: "My WordPress plugin. It shows which AI crawlers visit your site, scores how ready your site is for AI search, and writes your llms.txt file."

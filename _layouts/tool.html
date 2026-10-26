@@ -1,0 +1,44 @@
+---
+layout: site
+---
+{%- assign t = site.data.tools | where: "slug", page.tool | first %}
+<div class="wrap service tool">
+  <section class="service-hero">
+    <p class="eyebrow"><a href="/tools/">Free tools</a></p>
+    <h1>{{ t.title }}</h1>
+    <p class="lead">{{ t.lead }}</p>
+  </section>
+  <section id="tool" class="tool-box">
+    {{ content }}
+  </section>
+  <div class="prose">
+    {%- for sec in t.sections %}
+    <section id="{{ sec.id }}" class="service-sec">
+      <h2>{{ sec.heading }}</h2>
+      {%- for p in sec.paragraphs %}
+      {{ p | markdownify }}
+      {%- endfor %}
+    </section>
+    {%- endfor %}
+
+    <section id="faq" class="service-sec">
+      <p class="eyebrow">Questions</p>
+      <h2>Straight answers.</h2>
+      <div class="faq">
+        {%- for item in t.faq %}
+        <details>
+          <summary>{{ item.q }}</summary>
+          <p>{{ item.a }}</p>
+        </details>
+        {%- endfor %}
+      </div>
+    </section>
+
+    <section class="service-sec">
+      <h2>Want it done for you?</h2>
+      <p>I help small businesses get found in search and in AI assistants. Tell me where you are and we will work out a plan.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/tools/">More free tools</a></p>
+    </section>
+  </div>
+</div>
+{% include jsonld-tool.html %}
