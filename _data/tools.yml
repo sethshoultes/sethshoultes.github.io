@@ -242,3 +242,42 @@
       a: "A name that is only your service, your city or a word like LLC, for example \"Plumbing\" or \"St. George Utah\", would match any competitor. Enter your full, distinctive name, such as \"Red Rock Plumbing\"."
     - q: "Can you make AI recommend me?"
       a: "Nobody can promise that. I can make your business easy to find, read and trust, which is what moves the odds."
+- slug: neighborhood-page-planner
+  order: 5
+  name: "Neighborhood page planner"
+  title: "Free Neighborhood Page Planner: Which Local Pages to Build First"
+  description: "Free neighborhood page planner. Enter a city and see its mapped neighborhoods with the age of the homes, the number of homes and the median home value from public Census data, ranked by where older homes cluster."
+  summary: "Enter a city and see its neighborhoods with home age, home counts and values from public Census data, ranked to show which local pages to build first."
+  lead: "Local pages win when they speak to a real neighborhood. Enter a city and see its neighborhoods with the age of the homes around them, from public Census data, and which to build pages for first."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "The tool asks OpenStreetMap for the named neighborhoods mapped inside your city, finds the Census tract each one sits in, and reads that tract's median year homes were built, number of homes and median home value from the American Community Survey."
+        - "It then ranks the neighborhoods by homes times the age of those homes. It is a way to order the list, not a measurement. More homes and older homes both push a neighborhood up, which suits services like roofing, plumbing, heating and garage doors."
+    - id: how
+      heading: "How to read it"
+      paragraphs:
+        - "**The Census figures describe the tract, not the neighborhood.** A tract can hold several neighborhoods, and they will share its numbers. Treat them as the area around the neighborhood."
+        - "**The list is only as complete as the map.** If a neighborhood you know is missing, it has not been mapped yet. The tool lists what exists and does not guess."
+        - "A neighborhood with no Census figures is shown with dashes. It is never filled in."
+    - id: build
+      heading: "How to use the list"
+      paragraphs:
+        - "Start with the top five. For each, build a page that names the neighborhood, the services you offer there, the age of its homes and the jobs you have done nearby. Real details beat generic text."
+        - "The [local business schema generator](/tools/local-business-schema-generator/) writes the code that tells search engines which areas you serve. If you want me to research and build these pages with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. Each visitor gets a few lookups an hour."
+    - q: "Where does the data come from?"
+      a: "Neighborhood names and places come from OpenStreetMap contributors, asked straight from your browser. Home age, home counts and values come from the American Community Survey, five-year estimates, from the US Census Bureau."
+    - q: "Why is it slow the first time?"
+      a: "The public map service can take up to a minute, and your browser asks it directly. After the first lookup for a city, your browser keeps the list for a week, so the next one is quick."
+    - q: "Why are some neighborhoods missing?"
+      a: "Only neighborhoods that someone has mapped appear. Local mappers add them over time."
+    - q: "Why do two neighborhoods show the same numbers?"
+      a: "They sit in the same Census tract. The Census does not publish figures for a single neighborhood."
+    - q: "Does this cover cities outside the United States?"
+      a: "No. It uses US Census data."
+    - q: "Can you build the pages for me?"
+      a: "Yes. That is part of my local SEO work. Book a call and tell me your city and services."
