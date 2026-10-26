@@ -41,3 +41,40 @@
   name: "CrawlPress"
   external: "https://crawlpress.com/"
   summary: "My WordPress plugin. It shows which AI crawlers visit your site, scores how ready your site is for AI search, and writes your llms.txt file."
+- slug: ai-time-saved-calculator
+  order: 7
+  name: "AI time-saved calculator"
+  title: "Free AI Time-Saved Calculator: Hours and Dollars Back"
+  description: "Free AI time-saved calculator. List the tasks you do each week, say how much time AI could save on each, and see the hours and dollars you get back. Runs in your browser."
+  summary: "List your weekly tasks, say how much time AI could save on each, and see the hours and dollars you would get back."
+  lead: "List the tasks that fill your week and how much of each you think AI could take over. You see the hours and dollars you would get back each week and each year."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "You enter your own tasks, how often you do them, how long they take and how much of that time you think AI could save. The tool does the math. It has no numbers of its own, so the answer is only as good as your estimates."
+        - "It runs in your browser. What you type never leaves this page."
+    - id: how
+      heading: "How to use it"
+      paragraphs:
+        - "**1. Add your tasks.** Think of the things you do over and over: answering emails, writing quotes, posting to social media, writing up job notes."
+        - "**2. Be honest about the savings.** AI rarely does a whole task. If it would cut a task in half, enter 50. A smaller number you believe beats a big one you do not."
+        - "**3. Set what your time is worth.** Use what you pay someone to do the work, or what you would earn spending that hour on customers."
+        - "**4. Pick the biggest line first.** The task with the most hours saved is where to start."
+    - id: why
+      heading: "What to do with the answer"
+      paragraphs:
+        - "Start with one task, not all of them. Get it working, then take the next. If you want help choosing and setting up the first one, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay."
+    - q: "Does my information leave my browser?"
+      a: "No. The math runs on this page and nothing is sent to a server."
+    - q: "How much time will AI really save me?"
+      a: "It depends on the task, and I cannot tell you from here. That is why you enter the percentage yourself. Try one task for a week and use what you actually saw."
+    - q: "What hourly value should I use?"
+      a: "Use what you pay someone to do the work, or what an hour of your time is worth when you spend it on customers. If you are unsure, use a low number."
+    - q: "Why does it ask for weeks per year?"
+      a: "To turn a weekly saving into a yearly one. Take out the weeks you are closed or away."
+    - q: "Can you help me set up the tasks that save the most?"
+      a: "Yes. Book a call, bring your list, and we will pick the first one together."
