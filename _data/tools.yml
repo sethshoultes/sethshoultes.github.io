@@ -281,3 +281,45 @@
       a: "No. It uses US Census data."
     - q: "Can you build the pages for me?"
       a: "Yes. That is part of my local SEO work. Book a call and tell me your city and services."
+- slug: local-seo-quick-audit
+  order: 4
+  name: "Local SEO quick audit"
+  title: "Free Local SEO Quick Audit: Your Google Profile, Reviews and Neighborhood Pages"
+  description: "Free local SEO quick audit. Enter your business, service and city: see your Google Maps listing, how your review count compares with nearby competitors, and which neighborhoods have a page on your site."
+  summary: "Enter your business, service and city to see your Google listing, how your reviews compare with nearby competitors, and which neighborhoods have a page on your site."
+  lead: "Three things decide whether local customers find you: your Google listing, your reviews next to the competition, and pages that speak to the neighborhoods you serve. Enter your business and see where you stand on each."
+  sections:
+    - id: what
+      heading: "What this checks"
+      paragraphs:
+        - "**Your Google listing.** Whether Google Maps shows a listing under your exact name, with its star rating, review count, address, phone, website and hours."
+        - "**Your reviews against nearby competitors.** The review counts and ratings of other businesses offering your service in your city, from Google Maps, and where you rank among them."
+        - "**Neighborhood pages.** If you give your website, the tool reads its sitemap and checks which of your city's neighborhoods have a page whose address names them. This is the method I use for local service companies: one useful page for each neighborhood you serve."
+    - id: how
+      heading: "How to read it"
+      paragraphs:
+        - "**The figures come from Google Maps**, read for you through Gemini, Google's AI. Every listing links to its Google Maps page so you can check the numbers. A listing is shown only if Google Maps returned it, and your own listing counts only when the name matches yours exactly. A similar name is shown as a different business."
+        - "**The competitor list is a sample**, up to eight businesses, not every one in town. It changes a little from run to run."
+        - "**A neighborhood counts as covered** when its name appears in the address of a page in your sitemap, such as /plumber-coral-canyon/. A page that covers a neighborhood under another address will show as missing. The page checks your sitemap, not the words on each page."
+    - id: fix
+      heading: "What to do with it"
+      paragraphs:
+        - "**No listing found?** Claim or create your Google Business Profile first. Nothing else matters as much."
+        - "**Fewer reviews than the competition?** Ask every happy customer, the same day you finish the job, with a direct link to your review page."
+        - "**Missing neighborhood pages?** Start with the neighborhoods with the oldest homes and the most of them. The [neighborhood page planner](/tools/neighborhood-page-planner/) ranks them for you from public Census data."
+        - "If you want me to do this with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. Each check reads Google Maps, so each visitor gets a few an hour and there is a daily limit."
+    - q: "Where do the numbers come from?"
+      a: "From Google Maps, through Gemini, Google's AI assistant, which reads the listing for us. Each business links to its Google Maps page, so you can check any figure yourself."
+    - q: "Why does it say it could not find my listing?"
+      a: "Google Maps did not return a listing with exactly your name in your city. Try your name as it appears on Google, or the listing may not exist yet. A listing with a similar name is shown separately as a different business."
+    - q: "Is the competitor list complete?"
+      a: "No. It is up to eight businesses Google Maps returns for your service and city, and it can change from run to run."
+    - q: "Do you keep what I enter?"
+      a: "No. Your business, service, city and website are used for the check and are not saved. The service and city, and your business name, are sent to Google to look up the listing."
+    - q: "My site has a neighborhood page but it shows as missing. Why?"
+      a: "The tool matches the neighborhood's name to the address of pages in your sitemap. A page at an address that does not include the neighborhood's name will not be found. It also cannot see pages that are not in your sitemap."
+    - q: "Can you build the neighborhood pages for me?"
+      a: "Yes. That is part of my local SEO work. Book a call and tell me your city and services."

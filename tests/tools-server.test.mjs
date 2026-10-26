@@ -498,7 +498,7 @@ test('local-seo-audit pages: matches neighborhoods to sitemap addresses, reports
   };
   try {
     const { onRequestPost } = await import('../workers/tools/functions/local-seo-audit.js');
-    const call = (neighborhoods, website = 'a.com') => onRequestPost({ env: {}, data: { body: { step: 'pages', website, neighborhoods } } });
+    const call = (neighborhoods, website = 'a.com') => onRequestPost({ env: {}, data: { body: { step: 'pages', site: website, neighborhoods } } });
     const hoods = ['Coral Canyon', 'Green Spring', 'Millcreek', 'Canyon Cove', 'Canyon', 'Coral'].map((name) => ({ name, lat: 37, lon: -113 }));
     const out = await (await call(hoods)).json();
     assert.equal(out.state, 'checked');
@@ -513,4 +513,13 @@ test('local-seo-audit pages: matches neighborhoods to sitemap addresses, reports
   } finally {
     globalThis.fetch = realFetch;
   }
+});
+
+test('local-seo-audit: the pages step passes the shared guard (its site field is not the honeypot)', async () => {
+  const body = { step: 'pages', site: 'example.com', neighborhoods: [{ name: 'Coral Canyon', lat: 37, lon: -113 }] };
+  const r = await guard(request(body, { path: '/local-seo-audit' }), { TOOLS_KV: new FakeKV() });
+  assert.ok(r.body, 'passes the guard');
+  assert.equal(r.tool, 'local-seo-audit');
+  const bot = await guard(request({ ...body, website: 'spam' }, { path: '/local-seo-audit' }), { TOOLS_KV: new FakeKV() });
+  assert.equal(bot.response.status, 200, 'a filled website field is still dropped as a bot');
 });

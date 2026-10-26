@@ -3,7 +3,8 @@
 //     phone, website, hours shown) and the review counts of nearby competitors,
 //     from Google Maps through Gemini. Every listing must match a place Maps
 //     returned, and the business itself must match by whole name (see names.js).
-//   step "pages": which of the city's neighborhoods have a page on the site, by
+//   step "pages": (field `site`; `website` is the bot trap in guard.js) which of the
+//     city's neighborhoods have a page on the site, by
 //     the site's own sitemap. The browser reads the neighborhoods (see
 //     neighborhood-planner.js) and sends them here.
 // What cannot be found is said so; nothing is estimated.
@@ -100,7 +101,7 @@ function readNeighborhoods(list) {
 
 async function pagesStep(body) {
   let site;
-  try { site = parseTarget(body.website); } catch (err) { return reply(400, { error: err.message }); }
+  try { site = parseTarget(body.site); } catch (err) { return reply(400, { error: err.message }); }
   const names = readNeighborhoods(body.neighborhoods);
   if (!names) return reply(400, { error: 'That list of neighborhoods could not be read. Please try again.' });
 
