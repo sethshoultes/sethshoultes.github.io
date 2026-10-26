@@ -4,15 +4,18 @@ export function isIndex(xml) {
   return /<sitemapindex\b/i.test(xml);
 }
 
+const MAX_LOC_LENGTH = 2048;
+const MAX_LOCS = 50000;
+
 export function locs(xml) {
   const lower = xml.toLowerCase();
   const found = [];
   let at = lower.indexOf('<loc>');
-  while (at >= 0 && found.length < 50000) {
+  while (at >= 0 && found.length < MAX_LOCS) {
     const close = lower.indexOf('</loc>', at);
     if (close < 0) break;
     const value = xml.slice(at + 5, close).trim().replace(/^<!\[CDATA\[/, '').replace(/\]\]>$/, '').trim();
-    if (value) found.push(decodeEntities(value));
+    if (value && value.length <= MAX_LOC_LENGTH) found.push(decodeEntities(value));
     at = lower.indexOf('<loc>', close);
   }
   return found;
@@ -41,4 +44,15 @@ export function pickPages(urls, siteHost, limit) {
   });
   pages.sort((a, b) => a.depth - b.depth || a.order - b.order);
   return pages.slice(0, limit);
+}
+
+// True when a sitemap address is on the site being checked (www or not), so a
+// page's sitemap list cannot send us to someone else's server.
+export function sameSite(address, siteHost) {
+  try {
+    const host = new URL(address).hostname.toLowerCase().replace(/^www\./, '');
+    return host === siteHost.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return false;
+  }
 }

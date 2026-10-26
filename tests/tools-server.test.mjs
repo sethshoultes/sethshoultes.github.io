@@ -259,3 +259,34 @@ test('html and sitemap scans stay fast on hostile input', () => {
   locs('<loc>'.repeat(600_000));
   assert.ok(Date.now() - started < 3000, `took ${Date.now() - started}ms`);
 });
+
+import { sameSite } from '../workers/tools/functions/_lib/sitemap.js';
+
+test('llms-txt: sitemap and robots input is bounded and stays on the site', async () => {
+  assert.ok(sameSite('https://www.a.com/sitemap.xml', 'a.com'));
+  assert.ok(!sameSite('https://evil.example/sitemap.xml', 'a.com'));
+  assert.ok(!sameSite('not a url', 'a.com'));
+  assert.equal(locs(`<loc>https://a.com/${'x'.repeat(5000)}</loc><loc>https://a.com/ok</loc>`).length, 1);
+  assert.equal(locs('<loc>https://a.com/p</loc>'.repeat(60000)).length, 50000);
+
+  const realFetch = globalThis.fetch;
+  const asked = [];
+  const hostile = 'Sitemap:'.repeat(100000) + '\n' + ' '.repeat(400000) + '\nSitemap: https://evil.example/s.xml\nSitemap: https://a.com/s.xml\n';
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.startsWith('https://cloudflare-dns.com/')) return Response.json({ Answer: /type=A$/.test(url) ? [{ type: 1, data: '93.184.216.34' }] : [] });
+    asked.push(url);
+    if (url.endsWith('/robots.txt')) return new Response(hostile, { headers: { 'Content-Type': 'text/plain' } });
+    if (url === 'https://a.com/s.xml') return new Response('<sitemapindex><sitemap><loc>https://evil.example/c.xml</loc></sitemap></sitemapindex>', { headers: { 'Content-Type': 'application/xml' } });
+    return new Response('<head><title>A</title></head>', { headers: { 'Content-Type': 'text/html' } });
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/llms-txt.js');
+    const started = Date.now();
+    await onRequestPost({ data: { body: { url: 'a.com' } } });
+    assert.ok(Date.now() - started < 3000, `took ${Date.now() - started}ms`);
+    assert.ok(!asked.some((u) => u.includes('evil.example')), 'never fetches another host');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
