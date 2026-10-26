@@ -1,9 +1,9 @@
 // Shared by the chat and readiness endpoints for sethshoultes.com. The site is
 // static GitHub Pages, so the pages post here (ask.sethshoultes.com). Secrets:
-// ANTHROPIC_API_KEY (Pages secret). RATE is a KV namespace for the limits.
+// GEMINI_API_KEY (Pages secret). RATE is a KV namespace for the limits.
 
 export const ALLOWED_ORIGIN = 'https://sethshoultes.com';
-export const MODEL = 'claude-sonnet-5-5';
+export const MODEL = 'gemini-2.5-flash';
 const PER_IP_PER_HOUR = 20;
 const PER_DAY_TOTAL = 1500;
 
@@ -54,21 +54,22 @@ export function clean(value, max) {
 }
 
 export async function callModel(env, system, messages, maxTokens) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
     method: 'POST',
-    headers: {
-      'x-api-key': env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages }),
+    headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+      generationConfig: { maxOutputTokens: maxTokens, thinkingConfig: { thinkingBudget: 0 } },
+    }),
   });
   if (!res.ok) {
-    console.log('anthropic failed', res.status, await res.text());
+    console.log('gemini failed', res.status, await res.text());
     return null;
   }
   const data = await res.json();
-  return (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+  return parts.map((p) => p.text || '').join('').trim();
 }
 
 // What the assistant may say about Seth: the plain-text version of his own pages,

@@ -1,4 +1,4 @@
-// Ask Seth's AI: a text chat about Seth and his consulting, answered by Claude
+// Ask Seth's AI: a text chat about Seth and his consulting, answered by an AI model
 // only from the text of Seth's own pages (llms-full.txt on sethshoultes.com).
 
 import { callModel, clean, guard, reply, siteText } from './_shared.js';

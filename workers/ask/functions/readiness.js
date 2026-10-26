@@ -1,5 +1,5 @@
 // Free AI readiness check: a few answers about the business in, a short
-// scorecard out, written by Claude. Nothing is stored.
+// scorecard out, written by an AI model. Nothing is stored.
 
 import { callModel, clean, guard, reply } from './_shared.js';
 
