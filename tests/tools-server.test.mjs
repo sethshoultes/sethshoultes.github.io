@@ -358,3 +358,55 @@ test('ai-knows-you handler: named, not named, cannot tell, failed; generic and b
     globalThis.fetch = realFetch;
   }
 });
+
+test('neighborhood-planner: city step finds the city (not the county); join step ranks, reports gaps, rejects bad lists', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.includes('nominatim')) return Response.json([
+      { osm_type: 'relation', osm_id: 1744372, class: 'boundary', type: 'administrative', addresstype: 'county', display_name: 'Washington County, Utah, United States' },
+      { osm_type: 'relation', osm_id: 198783, class: 'boundary', type: 'administrative', addresstype: 'city', display_name: 'Washington, Washington County, Utah, 84780, United States' },
+    ]);
+    if (url.includes('overpass')) throw new Error('the Worker must not call Overpass');
+    if (url.includes('geocoding.geo.census.gov')) {
+      const y = new URL(url).searchParams.get('y');
+      if (y === '37.3') return Response.json({ result: { geographies: { 'Census Tracts': [] } } });
+      const tract = y === '37.1' ? '000100' : '000200';
+      return Response.json({ result: { geographies: { 'Census Tracts': [{ STATE: '49', COUNTY: '053', TRACT: tract, NAME: `Census Tract ${tract}` }] } } });
+    }
+    if (url.includes('censusreporter')) return Response.json({ release: { name: 'ACS 2024 5-year' }, data: {
+      '14000US49053000100': { B25035: { estimate: { B25035001: 1975 } }, B25001: { estimate: { B25001001: 2000 } }, B25077: { estimate: { B25077001: 300000 } } },
+      '14000US49053000200': { B25035: { estimate: { B25035001: 2015 } }, B25001: { estimate: { B25001001: 4000 } }, B25077: { estimate: { B25077001: null } } },
+    } });
+    throw new Error('unexpected ' + url);
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/neighborhood-planner.js');
+    const city = await (await onRequestPost({ data: { body: { city: 'Washington, Utah' } } })).json();
+    assert.deepEqual(city, { city: 'Washington, Washington County', osmId: 198783 });
+
+    const hoods = [{ name: 'Old Town', lat: 37.1, lon: -113.5 }, { name: 'New Estates', lat: 37.2, lon: -113.4 }, { name: 'Nowhere', lat: 37.3, lon: -113.3 }, { name: 'old town', lat: 37.1, lon: -113.5 }];
+    const out = await (await onRequestPost({ data: { body: { step: 'join', city: 'Washington, Utah', neighborhoods: hoods } } })).json();
+    assert.deepEqual(out.neighborhoods.map((n) => n.name), ['Old Town', 'New Estates', 'Nowhere']);
+    assert.equal(out.neighborhoods[0].medianYearBuilt, 1975);
+    assert.equal(out.neighborhoods[1].medianValue, null);
+    assert.equal(out.neighborhoods[2].tract, null);
+    assert.equal(out.unmatched, 1);
+    assert.equal(out.sources.census, 'ACS 2024 5-year');
+
+    const join = (neighborhoods) => onRequestPost({ data: { body: { step: 'join', city: 'X', neighborhoods } } });
+    assert.equal((await join([])).status, 400);
+    assert.equal((await join('nope')).status, 400);
+    assert.equal((await join([{ name: 'A', lat: 0, lon: 0 }])).status, 400);
+    assert.equal((await join([{ name: 'A'.repeat(200), lat: 37, lon: -113 }])).status, 400);
+    assert.equal((await join(Array.from({ length: 41 }, (_, i) => ({ name: `N${i}`, lat: 37, lon: -113 })))).status, 400);
+    assert.equal((await onRequestPost({ data: { body: { city: '<x>' } } })).status, 400);
+
+    globalThis.fetch = async (input) => (String(input).includes('nominatim') ? Response.json([]) : Response.json({}));
+    const none = await onRequestPost({ data: { body: { city: 'Nowhereville, Utah' } } });
+    assert.equal(none.status, 502);
+    assert.match((await none.json()).error, /could not find that city/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
