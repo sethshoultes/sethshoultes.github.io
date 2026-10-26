@@ -29,6 +29,7 @@
 - [Free tools](https://sethshoultes.com/tools/): free tools for small businesses, with CrawlPress, my WordPress plugin for AI search. Plain-text version at https://sethshoultes.com/tools.md
 - [Local business schema generator](https://sethshoultes.com/tools/local-business-schema-generator/): fill in a form and copy ready-to-paste JSON-LD. Plain-text version at https://sethshoultes.com/tools/local-business-schema-generator.md
 - [AI time-saved calculator](https://sethshoultes.com/tools/ai-time-saved-calculator/): list your weekly tasks and see the hours and dollars AI could give back. Plain-text version at https://sethshoultes.com/tools/ai-time-saved-calculator.md
+- [Personal AI profile builder](https://sethshoultes.com/tools/personal-ai-profile-builder/): pick tone, detail and humor and copy a profile for ChatGPT, Claude, Gemini or Perplexity. Plain-text version at https://sethshoultes.com/tools/personal-ai-profile-builder.md
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
 - [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, games and videos
 - [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone

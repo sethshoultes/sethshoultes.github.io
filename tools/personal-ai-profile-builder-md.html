@@ -1,0 +1,36 @@
+---
+layout: null
+permalink: /tools/personal-ai-profile-builder.md
+sitemap: false
+---
+{%- assign t = site.data.tools | where: "slug", "personal-ai-profile-builder" | first -%}
+# {{ t.title }}
+
+{{ t.lead }}
+
+Tool: {{ site.url }}/tools/{{ t.slug }}/
+
+{% for sec in t.sections %}## {{ sec.heading }}
+
+{% for p in sec.paragraphs %}{{ p }}
+
+{% endfor %}{% endfor %}## Where to paste it
+
+- ChatGPT: Settings, Personalization, Custom instructions.
+- Claude: Settings, Profile, personal preferences (or a project's instructions).
+- Gemini: Settings, Instructions for Gemini (may sit under saved info).
+- Perplexity: Settings, Personalize.
+
+Menu names change. Look for personalization, custom instructions or preferences.
+
+## Questions
+
+{% for item in t.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
+
+All free tools: {{ site.url }}/tools/

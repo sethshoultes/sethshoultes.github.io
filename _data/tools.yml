@@ -78,3 +78,41 @@
       a: "To turn a weekly saving into a yearly one. Take out the weeks you are closed or away."
     - q: "Can you help me set up the tasks that save the most?"
       a: "Yes. Book a call, bring your list, and we will pick the first one together."
+- slug: personal-ai-profile-builder
+  order: 8
+  name: "Personal AI profile builder"
+  title: "Free Personal AI Profile Builder for ChatGPT, Claude, Gemini and Perplexity"
+  description: "Free personal AI profile builder. Pick your tone, detail and humor, copy a ready-made profile, and paste it into ChatGPT, Claude, Gemini or Perplexity so every answer sounds right. Runs in your browser."
+  summary: "Pick your tone, detail and humor, copy the profile, and paste it into ChatGPT, Claude, Gemini or Perplexity so every answer sounds like it was written for you."
+  lead: "Tell the AI once how you like to be answered. Pick your tone, how much detail and how much humor, copy the profile, and paste it into ChatGPT, Claude, Gemini or Perplexity."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "AI assistants start every chat knowing nothing about you. A short profile fixes that: who you are, how you like answers and what to avoid. This tool writes it from a few choices."
+        - "It runs in your browser. What you type never leaves this page, and the profile contains only what you pick."
+    - id: how
+      heading: "How to use it"
+      paragraphs:
+        - "**1. Make your choices.** Say who you are and pick the tone, detail and humor you like."
+        - "**2. Copy the profile.**"
+        - "**3. Paste it where your assistant keeps your preferences.** Open the tab for your assistant above. Menu names change from time to time, so look for personalization, custom instructions or preferences."
+        - "**4. Try a question.** If the answer is off, change one choice and paste it again."
+    - id: why
+      heading: "Why it helps"
+      paragraphs:
+        - "You stop retyping \"keep it short\" and \"no jargon\" in every chat. The same profile works across assistants, so you sound the same wherever you ask."
+        - "If you want help setting AI up across your business, [book a call](/consulting/#contact)."
+  faq:
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay."
+    - q: "Does my information leave my browser?"
+      a: "No. The profile is built on this page and nothing is sent to a server."
+    - q: "Is it safe to put my name and job in a profile?"
+      a: "The profile goes to the assistant you paste it into, under that company's privacy terms. Leave out anything you would not type into a chat, such as passwords or client names."
+    - q: "Will the assistant always follow it?"
+      a: "Mostly, but not every time. If an answer ignores your profile, say so in the chat and it will usually correct itself."
+    - q: "Where do I paste it in each assistant?"
+      a: "The tabs above the profile list the place for ChatGPT, Claude, Gemini and Perplexity. Menu names change, so look for personalization, custom instructions or preferences."
+    - q: "Can I use the same profile in more than one assistant?"
+      a: "Yes. Paste the same text into each one."
