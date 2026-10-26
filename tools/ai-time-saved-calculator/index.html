@@ -1,0 +1,33 @@
+---
+layout: tool
+tool: ai-time-saved-calculator
+permalink: /tools/ai-time-saved-calculator/
+title: "Free AI Time-Saved Calculator: Hours and Dollars Back"
+description: "Free AI time-saved calculator. List the tasks you do each week, say how much time AI could save on each, and see the hours and dollars you get back. Runs in your browser."
+---
+<form id="calc-form" class="contact-form tool-form" autocomplete="off">
+  <div class="tool-cols">
+    <label>What an hour of your time is worth ($)
+      <input type="number" name="rate" min="0" step="any" inputmode="decimal" placeholder="50">
+    </label>
+    <label>Weeks you work each year
+      <input type="number" name="weeks" min="1" max="52" step="1" inputmode="numeric" value="48">
+    </label>
+  </div>
+  <fieldset class="tool-fieldset">
+    <legend>Your tasks</legend>
+    <div id="calc-rows" class="tool-rows"></div>
+    <p><button type="button" class="btn ghost" id="calc-add">Add a task</button></p>
+  </fieldset>
+</form>
+
+<div class="tool-result">
+  <div class="tool-result-head">
+    <h2>What you get back</h2>
+    <button type="button" class="btn" id="calc-copy" disabled>Copy the summary</button>
+  </div>
+  <p id="calc-status" class="tool-status" role="status"></p>
+  <div id="calc-output" class="tool-summary" aria-live="polite">Add a task, how often you do it, how long it takes and the percent AI could save.</div>
+  <div id="calc-table"></div>
+</div>
+<script src="/assets/tools/ai-time-saved-calculator.js" defer></script>
