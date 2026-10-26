@@ -1,0 +1,47 @@
+---
+layout: null
+permalink: /apps.md
+sitemap: false
+---
+{%- assign a = site.data.apps -%}
+# {{ a.title }}
+
+{{ a.lead }}
+
+Page: {{ site.url }}/apps/
+
+## {{ a.bundle.name }}
+
+{{ a.bundle.monthly.price }} {{ a.bundle.monthly.unit }}, or {{ a.bundle.yearly.price }} {{ a.bundle.yearly.unit }}. {{ a.bundle.trial }}
+
+{% for i in a.bundle.includes %}- {{ i.text }} ({{ i.status }})
+{% endfor %}
+Start monthly: {{ a.bundle.monthly.url }}
+
+Start yearly: {{ a.bundle.yearly.url }}
+
+## Or buy one on its own
+
+{% for p in a.alacarte %}### {{ p.name }}: {{ p.price }} {{ p.unit }}
+
+{{ p.text }} {{ p.note }}
+
+Buy: {{ p.url }}
+
+{% endfor %}## {{ a.free.heading }}
+
+{{ a.free.text }}
+
+## {{ a.how.heading }}
+
+{% for p in a.how.paragraphs %}{{ p }}
+
+{% endfor %}## Questions
+
+{% for item in a.faq %}### {{ item.q }}
+
+{{ item.a }}
+
+{% endfor %}## Work with me
+
+Book a call: {{ site.url }}/consulting/#contact
