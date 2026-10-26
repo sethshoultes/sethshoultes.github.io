@@ -1,5 +1,6 @@
 {%- assign md = site.data.markdown[page.url] -%}
 {%- if page.city -%}{%- assign md = '/' | append: page.city | append: '.md' -%}{%- elsif page.service -%}{%- assign md = '/' | append: page.service | append: '.md' -%}{%- endif -%}
+{%- if page.url contains '/tools/' and page.url != '/tools/' -%}{%- assign tool_slug = page.url | remove: '/tools/' | remove: '/' -%}{%- assign md = '/tools/' | append: tool_slug | append: '.md' -%}{%- endif -%}
 {%- if md %}
   <link rel="alternate" type="text/markdown" href="{{ md }}">
 {%- endif %}

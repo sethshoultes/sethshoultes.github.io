@@ -1,7 +1,6 @@
-# Pages whose plain-text markdown version is not named after a city or service data file.
+# Hub pages whose plain-text markdown version is not derived from their URL.
 # The layout links each one with <link rel="alternate" type="text/markdown">.
+# Tool pages under /tools/ follow a rule in _includes/agent-hints.html: /tools/<name>/ -> /tools/<name>.md
 "/southern-utah/": /southern-utah.md
 "/services/": /services.md
 "/tools/": /tools.md
-"/tools/ai-time-saved-calculator/": /tools/ai-time-saved-calculator.md
-"/tools/local-business-schema-generator/": /tools/local-business-schema-generator.md
