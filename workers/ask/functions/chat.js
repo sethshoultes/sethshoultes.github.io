@@ -1,7 +1,7 @@
 // Ask Seth's AI: a text chat about Seth and his consulting, answered by an AI model
 // only from the text of Seth's own pages (llms-full.txt on sethshoultes.com).
 
-import { callModel, clean, guard, reply, siteText } from './_shared.js';
+import { UNAVAILABLE, callModel, clean, guard, reply, safely, siteText } from './_shared.js';
 
 const MAX_TURNS = 10;
 const MAX_CHARS = 1000;
@@ -15,7 +15,7 @@ Talk like a friendly person across a table: plain words, short answers (usually 
 SETH'S PAGES:
 ${pages}`;
 
-export async function onRequest({ request, env }) {
+export const onRequest = safely(async ({ request, env }) => {
   const blocked = await guard(request, env);
   if (blocked) return blocked;
 
@@ -37,9 +37,9 @@ export async function onRequest({ request, env }) {
   while (messages[0].role !== 'user') messages.shift();
 
   const pages = await siteText();
-  if (!pages) return reply(502, { error: 'The assistant is unavailable right now. Please email seth@smartwebutah.com.' });
+  if (!pages) return reply(502, { error: UNAVAILABLE });
 
   const answer = await callModel(env, system(pages), messages, 500);
-  if (!answer) return reply(502, { error: 'The assistant is unavailable right now. Please email seth@smartwebutah.com.' });
+  if (!answer) return reply(502, { error: UNAVAILABLE });
   return reply(200, { answer });
-}
+});
