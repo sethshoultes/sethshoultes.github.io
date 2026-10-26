@@ -1,0 +1,33 @@
+---
+layout: tool
+tool: does-ai-know-your-business
+permalink: /tools/does-ai-know-your-business/
+title: "Free Check: Does ChatGPT, Perplexity or Google AI Recommend Your Business?"
+description: "Free check: enter your business, service and city. We ask ChatGPT, Perplexity and Google AI who to hire there, and show whether you are named, who is named instead, and what to fix."
+---
+<form id="know-form" class="contact-form tool-form" autocomplete="off">
+  <div class="tool-cols">
+    <label>Your business name
+      <input type="text" name="business" placeholder="Red Rock Plumbing" maxlength="80" required>
+    </label>
+    <label>The service you offer
+      <input type="text" name="service" placeholder="plumber" maxlength="60" required>
+    </label>
+    <label>Your city
+      <input type="text" name="city" placeholder="St. George, Utah" maxlength="60" required>
+    </label>
+  </div>
+  <label class="hp" aria-hidden="true">Leave this empty
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </label>
+  <button type="submit" class="btn" id="know-go">Ask the assistants</button>
+</form>
+
+<div class="tool-result" id="know-result" hidden>
+  <h2 id="know-title">What they said</h2>
+  <p id="know-status" class="tool-status" role="status"></p>
+  <ul id="know-list" class="tool-checks"></ul>
+  <p id="know-note" class="small-note" hidden>A name close to yours in a list may be you under a slightly different name. Assistants can answer differently each time, so treat this as a snapshot.</p>
+  <p id="know-cta" class="tool-cp" hidden><a href="/consulting/#contact">Book a call</a> and we will go through it together.</p>
+</div>
+<script src="/assets/tools/does-ai-know-your-business.js" defer></script>
