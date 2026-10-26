@@ -5,7 +5,7 @@
 
 import { reply } from './_lib/guard.js';
 import { buildQuestion, askAll } from './_lib/ask-ai.js';
-import { splitAnswer, isNamed, isSame } from './_lib/names.js';
+import { splitAnswer, isNamed, isSame, isGenericName } from './_lib/names.js';
 
 const OK = /^[\p{L}\p{N} .,'&()\-/]+$/u;
 
@@ -25,11 +25,16 @@ export async function onRequestPost({ data, env }) {
     return reply(400, { error: err.message });
   }
 
+  if (isGenericName(business, service, city)) {
+    return reply(400, { error: `"${business}" is too general to check: it is only your service, your city or a word like LLC, so it would match any competitor. Please enter your business's full, distinctive name.` });
+  }
+
   const answers = await askAll(env, buildQuestion(service, city));
   const results = answers.map((a) => {
     if (a.state !== 'answered') return { id: a.id, label: a.label, state: a.state, error: a.error };
     const { prose, names } = splitAnswer(a.text);
-    const named = isNamed(business, a.text);
+    // null means the assistant gave no list of names, so we cannot say either way.
+    const named = isNamed(business, names);
     return {
       id: a.id, label: a.label, state: 'answered', named,
       others: names ? names.filter((n) => !isSame(business, n)) : null,

@@ -210,11 +210,11 @@
       heading: "What this does"
       paragraphs:
         - "We ask each assistant, with its web search turned on: \"Who are the best [your service] businesses in [your city]?\" Your business name is not in the question, so the answer is not nudged toward you."
-        - "Then we check whether your name appears in each answer, and list the businesses it named instead. The answers are the assistants' own, shown as they came back. If an assistant cannot answer, the tool says so."
+        - "Each assistant also ends its answer with a short list of the business names it recommends. We check that list for your business, using your whole name, and show who is on it instead. The answers are the assistants' own, shown as they came back. If an assistant cannot answer, or gives no clear list, the tool says so."
     - id: how
       heading: "How to read the result"
       paragraphs:
-        - "**Named** means your business name appears in that assistant's answer. **Not named** means it did not, this time. Assistants can answer differently from one run to the next, so one result is a snapshot, not a ranking."
+        - "**Named** means your full business name is on that assistant's list. **Not named** means it is not, this time. **Can't tell** means the assistant gave no clear list, so we do not guess. Assistants can answer differently from one run to the next, so one result is a snapshot, not a ranking."
         - "A name close to yours in the list may be you under a slightly different name. Check the list."
         - "Being named is not luck. Assistants quote businesses with a clear website, consistent details across the web, and good reviews."
     - id: fix
@@ -236,5 +236,9 @@
       a: "Assistants name businesses they can find clear, consistent information about. Being good is not enough if the web does not say so. The steps above are where to start."
     - q: "Why was a business I know missing from the list?"
       a: "Each assistant names about five. It is a short list, and it changes from run to run."
+    - q: "Why does it say \"Can't tell\"?"
+      a: "Each assistant is asked to end with a list of business names. Sometimes one does not, and then we do not search its prose and guess. Read its full answer to see for yourself."
+    - q: "Why does it say my business name is too general?"
+      a: "A name that is only your service, your city or a word like LLC, for example \"Plumbing\" or \"St. George Utah\", would match any competitor. Enter your full, distinctive name, such as \"Red Rock Plumbing\"."
     - q: "Can you make AI recommend me?"
       a: "Nobody can promise that. I can make your business easy to find, read and trust, which is what moves the odds."

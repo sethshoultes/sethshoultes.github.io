@@ -1,8 +1,14 @@
 // Splits an assistant's answer into its prose and the names it listed, and
-// decides whether a given business is among them.
+// decides whether a given business is one of them.
+//
+// "Named" means one entry in the assistant's own NAMES list is the business's
+// full name. Both sides are lowercased, stripped of punctuation and of words like
+// LLC, Inc, "the" and the state, and then must be equal. A longer name ("St George
+// Plumbing Pros" for "St George Plumbing") is a different business, so it does
+// not count. Prose is never searched: an answer with no list cannot be judged.
 
 const norm = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim();
-const GENERIC = new Set(['llc', 'inc', 'co', 'company', 'ut', 'utah']);
+const GENERIC = new Set(['llc', 'inc', 'co', 'company', 'the', 'ut', 'utah']);
 
 export function splitAnswer(text) {
   const lines = text.split(/\r?\n/);
@@ -13,17 +19,26 @@ export function splitAnswer(text) {
   return { prose: lines.slice(0, at).join('\n').trim(), names: names.length ? names : null };
 }
 
-// Named means the business's name appears as consecutive whole words in the
-// answer, ignoring LLC, Inc, the state and similar. The words must sit
-// together and in order, so "Zion Plumbing" is not found in "Marlin Plumbing and
-// Zion Heating".
 const core = (s) => norm(s).split(' ').filter((w) => w && !GENERIC.has(w)).join(' ');
 
-export function isNamed(business, text) {
-  const want = core(business);
-  return Boolean(want) && ` ${core(text)} `.includes(` ${want} `);
+export function isSame(a, b) {
+  const x = core(a);
+  return x !== '' && x === core(b);
 }
 
-export function isSame(a, b) {
-  return norm(a) === norm(b) || isNamed(a, b) || isNamed(b, a);
+// null when there is no list to check; otherwise true or false.
+export function isNamed(business, names) {
+  if (!names) return null;
+  return names.some((n) => isSame(business, n));
+}
+
+// A name made only of words that say nothing about which business it is: legal
+// endings, the state, or words that are the service or the city. "Plumbing" for a
+// plumber in St. George, or "St. George Utah", would match any competitor. Words
+// count as the same when they share their first five letters (plumbing, plumber).
+export function isGenericName(business, service, city) {
+  const stem = (w) => w.slice(0, 5);
+  const common = new Set([...norm(`${service} ${city}`).split(' ').filter(Boolean).map(stem)]);
+  const words = core(business).split(' ').filter(Boolean);
+  return words.length === 0 || words.every((w) => common.has(stem(w)) || w === 'and');
 }

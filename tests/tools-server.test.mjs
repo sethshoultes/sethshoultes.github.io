@@ -291,7 +291,7 @@ test('llms-txt: sitemap and robots input is bounded and stays on the site', asyn
   }
 });
 
-import { splitAnswer, isNamed, isSame } from '../workers/tools/functions/_lib/names.js';
+import { splitAnswer, isNamed, isSame, isGenericName } from '../workers/tools/functions/_lib/names.js';
 
 test('names: splitAnswer takes the NAMES line out of the prose', () => {
   const r = splitAnswer('Top picks:\n1. **Red Rock Plumbing**\n\nNAMES: **Red Rock Plumbing** | [Marlin](https://x.com) | S&S Mechanical');
@@ -300,37 +300,60 @@ test('names: splitAnswer takes the NAMES line out of the prose', () => {
   assert.equal(splitAnswer('Only prose').names, null);
 });
 
-test('names: isNamed needs whole words; ignores LLC and punctuation', () => {
-  assert.ok(isNamed('Red Rock Plumbing, LLC', 'Try **Red Rock Plumbing** in town'));
-  assert.ok(isNamed('S&S Mechanical', 'S and S Mechanical - Plumbing Heating'));
-  assert.ok(!isNamed('Rock', 'Red Rocket Plumbing'));
-  assert.ok(!isNamed('Zion Plumbing', 'Marlin Plumbing and Zion Heating'));
-  assert.ok(isSame('Marlin Plumbing', 'Marlin Plumbing Services'));
+test('names: "named" is whole-name equality against the assistant\'s own list (the three review cases)', () => {
+  // Answer lists: "St George Plumbing Pros", "Red Rock Plumbing", "ABC Plumbing and Heating".
+  const list = ['St George Plumbing Pros', 'Red Rock Plumbing', 'ABC Plumbing and Heating'];
+  assert.equal(isNamed('Plumbing', list), false, 'a generic one-word name does not match every plumber');
+  assert.equal(isNamed('St George Plumbing', list), false, 'a different business with a longer name');
+  assert.equal(isNamed('ABC', list), false, 'a prefix of another name');
+  assert.equal(isNamed('Zion Plumbing', list), false);
+  assert.equal(isNamed('Red Rock Plumbing, LLC', list), true, 'same name, LLC and punctuation ignored');
+  assert.equal(isNamed('ABC Plumbing & Heating', list), true, '& and "and" are the same');
+  assert.equal(isNamed('Red Rock Plumbing', null), null, 'no list means we cannot tell');
+  assert.ok(isSame('Marlin Plumbing', 'marlin plumbing llc'));
+  assert.ok(isSame('The Red Rock Plumbing', 'Red Rock Plumbing'));
+  assert.ok(!isSame('Marlin Plumbing', 'Marlin Plumbing Services'));
 });
 
-test('ai-knows-you handler: three stubbed assistants, one failing, and bad input', async () => {
+test('names: a name made only of generic words is refused', () => {
+  assert.ok(isGenericName('Plumbing', 'plumber', 'St. George, Utah'));
+  assert.ok(isGenericName('St. George Utah LLC', 'plumber', 'St. George, Utah'));
+  assert.ok(isGenericName('The Plumbers', 'plumber', 'Ogden'));
+  assert.ok(isGenericName('Utah, Inc.', 'roofer', 'Provo, Utah'));
+  assert.ok(!isGenericName('Red Rock Plumbing', 'plumber', 'St. George, Utah'));
+  assert.ok(!isGenericName('ABC', 'plumber', 'St. George, Utah'));
+});
+
+test('ai-knows-you handler: named, not named, cannot tell, failed; generic and bad input refused', async () => {
   const realFetch = globalThis.fetch;
   globalThis.fetch = async (input, init) => {
     const url = String(input);
     const q = JSON.parse(init.body);
     assert.ok(!/Red Rock/.test(JSON.stringify(q)), 'the business name must not be sent to the models');
     if (url.includes('openai.com')) return Response.json({ output: [{ type: 'message', content: [{ text: 'Try Red Rock Plumbing.\nNAMES: Red Rock Plumbing | Marlin Plumbing' }] }] });
-    if (url.includes('openrouter.ai')) return Response.json({ choices: [{ message: { content: 'Marlin is best.\nNAMES: Marlin Plumbing | Copperhead' } }] });
+    if (url.includes('openrouter.ai')) return Response.json({ choices: [{ message: { content: 'Red Rock Plumbing Pros is best, then Marlin.' } }] });
     return new Response('{}', { status: 500 });
   };
   try {
     const { onRequestPost } = await import('../workers/tools/functions/ai-knows-you.js');
     const env = { OPENAI_API_KEY: 'k', OPENROUTER_API_KEY: 'k', GEMINI_API_KEY: 'k' };
-    const out = await (await onRequestPost({ env, data: { body: { business: 'Red Rock Plumbing', service: 'plumber', city: 'St. George' } } })).json();
+    const ask = (business, e = env) => onRequestPost({ env: e, data: { body: { business, service: 'plumber', city: 'St. George' } } });
+    const out = await (await ask('Red Rock Plumbing')).json();
     const by = Object.fromEntries(out.results.map((r) => [r.id, r]));
     assert.equal(by.chatgpt.named, true);
     assert.deepEqual(by.chatgpt.others, ['Marlin Plumbing']);
-    assert.equal(by.perplexity.named, false);
-    assert.deepEqual(by.perplexity.others, ['Marlin Plumbing', 'Copperhead']);
+    assert.equal(by.perplexity.named, null, 'prose that merely contains the name is not a verdict');
+    assert.equal(by.perplexity.others, null);
     assert.equal(by.google.state, 'failed');
-    assert.equal((await onRequestPost({ env, data: { body: { business: '<script>', service: 'x', city: 'y' } } })).status, 400);
-    const none = await onRequestPost({ env: {}, data: { body: { business: 'Red Rock', service: 'plumber', city: 'Ogden' } } });
-    assert.equal(none.status, 502);
+
+    const other = await (await ask('Red Rock')).json();
+    assert.equal(other.results.find((r) => r.id === 'chatgpt').named, false, 'a shorter name is not the listed business');
+
+    const generic = await ask('Plumbing');
+    assert.equal(generic.status, 400);
+    assert.match((await generic.json()).error, /too general/);
+    assert.equal((await ask('<script>')).status, 400);
+    assert.equal((await ask('Red Rock', {})).status, 502);
   } finally {
     globalThis.fetch = realFetch;
   }

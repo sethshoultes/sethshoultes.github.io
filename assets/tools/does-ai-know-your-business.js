@@ -17,11 +17,12 @@
 
   function add(r, business) {
     var li = document.createElement('li');
-    var state = r.state !== 'answered' ? 'unknown' : r.named ? 'ok' : 'bad';
+    var unclear = r.state === 'answered' && r.named === null;
+    var state = r.state !== 'answered' || unclear ? 'unknown' : r.named ? 'ok' : 'bad';
     li.className = 'tool-check tool-check-' + state;
     var badge = document.createElement('span');
     badge.className = 'tool-badge';
-    badge.textContent = r.state !== 'answered' ? 'No answer' : r.named ? 'Named' : 'Not named';
+    badge.textContent = r.state !== 'answered' ? 'No answer' : unclear ? "Can't tell" : r.named ? 'Named' : 'Not named';
     var h = document.createElement('strong');
     h.textContent = r.label;
     li.appendChild(badge);
@@ -29,17 +30,20 @@
     var p = document.createElement('p');
     if (r.state !== 'answered') {
       p.textContent = r.error || 'It could not answer.';
+    } else if (unclear) {
+      p.textContent = 'This answer did not come with a clear list of business names, so we cannot say whether ' + business + ' is in it. Read the answer below.';
     } else if (r.named) {
-      p.textContent = business + ' is in this answer.';
+      p.textContent = business + ' is on its list.';
     } else {
-      p.textContent = business + ' is not in this answer.';
+      p.textContent = business + ' is not on its list.';
     }
     li.appendChild(p);
     if (r.state === 'answered') {
-      var who = document.createElement('p');
-      who.textContent = r.others === null ? 'We could not pull a list of names out of this answer. Read it below.'
-        : r.others.length ? 'Named instead: ' + r.others.join(', ') + '.' : 'No other businesses were named.';
-      li.appendChild(who);
+      if (!unclear) {
+        var who = document.createElement('p');
+        who.textContent = r.others.length ? 'Named instead: ' + r.others.join(', ') + '.' : 'No other businesses were named.';
+        li.appendChild(who);
+      }
       var d = document.createElement('details');
       var s = document.createElement('summary');
       s.textContent = 'Read the full answer';
@@ -75,9 +79,11 @@
       .then(function (d) {
         if (!d.results) { status.textContent = ''; return; }
         status.textContent = '';
-        var named = d.results.filter(function (r) { return r.named; }).length;
-        var answered = d.results.filter(function (r) { return r.state === 'answered'; }).length;
-        title.textContent = d.business + ' is named by ' + named + ' of ' + answered + ' assistants for "' + d.service + '" in ' + d.city;
+        var named = d.results.filter(function (r) { return r.named === true; }).length;
+        var clear = d.results.filter(function (r) { return r.state === 'answered' && r.named !== null; }).length;
+        title.textContent = clear
+          ? d.business + ' is named by ' + named + ' of ' + clear + ' assistants we could read, for "' + d.service + '" in ' + d.city
+          : 'We could not read a clear list from any assistant for "' + d.service + '" in ' + d.city;
         d.results.forEach(function (r) { add(r, d.business); });
         note.hidden = false;
         cta.hidden = false;
