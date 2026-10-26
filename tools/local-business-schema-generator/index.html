@@ -1,0 +1,102 @@
+---
+layout: tool
+tool: local-business-schema-generator
+permalink: /tools/local-business-schema-generator/
+title: "Free Local Business Schema Generator (JSON-LD)"
+description: "Free local business schema generator. Fill in your name, address, hours and services and copy ready-to-paste JSON-LD for Google and AI search. Runs in your browser."
+---
+<form id="schema-form" class="contact-form tool-form" autocomplete="off">
+  <div class="tool-cols">
+    <label>Business name
+      <input type="text" name="name" placeholder="Red Rock Plumbing" required>
+    </label>
+    <label>Business type
+      <select name="type">
+        <option value="LocalBusiness">Local business (any)</option>
+        <option value="ProfessionalService">Professional service</option>
+        <option value="HomeAndConstructionBusiness">Home and construction</option>
+        <option value="Plumber">Plumber</option>
+        <option value="Electrician">Electrician</option>
+        <option value="HVACBusiness">Heating and cooling</option>
+        <option value="GeneralContractor">General contractor</option>
+        <option value="RoofingContractor">Roofing contractor</option>
+        <option value="Locksmith">Locksmith</option>
+        <option value="MovingCompany">Moving company</option>
+        <option value="AutoRepair">Auto repair</option>
+        <option value="LegalService">Legal service</option>
+        <option value="AccountingService">Accounting service</option>
+        <option value="RealEstateAgent">Real estate agent</option>
+        <option value="Dentist">Dentist</option>
+        <option value="HealthAndBeautyBusiness">Health and beauty</option>
+        <option value="Restaurant">Restaurant</option>
+        <option value="Store">Store</option>
+        <option value="LodgingBusiness">Lodging</option>
+      </select>
+    </label>
+  </div>
+  <label>What you do, in a sentence or two
+    <textarea name="description" rows="3" placeholder="Family-owned plumber serving St. George and Washington County since 2009."></textarea>
+  </label>
+  <div class="tool-cols">
+    <label>Website
+      <input type="url" name="url" placeholder="https://example.com">
+    </label>
+    <label>Phone
+      <input type="tel" name="telephone" placeholder="+1 435 555 0123">
+    </label>
+    <label>Email
+      <input type="email" name="email" placeholder="hello@example.com">
+    </label>
+    <label>Logo or photo address
+      <input type="url" name="image" placeholder="https://example.com/logo.png">
+    </label>
+  </div>
+
+  <fieldset class="tool-fieldset">
+    <legend>Address</legend>
+    <div class="tool-cols">
+      <label>Street
+        <input type="text" name="street" placeholder="123 Main St">
+      </label>
+      <label>City
+        <input type="text" name="city" placeholder="St. George">
+      </label>
+      <label>State
+        <input type="text" name="region" placeholder="UT">
+      </label>
+      <label>Zip
+        <input type="text" name="postal" placeholder="84770">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="tool-fieldset">
+    <legend>Hours</legend>
+    <div class="tool-hours" id="schema-hours"></div>
+    <p class="small-note">Leave a day empty if you are closed. <button type="button" class="tool-link" id="schema-weekdays">Copy Monday to Tuesday through Friday</button></p>
+  </fieldset>
+
+  <label>Services you offer, one per line
+    <textarea name="services" rows="4" placeholder="Water heater repair&#10;Drain cleaning&#10;Leak detection"></textarea>
+  </label>
+  <label>Cities and towns you serve, one per line
+    <textarea name="areas" rows="3" placeholder="St. George&#10;Washington&#10;Hurricane"></textarea>
+  </label>
+  <label>Your profiles elsewhere, one address per line
+    <textarea name="sameas" rows="3" placeholder="https://www.facebook.com/yourbusiness&#10;https://g.page/yourbusiness"></textarea>
+  </label>
+  <label>Price range, if you want to show one
+    <input type="text" name="price" placeholder="$$">
+  </label>
+</form>
+
+<div class="tool-result">
+  <div class="tool-result-head">
+    <h2>Your code</h2>
+    <button type="button" class="btn" id="schema-copy" disabled>Copy the code</button>
+  </div>
+  <p id="schema-status" class="tool-status" role="status"></p>
+  <pre class="tool-code"><code id="schema-output">Type your business name to start.</code></pre>
+  <div id="schema-notes" class="tool-notes"></div>
+</div>
+<script src="/assets/tools/local-business-schema-generator.js" defer></script>
