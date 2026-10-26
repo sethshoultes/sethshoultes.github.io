@@ -62,13 +62,13 @@
     var p = d.profile;
     if (p.state === 'found') {
       var missing = [];
-      if (!p.address) missing.push('an address');
-      if (!p.phone) missing.push('a phone number');
-      if (!p.website) missing.push('a website');
+      if (!p.address) missing.push('address');
+      if (!p.phone) missing.push('phone number');
+      if (!p.website) missing.push('website');
       if (!p.hoursShown) missing.push('opening hours');
       item(missing.length ? 'warn' : 'ok', missing.length ? 'Found, gaps' : 'Found', 'Google listing: ' + p.name, [
         stars(p) + '.',
-        missing.length ? 'Google Maps shows no ' + missing.join(', ') + ' for this listing. Add what is missing in your Google Business Profile.' : 'Address, phone, website and hours are all shown.',
+        missing.length ? 'Google Maps shows no ' + missing.join(', ') + ' for this listing. If that is not on purpose, add it in your Google Business Profile.' : 'Address, phone, website and hours are all shown.',
         mapsLink(p.mapsUrl),
       ]);
     } else if (p.state === 'other') {
@@ -95,7 +95,7 @@
     if (mine !== null) {
       var more = c.list.filter(function (x) { return x.reviews !== null && x.reviews > mine; }).length;
       var counted = c.list.filter(function (x) { return x.reviews !== null; }).length;
-      lines.push('You have ' + nf.format(mine) + ' reviews. ' + more + ' of the ' + counted + ' competitors Google returned have more.');
+      lines.push('You have ' + nf.format(mine) + ' reviews. ' + more + ' of the ' + counted + ' competitors Google returned ' + (more === 1 ? 'has' : 'have') + ' more.');
     } else {
       lines.push('Your own review count is not shown above, so we cannot place you among them.');
     }
