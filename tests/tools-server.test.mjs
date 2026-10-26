@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { guard, ALLOWED_ORIGIN } from '../workers/tools/functions/_lib/guard.js';
 import { parseTarget, isPrivateIp, makeSafeFetch, FetchError } from '../workers/tools/functions/_lib/safe-fetch.js';
 import { parseRobots, evaluate } from '../workers/tools/functions/_lib/robots.js';
-import { jsonLdTypes, markdownAlternate, pageInfo } from '../workers/tools/functions/_lib/html.js';
+import { jsonLdTypes, markdownAlternate } from '../workers/tools/functions/_lib/html.js';
 
 class FakeKV {
   constructor() { this.data = new Map(); }
@@ -182,6 +182,68 @@ test('crawler-check handler: end to end with a stubbed network', async () => {
   }
 });
 
+import { pickPages, locs, isIndex } from '../workers/tools/functions/_lib/sitemap.js';
+import { pageInfo, decodeEntities } from '../workers/tools/functions/_lib/html.js';
+
+test('sitemap: locs, index detection, CDATA and entities', () => {
+  const xml = '<urlset><url><loc>https://a.com/x?a=1&amp;b=2</loc></url><url><loc><![CDATA[https://a.com/y]]></loc></url></urlset>';
+  assert.deepEqual(locs(xml), ['https://a.com/x?a=1&b=2', 'https://a.com/y']);
+  assert.ok(isIndex('<sitemapindex></sitemapindex>'));
+  assert.ok(!isIndex(xml));
+});
+
+test('sitemap: pickPages keeps same-site content, shallowest first, drops noise and duplicates', () => {
+  const urls = [
+    'https://www.a.com/blog/post-1/', 'https://a.com/', 'https://a.com/about/', 'https://a.com/about', 'https://b.com/other/',
+    'https://a.com/tag/news/', 'https://a.com/blog/page/2', 'https://a.com/files/menu.pdf', 'https://a.com/services/', 'https://a.com/search?q=x',
+  ];
+  assert.deepEqual(pickPages(urls, 'a.com', 10).map((p) => p.url), ['https://a.com/about/', 'https://a.com/services/', 'https://www.a.com/blog/post-1/']);
+  assert.equal(pickPages(urls, 'a.com', 1).length, 1);
+});
+
+test('html: pageInfo reads title, description and site name, decodes entities', () => {
+  const html = `<html><head><title>Plumbing &amp; Drains | Red Rock</title>
+  <meta name="description" content="Fast   repairs &#39;n more">
+  <meta property="og:site_name" content="Red Rock Plumbing"></head></html>`;
+  assert.deepEqual(pageInfo(html), { title: 'Plumbing & Drains | Red Rock', description: "Fast repairs 'n more", siteName: 'Red Rock Plumbing' });
+  assert.equal(decodeEntities('&lt;b&gt; &unknown;'), '<b> &unknown;');
+});
+
+test('llms-txt handler: builds the file from a stubbed site, skips unreadable pages', async () => {
+  const realFetch = globalThis.fetch;
+  const html = (title, desc) => new Response(`<head><title>${title}</title>${desc ? `<meta name="description" content="${desc}">` : ''}<meta property="og:site_name" content="Red Rock Plumbing"></head>`, { headers: { 'Content-Type': 'text/html' } });
+  const routes = {
+    'https://example.com/': () => html('Red Rock Plumbing', 'Family plumber in St. George.'),
+    'https://example.com/robots.txt': () => new Response('Sitemap: https://example.com/sitemap.xml', { headers: { 'Content-Type': 'text/plain' } }),
+    'https://example.com/sitemap.xml': () => new Response('<urlset><url><loc>https://example.com/</loc></url><url><loc>https://example.com/services/</loc></url><url><loc>https://example.com/about/</loc></url><url><loc>https://example.com/blog/leaks/</loc></url></urlset>', { headers: { 'Content-Type': 'application/xml' } }),
+    'https://example.com/services/': () => html('Services | Red Rock Plumbing', 'Drains, heaters and leaks.'),
+    'https://example.com/about/': () => new Response('gone', { status: 404 }),
+    'https://example.com/blog/leaks/': () => html('Finding a leak', ''),
+  };
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.startsWith('https://cloudflare-dns.com/')) return Response.json({ Answer: /type=A$/.test(url) ? [{ type: 1, data: '93.184.216.34' }] : [] });
+    return (routes[url] || (() => new Response('', { status: 404 })))();
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/llms-txt.js');
+    const out = await (await onRequestPost({ data: { body: { url: 'example.com' } } })).json();
+    assert.equal(out.llms, [
+      '# Red Rock Plumbing', '', '> Family plumber in St. George.', '',
+      '## Key pages', '- [Services](https://example.com/services/): Drains, heaters and leaks.', '',
+      '## More', '- [Finding a leak](https://example.com/blog/leaks/)', '',
+    ].join('\n'));
+    assert.deepEqual(out.counts, { sitemapUrls: 4, listed: 2, skipped: 1 });
+    routes['https://example.com/robots.txt'] = () => new Response('', { status: 404 });
+    routes['https://example.com/sitemap.xml'] = () => new Response('', { status: 404 });
+    const none = await (await onRequestPost({ data: { body: { url: 'example.com' } } })).json();
+    assert.match(none.error, /could not find a sitemap/);
+    assert.equal(none.llms, undefined);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
 test('isPrivateIp: only global unicast IPv6 is public, in any notation', () => {
   for (const ip of ['::', '::1', '::ffff:a00:1', '::ffff:10.0.0.1', '64:ff9b::a00:1', '2002:a00:1::1', '2001:0:4136:e378::1', '2001:db8::1', 'fec0::1', 'fe80::1', 'fc00::1', 'not-an-ip', '1:2:3']) assert.ok(isPrivateIp(ip), ip);
   for (const ip of ['2606:4700:4700::1111', '2a00:1450:4001:81b::200e', '2001:4860:4860::8888']) assert.ok(!isPrivateIp(ip), ip);
@@ -193,5 +255,38 @@ test('html and sitemap scans stay fast on hostile input', () => {
   for (const html of ['<meta '.repeat(big / 6), '<script type="application/ld+json" '.repeat(big / 34), '<title'.repeat(big / 6), '<link rel=alternate '.repeat(big / 20)]) {
     pageInfo(html); jsonLdTypes(html); markdownAlternate(html);
   }
+  locs('<loc>' + ' '.repeat(3_000_000) + '</loc>');
+  locs('<loc>'.repeat(600_000));
   assert.ok(Date.now() - started < 3000, `took ${Date.now() - started}ms`);
+});
+
+import { sameSite } from '../workers/tools/functions/_lib/sitemap.js';
+
+test('llms-txt: sitemap and robots input is bounded and stays on the site', async () => {
+  assert.ok(sameSite('https://www.a.com/sitemap.xml', 'a.com'));
+  assert.ok(!sameSite('https://evil.example/sitemap.xml', 'a.com'));
+  assert.ok(!sameSite('not a url', 'a.com'));
+  assert.equal(locs(`<loc>https://a.com/${'x'.repeat(5000)}</loc><loc>https://a.com/ok</loc>`).length, 1);
+  assert.equal(locs('<loc>https://a.com/p</loc>'.repeat(60000)).length, 50000);
+
+  const realFetch = globalThis.fetch;
+  const asked = [];
+  const hostile = 'Sitemap:'.repeat(100000) + '\n' + ' '.repeat(400000) + '\nSitemap: https://evil.example/s.xml\nSitemap: https://a.com/s.xml\n';
+  globalThis.fetch = async (input) => {
+    const url = String(input);
+    if (url.startsWith('https://cloudflare-dns.com/')) return Response.json({ Answer: /type=A$/.test(url) ? [{ type: 1, data: '93.184.216.34' }] : [] });
+    asked.push(url);
+    if (url.endsWith('/robots.txt')) return new Response(hostile, { headers: { 'Content-Type': 'text/plain' } });
+    if (url === 'https://a.com/s.xml') return new Response('<sitemapindex><sitemap><loc>https://evil.example/c.xml</loc></sitemap></sitemapindex>', { headers: { 'Content-Type': 'application/xml' } });
+    return new Response('<head><title>A</title></head>', { headers: { 'Content-Type': 'text/html' } });
+  };
+  try {
+    const { onRequestPost } = await import('../workers/tools/functions/llms-txt.js');
+    const started = Date.now();
+    await onRequestPost({ data: { body: { url: 'a.com' } } });
+    assert.ok(Date.now() - started < 3000, `took ${Date.now() - started}ms`);
+    assert.ok(!asked.some((u) => u.includes('evil.example')), 'never fetches another host');
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });

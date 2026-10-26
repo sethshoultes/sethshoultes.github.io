@@ -344,3 +344,4 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .apps-includes li::before { content: none; }
 .apps-bundle .btn { width: auto; }
 .apps-status { display: inline-block; min-width: 6.2rem; margin-right: 0.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.tool-actions { margin-top: 0; }

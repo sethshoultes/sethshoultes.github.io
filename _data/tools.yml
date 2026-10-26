@@ -158,3 +158,43 @@
       a: "The site may have blocked the tool, been slow, or been down. Try again in a few minutes, or book a call and I will look at it by hand."
     - q: "Is there a WordPress plugin that does this automatically?"
       a: "Yes, CrawlPress, my plugin. It checks every day, shows which AI crawlers visit your site and writes your llms.txt."
+- slug: llms-txt-generator
+  order: 3
+  name: "llms.txt generator"
+  title: "Free llms.txt Generator: Build the File AI Assistants Read"
+  description: "Free llms.txt generator. Enter your website and get a ready-to-upload llms.txt built from your own sitemap, with each page's real title and description."
+  summary: "Enter your website and get a ready-to-upload llms.txt built from your own sitemap, using each page's real title and description."
+  lead: "An llms.txt file tells AI assistants what your site is about and which pages matter. Enter your website and get one built from your own sitemap, ready to upload."
+  sections:
+    - id: what
+      heading: "What this does"
+      paragraphs:
+        - "The tool finds your sitemap, picks your main pages, reads each page's title and description, and writes them into the llms.txt format: your site name, a one-line summary, and a list of links."
+        - "Everything in the file comes from your own pages. If a page cannot be read, it is left out, and the tool tells you how many. If your home page has no description, the summary line is left out rather than invented."
+    - id: how
+      heading: "How to use it"
+      paragraphs:
+        - "**1. Enter your website.** The tool needs a sitemap, usually at /sitemap.xml."
+        - "**2. Read the result.** It lists up to 20 pages, the ones closest to your home page first. Remove any you do not want and fix any title that reads badly."
+        - "**3. Upload it.** Save the text as llms.txt and put it at the top of your site, so it opens at yoursite.com/llms.txt. On WordPress, your host's file manager or an SFTP client will do."
+        - "**4. Check it.** Open the address in your browser, then run the [AI crawler access check](/tools/ai-crawler-access-check/) to see that crawlers can reach it."
+    - id: why
+      heading: "Why it matters"
+      paragraphs:
+        - "AI assistants cannot read every page of your site every time someone asks. llms.txt is a short map that points them to what you want them to know. It is a proposal that many sites now follow, not a guarantee that any assistant uses it."
+        - "If you want me to write and maintain it with you, [book a call](/consulting/#contact)."
+  faq:
+    - q: "What is llms.txt?"
+      a: "A plain text file at the top of your site, written in a simple format, that gives AI assistants a short summary of your site and links to your key pages."
+    - q: "Is this really free?"
+      a: "Yes. There is no sign-up and nothing to pay. To stop abuse, each visitor gets a few runs an hour."
+    - q: "Do you keep my website address or the file?"
+      a: "No. The address is used to build the file and is not saved."
+    - q: "Why only 20 pages?"
+      a: "A short, clear list works better than a long one. The tool picks the pages closest to your home page. You can add more by hand."
+    - q: "It says it could not find a sitemap. What now?"
+      a: "The tool looks in your robots.txt and at /sitemap.xml. Add a sitemap, which most WordPress SEO plugins can create, then try again."
+    - q: "Will an AI assistant use my llms.txt?"
+      a: "Some may, some do not yet. It costs nothing and it keeps your own description of your site in plain view."
+    - q: "Is there a WordPress plugin that does this automatically?"
+      a: "Yes, CrawlPress, my plugin. It writes your llms.txt and keeps it current."
