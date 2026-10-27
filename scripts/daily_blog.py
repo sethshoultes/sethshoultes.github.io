@@ -52,7 +52,7 @@ DRY_RUN = os.environ.get("DRY_RUN") == "1"
 CLAUDE_BIN = os.environ.get("CLAUDE_BIN", str(Path.home() / ".local" / "bin" / "claude"))
 CLAUDE_MODEL = "claude-opus-5-5"
 CLAUDE_TIMEOUT_S = 600
-IMAGE_MODEL = "gpt-image-1"
+IMAGE_MODEL = "gpt-image-2"  # gpt-image-1 now answers "model does not exist"
 
 # The fixed style suffix that gives every featured image the same pen-and-ink
 # editorial illustration look — established in skills-as-sops, whats-on-the-desk,
