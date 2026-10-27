@@ -24,6 +24,6 @@ set -a
 set +a
 export BRAIN_DIR="$HOME/brain" NOTIFY_EMAIL="seth@caseproof.com" NOTIFY_FROM="noreply@sethshoultes.com"
 
-/usr/bin/python3 scripts/daily_blog.py  # the system Python has openai and requests
+python3 scripts/daily_blog.py
 exit $?
 }

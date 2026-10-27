@@ -13,7 +13,7 @@ No Anthropic API key is used anywhere: every word is written by `claude -p`, whi
 Claude CLI signed in on this Mac. Run from launchd by scripts/daily-blog-run.sh.
 
 ENV required:
-  OPENAI_API_KEY (featured image only)
+  OPENAI_API_KEY (featured image only). Standard library only: no pip packages.
 ENV optional:
   REPO_ROOT (default: cwd)
   DRY_RUN=1 (write files but skip git commit/push)
@@ -34,8 +34,7 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-from openai import OpenAI
-import requests
+import urllib.request
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", ".")).resolve()
 POSTS_DIR = REPO_ROOT / "_posts"
@@ -231,8 +230,13 @@ def ask_claude(prompt: str, system: str | None = None) -> str:
     return out
 
 
-def openai_client() -> OpenAI:
-    return OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+def post_json(url: str, key: str, payload: dict, timeout: int) -> dict:
+    """POST JSON with a bearer key using only the standard library, so the Mac's Python needs no packages."""
+    req = urllib.request.Request(
+        url, data=json.dumps(payload).encode(), method="POST",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read())
 
 
 def recent_posts_context(n: int = 3) -> str:
@@ -450,15 +454,11 @@ def generate_image_prompt(idea: dict, post_text: str) -> str:
 
 
 def generate_image(prompt: str, out_path: Path) -> None:
-    client = openai_client()
-    result = client.images.generate(
-        model=IMAGE_MODEL,
-        prompt=prompt,
-        size="1536x1024",
-        quality="high",
-        n=1,
-    )
-    out_path.write_bytes(base64.b64decode(result.data[0].b64_json))
+    result = post_json(
+        "https://api.openai.com/v1/images/generations", os.environ["OPENAI_API_KEY"],
+        {"model": IMAGE_MODEL, "prompt": prompt, "size": "1536x1024", "quality": "high", "n": 1},
+        timeout=300)
+    out_path.write_bytes(base64.b64decode(result["data"][0]["b64_json"]))
 
 
 # ----- failure reporting --------------------------------------------------------
@@ -494,13 +494,9 @@ def report_failure(stage: str, summary: str, details: str = "") -> None:
     notify_from = os.environ.get("NOTIFY_FROM", "noreply@sethshoultes.com")
     if resend_key:
         try:
-            requests.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {resend_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
+            post_json(
+                "https://api.resend.com/emails", resend_key,
+                {
                     "from": notify_from,
                     "to": [notify_to],
                     "subject": f"Daily blog failed {today_str}",
