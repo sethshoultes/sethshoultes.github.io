@@ -1,6 +1,5 @@
 _site/
 build/
-.brain/
 .jekyll-cache/
 .jekyll-metadata
 .bundle/
