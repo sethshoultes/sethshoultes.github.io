@@ -23,7 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from daily_blog import (  # type: ignore
-    POSTS_DIR, anthropic_client, corpus_index, ANTHROPIC_MODEL, _post_meta, first_text,
+    POSTS_DIR, corpus_index, _post_meta, ask_claude,
 )
 
 
@@ -166,13 +166,7 @@ def main() -> int:
         body=body[:6000],
     )
 
-    client = anthropic_client()
-    msg = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=800,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    response = first_text(msg)
+    response = ask_claude(prompt)
 
     related, closer = parse_response(response)
     print("RELATED:")
