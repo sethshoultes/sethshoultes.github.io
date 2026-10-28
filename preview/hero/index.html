@@ -1,0 +1,44 @@
+---
+layout: site
+title: "Hero animation preview"
+description: "Preview of the data-flow hero and scroll orb. Not linked from the site."
+robots: "noindex, nofollow"
+sitemap: false
+permalink: /preview/hero/
+---
+<link rel="stylesheet" href="/assets/flow.css">
+<section class="flow-hero">
+  <canvas class="flow-canvas" data-anim="flow" aria-hidden="true"></canvas>
+  <div class="wrap flow-copy">
+    <p class="eyebrow">Your business, readable by people and AI</p>
+    <h1>Your services, reviews and pages <span class="accent">in. Answers out.</span></h1>
+    <p class="lead">I turn what your business already knows into a site that people and AI assistants can read, so when someone asks ChatGPT, Google AI or Perplexity, the answer is yours.</p>
+    <div class="btn-row">
+      <a class="btn" href="/ai-readiness/">Free AI readiness check</a>
+      <a class="btn ghost" href="/consulting/">How we'd work together</a>
+    </div>
+  </div>
+</section>
+
+<section class="flow-spacer wrap">
+  <h2>Scroll down</h2>
+  <p class="lead">The orb below assembles from the same particles as you scroll.</p>
+</section>
+
+<section class="orb-section">
+  <canvas class="orb-canvas" data-anim="orb" aria-hidden="true"></canvas>
+  <div class="wrap orb-copy">
+    <p class="eyebrow">Ask my AI</p>
+    <h2>One answer, built from everything your business knows</h2>
+    <p class="lead">Ask a question about the work and the answer comes from the real pages on this site, not a guess.</p>
+    <a class="btn" href="/ask/">Ask my AI</a>
+  </div>
+</section>
+<section class="wrap hero-variants">
+  <p class="eyebrow">The six service variants, as they sit in a two-column hero</p>
+  {%- assign variants = "answer|AI search optimization: a question flows into an AI answer that cites the site,blocks|WordPress development: blocks assemble into a page,pins|SEO: map pins land and the listing climbs the ranking,page|Web development: a page builds itself and scores 100,flow|AI services: the data flow,orb|Learn AI: the orb forms" | split: "," %}
+  {%- for v in variants %}{% assign parts = v | split: "|" %}
+  <div>{% assign anim = parts[0] %}{% include hero-anim.html anim=anim %}<p class="hero-caption">{{ parts[1] }}</p></div>
+  {%- endfor %}
+</section>
+<script type="module" src="/assets/flow.js"></script>
