@@ -1,10 +1,17 @@
-// Data-flow hero and scroll orb for sethshoultes.com (#149). Canvas 2D, no dependencies.
+// Hero animations for sethshoultes.com (#149, #152): one canvas 2D engine, six scenes.
 // Decoration only: every canvas is aria-hidden and the meaning lives in real HTML beside it.
 //
-//   <canvas class="flow-canvas" data-flow aria-hidden="true"></canvas>   business info -> site -> AI answers
-//   <canvas class="orb-canvas"  data-orb  aria-hidden="true"></canvas>   orb assembles as you scroll
+//   <canvas data-anim="flow|orb|answer|blocks|pins|page" aria-hidden="true"></canvas>
+//   (use _includes/hero-anim.html, which adds the figure, the stylesheet and this script)
 //
-// Rules the scenes keep: fixed-size canvas (CSS aspect-ratio, so no layout shift); runs only
+//   flow     business info streams into a site window and out to AI answer cards (full-bleed or boxed)
+//   orb      particles assemble into an orb as the section scrolls in
+//   answer   a question flows into an AI answer card that cites the site   (AI search optimization)
+//   blocks   blocks drop in and assemble a page                              (WordPress development)
+//   pins     map pins land and our listing climbs the ranking                (SEO)
+//   page     a wireframe page builds itself and scores 100                   (web development)
+//
+// Rules every scene keeps: fixed-size canvas (CSS aspect-ratio, so no layout shift); runs only
 // while on screen and the tab is visible; prefers-reduced-motion gets one still frame; the
 // device pixel ratio is capped; if frames run slow the particle count halves.
 
@@ -118,10 +125,10 @@ function flow(ctx, cv, c, getQuality) {
   const ripples = [];
 
   const build = () => {
-    const tall = w < 700 || w < h * 0.9;
+    const tall = w < 700 && w < h * 1.3 || w < h * 0.9;
     // The scene fills the lower part of a full-bleed canvas; the headline sits over the top.
     const copy = cv.parentElement.querySelector('.flow-copy');
-    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.04 : h * 0.45;
+    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.04 : h * 0.04;
     const ay = Math.min(top, h * 0.78);
     const A = { x: w * 0.04, y: ay, w: w * 0.92, h: h * 0.96 - ay };
     const X = (f) => A.x + A.w * f, Y = (f) => A.y + A.h * f;
@@ -298,13 +305,251 @@ function orb(ctx, cv, c, getQuality) {
   };
 }
 
-export function mountFlow(cv) { run(cv, flow); }
-export function mountOrb(cv) { run(cv, orb); }
 
-function start() {
-  document.querySelectorAll('canvas[data-flow]').forEach(mountFlow);
-  document.querySelectorAll('canvas[data-orb]').forEach(mountOrb);
+// ---- timeline scenes: drawn in a fixed 560x420 box scaled to the canvas ------------------
+
+const VW = 560, VH = 420;
+const seg = (t, a, b) => ease(clamp((t - a) / (b - a)));          // 0..1 eased progress of t between a and b
+const back = (x) => { const k = 1.7; return 1 + (k + 1) * Math.pow(x - 1, 3) + k * Math.pow(x - 1, 2); }; // overshoot
+
+function timeline(period, still, draw) {
+  return (ctx, w, h, c, now) => {
+    const k = Math.min(w / VW, h / VH);
+    const t = still ? period * 0.82 : (now / 1000) % period;
+    const fade = still ? 1 : Math.min(1, (period - t) / 0.5, t / 0.35 + 0.15);
+    ctx.clearRect(0, 0, w, h);
+    ctx.save();
+    ctx.translate((w - VW * k) / 2, (h - VH * k) / 2);
+    ctx.scale(k, k);
+    ctx.globalAlpha = fade;
+    draw(ctx, t, c);
+    ctx.restore();
+  };
 }
+
+function panel(g, x, y, w, h, c, r = 12, fill) {
+  roundRect(g, x, y, w, h, r);
+  g.fillStyle = fill || c.surface; g.fill();
+  g.strokeStyle = c.border; g.lineWidth = 1; g.stroke();
+}
+function bar(g, x, y, w, h, fill, p = 1) {
+  if (p <= 0) return;
+  roundRect(g, x, y, Math.max(h, w * p), h, h / 2);
+  g.fillStyle = fill; g.fill();
+}
+function dots(g, x, y, c) { g.fillStyle = c.border; for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(x + i * 13, y, 4, 0, TAU); g.fill(); } }
+function label(g, text, x, y, color, size = 13, weight = 600, align = 'left') {
+  g.font = `${weight} ${size}px Inter, -apple-system, sans-serif`;
+  g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
+  g.fillText(text, x, y);
+}
+
+// answer: a question flows into an AI answer card that cites the site
+function answer(ctx, cv, c, getQuality) {
+  const A = c.accent.join(','), acc = `rgb(${A})`;
+  const dot = sprite(A, 12);
+  let w = 0, h = 0, still = false;
+  const rand = rng(152);
+  const pts = Array.from({ length: 34 }, () => ({ o: rand(), j: rand() - 0.5 }));
+  const draw = (g, t, col) => {
+    const q = { x: 14, y: 34, w: 214, h: 46 }, card = { x: 262, y: 60, w: 284, h: 262 }, site = { x: 14, y: 236, w: 190, h: 150 };
+    const cite = { x: card.x + 18, y: card.y + card.h - 54, w: 142, h: 32 };
+    // the question
+    const qGlow = seg(t, 0, 0.5) * (1 - seg(t, 1.6, 2.2));
+    panel(g, q.x, q.y, q.w, q.h, col, 23); if (qGlow > 0.01) { roundRect(g, q.x, q.y, q.w, q.h, 23); g.strokeStyle = `rgba(${A},${qGlow * 0.8})`; g.lineWidth = 1.5; g.stroke(); }
+    label(g, 'Best plumber near me?', q.x + 20, q.y + q.h / 2, col.text, 13.5);
+    // the AI answer card
+    panel(g, card.x, card.y, card.w, card.h, col, 16, col.surface2);
+    g.fillStyle = acc; g.beginPath(); g.arc(card.x + 24, card.y + 26, 7, 0, TAU); g.fill();
+    label(g, 'AI answer', card.x + 40, card.y + 26, col.muted, 12.5);
+    const lines = [0.92, 0.78, 0.86, 0.6];
+    lines.forEach((f, i) => bar(g, card.x + 20, card.y + 58 + i * 30, (card.w - 40) * f, 9, col.border, seg(t, 1.5 + i * 0.7, 2.3 + i * 0.7)));
+    // the citation chip
+    const cp = seg(t, 4.5, 5.2);
+    if (cp > 0) {
+      g.save(); g.globalAlpha *= cp;
+      roundRect(g, cite.x, cite.y + (1 - cp) * 8, cite.w, cite.h, 16); g.fillStyle = `rgba(${A},0.14)`; g.fill(); g.strokeStyle = `rgba(${A},0.7)`; g.stroke();
+      label(g, '[1] yoursite.com', cite.x + 14, cite.y + 16 + (1 - cp) * 8, acc, 12.5);
+      g.restore();
+    }
+    // the site being cited
+    const sp = seg(t, 5.0, 5.8);
+    panel(g, site.x, site.y, site.w, site.h, col, 12); dots(g, site.x + 16, site.y + 16, col);
+    bar(g, site.x + 16, site.y + 38, site.w * 0.4, 8, acc);
+    for (let i = 0; i < 4; i++) bar(g, site.x + 16, site.y + 62 + i * 18, site.w * (0.76 - (i % 3) * 0.14), 6, col.border);
+    if (sp > 0.01) { roundRect(g, site.x, site.y, site.w, site.h, 12); g.strokeStyle = `rgba(${A},${sp * 0.8})`; g.lineWidth = 2; g.stroke(); }
+    // links: question -> card, site -> citation
+    const a = { x: q.x + q.w, y: q.y + q.h / 2 }, b = { x: card.x, y: card.y + 56 };
+    g.strokeStyle = `rgba(${A},0.18)`; g.lineWidth = 1; g.beginPath(); g.moveTo(a.x, a.y); g.bezierCurveTo(a.x + 30, a.y, b.x - 30, b.y, b.x, b.y); g.stroke();
+    const c2 = { x: site.x + site.w, y: site.y + 50 }, d2 = { x: cite.x, y: cite.y + cite.h / 2 };
+    if (sp > 0.01) { g.setLineDash([4, 5]); g.strokeStyle = `rgba(${A},${0.6 * sp})`; g.beginPath(); g.moveTo(c2.x, c2.y); g.bezierCurveTo(c2.x + 40, c2.y, d2.x - 40, d2.y, d2.x, d2.y); g.stroke(); g.setLineDash([]); }
+    // particles
+    g.globalCompositeOperation = 'lighter';
+    const n = Math.floor(pts.length * getQuality());
+    for (let i = 0; i < n; i++) {
+      const p = pts[i];
+      const f1 = clamp((t - 0.2 - p.o * 1.4) / 0.9);
+      if (f1 > 0 && f1 < 1) {
+        const u = ease(f1), x = lerp(a.x, b.x, u), y = lerp(a.y, b.y, u) + Math.sin(u * Math.PI) * p.j * 30;
+        g.globalAlpha = Math.sin(f1 * Math.PI); g.drawImage(dot, x - 8, y - 8, 16, 16);
+      }
+      const f2 = clamp((t - 5.2 - p.o * 0.9) / 0.8);
+      if (f2 > 0 && f2 < 1) {
+        const u = ease(f2), x = lerp(c2.x, d2.x, u), y = lerp(c2.y, d2.y, u) + Math.sin(u * Math.PI) * p.j * 24;
+        g.globalAlpha = Math.sin(f2 * Math.PI); g.drawImage(dot, x - 8, y - 8, 16, 16);
+      }
+    }
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  };
+  const paint = timeline(8, false, draw), paintStill = timeline(8, true, draw);
+  return { resize(nw, nh) { w = nw; h = nh; }, frame(dt, now, st) { (st ? paintStill : paint)(ctx, w, h, c, now); } };
+}
+
+// blocks: blocks drop in and assemble a page
+function blocks(ctx, cv, c) {
+  const A = c.accent.join(','), acc = `rgb(${A})`;
+  let w = 0, h = 0;
+  const F = { x: 100, y: 16, w: 360, h: 388 };
+  // [x, y, w, h, kind] inside the page frame
+  const B = [
+    [16, 40, 328, 28, 'nav'], [16, 80, 328, 104, 'hero'], [16, 196, 328, 14, 'title'],
+    [16, 222, 100, 78, 'card'], [130, 222, 100, 78, 'card'], [244, 222, 100, 78, 'card'],
+    [16, 312, 328, 10, 'line'], [16, 330, 250, 10, 'line'], [16, 354, 328, 22, 'foot'],
+  ];
+  const drawBlock = (g, b, col) => {
+    const [x, y, bw, bh, k] = b;
+    if (k === 'nav') { roundRect(g, x, y, bw, bh, 8); g.fillStyle = col.surface2; g.fill(); bar(g, x + 12, y + 10, 54, 8, acc); for (let i = 0; i < 3; i++) bar(g, x + bw - 130 + i * 44, y + 11, 34, 6, col.border); }
+    else if (k === 'hero') { roundRect(g, x, y, bw, bh, 10); const gr = g.createLinearGradient(x, y, x + bw, y + bh); gr.addColorStop(0, `rgba(${A},0.55)`); gr.addColorStop(1, `rgba(${A},0.08)`); g.fillStyle = gr; g.fill(); bar(g, x + 20, y + 28, 190, 12, col.text); bar(g, x + 20, y + 52, 130, 8, col.muted); bar(g, x + 20, y + 74, 70, 16, acc); }
+    else if (k === 'title') bar(g, x, y, 150, bh, col.text);
+    else if (k === 'card') { roundRect(g, x, y, bw, bh, 10); g.fillStyle = col.surface2; g.fill(); g.strokeStyle = col.border; g.stroke(); g.fillStyle = `rgba(${A},0.7)`; g.beginPath(); g.arc(x + 18, y + 20, 8, 0, TAU); g.fill(); bar(g, x + 14, y + 42, bw - 28, 6, col.border); bar(g, x + 14, y + 56, bw - 52, 6, col.border); }
+    else if (k === 'line') bar(g, x, y, bw, bh, col.border);
+    else { roundRect(g, x, y, bw, bh, 8); g.fillStyle = col.surface2; g.fill(); bar(g, x + 12, y + 8, 90, 6, col.border); }
+  };
+  const draw = (g, t, col) => {
+    panel(g, F.x, F.y, F.w, F.h, col, 16); dots(g, F.x + 18, F.y + 18, col);
+    g.save(); g.translate(F.x, F.y);
+    let active = null;
+    B.forEach((b, i) => {
+      const t0 = 0.3 + i * 0.42, p = clamp((t - t0) / 0.55);
+      if (p <= 0) return;
+      const drop = 1 - back(p);
+      g.save();
+      g.globalAlpha *= Math.min(1, p * 2.5);
+      g.translate(0, -drop * 70);
+      drawBlock(g, b, col);
+      g.restore();
+      if (p < 1) active = b;
+      else if (clamp((t - t0 - 0.55) / 0.35) < 1) { g.save(); g.globalAlpha *= 1 - seg(t, t0 + 0.55, t0 + 0.9); roundRect(g, b[0] - 3, b[1] - 3, b[2] + 6, b[3] + 6, 11); g.strokeStyle = acc; g.lineWidth = 1.5; g.stroke(); g.restore(); }
+    });
+    if (active) { g.setLineDash([5, 4]); roundRect(g, active[0] - 3, active[1] - 3, active[2] + 6, active[3] + 6, 11); g.strokeStyle = `rgba(${A},0.5)`; g.lineWidth = 1; g.stroke(); g.setLineDash([]); }
+    g.restore();
+    // the block inserter badge
+    const bp = seg(t, 0, 0.4);
+    g.save(); g.globalAlpha *= bp;
+    g.fillStyle = acc; g.beginPath(); g.arc(F.x - 34, F.y + 30, 17, 0, TAU); g.fill();
+    g.strokeStyle = '#0b0d10'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(F.x - 34, F.y + 22); g.lineTo(F.x - 34, F.y + 38); g.moveTo(F.x - 42, F.y + 30); g.lineTo(F.x - 26, F.y + 30); g.stroke();
+    g.restore();
+  };
+  const paint = timeline(7.5, false, draw), paintStill = timeline(7.5, true, draw);
+  return { resize(nw, nh) { w = nw; h = nh; }, frame(dt, now, st) { (st ? paintStill : paint)(ctx, w, h, c, now); } };
+}
+
+// pins: map pins land and our listing climbs the ranking
+function pins(ctx, cv, c) {
+  const A = c.accent.join(','), acc = `rgb(${A})`;
+  let w = 0, h = 0;
+  const M = { x: 14, y: 16, w: 336, h: 388 };
+  const P = [[70, 90], [250, 70], [160, 170], [290, 220], [90, 280], [230, 330], [120, 360]];
+  const home = [196, 214];
+  const pin = (g, x, y, s, fill) => { g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x - 11 * s, y - 14 * s, x - 11 * s, y - 32 * s, x, y - 32 * s); g.bezierCurveTo(x + 11 * s, y - 32 * s, x + 11 * s, y - 14 * s, x, y); g.fillStyle = fill; g.fill(); g.fillStyle = '#0b0d10'; g.beginPath(); g.arc(x, y - 21 * s, 4 * s, 0, TAU); g.fill(); };
+  const draw = (g, t, col) => {
+    panel(g, M.x, M.y, M.w, M.h, col, 16, col.surface2);
+    g.save(); roundRect(g, M.x, M.y, M.w, M.h, 16); g.clip();
+    g.strokeStyle = col.border; g.lineWidth = 1;
+    for (let x = 30; x < M.w; x += 56) { g.beginPath(); g.moveTo(M.x + x, M.y); g.lineTo(M.x + x + 18, M.y + M.h); g.stroke(); }
+    for (let y = 40; y < M.h; y += 62) { g.beginPath(); g.moveTo(M.x, M.y + y); g.lineTo(M.x + M.w, M.y + y - 14); g.stroke(); }
+    g.lineWidth = 6; g.strokeStyle = col.surface; g.beginPath(); g.moveTo(M.x, M.y + 230); g.bezierCurveTo(M.x + 110, M.y + 150, M.x + 220, M.y + 290, M.x + M.w, M.y + 170); g.stroke();
+    P.forEach(([x, y], i) => {
+      const p = clamp((t - 0.3 - i * 0.25) / 0.5); if (p <= 0) return;
+      const d = (1 - back(p)) * 60;
+      g.save(); g.globalAlpha *= Math.min(1, p * 3); pin(g, M.x + x, M.y + y - d, 0.9, col.muted); g.restore();
+    });
+    const hp = clamp((t - 2.4) / 0.6);
+    if (hp > 0) {
+      const pulse = (t * 0.9) % 1;
+      g.strokeStyle = `rgba(${A},${(1 - pulse) * 0.6 * hp})`; g.lineWidth = 2; g.beginPath(); g.arc(M.x + home[0], M.y + home[1], 10 + pulse * 40, 0, TAU); g.stroke();
+      g.fillStyle = `rgba(${A},${0.15 * hp})`; g.beginPath(); g.arc(M.x + home[0], M.y + home[1], 38, 0, TAU); g.fill();
+      pin(g, M.x + home[0], M.y + home[1] - (1 - back(hp)) * 70, 1.45, acc);
+    }
+    g.restore();
+    // ranking: our row starts fifth and climbs to first
+    const R = { x: 372, y: 16, w: 176 };
+    label(g, 'Local ranking', R.x, R.y + 14, col.muted, 12);
+    const climb = seg(t, 3.6, 5.4);
+    [0, 1, 2, 3, 4].forEach((row, i) => {
+      const us = row === 4;
+      const slot = us ? lerp(4, 0, climb) : row + climb; // the rows we pass slide down one place
+      const y = R.y + 38 + slot * 72;
+      const pr = seg(t, 1.6 + i * 0.12, 2.2 + i * 0.12);
+      g.save(); g.globalAlpha *= pr;
+      roundRect(g, R.x, y, R.w, 58, 12); g.fillStyle = us ? `rgba(${A},0.16)` : col.surface; g.fill(); g.strokeStyle = us ? acc : col.border; g.lineWidth = us ? 1.5 : 1; g.stroke();
+      label(g, String(Math.round(slot) + 1), R.x + 20, y + 29, us ? acc : col.muted, 18, 700, 'center');
+      bar(g, R.x + 40, y + 18, R.w - 62, 8, us ? acc : col.border);
+      bar(g, R.x + 40, y + 34, (R.w - 62) * (us ? 0.6 : 0.5), 6, col.border);
+      g.restore();
+    });
+  };
+  const paint = timeline(8, false, draw), paintStill = timeline(8, true, draw);
+  return { resize(nw, nh) { w = nw; h = nh; }, frame(dt, now, st) { (st ? paintStill : paint)(ctx, w, h, c, now); } };
+}
+
+// page: a wireframe page builds itself and scores 100
+function pageBuild(ctx, cv, c) {
+  const A = c.accent.join(','), acc = `rgb(${A})`;
+  let w = 0, h = 0;
+  const W = { x: 50, y: 20, w: 460, h: 380 };
+  const draw = (g, t, col) => {
+    panel(g, W.x, W.y, W.w, W.h, col, 16); dots(g, W.x + 20, W.y + 20, col);
+    g.save(); roundRect(g, W.x, W.y, W.w, W.h, 16); g.clip(); g.translate(W.x, W.y);
+    const P = (a, b) => seg(t, a, b);
+    // nav
+    bar(g, 24, 46, 54, 10, acc, P(0.3, 0.8)); for (let i = 0; i < 3; i++) bar(g, 290 + i * 50, 48, 38, 7, col.border, P(0.5 + i * 0.15, 1.0 + i * 0.15));
+    // hero copy
+    bar(g, 24, 92, 230, 16, col.text, P(1.0, 1.7)); bar(g, 24, 118, 170, 16, col.text, P(1.2, 1.9));
+    bar(g, 24, 150, 210, 8, col.muted, P(1.5, 2.1)); bar(g, 24, 168, 160, 8, col.muted, P(1.6, 2.2)); bar(g, 24, 196, 96, 26, acc, P(1.9, 2.5));
+    // hero image
+    const ip = P(1.4, 2.4);
+    if (ip > 0) { g.save(); g.globalAlpha *= ip; roundRect(g, 276, 92, 160, 134, 12); const gr = g.createLinearGradient(276, 92, 436, 226); gr.addColorStop(0, `rgba(${A},0.5)`); gr.addColorStop(1, `rgba(${A},0.06)`); g.fillStyle = gr; g.fill(); g.fillStyle = `rgba(${A},0.55)`; g.beginPath(); g.moveTo(292, 214); g.lineTo(334, 160); g.lineTo(366, 196); g.lineTo(390, 168); g.lineTo(424, 214); g.closePath(); g.fill(); g.restore(); }
+    // cards
+    for (let i = 0; i < 3; i++) { const p = P(2.5 + i * 0.25, 3.3 + i * 0.25); if (p > 0) { g.save(); g.globalAlpha *= p; g.translate(0, (1 - p) * 14); roundRect(g, 24 + i * 142, 250, 128, 70, 10); g.fillStyle = col.surface2; g.fill(); g.strokeStyle = col.border; g.stroke(); g.fillStyle = `rgba(${A},0.7)`; g.beginPath(); g.arc(24 + i * 142 + 18, 270, 7, 0, TAU); g.fill(); bar(g, 24 + i * 142 + 14, 292, 98, 6, col.border); bar(g, 24 + i * 142 + 14, 304, 70, 6, col.border); g.restore(); } }
+    bar(g, 24, 342, 412, 8, col.border, P(3.6, 4.2));
+    // the build front: a scan line that sweeps down while things appear
+    const sp = clamp((t - 0.2) / 3.9);
+    if (sp > 0 && sp < 1) { const y = 30 + sp * 330; const gr = g.createLinearGradient(0, y - 26, 0, y); gr.addColorStop(0, `rgba(${A},0)`); gr.addColorStop(1, `rgba(${A},0.35)`); g.fillStyle = gr; g.fillRect(0, y - 26, W.w, 26); g.fillStyle = acc; g.fillRect(0, y, W.w, 1.5); }
+    g.restore();
+    // the score ring
+    const rp = seg(t, 4.4, 5.6), cx = W.x + W.w - 34, cy = W.y + W.h - 22;
+    if (rp > 0) {
+      g.save(); g.globalAlpha *= Math.min(1, rp * 3);
+      g.fillStyle = col.surface; g.beginPath(); g.arc(cx, cy, 36, 0, TAU); g.fill();
+      g.lineWidth = 6; g.strokeStyle = col.border; g.beginPath(); g.arc(cx, cy, 28, 0, TAU); g.stroke();
+      g.strokeStyle = acc; g.lineCap = 'round'; g.beginPath(); g.arc(cx, cy, 28, -Math.PI / 2, -Math.PI / 2 + TAU * rp); g.stroke();
+      label(g, String(Math.round(100 * rp)), cx, cy + 1, col.text, 20, 700, 'center');
+      g.restore();
+    }
+  };
+  const paint = timeline(8, false, draw), paintStill = timeline(8, true, draw);
+  return { resize(nw, nh) { w = nw; h = nh; }, frame(dt, now, st) { (st ? paintStill : paint)(ctx, w, h, c, now); } };
+}
+
+const SCENES = { flow, orb, answer, blocks, pins, page: pageBuild };
+
+export function mount(cv) {
+  const make = SCENES[cv.dataset.anim];
+  if (make) run(cv, make);
+}
+
+function start() { document.querySelectorAll('canvas[data-anim]').forEach(mount); }
 
 // Content first: the scenes mount after the page has loaded, so LCP is unchanged.
 const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
