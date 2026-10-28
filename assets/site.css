@@ -133,9 +133,9 @@
 .service-hero h1 { text-wrap: balance; }
 .service-sec { padding: 1.5rem 0; }
 .service-sec h2 { margin-bottom: 1rem; }
-.service ul { padding-left: 1.2rem; color: var(--muted); }
-.service ul, .hub ul { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
-.service ul li, .hub ul li { margin-bottom: 0.4rem; }
+.service ul:not(.link-grid) { padding-left: 1.2rem; color: var(--muted); }
+.service ul:not(.link-grid), .hub ul:not(.link-grid):not(.photo-credits) { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
+.service ul:not(.link-grid) li, .hub ul:not(.link-grid):not(.photo-credits) li { margin-bottom: 0.4rem; }
 .hub h2 { margin-top: 2.5rem; }
 .hub .lead { margin-top: 1rem; }
 .hub .prose { margin-top: 2.5rem; }
@@ -273,3 +273,7 @@
 .tool-sublist { margin: 0.6rem 0 0; padding-left: 1.2rem; color: var(--muted); font-size: 0.92rem; }
 .tool-sublist li { margin-bottom: 0.3rem; }
 
+
+/* card sections under service and city pages */
+.service-more, .city-more { padding-bottom: 2rem; }
+.service-more h2, .city-more h2 { margin-top: 3rem; }

@@ -112,8 +112,8 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 /* link cards: whole-card links with an H3 title (southern-utah hub; reusable for nearby links) */
 .hub .prose { max-width: none; }
 .hub .prose > p { max-width: 720px; }
-.hub .link-grid { list-style: none; padding: 0; margin: 1.25rem 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-.hub .link-grid li { margin: 0; }
+ul.link-grid { list-style: none; padding: 0; margin: 1.25rem 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+ul.link-grid > li { margin: 0; }
 .prose a.link-card, .prose a.link-card:hover, .prose a.link-card:focus-visible { text-decoration: none; }
 .link-card { display: flex; flex-direction: column; height: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; color: var(--text); transition: border-color 0.2s, transform 0.2s; }
 .link-card:hover, .link-card:focus-visible { border-color: var(--accent); transform: translateY(-3px); text-decoration: none; }
@@ -123,14 +123,14 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .link-card h3 { margin: 0; font-size: 1.15rem; line-height: 1.3; color: var(--text); }
 .link-card:hover h3, .link-card:focus-visible h3 { color: var(--accent); }
 .link-card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-.hub .link-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+ul.link-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
 .hub .photo-credits { margin: 2.5rem 0 0; padding: 0; list-style: none; columns: 2; column-gap: 2rem; color: var(--muted); font-size: 0.8125rem; }
 .hub .photo-credits li { margin: 0 0 0.35rem; break-inside: avoid; }
 .hub .photo-credits a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
 .hub .photo-credits a:hover { color: var(--text); }
 .photo-credits-note { margin-top: 0.75rem; color: var(--muted); font-size: 0.8125rem; }
-@media (max-width: 1000px) { .hub .link-grid, .hub .link-grid.cols-4 { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 600px) { .hub .link-grid, .hub .link-grid.cols-4 { grid-template-columns: 1fr; } .hub .photo-credits { columns: 1; } }
+@media (max-width: 1000px) { ul.link-grid, ul.link-grid.cols-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { ul.link-grid, ul.link-grid.cols-4 { grid-template-columns: 1fr; } .hub .photo-credits { columns: 1; } }
 @media (prefers-reduced-motion: reduce) { .link-card:hover, .link-card:focus-visible { transform: none; } }
 /* blog posts (layout: post) */
 .post { max-width: 720px; margin: 0 auto; padding: 8rem 1.5rem 3rem; }
