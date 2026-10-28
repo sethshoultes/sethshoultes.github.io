@@ -9,6 +9,7 @@
       "pattern": "^/(?!southern-)[a-z-]+-utah/$",
       "parts": [
         { "id": "flyover hero (clip and poster)", "need": "contains", "value": "class=\"scrub\"", "why": "city data needs clip: and poster_alt:" },
+        { "id": "flyover scripts and pause button (front matter flyover: true)", "need": "contains", "value": "/assets/lab.js" },
         { "id": "poster image with alt text", "need": "regex", "value": "scrub-stage\">\\s*<img[^>]*\\salt=\"[^\"]+\"" },
         { "id": "scenes with one h1", "need": "min_count", "value": "<h1>", "min": 1 },
         { "id": "stats block with source", "need": "contains", "value": "class=\"source\"" },

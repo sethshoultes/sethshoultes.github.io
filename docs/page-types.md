@@ -6,7 +6,7 @@ A page declares its type with `<body data-page-type="...">`. The site layout set
 
 ## city (reference: /st-george-utah/)
 Data file in `_data/cities/<slug>.yml` and a page folder plus markdown twin. Required, in order:
-1. Flyover hero: `clip:` and `poster_alt:` in the data (assets `assets/lab/<clip>.webm`, `.mp4`, `-poster.webp`), then the scenes (one H1).
+1. Flyover hero: `flyover: true` in the page front matter, `clip:` and `poster_alt:` in the data (assets `assets/lab/<clip>.webm`, `.mp4`, `-poster.webp`), then the scenes (one H1).
 2. Sections, "by the numbers" stats block with its source line.
 3. FAQ (3 or more questions) with FAQPage schema.
 4. Service cards ("What else I offer"), then the Book a call CTA, then Sources and the not-affiliated line.
