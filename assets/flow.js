@@ -90,6 +90,8 @@ function run(cv, make) {
   };
 
   new ResizeObserver(size).observe(cv);
+  const copy = cv.parentElement.querySelector('.flow-copy');
+  if (copy) new ResizeObserver(size).observe(copy); // the scene sits below the headline, so re-lay it when the text re-wraps
   new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; sync(); }, { rootMargin: '120px' }).observe(cv);
   document.addEventListener('visibilitychange', sync);
   reduced.addEventListener('change', sync);
@@ -116,17 +118,24 @@ function flow(ctx, cv, c, getQuality) {
   const ripples = [];
 
   const build = () => {
-    const tall = w < h * 1.1;
-    const src = [], cards = [], win = tall ? { x: w * 0.12, y: h * 0.34, w: w * 0.76, h: h * 0.3 } : { x: w * 0.38, y: h * 0.1, w: w * 0.24, h: h * 0.8 };
+    const tall = w < 700 || w < h * 0.9;
+    // The scene fills the lower part of a full-bleed canvas; the headline sits over the top.
+    const copy = cv.parentElement.querySelector('.flow-copy');
+    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.04 : h * 0.45;
+    const ay = Math.min(top, h * 0.78);
+    const A = { x: w * 0.04, y: ay, w: w * 0.92, h: h * 0.96 - ay };
+    const X = (f) => A.x + A.w * f, Y = (f) => A.y + A.h * f;
+    const src = [], cards = [];
+    const win = tall ? { x: X(0.08), y: Y(0.38), w: A.w * 0.84, h: A.h * 0.24 } : { x: X(0.37), y: Y(0), w: A.w * 0.26, h: A.h };
     for (let i = 0; i < 3; i++) {
       if (tall) {
-        const cx = w * (0.2 + 0.3 * i), bw = w * 0.27, bh = h * 0.08;
-        src.push({ x: cx - bw / 2, y: h * 0.06, w: bw, h: bh, label: SOURCES[i] });
-        cards.push({ x: cx - bw / 2, y: h * 0.86, w: bw, h: bh * 1.2, label: ANSWERS[i] });
+        const cx = X(0.2 + 0.3 * i), bw = A.w * 0.27, bh = A.h * 0.16;
+        src.push({ x: cx - bw / 2, y: A.y, w: bw, h: bh, label: SOURCES[i] });
+        cards.push({ x: cx - bw / 2, y: A.y + A.h - bh * 1.2, w: bw, h: bh * 1.2, label: ANSWERS[i] });
       } else {
-        const cy = h * (0.2 + 0.3 * i), bh = h * 0.15;
-        src.push({ x: w * 0.03, y: cy - bh / 2, w: w * 0.17, h: bh, label: SOURCES[i] });
-        cards.push({ x: w * 0.78, y: cy - bh / 2, w: w * 0.19, h: bh * 1.1, label: ANSWERS[i] });
+        const cy = Y(0.17 + 0.33 * i), bh = A.h * 0.22;
+        src.push({ x: A.x, y: cy - bh / 2, w: A.w * 0.19, h: bh, label: SOURCES[i] });
+        cards.push({ x: A.x + A.w * 0.79, y: cy - bh / 2, w: A.w * 0.21, h: bh * 1.1, label: ANSWERS[i] });
       }
     }
     const routes = [];
@@ -182,10 +191,19 @@ function flow(ctx, cv, c, getQuality) {
     return [a * r[0].x + b * r[1].x + d * r[2].x + e * r[3].x + (geo.tall ? wob : 0), a * r[0].y + b * r[1].y + d * r[2].y + e * r[3].y + (geo.tall ? 0 : wob)];
   };
 
-  const pointer = (e) => { const r = cv.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; };
-  cv.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { pointer(e); infTarget = 1; } });
-  cv.addEventListener('pointerleave', () => { infTarget = 0; });
-  cv.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') { pointer(e); ripples.push({ x: mx, y: my, age: 0 }); } });
+  const rel = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top, r]; };
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const [x, y, r] = rel(e);
+    infTarget = x >= 0 && y >= 0 && x <= r.width && y <= r.height ? 1 : 0;
+    mx = x; my = y;
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => { infTarget = 0; });
+  addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse') return;
+    const [x, y, r] = rel(e);
+    if (x >= 0 && y >= 0 && x <= r.width && y <= r.height) ripples.push({ x, y, age: 0 });
+  }, { passive: true });
 
   return {
     resize(nw, nh, dpr) { w = nw; h = nh; build(); paintBack(dpr); },
@@ -254,7 +272,7 @@ function orb(ctx, cv, c, getQuality) {
     frame(dt, now, still) {
       const vh = window.innerHeight, top = cv.getBoundingClientRect().top;
       const p = still ? 1 : clamp((vh * 0.95 - top) / (vh * 0.6));
-      const R = Math.min(w, h) * 0.3, cx = w / 2, cy = h / 2;
+      const wide = w > 860, R = Math.min(w * (wide ? 0.3 : 0.42), h * 0.4), cx = wide ? w * 0.62 : w / 2, cy = h * 0.5;
       const spin = still ? 0.6 : now * 0.00025;
       const cs = Math.cos(spin), sn = Math.sin(spin);
       const live = Math.floor(MAX * getQuality() * (w < 600 ? 0.65 : 1));
