@@ -191,3 +191,9 @@ ul.link-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
   .post .video-hero { max-width: 100%; }
 }
 
+
+/* photo with credit (figure.photo-fig) */
+.photo-fig { margin: 2rem 0; }
+.photo-fig img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); }
+.photo-fig figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8125rem; line-height: 1.5; }
+.photo-fig figcaption a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
