@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Fail if a page, post, layout or include carries an inline style="..." attribute.
-# Styles belong in a class in assets/site.css, blog/blog.css or recipes/recipe.css.
+# Styles belong in a class in assets/site.css or recipes/recipe.css.
 #
 # Excluded on purpose: the games and arcade, vendored builds, standalone sub-sites that
 # carry their own stylesheet (garage-door-science-hub), docs and tooling.
@@ -15,7 +15,7 @@ hits=$(git ls-files -z '*.html' '*.md' \
   | xargs -0 grep -nH 'style="' 2>/dev/null || true)
 
 if [ -n "$hits" ]; then
-  echo "Inline styles found. Move each to a class in assets/site.css (or blog/blog.css):" >&2
+  echo "Inline styles found. Move each to a class in assets/site.css:" >&2
   echo "$hits" >&2
   exit 1
 fi
