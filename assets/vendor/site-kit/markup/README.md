@@ -19,3 +19,12 @@ Same classes as in `css/components.css`. FAQ is `<div class="faq"><details><summ
 
 ## Rules every component keeps
 No inline styles. Colors and fonts only through tokens/brand. Every `<img>` has alt; images that are not above the fold are lazy. Focus state is the global `:focus-visible` ring.
+
+## photo-fig
+```html
+<figure class="photo-fig">
+  <img src="/photo.webp" alt="Describe the place" width="1200" height="800" loading="lazy">
+  <figcaption>Caption. Photo: <a href="https://commons.wikimedia.org/wiki/File:X">Author</a>, CC BY-SA 3.0, via Wikimedia Commons.</figcaption>
+</figure>
+```
+Real photos only. Alt, width, height, and the credit (author, license, source link) are required. The first image on a page is not lazy.

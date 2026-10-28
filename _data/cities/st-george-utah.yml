@@ -57,6 +57,9 @@ faq:
 sources:
   - label: "St. George, Utah (settled 1861, 2020 census, 2024 estimate, economy)"
     href: "https://en.wikipedia.org/wiki/St._George,_Utah"
+see_also:
+  - label: "Little Valley, a St. George neighborhood"
+    href: "/little-valley-st-george-utah/"
 affiliation: "I am not affiliated with the City of St. George, Utah Tech University or the events named on this page. They are named only as local facts."
 card_line: "The region's largest city, a short drive from my home in Washington City."
 card_photo: /assets/img/southern-utah/st-george-utah.webp
