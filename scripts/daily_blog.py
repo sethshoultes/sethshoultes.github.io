@@ -52,6 +52,13 @@ DRY_RUN = os.environ.get("DRY_RUN") == "1"
 CLAUDE_BIN = os.environ.get("CLAUDE_BIN", str(Path.home() / ".local" / "bin" / "claude"))
 CLAUDE_MODEL = "claude-opus-5-5"
 CLAUDE_TIMEOUT_S = 600
+
+# The house style every generated word is written under. A missing file stops the run
+# (fail visibly); there is no bare-prompt fallback. The per-post voice file
+# (scripts/voices/<voice>.md) is added on top for the draft.
+BRAND_RULES = Path(os.environ.get(
+    "BRAND_RULES", str(Path.home() / "projects" / "herdos" / "docs" / "brand" / "write-for-a-human.md")))
+SITE_STRATEGY = REPO_ROOT / "llms.txt"  # who Seth helps, the plans and prices, the key pages
 IMAGE_MODEL = "gpt-image-2"  # gpt-image-1 now answers "model does not exist"
 
 # The fixed style suffix that gives every featured image the same pen-and-ink
@@ -214,6 +221,18 @@ def record_voice_use(voices_state: dict, voice: str, slug: str) -> dict:
 
 # ----- claude -p / openai -------------------------------------------------------
 
+def house_style() -> str:
+    """The brand rules and the site's own positioning, as a system-prompt block."""
+    parts = []
+    for label, path in (("BRAND RULES: write for a human", BRAND_RULES),
+                        ("SITE POSITIONING: who Seth helps and what he offers (llms.txt)", SITE_STRATEGY)):
+        if not path.is_file():
+            raise RuntimeError(f"house style file missing: {path}")
+        parts.append(f"## {label}\n\n{path.read_text(encoding='utf-8').strip()}")
+    return ("Everything you write is held to this house style. The voice below it sets who is "
+            "speaking; these set how, and who the writing serves.\n\n" + "\n\n".join(parts))
+
+
 def ask_claude(prompt: str, system: str | None = None) -> str:
     """Write text with `claude -p` on the signed-in subscription. No API key, no fallback:
     if the CLI is not signed in or fails, this raises and the run reports the failure.
@@ -340,7 +359,8 @@ def generate_idea_from_repo() -> dict:
                 "Reply in this exact format and nothing else:\n\n"
                 "slug: <kebab-case-slug>\n"
                 "claim: <one-sentence thesis the post must defend>\n"
-                "notes: <2-3 sentences of context the writer needs>"
+                "notes: <2-3 sentences of context the writer needs>",
+        system=house_style(),
     )
     fields = {}
     for line in text.splitlines():
@@ -357,7 +377,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
     voice_path = VOICES_DIR / f"{voice}.md"
     if not voice_path.exists():
         raise RuntimeError(f"voice file not found: {voice_path}")
-    system_prompt = voice_path.read_text(encoding="utf-8")
+    system_prompt = voice_path.read_text(encoding="utf-8") + "\n\n" + house_style()
 
     tone_ref = recent_posts_context(3)
     available = corpus_index(25)
@@ -391,7 +411,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "---\n\n"
         "Then a featured image tag in this exact form (the image will be generated to match):\n\n"
         f'<img src="/blog/images/{idea["slug"]}-featured.png" alt="<short alt text>" '
-        'style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />\n\n'
+        'width="1536" height="1024" />\n\n'
         "Then your prose, every <p> opened and closed, every <h2> opened and closed.\n\n"
         "Then, AT THE END of the body — after the last paragraph of prose — add this closing block:\n\n"
         "<hr>\n\n"

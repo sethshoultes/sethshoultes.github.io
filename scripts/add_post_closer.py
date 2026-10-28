@@ -23,7 +23,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from daily_blog import (  # type: ignore
-    POSTS_DIR, corpus_index, _post_meta, ask_claude,
+    POSTS_DIR, corpus_index, _post_meta, ask_claude, house_style,
 )
 
 
@@ -166,7 +166,7 @@ def main() -> int:
         body=body[:6000],
     )
 
-    response = ask_claude(prompt)
+    response = ask_claude(prompt, system=house_style())
 
     related, closer = parse_response(response)
     print("RELATED:")
