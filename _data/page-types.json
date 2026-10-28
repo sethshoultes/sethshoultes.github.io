@@ -1,0 +1,66 @@
+{
+  "site": "https://sethshoultes.com",
+  "banned": [
+    { "id": "ai-disclaimer", "regex": "scenery above is generated|is (an )?ai[- ]generated|not a photo or video of" }
+  ],
+  "types": {
+    "city": {
+      "reference": "/st-george-utah/",
+      "pattern": "^/(?!southern-)[a-z-]+-utah/$",
+      "parts": [
+        { "id": "flyover hero (clip and poster)", "need": "contains", "value": "class=\"scrub\"", "why": "city data needs clip: and poster_alt:" },
+        { "id": "poster image with alt text", "need": "regex", "value": "scrub-stage\">\\s*<img[^>]*\\salt=\"[^\"]+\"" },
+        { "id": "scenes with one h1", "need": "min_count", "value": "<h1>", "min": 1 },
+        { "id": "stats block with source", "need": "contains", "value": "class=\"source\"" },
+        { "id": "FAQ details", "need": "min_count", "value": "<details>", "min": 3 },
+        { "id": "service cards (What else I offer)", "need": "min_count", "value": "class=\"link-card\"", "min": 6 },
+        { "id": "Book a call button", "need": "contains", "value": "href=\"/consulting/#contact\"" },
+        { "id": "Sources section", "need": "contains", "value": "<h3>Sources</h3>" },
+        { "id": "ProfessionalService schema", "need": "jsonld", "value": "ProfessionalService" },
+        { "id": "BreadcrumbList schema", "need": "jsonld", "value": "BreadcrumbList" },
+        { "id": "FAQPage schema", "need": "jsonld", "value": "FAQPage" },
+        { "id": "markdown twin", "need": "twin" },
+        { "id": "llms.txt entry", "need": "llms" },
+        { "id": "sitemap entry", "need": "sitemap" },
+        { "id": "linked from /southern-utah/", "need": "linked_from", "value": "/southern-utah/" }
+      ]
+    },
+    "service": {
+      "reference": "/ai-services/",
+      "parts": [
+        { "id": "hero", "need": "contains", "value": "class=\"service-hero\"" },
+        { "id": "FAQ details", "need": "min_count", "value": "<details>", "min": 3 },
+        { "id": "service cards (What else I do)", "need": "min_count", "value": "class=\"link-card\"", "min": 5 },
+        { "id": "Book a call button", "need": "contains", "value": "href=\"/consulting/#contact\"" },
+        { "id": "Service schema", "need": "jsonld", "value": "Service" },
+        { "id": "BreadcrumbList schema", "need": "jsonld", "value": "BreadcrumbList" },
+        { "id": "FAQPage schema", "need": "jsonld", "value": "FAQPage" },
+        { "id": "markdown twin", "need": "twin" },
+        { "id": "llms.txt entry", "need": "llms" },
+        { "id": "sitemap entry", "need": "sitemap" },
+        { "id": "linked from /services/", "need": "linked_from", "value": "/services/" }
+      ]
+    },
+    "hub": {
+      "reference": "/southern-utah/",
+      "parts": [
+        { "id": "one h1", "need": "min_count", "value": "<h1>", "min": 1 },
+        { "id": "card grid (cards, never a bulleted list)", "need": "min_count", "value": "class=\"link-card\"", "min": 6 },
+        { "id": "Book a call button", "need": "contains", "value": "href=\"/consulting/#contact\"" },
+        { "id": "markdown twin", "need": "twin" },
+        { "id": "llms.txt entry", "need": "llms" },
+        { "id": "sitemap entry", "need": "sitemap" }
+      ]
+    },
+    "post": {
+      "reference": "/blog/merged-is-not-live.html",
+      "parts": [
+        { "id": "article.post with one h1", "need": "regex", "value": "<article class=\"post\">[\\s\\S]*<h1>" },
+        { "id": "byline", "need": "contains", "value": "class=\"byline\"" },
+        { "id": "canonical link", "need": "contains", "value": "rel=\"canonical\"" },
+        { "id": "og:title", "need": "contains", "value": "property=\"og:title\"" },
+        { "id": "sitemap entry", "need": "sitemap" }
+      ]
+    }
+  }
+}
