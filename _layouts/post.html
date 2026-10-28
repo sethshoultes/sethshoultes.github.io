@@ -11,7 +11,7 @@ layout: site
   <p class="subtitle">{{ page.subtitle }}</p>
   {%- endif %}
 
-  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; {{ page.date | date: "%B %-d, %Y" }} &middot; {{ page.read_time }}</p>
+  <p class="byline">By <a href="/">Seth Shoultes</a> &middot; {{ page.date | date: "%B %-d, %Y" }}{% if page.read_time %} &middot; {{ page.read_time }}{% endif %}</p>
 
   {%- if page.hero_video %}
   <div class="video-hero">

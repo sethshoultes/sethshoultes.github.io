@@ -393,7 +393,7 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .post .subtitle { font-size: 1.2rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.75rem; }
 .post .byline { font-size: 0.85rem; color: var(--muted); margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
 .post .byline a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 3px; }
-.post .video-hero { margin: 0 0 3rem; background: #000; border-radius: var(--radius); overflow: hidden; max-width: 420px; }
+.post .video-hero { margin: 0 auto 3rem; background: #000; border-radius: var(--radius); overflow: hidden; max-width: 420px; }
 .post .video-embed { position: relative; padding-bottom: 177.78%; height: 0; }
 .post .video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 .post .video-hero-caption { font-size: 0.85rem; color: var(--muted); margin-top: 0.75rem; text-align: center; }
@@ -430,13 +430,15 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .post-content .post-caption-pulled { text-align: center; font-size: 0.9rem; color: var(--muted); margin-top: -0.5rem; }
 .post-content .post-note { text-align: center; font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
 .post-content .post-footnotes { font-size: 0.875rem; color: var(--muted); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.post-content hr + .post-bio, .post-content hr + .post-footnotes { border-top: 0; padding-top: 0; margin-top: 0; }
 .post-bio { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); font-style: italic; }
 
 .post-related { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 .post-related h3 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 1.25rem; }
 .post-related ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
-.post-related a { color: var(--muted); font-size: 0.95rem; transition: color 0.2s; }
-.post-related a:hover { color: var(--accent); text-decoration: none; }
+.post-related a { color: var(--text); font-size: 0.95rem; font-weight: 500; text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 3px; transition: color 0.2s, text-decoration-color 0.2s; }
+.post-related a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.post-related em { color: var(--muted); font-style: normal; font-size: 0.9rem; }
 @media (max-width: 640px) {
   .post { padding: 6rem 1.25rem 2rem; }
   .post-content figure { margin: 2rem -0.5rem; }
