@@ -1,7 +1,8 @@
 # Games on /projects/. One entry per game; the page, the markdown twin and the VideoGame JSON-LD all read this file.
+# rank orders everything: the Play something row is the first `featured_count` games by rank, and the Arcade grid is every game by rank. Reorder with one edit.
 # image_source is the Arcade card image each local WebP (640x264) was made from. play is the live game; page is its Arcade listing.
 
-featured: [silicon-trail, typerunner, flappy-bird, word-runner]
+featured_count: 6
 
 arcade:
   url: https://arcade.adventurebuildr.com/
@@ -18,6 +19,7 @@ genres:
 
 games:
   - id: silicon-trail
+    rank: 4
     title: "The Silicon Trail"
     genre: adventure
     line: "A road-trip role-player where what you pack and when you rest decide whether your character makes it to the end."
@@ -27,6 +29,7 @@ games:
     alt: "Card art for The Silicon Trail"
     image_source: https://arcade.adventurebuildr.com/_astro/silicon-trail.DOvMPfAd_Z27ziMj.jpeg
   - id: black-wake
+    rank: 2
     title: "Black Wake"
     genre: strategy
     line: "A tactics game where every match is decided by skill, not luck, and the AI opponent narrates its own turns."
@@ -36,6 +39,7 @@ games:
     alt: "Card art for Black Wake"
     image_source: https://arcade.adventurebuildr.com/_astro/black-wake.C-ibXfnO_1mrDk.jpeg
   - id: gauntlet-crawler
+    rank: 5
     title: "Gauntlet Crawler"
     genre: action
     line: "Four heroes fight down an endless dungeon, shooting monster generators and hunting keys against a ticking health bar."
@@ -45,6 +49,7 @@ games:
     alt: "Card art for Gauntlet Crawler"
     image_source: https://arcade.adventurebuildr.com/_astro/gauntlet-crawler.Blhwl1wZ_xuUsJ.jpeg
   - id: joust-1980
+    rank: 6
     title: "Joust 1980"
     genre: action
     line: "Flap to stay airborne and knock enemies out from above in this arcade classic remake, with a pterodactyl that shows up as your score climbs."
@@ -54,6 +59,7 @@ games:
     alt: "Card art for Joust 1980"
     image_source: https://arcade.adventurebuildr.com/_astro/joust-1980.CWsRc6KX_28j1Jc.jpeg
   - id: crossy-road
+    rank: 8
     title: "Crossy Road"
     genre: action
     line: "Cross the lanes, dodge cars and boulders and reach the top for the next level."
@@ -63,6 +69,7 @@ games:
     alt: "Card art for Crossy Road"
     image_source: https://arcade.adventurebuildr.com/_astro/crossy-road.Db03VQgR_ZaqmY7.jpeg
   - id: flappy-bird
+    rank: 7
     title: "Flappy Bird"
     genre: action
     line: "Flap through the pipes and chase a spot on the global leaderboard."
@@ -72,6 +79,7 @@ games:
     alt: "Card art for Flappy Bird"
     image_source: https://arcade.adventurebuildr.com/_astro/flappy-bird.C5QOIyWP_Z2j11GW.jpeg
   - id: pacific-skies
+    rank: 9
     title: "Pacific Skies"
     genre: action
     line: "Fly a twin-boom fighter north across the Pacific in two-player online co-op, looping out of the sky to dodge fire."
@@ -81,6 +89,7 @@ games:
     alt: "Card art for Pacific Skies"
     image_source: https://arcade.adventurebuildr.com/_astro/pacific-skies.DkNwokVk_Z2epBks.jpeg
   - id: ohmsville
+    rank: 1
     title: "Ohmsville"
     genre: simulation
     line: "Wire up real circuits in a browser lab where the electronics behave like the real thing."
@@ -90,6 +99,7 @@ games:
     alt: "Card art for Ohmsville"
     image_source: https://arcade.adventurebuildr.com/_astro/ohmsville.CFYQEKvi_Z1OE3IV.jpeg
   - id: living-table
+    rank: 3
     title: "The Living Table"
     genre: tabletop
     line: "A tabletop session that lives in the browser, with hex maps, dice that feel physical and pieces that snap into place."
@@ -99,6 +109,7 @@ games:
     alt: "Card art for The Living Table"
     image_source: https://arcade.adventurebuildr.com/_astro/living-table.CAA3w-Aa_ZXckJU.jpeg
   - id: ai-typing-star
+    rank: 13
     title: "AI Typing Star Game"
     genre: word
     line: "Steer a star into floating AI and ML terms and type them to score."
@@ -108,6 +119,7 @@ games:
     alt: "Card art for AI Typing Star Game"
     image_source: https://arcade.adventurebuildr.com/_astro/ai-typing-star.HK6kmJkI_ZPS8Yj.jpeg
   - id: typerunner
+    rank: 10
     title: "TypeRunner"
     genre: word
     line: "Run with WASD and type the words you meet before they catch you, with achievements across stages."
@@ -117,6 +129,7 @@ games:
     alt: "Card art for TypeRunner"
     image_source: https://arcade.adventurebuildr.com/_astro/typerunner.C-fam7aZ_1lHbzj.jpeg
   - id: typing-invaders
+    rank: 12
     title: "Typing Invaders"
     genre: word
     line: "Type each falling word before it reaches the bottom."
@@ -126,6 +139,7 @@ games:
     alt: "Card art for Typing Invaders"
     image_source: https://arcade.adventurebuildr.com/_astro/typing-invaders.BKQo6lUr_Z2vL1t0.jpeg
   - id: word-runner
+    rank: 11
     title: "Word Runner"
     genre: word
     line: "Move with WASD and type each word to clear it as new ones keep spawning, using programming vocabulary."

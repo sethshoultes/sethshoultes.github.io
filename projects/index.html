@@ -92,17 +92,24 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
     </div>
   </div>
 </section>
+{%- assign ranked = site.data.games.games | sort: "rank" %}
 <section class="band" id="games">
   <div class="wrap">
     <p class="eyebrow reveal">Games</p>
     <h2 class="reveal">Play something.</h2>
     <p class="lead reveal">Browser games built for fun and a little friendly competition. Start with these, or <a href="#arcade">open the whole Arcade</a>.</p>
-    <ul class="link-grid cols-4">
-      {%- for id in site.data.games.featured %}
-      {%- assign game = site.data.games.games | where: "id", id | first %}
-      <li>{% include game-card.html game=game %}</li>
-      {%- endfor %}
-    </ul>
+    <div class="rail" data-rail>
+      <div class="rail-bar">
+        <button class="rail-btn" type="button" data-rail-prev aria-label="Previous games">&larr;</button>
+        <button class="rail-btn" type="button" data-rail-next aria-label="Next games">&rarr;</button>
+        <button class="rail-btn rail-pause" type="button" data-rail-pause aria-pressed="false" hidden>Pause</button>
+      </div>
+      <ul class="rail-track" data-rail-track>
+        {%- for game in ranked limit: site.data.games.featured_count %}
+        <li>{% include game-card.html game=game %}</li>
+        {%- endfor %}
+      </ul>
+    </div>
   </div>
 </section>
 <section id="arcade">
@@ -113,19 +120,15 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
       <p>{{ site.data.games.arcade.line }}</p>
       <a class="btn" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener">Open the Arcade</a>
     </div>
-    {%- for genre in site.data.games.genres %}
-    {%- assign list = site.data.games.games | where: "genre", genre.id %}
-    {%- if list.size > 0 %}
-    <h3 class="arcade-genre">{{ genre.name }}</h3>
-    <ul class="link-grid cols-4">
-      {%- for game in list %}
-      <li>{% include game-card.html game=game %}</li>
+    <ul class="link-grid cols-4 arcade-grid">
+      {%- for game in ranked %}
+      <li>{% include game-card.html game=game tag=true %}</li>
       {%- endfor %}
+      <li class="arcade-more"><a class="link-card" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><span class="link-card-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p><span class="meta">Open the Arcade &rarr;</span></span></a></li>
     </ul>
-    {%- endif %}
-    {%- endfor %}
   </div>
 </section>
+<script src="/assets/rail.js" defer></script>
 <section id="videos">
   <div class="wrap">
     <p class="eyebrow reveal">Watch</p>
