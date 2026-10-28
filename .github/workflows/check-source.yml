@@ -23,3 +23,5 @@ jobs:
         run: bundle exec jekyll build
       - name: No broken internal links
         run: node scripts/check-links.mjs _site
+      - name: Post images fit the column
+        run: node scripts/check-post-images.mjs _site
