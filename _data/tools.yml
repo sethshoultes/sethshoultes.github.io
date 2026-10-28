@@ -135,7 +135,7 @@
     - id: how
       heading: "How to read the result"
       paragraphs:
-        - "**Open** means the crawler may read your whole site. **Partly open** means it may read your pages but some paths are closed, which is usually fine for admin areas. **Blocked** means your robots.txt tells that crawler to stay out of everything."
+        - "**Open** means the crawler may read your whole site. **Partly open** means it may read your pages but some content paths are closed. Closing only admin paths, such as WordPress's default /wp-admin/, still counts as open. **Blocked** means your robots.txt tells that crawler to stay out of everything."
         - "If a crawler is blocked and you want to be recommended by that assistant, ask whoever manages your site to remove or change that rule."
         - "Google-Extended is the switch for Gemini. Blocking it does not remove you from Google Search."
     - id: why

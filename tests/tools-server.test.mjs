@@ -523,3 +523,18 @@ test('local-seo-audit: the pages step passes the shared guard (its site field is
   const bot = await guard(request({ ...body, website: 'spam' }, { path: '/local-seo-audit' }), { TOOLS_KV: new FakeKV() });
   assert.equal(bot.response.status, 200, 'a filled website field is still dropped as a bot');
 });
+
+test('robots: closing only admin paths is allowed (WordPress default); content paths still count (#132)', () => {
+  const wp = parseRobots('User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n');
+  for (const bot of ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended']) assert.deepEqual(evaluate(wp, bot), { status: 'allowed', group: 'star', rules: [] });
+  assert.equal(evaluate(parseRobots('User-agent: GPTBot\nDisallow: /wp-admin/\nDisallow: /wp-login.php\nDisallow: /admin/'), 'GPTBot').status, 'allowed');
+  // a content path next to the admin one is still partial, and only the content path is reported
+  const mixed = evaluate(parseRobots('User-agent: *\nDisallow: /wp-admin/\nDisallow: /blog/'), 'GPTBot');
+  assert.equal(mixed.status, 'partial');
+  assert.deepEqual(mixed.rules, ['Disallow: /blog/']);
+  assert.equal(evaluate(parseRobots('User-agent: *\nDisallow: /private\n'), 'GPTBot').status, 'partial');
+  assert.equal(evaluate(parseRobots('User-agent: *\nDisallow: /\n'), 'GPTBot').status, 'blocked');
+  assert.equal(evaluate(parseRobots('User-agent: GPTBot\nDisallow: /wp-admin/\nDisallow: /\n'), 'GPTBot').status, 'blocked');
+  // a look-alike is not an admin path
+  assert.equal(evaluate(parseRobots('User-agent: *\nDisallow: /administrators-guide/\n'), 'GPTBot').status, 'partial');
+});
