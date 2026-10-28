@@ -2,6 +2,8 @@ name: "Little Valley"
 slug: little-valley-st-george-utah
 title: "AI and SEO Services in Little Valley, St. George, Utah"
 description: "AI and SEO services for Little Valley, St. George, Utah businesses: content, media and interactive websites for a neighborhood built around a city sports park, from a Washington City neighbor."
+clip: little-valley-st-george-utah
+poster_alt: "A green city ball field with dirt infield diamonds below red sandstone cliffs, with homes and light poles along the edge"
 place_name: "Little Valley, St. George, UT"
 parent:
   name: "St. George"
@@ -26,7 +28,6 @@ scenes:
     body: "Here is what I do for businesses in Little Valley."
     cta_label: "Read on"
     cta_href: "#services"
-photo_note: "The photo shows St. George, the city Little Valley belongs to. It is not a photo of Little Valley itself; I will swap in one as soon as there is a freely licensed photo or one of my own."
 sections:
   - id: services
     heading: "What I do for Little Valley businesses"
