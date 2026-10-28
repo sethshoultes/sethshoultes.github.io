@@ -19,7 +19,7 @@ permalink: /southern-utah/
       <h3>Photo credits</h3>
       <ul class="photo-credits">
         {%- for c in site.data.cities %}
-        <li>{{ c[1].name }}: <a href="{{ c[1].card_credit.source }}" rel="noopener">{{ c[1].card_credit.author }}</a>, {{ c[1].card_credit.license }}, via Wikimedia Commons</li>
+        <li>{{ c[1].name }}{% if c[1].credit_note %} ({{ c[1].credit_note }}){% endif %}: <a href="{{ c[1].card_credit.source }}" rel="noopener">{{ c[1].card_credit.author }}</a>, {{ c[1].card_credit.license }}, via Wikimedia Commons</li>
         {%- endfor %}
       </ul>
       <p class="photo-credits-note">Coral Canyon is part of Washington City, so its photo shows Washington.</p>
