@@ -1,0 +1,8 @@
+{%- comment -%}City link cards with the place photo. Credits for the photos are on /southern-utah/.{%- endcomment -%}
+<ul class="link-grid cols-4">
+  {%- for entry in site.data.cities %}
+  {%- assign c = entry[1] %}
+  {%- capture href %}/{{ c.slug }}/{% endcapture %}
+  <li>{% include kit/link-card.html href=href title=c.name line=c.card_line img=c.card_photo alt=c.card_alt %}</li>
+  {%- endfor %}
+</ul>

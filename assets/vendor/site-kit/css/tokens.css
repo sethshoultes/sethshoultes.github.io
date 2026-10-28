@@ -1,0 +1,8 @@
+/* site-kit tokens: layout only. Colors and fonts come from the site's brand.css. */
+:root {
+  --radius: 16px;
+  --max: 1120px;
+  --col: 720px;
+  --space-1: 0.5rem; --space-2: 1rem; --space-3: 1.5rem; --space-4: 2.5rem; --space-5: 5rem;
+  --bp-tablet: 1000px; --bp-phone: 640px;
+}

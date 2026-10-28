@@ -11,7 +11,11 @@
       "description": {{ c.description | jsonify }},
       "founder": { "@id": "{{ site.url }}/#person" },
       "address": { "@type": "PostalAddress", "addressRegion": "UT", "addressCountry": "US" },
+      {%- if c.parent %}
+      "areaServed": { "@type": "Place", "name": {{ c.place_name | jsonify }}, "containedInPlace": { "@type": "City", "name": {{ c.parent.name | jsonify }}, "sameAs": {{ c.parent.same_as | jsonify }}, "containedInPlace": { "@type": "State", "name": "Utah" } } },
+      {%- else %}
       "areaServed": { "@type": "City", "name": {{ c.name | jsonify }}, "containedInPlace": { "@type": "State", "name": "Utah" } },
+      {%- endif %}
       "serviceType": ["AI services", "SEO", "Content generation", "Media production", "Interactive website development"]
     },
     {
@@ -19,7 +23,12 @@
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site.url }}/" },
         { "@type": "ListItem", "position": 2, "name": "Southern Utah", "item": "{{ site.url }}/southern-utah/" },
+        {%- if c.parent %}
+        { "@type": "ListItem", "position": 3, "name": {{ c.parent.name | jsonify }}, "item": "{{ site.url }}/{{ c.parent.slug }}/" },
+        { "@type": "ListItem", "position": 4, "name": {{ c.name | jsonify }}, "item": "{{ site.url }}/{{ c.slug }}/" }
+        {%- else %}
         { "@type": "ListItem", "position": 3, "name": {{ c.name | jsonify }}, "item": "{{ site.url }}/{{ c.slug }}/" }
+        {%- endif %}
       ]
     },
     {
