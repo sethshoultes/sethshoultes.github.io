@@ -1,0 +1,68 @@
+---
+title: "Why AI Agents Skip WordPress, and What Would Change Their Mind"
+subtitle: "An open benchmark asked AI agents to build websites without naming a platform. They almost never picked WordPress, and some of their reasons are out of date."
+date: 2026-10-30
+description: "For anyone who builds on WordPress or hires someone to build their site: an open benchmark asked AI agents to build websites without naming a platform, and they almost never picked WordPress. Seth Shoultes looks at their reasons, which are out of date and which are real, and what would change their mind."
+related:
+  - slug: wordpress-is-not-ending
+    note: "The other half of this argument. That post says WordPress isn't over. This one looks at where it is losing new sites, and why."
+  - slug: twenty-five-years
+    note: "Where my WordPress years started, back when a plugin directory was the new way to reach customers."
+hero_image:
+  src: /blog/images/wpab-hero-crossroads.webp
+  width: 1344
+  height: 752
+  alt: "A cartoon robot stands at a crossroads signpost with four arrows, one of them labelled WordPress, deciding which way to go"
+---
+
+<p>More people now start a website by asking an AI agent to build it. "Website for my bakery." "I'm a plumber in Leeds. Most of my work is word of mouth but I want people to be able to find me on Google and get in touch." Nobody in that conversation says WordPress. So the question is whether the agent brings it up on its own.</p>
+
+<p>An open project called WordPress Agent Benchmarks tests that every month. Andy Peatling started it, and it isn't a product of any company. It gives seven agents plain requests like those two and records what they build. Its recommendations page sums up the October batch in one line: "More and more people ask AI agents to build their websites, and unless they name WordPress, agents rarely reach for it." On its about page, the October 2026 row reads 0% under "Chose WordPress."</p>
+
+<p>I've built on WordPress since 2009, when my co-founder and I started Event Espresso. These days I build AI tools for MemberPress, which runs on WordPress. Tens of thousands of MemberPress members have earned over $3 billion on the platform. So I took that 0% personally. Then I read the reasons, because the benchmark asks each agent afterwards why it chose what it did, and publishes the answers.</p>
+
+<h2>Starting, going live, and moving in</h2>
+
+<img class="post-img" src="/blog/images/wpab-agent-chooses-a-stack.webp" width="1344" height="752" alt="A request for a bakery website goes to a robot, which can send it to a static site, a site builder or WordPress, the last drawn faded" loading="lazy">
+
+<p>The benchmark says the first job is "making WordPress as quick to start, take live and move a site into as what agents reach for now." Some of what stands in the way is out of date. Some of it is real.</p>
+
+<p><strong>Starting.</strong> On 84 of the 193 sites, the agent said afterwards that WordPress needs a PHP and MySQL server. For a site on your own computer, that's out of date. WordPress Playground runs WordPress with nothing but Node:</p>
+
+<pre><code>npx @wp-playground/cli@latest start</code></pre>
+
+<img class="post-img" src="/blog/images/wpab-one-command-start.webp" width="1344" height="752" alt="A terminal running the command npx @wp-playground/cli@latest start, with an arrow pointing to an empty browser window" loading="lazy">
+
+<p>The benchmark's fact check is careful about it. The belief is misleading for a local start and true for the live site, which still needs a host with PHP and MySQL. The catch is that an agent has to know the command exists. When I checked, wordpress.org/llms.txt, the file WordPress publishes for agents to read, didn't mention Playground.</p>
+
+<p><strong>Going live.</strong> Agents liked what they could hand over at once: "This Astro blog is plain HTML files, so it can be hosted free on Netlify, Vercel, Cloudflare Pages, or GitHub Pages." Here the agents have a point. There's no standard way to take a WordPress site you built on your computer and put it live on whatever host you choose. The benchmark's fact check is four words: "no cross-host standard exists." That isn't a myth. It's work the WordPress project still has to do.</p>
+
+<p><strong>Moving in.</strong> This is the one I care most about. One request hands the agent a folder: "Hand-coded client site in this folder. They want to manage the content themselves from now on." In every run with that site, the agents kept the HTML and bolted on a separate editor instead of moving the site into WordPress. One explained: "I'd have to turn the existing HTML and CSS into a WordPress theme."</p>
+
+<img class="post-img" src="/blog/images/wpab-cms-bolted-on.webp" width="1344" height="752" alt="A page of hand-written HTML with a bulky editing console strapped to its side with tape and cables" loading="lazy">
+
+<p>Half of that is out of date. People still picture a WordPress theme as a folder of PHP templates, but block themes are built from HTML template files. The minimum is one stylesheet and one HTML file. The other half is true. Your pages still have to become WordPress blocks, and WordPress itself doesn't ship a tool for that. The benchmark's fact check: "true today. No WordPress.org tool converts HTML to a block theme, though company tools now do." So the tools exist. The agents just don't know about them.</p>
+
+<h2>Where they're right</h2>
+
+<p>Not every skip is a mistake. The benchmark has a section called "Where WordPress isn't the best fit," and I agree with it. One agent called WordPress "too much upkeep for one page," and for a page nobody edits, that's fair.</p>
+
+<p>What worries me more is this: on 80% of the 193 sites, the agent chose how to build without asking who would update the site. One said it plainly: "Honestly, I didn't consider it. I was working in an empty folder with Node and Python installed, and I went straight to writing code." A bakery owner who wants to change the hours on a Sunday night needs something different from a developer who wants Markdown in Git. You only find out which one you have by asking.</p>
+
+<h2>What we're doing about it</h2>
+
+<p>First, we're adding the Playground command to the llms.txt files on our own sites, so an agent that lands there learns WordPress can start with Node alone.</p>
+
+<p>Second, we're going to test the converters. We'll take one hand-coded sample site, run the existing HTML-to-WordPress tools on it, and score how faithful each result is. The scoring rules get written down before the first run, the sample site goes in a public repo, and every run happens on a fresh, throwaway WordPress. We'll publish what we find, including what doesn't work. That's the next piece in this series.</p>
+
+<img class="post-img" src="/blog/images/wpab-html-to-blocks.webp" width="1344" height="752" alt="HTML tags like div, h1, p and img pour into a funnel and come out as a row of neat WordPress content blocks" loading="lazy">
+
+<p>Third, we're showing what an agent can do once a site is on WordPress. Opal is the AI agent inside MemberPress.ai. You connect a WordPress site that runs MemberPress and tell her what your membership needs. She sets up the membership levels and pages, and once you've said what you want, she handles the rest.</p>
+
+<p>Some of what keeps agents away from WordPress is old information, and the fix is writing the current facts down where agents look. Some of it is a real gap, and the fix is building. The one-liner I'd give a friend: if you want agents to pick WordPress, don't argue with them. Give them a command that works and a page that tells the truth.</p>
+
+<hr>
+
+<p><em>References: the October 2026 <a href="https://wpab.view.fast/choose/recommendations">Choosing WordPress recommendations</a> and the <a href="https://wpab.view.fast/about">about page</a> from WordPress Agent Benchmarks (<a href="https://github.com/apeatling/wp-agent-benchmark">source</a>), the <a href="https://www.npmjs.com/package/@wp-playground/cli">Playground CLI</a>, and the WordPress handbook's <a href="https://developer.wordpress.org/themes/core-concepts/theme-structure/">block theme structure</a>.</em></p>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
