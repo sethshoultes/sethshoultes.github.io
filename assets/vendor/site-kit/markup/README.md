@@ -9,7 +9,7 @@ Canonical markup for each kit component. Adapters (`jekyll/_includes/kit/`, late
   <span class="link-card-body"><h3>Title</h3><p>One short line.</p></span>
 </a>
 ```
-One `<a>`, one `<h3>`, no links inside. Photo needs alt, width, height, lazy. Service variant: an SVG icon (`class="link-card-icon" aria-hidden="true"`) in place of the photo. Put cards in `<ul class="link-grid">` (add `cols-4` for four across); the grid is 3 across, 2 on tablet, 1 on phone.
+One `<a>`, one `<h3>`, no links inside. Photo needs alt, width, height, lazy. Service variant: an SVG icon (`class="link-card-icon" aria-hidden="true"`) in place of the photo. Put cards in `<ul class="link-grid">` (works anywhere, no `.hub` needed) (add `cols-4` for four across); the grid is 3 across, 2 on tablet, 1 on phone.
 
 ## post (layout: post)
 `<article class="post">` with `.post-label`, one `<h1>`, `.subtitle`, `.byline`, then `<div class="post-content">`. Images inside a post are capped at the column. A featured image uses `class="post-img post-img-lead"` with width/height. Related reading is `.post-related`. Page needs Article-type metadata (title, description, og:*).

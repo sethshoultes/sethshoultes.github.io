@@ -16,13 +16,7 @@ permalink: /southern-utah/
       {% include service-cards.html %}
       <p class="hub-note">I work with businesses across the region, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
-      <h3>Photo credits</h3>
-      <ul class="photo-credits">
-        {%- for c in site.data.cities %}
-        <li>{{ c[1].name }}: <a href="{{ c[1].card_credit.source }}" rel="noopener">{{ c[1].card_credit.author }}</a>, {{ c[1].card_credit.license }}, via Wikimedia Commons</li>
-        {%- endfor %}
-      </ul>
-      <p class="photo-credits-note">Coral Canyon is part of Washington City, so its photo shows Washington.</p>
+      {% include photo-credits.html %}
     </div>
   </section>
 </div>
