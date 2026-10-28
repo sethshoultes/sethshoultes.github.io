@@ -57,3 +57,10 @@ sources:
   - label: "Springdale, Utah (settlement, population, location)"
     href: "https://en.wikipedia.org/wiki/Springdale,_Utah"
 affiliation: "I am not affiliated with the Town of Springdale or the National Park Service. Zion National Park is named only as a local fact."
+card_line: "The gateway town at the mouth of Zion Canyon."
+card_photo: /assets/img/southern-utah/springdale-utah.webp
+card_alt: "The Watchman, a red sandstone peak above Springdale, Utah, with green cottonwood trees below"
+card_credit:
+  author: "Jared"
+  license: "CC BY 2.0"
+  source: "https://commons.wikimedia.org/wiki/File:Utah_-_Springdale_-_The_Watchman_-_Zion_Canyon_Views.jpg"

@@ -385,3 +385,20 @@ a.card:hover { border-color: var(--accent); transform: translateY(-3px); text-de
 .site-footer a { white-space: nowrap; }
 .tool-sublist { margin: 0.6rem 0 0; padding-left: 1.2rem; color: var(--muted); font-size: 0.92rem; }
 .tool-sublist li { margin-bottom: 0.3rem; }
+
+/* link cards: whole-card links with an H3 title (southern-utah hub; reusable for nearby links) */
+.hub .link-grid { list-style: none; padding: 0; margin: 1.25rem 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.hub .link-grid li { margin: 0; }
+.link-card { display: flex; flex-direction: column; height: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; color: var(--text); transition: border-color 0.2s, transform 0.2s; }
+.link-card:hover, .link-card:focus-visible { border-color: var(--accent); transform: translateY(-3px); text-decoration: none; }
+.link-card img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.link-card-body { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.1rem 1.25rem 1.3rem; }
+.link-card-icon { color: var(--accent); margin-bottom: 0.4rem; }
+.link-card h3 { margin: 0; font-size: 1.15rem; line-height: 1.3; color: var(--text); }
+.link-card:hover h3, .link-card:focus-visible h3 { color: var(--accent); }
+.link-card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.photo-credits { margin-top: 2rem; color: var(--muted); font-size: 0.8rem; }
+.photo-credits a { color: var(--muted); text-decoration: underline; }
+@media (max-width: 900px) { .hub .link-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .hub .link-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .link-card:hover, .link-card:focus-visible { transform: none; } }

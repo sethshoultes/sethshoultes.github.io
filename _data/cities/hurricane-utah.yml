@@ -57,3 +57,10 @@ sources:
   - label: "Hurricane, Utah (settlement, canal, population, parks, economy)"
     href: "https://en.wikipedia.org/wiki/Hurricane,_Utah"
 affiliation: "I am not affiliated with the City of Hurricane or the parks and companies named on this page. They are named only as local facts."
+card_line: "Next door to Washington City, near Sand Hollow and the road to Zion."
+card_photo: /assets/img/southern-utah/hurricane-utah.webp
+card_alt: "Hurricane, Utah: town streets and green lawns below red hills, with a flat-topped mountain behind"
+card_credit:
+  author: "John Bonzo"
+  license: "CC BY 3.0"
+  source: "https://commons.wikimedia.org/wiki/File:Hurricaneutah.jpg"

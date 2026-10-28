@@ -59,3 +59,10 @@ sources:
   - label: "Santa Clara, Utah (settlement, Jacob Hamblin Home, population)"
     href: "https://en.wikipedia.org/wiki/Santa_Clara,_Utah"
 affiliation: "I am not affiliated with the cities of Ivins or Santa Clara, Tuacahn, the resorts or the church that runs the Jacob Hamblin Home. They are named only as local facts."
+card_line: "Two small cities west of St. George, at the foot of red cliffs."
+card_photo: /assets/img/southern-utah/ivins-santa-clara-utah.webp
+card_alt: "A road leading into Ivins, Utah, below a long wall of red sandstone cliffs"
+card_credit:
+  author: "P199"
+  license: "CC BY-SA 3.0"
+  source: "https://commons.wikimedia.org/wiki/File:Ivins_UT.JPG"

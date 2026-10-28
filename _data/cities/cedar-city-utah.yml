@@ -57,3 +57,10 @@ sources:
   - label: "Cedar City, Utah (founding, university, festival, economy, population)"
     href: "https://en.wikipedia.org/wiki/Cedar_City,_Utah"
 affiliation: "I am not affiliated with the City of Cedar City, Southern Utah University or the Utah Shakespeare Festival. They are named only as local facts."
+card_line: "A university town and the road to the parks, about an hour north of me."
+card_photo: /assets/img/southern-utah/cedar-city-utah.webp
+card_alt: "Main Street in Cedar City, Utah, with brick storefronts and a green Volkswagen Beetle parked at the curb"
+card_credit:
+  author: "Cory Maylett"
+  license: "CC BY-SA 2.5"
+  source: "https://commons.wikimedia.org/wiki/File:Cedar_City_Utah_02.jpg"

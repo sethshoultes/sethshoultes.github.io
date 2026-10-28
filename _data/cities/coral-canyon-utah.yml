@@ -59,3 +59,10 @@ sources:
   - label: "Coral Canyon neighborhood (type, size, trails, amenities, location), City of St. George"
     href: "https://www.stgeorge.us/real-estate/neighborhoods/coral-canyon"
 affiliation: "I am not affiliated with the Coral Canyon Community Association, the golf course or its operator, or the City of St. George. They are named only as local facts."
+card_line: "A golf community inside Washington City, close to home."
+card_photo: /assets/img/southern-utah/coral-canyon-utah.webp
+card_alt: "A road in Washington, Utah, running toward red sandstone cliffs, with desert plants along the roadside"
+card_credit:
+  author: "5of7"
+  license: "CC BY-SA 2.0"
+  source: "https://commons.wikimedia.org/wiki/File:Washington,_Utah_looking_West_on_Red_Cliff_Drive_(7054477541).jpg"

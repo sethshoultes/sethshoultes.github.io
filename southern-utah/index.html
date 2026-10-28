@@ -10,20 +10,40 @@ permalink: /southern-utah/
     <h1>AI and SEO Services in Southern Utah</h1>
     <p class="lead">I live along the Virgin River in Washington City. I help local businesses get found online and get more done with AI: content, media and interactive websites, with SEO built in.</p>
     <div class="prose">
-      <h2>What I do</h2>
-      <ul>
-        {%- for s in site.data.services %}
-        <li><a href="/{{ s[1].slug }}/">{{ s[1].title }}</a>: {{ s[1].summary }}</li>
+      <h2>Where I work</h2>
+      <ul class="link-grid">
+        {%- for c in site.data.cities %}
+        <li>
+          <a class="link-card" href="/{{ c[1].slug }}/">
+            <img src="{{ c[1].card_photo }}" alt="{{ c[1].card_alt }}" width="720" height="480" loading="lazy" decoding="async">
+            <span class="link-card-body">
+              <h3>{{ c[1].name }}</h3>
+              <p>{{ c[1].card_line }}</p>
+            </span>
+          </a>
+        </li>
         {%- endfor %}
       </ul>
-      <h2>Where I work</h2>
-      <ul>
-        {%- for c in site.data.cities %}
-        <li><a href="/{{ c[1].slug }}/">{{ c[1].title }}</a></li>
+      <h2>What I do</h2>
+      <ul class="link-grid">
+        {%- for s in site.data.services %}
+        {%- assign svc = s[1] %}
+        <li>
+          <a class="link-card" href="/{{ s[1].slug }}/">
+            <span class="link-card-body">
+              {% include service-icon.html slug=svc.slug %}
+              <h3>{{ s[1].name }}</h3>
+              <p>{{ s[1].summary }}</p>
+            </span>
+          </a>
+        </li>
         {%- endfor %}
       </ul>
       <p class="hub-note">I work with businesses across the region, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
+      <p class="photo-credits">Photos from Wikimedia Commons:
+        {%- for c in site.data.cities %} {{ c[1].name }}, <a href="{{ c[1].card_credit.source }}" rel="noopener">{{ c[1].card_credit.author }}</a> ({{ c[1].card_credit.license }}){% unless forloop.last %};{% else %}.{% endunless %}
+        {%- endfor %} Coral Canyon is part of Washington City, so its photo shows Washington.</p>
     </div>
   </section>
 </div>
