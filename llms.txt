@@ -3,6 +3,7 @@
 > Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years, and he now offers monthly AI consulting to small businesses: strategy, a fractional AI lead, or an AI agent team building for you.
 
 ## Key facts
+- Why Seth does this, in his words: "I build things that help a business grow and help people create, and I've been doing it for 25 years because I still love it."
 - Name: Seth Shoultes. Role: AI consultant, product leader, AI developer, WordPress product veteran.
 - Co-founded Event Espresso (2009 to 2021), a WordPress event plugin that won the Utah Entrepreneur Challenge in 2011.
 - Has organized WordPress meetups for over 15 years and runs a monthly AI and WordPress meetup.
