@@ -4,6 +4,9 @@ layout: site
 {%- assign s = site.data.services[page.service] %}
 <div class="wrap service">
   <section class="service-hero">
+    {%- if s.badge %}
+    <a class="hero-badge" href="{{ s.badge.href }}" target="_blank" rel="noopener"><img src="{{ s.badge.src }}" width="{{ s.badge.display }}" height="{{ s.badge.display }}" srcset="{{ s.badge.src }} 2x" alt="{{ s.badge.alt }}" fetchpriority="high"></a>
+    {%- endif %}
     <p class="eyebrow">Services</p>
     <h1>{{ s.title }}</h1>
     <p class="lead">{{ s.lead }}</p>

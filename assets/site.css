@@ -277,3 +277,8 @@
 /* card sections under service and city pages */
 .service-more, .city-more { padding-bottom: 2rem; }
 .service-more h2, .city-more h2 { margin-top: 3rem; }
+
+/* service hero badge (Housecall Pro Superpro) */
+.hero-badge { float: right; margin: 0 0 1rem 2rem; line-height: 0; }
+.hero-badge img { display: block; width: 220px; height: 220px; border-radius: 50%; }
+@media (max-width: 640px) { .hero-badge { float: none; display: block; margin: 0 0 1.25rem; } .hero-badge img { width: 160px; height: 160px; } }

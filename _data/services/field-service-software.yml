@@ -6,6 +6,13 @@ service_type: "Field service software consulting (ServiceTitan, Housecall Pro)"
 summary: "ServiceTitan and Housecall Pro, from an expert with both and a Housecall Pro Super Pro."
 lead: "I am an expert with ServiceTitan and Housecall Pro, and I hold Housecall Pro Super Pro status. I help home service businesses get more out of the software they run on."
 national: true
+badge:
+  src: /assets/img/seth-superpro-440.webp
+  width: 440
+  height: 440
+  display: 220
+  alt: "Seth Shoultes, Housecall Pro Superpro"
+  href: "https://garagedoorproservices.com/seth-shoultes-and-garage-door-pros-elevating-standards-with-superpro-status/"
 sections:
   - id: what
     heading: "The software I know"
