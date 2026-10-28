@@ -19,3 +19,4 @@ data/li-shared.log
 
 # Cloudflare wrangler local cache
 .wrangler/
+!assets/vendor/

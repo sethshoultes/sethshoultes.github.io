@@ -31,26 +31,15 @@ layout: site
         {%- endfor %}
       </div>
     </section>
-
-    <section class="service-sec">
-      <h2>What else I do</h2>
-      <ul>
-        {%- for o in site.data.services %}{% unless o[1].slug == s.slug %}
-        <li><a href="/{{ o[1].slug }}/">{{ o[1].title }}</a></li>
-        {%- endunless %}{% endfor %}
-      </ul>
-    </section>
-
+  </div>
+  <div class="service-more">
+    <h2>What else I do</h2>
+    {% include service-cards.html except=s.slug %}
     {%- unless s.national %}
-    <section class="service-sec">
-      <h2>Where I work</h2>
-      <ul>
-        {%- for c in site.data.cities %}
-        <li><a href="/{{ c[1].slug }}/">{{ c[1].title }}</a></li>
-        {%- endfor %}
-      </ul>
-      <p class="mt-1"><a href="/southern-utah/">See every place and service</a>.</p>
-    </section>
+    <h2>Where I work</h2>
+    {% include city-cards.html %}
+    {% include photo-credits.html %}
+    <p class="mt-1"><a href="/southern-utah/">See every place and service</a>.</p>
     {%- endunless %}
   </div>
 </div>

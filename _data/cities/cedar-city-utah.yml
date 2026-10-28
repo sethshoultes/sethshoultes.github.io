@@ -21,7 +21,6 @@ scenes:
     body: "Here is what I do for businesses in Cedar City."
     cta_label: "Read on"
     cta_href: "#services"
-flyover_note: "The scenery above is generated. It is not a photo or video of Cedar City."
 sections:
   - id: services
     heading: "What I do for Cedar City businesses"

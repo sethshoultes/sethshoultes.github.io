@@ -1,0 +1,80 @@
+name: "Little Valley"
+slug: little-valley-st-george-utah
+title: "AI and SEO Services in Little Valley, St. George, Utah"
+description: "AI and SEO services for Little Valley, St. George, Utah businesses: content, media and interactive websites for a neighborhood built around a city sports park, from a Washington City neighbor."
+clip: little-valley-st-george-utah
+poster_alt: "A green city ball field with dirt infield diamonds below red sandstone cliffs, with homes and light poles along the edge"
+place_name: "Little Valley, St. George, UT"
+parent:
+  name: "St. George"
+  slug: st-george-utah
+  same_as:
+    - "https://en.wikipedia.org/wiki/St._George,_Utah"
+    - "https://www.wikidata.org/wiki/Q52472"
+scenes:
+  - eyebrow: "Little Valley, St. George, Utah"
+    heading: "AI and SEO Services in Little Valley, St. George, Utah"
+    body: "I live in Washington City, a short drive from St. George. I help Little Valley businesses get found online and get more done with AI."
+    cta_label: "Book a call"
+    cta_href: "/consulting/#contact"
+  - eyebrow: "The neighborhood"
+    heading: "A named neighborhood inside St. George."
+    body: "Little Valley is one of the neighborhoods Wikipedia lists for the city of St. George. It is part of the city, not a separate town."
+  - eyebrow: "The fields"
+    heading: "A city park with its own tournaments."
+    body: "The City of St. George runs The Fields at Little Valley at 2995 South 2350 East, and hosts tournaments there, such as the Summer Send Off softball event for teams from 10 and under to 18 and under."
+  - eyebrow: "Home"
+    heading: "Your business, found and growing."
+    body: "Here is what I do for businesses in Little Valley."
+    cta_label: "Read on"
+    cta_href: "#services"
+sections:
+  - id: services
+    heading: "What I do for Little Valley businesses"
+    paragraphs:
+      - "Little Valley is a neighborhood of St. George, so the people who search for your business are St. George residents, and people who are in town for something else. I help you be found by both, with AI and SEO built into the work."
+      - "**For businesses that serve the neighborhood.** A page about your service and your part of St. George, written for someone who lives nearby and searches on their phone."
+      - "**For businesses near the fields.** When a park hosts tournaments, families look for food, a place to stay and something to do between games. My reasoning, not a statistic: those searches happen before the trip, so I build pages and answers a visitor, or an AI assistant, can find and quote."
+  - id: numbers
+    heading: "Little Valley, from the city's own pages"
+    paragraphs:
+      - "These are facts from the City of St. George and the Washington County School District, not estimates. I have no neighborhood-level census figures, so I do not quote any."
+facts:
+  - label: "City park"
+    value: "The Fields at Little Valley"
+  - label: "Park address"
+    value: "2995 S 2350 E"
+  - label: "Field and park projects completed"
+    value: "2024 and 2025"
+  - label: "Elementary school"
+    value: "Little Valley Elementary"
+facts_source: "City of St. George facility directory and G.O. bond project list (field lighting, artificial turf, pickleball expansion, skate park lighting); Washington County School District, Little Valley Elementary, 2330 E Horseman Park Drive."
+faq:
+  - q: "What can you do for my Little Valley business?"
+    a: "Help it be found by neighbors and by visitors, with pages, answers and tools built for your customers. We start with a call about your business and where your customers come from."
+  - q: "Is Little Valley its own city?"
+    a: "No. It is a neighborhood inside the city of St. George. My pages for St. George and for Little Valley work together."
+  - q: "Are you based in Little Valley?"
+    a: "No. I live in Washington City, along the Virgin River, and I work with businesses around Southern Utah."
+  - q: "How do we get started?"
+    a: "Book a call on my consulting page and tell me about your business. I reply within two business days."
+sources:
+  - label: "St. George, Utah: Little Valley listed among its neighborhoods (Wikipedia)"
+    href: "https://en.wikipedia.org/wiki/St._George,_Utah"
+  - label: "City of St. George facility directory (The Fields at Little Valley)"
+    href: "https://sgcity.org/facilities"
+  - label: "City of St. George G.O. bond projects (Little Valley field lighting, turf, pickleball, skate park)"
+    href: "https://sgcityutah.gov/gobond"
+  - label: "City of St. George, Summer Send Off softball tournament"
+    href: "https://www.sgcity.org/sportsandrecreation/allartsandrecreation/softball/summersendoff10u12u14u16u18u"
+  - label: "Little Valley Elementary, Washington County School District"
+    href: "https://les.washk12.org/"
+affiliation: "I am not affiliated with the City of St. George, the Washington County School District or the events named on this page. They are named only as local facts."
+card_line: "A St. George neighborhood with the city's Fields at Little Valley park."
+card_photo: /assets/img/southern-utah/st-george-utah.webp
+card_alt: "St. George, Utah, spread across the desert valley below red rock, seen from the east"
+card_credit:
+  author: "Stan Shebs"
+  license: "CC BY-SA 3.0"
+  source: "https://commons.wikimedia.org/wiki/File:St_George_Utah_from_east_1.jpg"
+credit_note: "St. George photo"
