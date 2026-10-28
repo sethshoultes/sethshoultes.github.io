@@ -1,0 +1,32 @@
+name: "Google Ads"
+slug: google-ads
+title: "Google Ads Expert for Small Businesses"
+description: "Google Ads help from an expert, alongside nearly 20 years of SEO: search and ads built together for small businesses in Southern Utah and anywhere."
+service_type: "Google Ads management and consulting"
+summary: "Google Ads from an expert, built together with the SEO behind it."
+lead: "I am an expert with Google Ads, and I have nearly 20 years of SEO behind me. I help small businesses use the two together."
+national: true
+sections:
+  - id: what
+    heading: "What I help with"
+    paragraphs:
+      - "**Google Ads.** I am an expert with it."
+      - "**SEO.** I build with nearly 20 years of SEO behind me."
+      - "**Both together.** Search and ads work on the same customers, so I plan them as one."
+  - id: proof
+    heading: "Where this comes from"
+    paragraphs:
+      - "I have built on the web for over 25 years, owned a website development agency, and grown the search traffic of a garage door company. I work alongside businesses for years, not weeks. See the [case studies](/case-studies/)."
+  - id: start
+    heading: "How we start"
+    paragraphs:
+      - "We start with a call about your business and what you want your ads to do. I tell you what I would look at first."
+faq:
+  - q: "Are you a Google Ads expert?"
+    a: "Yes. I am an expert with Google Ads, with nearly 20 years of SEO behind me."
+  - q: "Do you do SEO too?"
+    a: "Yes. SEO is the foundation of my work, and ads and SEO are best planned together."
+  - q: "Do you only work with Southern Utah businesses?"
+    a: "Southern Utah is home, and I work with businesses anywhere."
+  - q: "Where do I start?"
+    a: "Book a call and tell me about your business. I reply within two business days."
