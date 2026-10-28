@@ -62,12 +62,6 @@ layout: site
       <h2>Let's talk about your business.</h2>
       <p>Tell me what you would like AI and search to do for you. I reply within two business days.</p>
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
-      <p>What else I offer:</p>
-      <ul>
-        {%- for s in site.data.services %}
-        <li><a href="/{{ s[1].slug }}/">{{ s[1].title }}</a></li>
-        {%- endfor %}
-      </ul>
       {%- if c.see_also %}
       <p>Inside this city:</p>
       <ul>
@@ -78,7 +72,12 @@ layout: site
       {%- endif %}
       <p>More places I work: <a href="/southern-utah/">AI and SEO services across Southern Utah</a>.</p>
     </section>
-
+  </div></div>
+  <div class="wrap city-more">
+    <h2>What else I offer</h2>
+    {% include service-cards.html %}
+  </div>
+  <div class="wrap"><div class="prose">
     <section class="city-sec small">
       <h3>Sources</h3>
       <ul>

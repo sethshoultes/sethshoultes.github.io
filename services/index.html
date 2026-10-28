@@ -11,13 +11,10 @@ permalink: /services/
     <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
     <div class="prose">
       <h2>What I do</h2>
-      <ul>
-        {%- for s in site.data.services %}
-        <li><a href="/{{ s[1].slug }}/">{{ s[1].name }}</a>: {{ s[1].summary }}</li>
-        {%- endfor %}
-      </ul>
+      {% include service-cards.html %}
       <h2>Where I work</h2>
       <p>I live in Washington City and work with businesses across <a href="/southern-utah/">Southern Utah</a>, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
+      {% include city-cards.html %}
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
     </div>
   </section>
