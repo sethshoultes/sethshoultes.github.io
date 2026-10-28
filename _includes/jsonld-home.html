@@ -11,7 +11,7 @@
       "jobTitle": "AI consultant and product leader",
       "address": { "@type": "PostalAddress", "addressRegion": "UT", "addressCountry": "US" },
       "knowsAbout": ["AI consulting", "AI agents", "WordPress", "Product management", "SEO"],
-      "description": "{{ site.description }}",
+      "description": {{ site.description | append: " " | append: site.why | jsonify }},
       "sameAs": [
         "https://www.linkedin.com/in/shoultes/",
         "https://github.com/sethshoultes"
