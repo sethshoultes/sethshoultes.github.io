@@ -1,0 +1,42 @@
+---
+title: "Merged Doesn't Mean Anyone Can Use It"
+subtitle: "Words like merged, shipped and approved each bundle two facts together, and the one that gets dropped is always the check nobody ran."
+date: 2026-10-28
+related:
+  - slug: the-override-flag-is-the-real-test
+    note: "The other side of the same switch: a flag that hides a feature by default stays invisible until you deliberately turn it on and look."
+  - slug: the-validator-with-teeth
+    note: "Each fix here is a one-line check, and that post explains why a check that actually runs beats a note that says you should run it."
+  - slug: the-feature-that-was-default-on-everywhere
+    note: "The mirror-image bug. That feature was on everywhere when it shouldn't have been, and this one was on nowhere it mattered."
+---
+
+<img src="/blog/images/merged-is-not-live-featured.png" alt="A brand-new brass desk lamp on a writing desk, its cord neatly coiled and the plug resting on the blotter beside an empty wall socket, with a small paper &quot;DONE&quot; tag tied to the lamp's neck and its unlit bulb leaving the open notebook beneath it in shadow" width="1536" height="1024" class="post-img post-img-lead" />
+
+<p>An issue on one of my projects got closed last month. The fix had been reviewed and merged. Everything was green, and I believed it.</p>
+
+<p>The fix was a button. In MemberIntel there's a card that shows you a piece of generated content, and the issue asked for a step on that card where you say "Yes, publish it." The change added the button. The tests checked the button. The pull request merged, and the issue (#7014) closed itself on the merge.</p>
+
+<p>No user could ever see that button.</p>
+
+<p>It only showed up behind a feature flag. A flag is a switch in the code that keeps a feature hidden until somebody flips it on. The tests flipped it on, because that's how you test a hidden feature. Nothing else did. There was no setting and no config that turned it on, and no admin screen either. The button existed in the test suite and nowhere a person would ever be.</p>
+
+<p>So what did "merged" actually tell me? It told me two things, and I heard them as one. The first was that this code is now in the main branch. That was true. The second was that people can now do the thing the issue asked for. That was false, and it was the only part I actually cared about.</p>
+
+<p>Nobody lied. The word just carried more than anyone had checked. The check that would have caught it was tiny: search the code for where that flag gets set, and ignore the test files. If that search comes back empty, the feature is dark. It takes ten seconds, and nobody ran it because "merged" sounded like it already covered it.</p>
+
+<p>Once I saw that shape, I kept finding it.</p>
+
+<p>Another pull request on the same project sat in "approved, waiting" for days. The diff was clean and the review was done. It was waiting on something, but nobody had asked what. Every pull request has a base, which is the branch it wants to land in. Usually that's main. This one had been built on top of another unfinished pull request, so its base was that other one's branch. The merge queue, the line that takes approved changes into main one at a time, rejects anything not aimed at main at its very first check. So this change was never going to board, no matter how good it was. "Waiting" really meant waiting for the parent to merge, and then for someone to point this one back at main. Nobody had that on their list. The check was to read the base branch.</p>
+
+<p>The third one was my own doing. I sent an agent off to work on "slice D2" of issue #1091. I'd sliced big issues into lettered pieces before, so the name felt natural. The issue never defined a D2. "Dispatched" said I'd handed the agent a name. It didn't say the name pointed at real work. An agent in that spot has two options. It can stall, or it can <a href="/blog/agents-hallucinate-apis.html">invent a D2 that fits the label</a>, and the second one is worse, because it looks like progress. The check was to read how the issue is actually broken up before I give a piece of it a name.</p>
+
+<p>Put those three side by side and they're the same mistake. The status word was a claim about one thing, and I'd checked a different thing. I checked the pull request, but the flag is what decided whether the feature was live. I checked the diff, but the base is what decided whether it could merge. I checked that a name existed, but the issue's structure is what decided whether there was any work behind it. The word sat right on the seam between the two things, and it smoothed the seam over so I couldn't see it.</p>
+
+<p>The fix isn't a new process or a dashboard. It's one specific question each time a status word shows up, aimed at the thing the word isn't about. Merged, sure, but can a person reach it? Approved, fine, but where is it trying to land? Dispatched, okay, but does the thing I named exist?</p>
+
+<p>When something tells you it's done, ask what it's done to. The answer is usually a different object than the one you care about, and checking the one you care about is usually a ten-second job.</p>
+
+<hr>
+
+<p class="post-bio"><em>Richard Feynman told a room of Caltech graduates in 1974 that the first principle is not to fool yourself, and that you are the easiest person to fool. He didn't have pull requests, but he'd have recognized <a href="/blog/the-deploy-told-you-nothing.html">a green checkmark</a> right away.</em></p>
