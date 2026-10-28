@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkPageTypes } from './page-types.mjs';
 
 const KIT_STYLES = /^\/(?:assets\/vendor\/site-kit\/css\/[\w.-]+|assets\/brand\.css)$/;
 
@@ -82,6 +83,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (args.includes('--hash')) { console.log(kitHash(config.vendor)); process.exit(0); }
   const root = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--config') || '_site';
   const problems = [...checkSite(root, config)];
+  if (config.pageTypes) {
+    const pages = [...htmlFiles(root)].map(([file, url]) => [url.replace(/index\.html$/, ''), readFileSync(file, 'utf8')]);
+    problems.push(...checkPageTypes(root, JSON.parse(readFileSync(config.pageTypes, 'utf8')), pages));
+  }
   if (config.vendor) problems.push(...checkLock(config.vendor, config.lock || 'kit.lock'));
   if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
   console.log('ok: kit checks pass');
