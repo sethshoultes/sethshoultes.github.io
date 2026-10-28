@@ -1,5 +1,5 @@
 {%- comment -%}Service link cards. Optional param: except (a service slug to leave out).{%- endcomment -%}
-<ul class="link-grid">
+<ul class="link-grid{% if include.except %} cols-5{% endif %}">
   {%- for entry in site.data.services %}
   {%- assign svc = entry[1] %}
   {%- if svc.slug != include.except %}

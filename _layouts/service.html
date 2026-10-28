@@ -22,11 +22,11 @@ layout: site
   {%- for sec in s.sections %}
   {%- assign all_bold = true %}
   {%- for p in sec.paragraphs %}{% assign head = p | slice: 0, 2 %}{% if head != "**" %}{% assign all_bold = false %}{% endif %}{% endfor %}
-  <section id="{{ sec.id }}" class="service-sec{% if forloop.index0 == 0 or forloop.index0 == 2 %} band{% endif %}">
+  <section id="{{ sec.id }}" class="service-sec{% if forloop.index0 == 0 or forloop.index0 == 2 %} band{% endif %}{% unless all_bold %}{% assign body_size = sec.paragraphs | join: " " | size %}{% if body_size < 500 %} service-sec-thin{% endif %}{% endunless %}">
     <div class="wrap">
       <h2>{{ sec.heading }}</h2>
       {%- if all_bold %}
-      <ul class="feature-grid">
+      <ul class="feature-grid{% if sec.paragraphs.size == 4 %} two-up{% endif %}">
         {%- for p in sec.paragraphs %}
         {%- assign parts = p | split: "**" %}
         {%- assign title = parts[1] | strip %}

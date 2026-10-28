@@ -39,3 +39,5 @@ Each site keeps a page-type spec (`_data/page-types.json`, with `docs/page-types
 <section class="band cta-band"><div class="wrap"><h2>Want this for your business?</h2><p class="lead">One line.</p><div class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></div></div></section>
 ```
 `feature-card` is for text that is not a link; use `link-card` when the whole card goes somewhere. `has-anim` is added only when the page supplies a `hero-anim`; without it the hero is single column. Animation must respect reduced motion, pause off-screen and not shift layout.
+
+Grid sizes: `link-grid` is 3 across; add `cols-4` (four) or `cols-5` (five, for a service list with the current page left out). `feature-grid` is 3 across; add `two-up` for exactly four cards. Never leave a lone card on the last row.
