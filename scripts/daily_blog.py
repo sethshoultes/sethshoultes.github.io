@@ -256,7 +256,8 @@ def post_json(url: str, key: str, payload: dict, timeout: int) -> dict:
     """POST JSON with a bearer key using only the standard library, so the Mac's Python needs no packages."""
     req = urllib.request.Request(
         url, data=json.dumps(payload).encode(), method="POST",
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json",
+                 "User-Agent": "sethshoultes-daily-blog/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read())
 

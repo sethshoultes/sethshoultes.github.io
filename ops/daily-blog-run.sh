@@ -19,9 +19,11 @@ mkdir -p "$HOME/Library/Logs"
 cd "$WT" || exit 1
 git fetch -q origin && git checkout -q --detach -f origin/main && git clean -fdq
 
-set -a
-. "$HOME/.config/dev-secrets/secrets.env"
-set +a
+# Take only the two keys the job needs from secrets.env. The file also exports a dead
+# ANTHROPIC_API_KEY that would beat the subscription login, so nothing else is sourced and
+# every ANTHROPIC_* variable is unset before any claude -p call.
+eval "$(bash -c 'set -a; . "$HOME/.config/dev-secrets/secrets.env"; set +a; printf "export OPENAI_API_KEY=%q RESEND_API_KEY=%q" "$OPENAI_API_KEY" "$RESEND_API_KEY"')"
+for v in $(env | grep -o '^ANTHROPIC_[A-Z_]*'); do unset "$v"; done
 export BRAIN_DIR="$HOME/brain" NOTIFY_EMAIL="seth@caseproof.com" NOTIFY_FROM="noreply@sethshoultes.com"
 
 python3 scripts/daily_blog.py
