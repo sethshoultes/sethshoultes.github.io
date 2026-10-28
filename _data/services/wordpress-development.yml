@@ -4,6 +4,7 @@ title: "WordPress Development in Southern Utah"
 description: "WordPress development in Southern Utah from the co-founder of Event Espresso, with over 25 years in WordPress products and a monthly AI and WordPress meetup."
 service_type: "WordPress development"
 summary: "WordPress plugins and sites from the co-founder of Event Espresso."
+hero_variant: blocks
 lead: "I have built WordPress products for over 25 years. I can build or improve yours."
 sections:
   - id: proof

@@ -21,6 +21,11 @@
   {%- if page.flyover %}
   <link rel="stylesheet" href="/assets/lab.css">
   {%- endif %}
+  {%- assign hero_variant = page.hero_variant %}
+  {%- if page.service %}{% assign hero_variant = site.data.services[page.service].hero_variant %}{% endif %}
+  {%- if hero_variant %}
+  <link rel="stylesheet" href="/assets/flow.css">
+  {%- endif %}
   <script>document.documentElement.classList.add('js');</script>
   {%- if page.url == '/' %}
   {% include jsonld-home.html %}
@@ -62,6 +67,9 @@
 </script>
 {%- if page.flyover %}
 <script src="/assets/lab.js" defer></script>
+{%- endif %}
+{%- if hero_variant %}
+<script type="module" src="/assets/flow.js"></script>
 {%- endif %}
 </body>
 </html>

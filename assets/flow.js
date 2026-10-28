@@ -272,13 +272,14 @@ function orb(ctx, cv, c, getQuality) {
     const y = 1 - (i + 0.5) * (2 / MAX), rad = Math.sqrt(1 - y * y), th = i * 2.399963; // Fibonacci sphere
     return { ux: Math.cos(th) * rad, uy: y, uz: Math.sin(th) * rad, sx: (rand() - 0.5) * 3.4, sy: (rand() - 0.5) * 2.6, st: rand() * 0.4, seed: rand() * TAU, sz: 3 + rand() * 3 };
   });
-  let w = 0, h = 0;
+  let w = 0, h = 0, t0 = 0;
 
   return {
     resize(nw, nh) { w = nw; h = nh; },
     frame(dt, now, still) {
+      if (!t0) t0 = now;
       const vh = window.innerHeight, top = cv.getBoundingClientRect().top;
-      const p = still ? 1 : clamp((vh * 0.95 - top) / (vh * 0.6));
+      const p = still ? 1 : cv.dataset.assemble === 'time' ? clamp((now - t0) / 3200) : clamp((vh * 0.95 - top) / (vh * 0.6));
       const wide = w > 860, R = Math.min(w * (wide ? 0.3 : 0.42), h * 0.4), cx = wide ? w * 0.62 : w / 2, cy = h * 0.5;
       const spin = still ? 0.6 : now * 0.00025;
       const cs = Math.cos(spin), sn = Math.sin(spin);
@@ -549,7 +550,18 @@ export function mount(cv) {
   if (make) run(cv, make);
 }
 
-function start() { document.querySelectorAll('canvas[data-anim]').forEach(mount); }
+function start() {
+  document.querySelectorAll('canvas[data-anim]').forEach(mount);
+  // a layout slot <div class="hero-anim" data-variant="answer"> gets its canvas here
+  document.querySelectorAll('.hero-anim[data-variant]').forEach((box) => {
+    if (box.querySelector('canvas')) return;
+    const cv = document.createElement('canvas');
+    cv.dataset.anim = box.dataset.variant;
+    cv.dataset.assemble = 'time'; // a hero orb forms on arrival, not on scroll
+    box.appendChild(cv);
+    mount(cv);
+  });
+}
 
 // Content first: the scenes mount after the page has loaded, so LCP is unchanged.
 const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
