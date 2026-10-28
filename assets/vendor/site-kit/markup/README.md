@@ -28,3 +28,14 @@ No inline styles. Colors and fonts only through tokens/brand. Every `<img>` has 
 </figure>
 ```
 Real photos only. Alt, width, height, and the credit (author, license, source link) are required. The first image on a page is not lazy.
+
+## Page types (page-types.json)
+Each site keeps a page-type spec (`_data/page-types.json`, with `docs/page-types.md` for people) listing, per page type, the required parts and one reference page. A page declares its type with `<body data-page-type="city">`. `kit-check` (kit.json `"pageTypes"`) fails any typed page missing a part, and any page whose URL matches a type's `pattern` without declaring the type. Part kinds: `contains`, `regex`, `min_count`, `jsonld`, `twin`, `llms`, `sitemap`, `linked_from`. New pages start from the spec: a brief says "a new city page per page-types: city".
+
+## feature-card, hero-split, cta-band
+```html
+<ul class="feature-grid"><li><div class="feature-card"><h3>Title</h3><p>One line.</p></div></li></ul>
+<div class="hero-split-grid has-anim"><div>eyebrow, h1, lead, buttons</div><div class="hero-anim" data-variant="ai-search"></div></div>
+<section class="band cta-band"><div class="wrap"><h2>Want this for your business?</h2><p class="lead">One line.</p><div class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></div></div></section>
+```
+`feature-card` is for text that is not a link; use `link-card` when the whole card goes somewhere. `has-anim` is added only when the page supplies a `hero-anim`; without it the hero is single column. Animation must respect reduced motion, pause off-screen and not shift layout.

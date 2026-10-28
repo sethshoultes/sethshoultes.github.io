@@ -131,7 +131,7 @@
 /* Service pages */
 .service-hero { padding: 8rem 0 2rem; }
 .service-hero h1 { text-wrap: balance; }
-.service-sec { padding: 1.5rem 0; }
+.service-sec { padding: 3.5rem 0; }
 .service-sec h2 { margin-bottom: 1rem; }
 .service ul:not(.link-grid) { padding-left: 1.2rem; color: var(--muted); }
 .service ul:not(.link-grid), .hub ul:not(.link-grid):not(.photo-credits) { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
