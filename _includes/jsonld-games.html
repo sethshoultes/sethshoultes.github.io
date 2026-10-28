@@ -1,0 +1,8 @@
+{%- comment -%}VideoGame schema for every game in _data/games.yml.{%- endcomment -%}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{%- for g in site.data.games.games %}
+{"@type":"VideoGame","name":{{ g.title | jsonify }},"description":{{ g.line | jsonify }},"url":{{ g.play | jsonify }},"image":"{{ site.url }}{{ g.image }}","genre":{{ site.data.games.genres | where: "id", g.genre | map: "name" | first | jsonify }},"gamePlatform":"Web browser","applicationCategory":"Game","inLanguage":"en","author":{"@type":"Person","name":"Seth Shoultes","url":"https://sethshoultes.com/"}}{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+]}
+</script>

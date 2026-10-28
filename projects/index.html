@@ -7,6 +7,8 @@ layout: site
 title: "Projects and games"
 description: "AI tools, WordPress plugins, browser games and videos built by Seth Shoultes."
 ---
+<link rel="stylesheet" href="/assets/games.css">
+{% include jsonld-games.html %}
 <div class="page-head">
   <div class="wrap">
     <p class="eyebrow">Projects</p>
@@ -94,24 +96,34 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
   <div class="wrap">
     <p class="eyebrow reveal">Games</p>
     <h2 class="reveal">Play something.</h2>
-    <p class="lead reveal">Browser games built for fun and a little friendly competition.</p>
-    <div class="grid">
-      <a class="card reveal" href="https://adventurebuildr.com/arcade/typerunner.html" target="_blank" rel="noopener">
-        <h3>TypeRunner</h3>
-        <p>Test your typing speed and accuracy with challenges for every skill level.</p>
-        <span class="meta">Play now &rarr;</span>
-      </a>
-      <a class="card reveal" href="https://adventurebuildr.com/flappy-bird/" target="_blank" rel="noopener">
-        <h3>Flappy Bird</h3>
-        <p>Steer a bird through the obstacles.</p>
-        <span class="meta">Play now &rarr;</span>
-      </a>
-      <a class="card reveal" href="https://adventurebuildr.com/arcade/typing-game.html" target="_blank" rel="noopener">
-        <h3>Speed Typing Adventure</h3>
-        <p>A journey where your typing skills decide your fate.</p>
-        <span class="meta">Play now &rarr;</span>
-      </a>
+    <p class="lead reveal">Browser games built for fun and a little friendly competition. Start with these, or <a href="#arcade">open the whole Arcade</a>.</p>
+    <ul class="link-grid cols-4">
+      {%- for id in site.data.games.featured %}
+      {%- assign game = site.data.games.games | where: "id", id | first %}
+      <li>{% include game-card.html game=game %}</li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+<section id="arcade">
+  <div class="wrap">
+    <p class="eyebrow reveal">The Arcade</p>
+    <h2 class="reveal">{{ site.data.games.arcade.name }}.</h2>
+    <div class="arcade-intro reveal">
+      <p>{{ site.data.games.arcade.line }}</p>
+      <a class="btn" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener">Open the Arcade</a>
     </div>
+    {%- for genre in site.data.games.genres %}
+    {%- assign list = site.data.games.games | where: "genre", genre.id %}
+    {%- if list.size > 0 %}
+    <h3 class="arcade-genre">{{ genre.name }}</h3>
+    <ul class="link-grid cols-4">
+      {%- for game in list %}
+      <li>{% include game-card.html game=game %}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
+    {%- endfor %}
   </div>
 </section>
 <section id="videos">

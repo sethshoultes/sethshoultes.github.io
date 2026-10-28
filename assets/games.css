@@ -1,0 +1,6 @@
+/* games on /projects/: the kit link-card with a wide card image, plus the Arcade intro (#160) */
+.game-card img { aspect-ratio: 640 / 264; }
+.game-card .meta { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: 0.4rem; }
+.arcade-intro { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0 2rem; }
+.arcade-intro p { margin: 0; max-width: 60ch; color: var(--muted); }
+.arcade-genre { margin: 2.25rem 0 1rem; font-size: 1.2rem; }
