@@ -12,31 +12,18 @@ permalink: /southern-utah/
     <div class="prose">
       <h2>Where I work</h2>
       <ul class="link-grid cols-4">
-        {%- for c in site.data.cities %}
-        <li>
-          <a class="link-card" href="/{{ c[1].slug }}/">
-            <img src="{{ c[1].card_photo }}" alt="{{ c[1].card_alt }}" width="720" height="480" loading="lazy" decoding="async">
-            <span class="link-card-body">
-              <h3>{{ c[1].name }}</h3>
-              <p>{{ c[1].card_line }}</p>
-            </span>
-          </a>
-        </li>
+        {%- for entry in site.data.cities %}
+        {%- assign c = entry[1] %}
+        {%- capture href %}/{{ c.slug }}/{% endcapture %}
+        <li>{% include kit/link-card.html href=href title=c.name line=c.card_line img=c.card_photo alt=c.card_alt %}</li>
         {%- endfor %}
       </ul>
       <h2>What I do</h2>
       <ul class="link-grid">
         {%- for s in site.data.services %}
         {%- assign svc = s[1] %}
-        <li>
-          <a class="link-card" href="/{{ s[1].slug }}/">
-            <span class="link-card-body">
-              {% include service-icon.html slug=svc.slug %}
-              <h3>{{ s[1].name }}</h3>
-              <p>{{ s[1].summary }}</p>
-            </span>
-          </a>
-        </li>
+        {%- capture href %}/{{ svc.slug }}/{% endcapture %}
+        <li>{% include kit/link-card.html href=href title=svc.name line=svc.summary icon="service-icon.html" slug=svc.slug %}</li>
         {%- endfor %}
       </ul>
       <p class="hub-note">I work with businesses across the region, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>

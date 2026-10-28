@@ -1,0 +1,15 @@
+{%- comment -%}
+Kit component: whole-card link with an H3 title.
+Params: href, title, line, img (optional photo path), alt (required with img), icon (optional, pre-rendered SVG include name)
+Rules: the card is one <a>; one <h3>; no links inside; photo has width/height, lazy, alt.
+{%- endcomment -%}
+<a class="link-card" href="{{ include.href }}">
+  {%- if include.img %}
+  <img src="{{ include.img }}" alt="{{ include.alt }}" width="720" height="480" loading="lazy" decoding="async">
+  {%- endif %}
+  <span class="link-card-body">
+    {%- if include.icon %}{% include {{ include.icon }} slug=include.slug %}{% endif %}
+    <h3>{{ include.title }}</h3>
+    <p>{{ include.line }}</p>
+  </span>
+</a>
