@@ -365,7 +365,7 @@ footer .footer-links a:hover { color: var(--accent); }
   footer .footer-links a:first-child { margin-left: 0; }
 }
 
-.post-content img { height: auto; }
+.post-content img { max-width: 100%; height: auto; }
 
 /* Post images, tables and notes (were inline styles) */
 .post-content .post-img { width: 100%; max-width: 780px; display: block; margin: 1.5rem auto; border-radius: 6px; }

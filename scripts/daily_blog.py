@@ -415,7 +415,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "---\n\n"
         "Then a featured image tag in this exact form (the image will be generated to match):\n\n"
         f'<img src="/blog/images/{idea["slug"]}-featured.png" alt="<short alt text>" '
-        'width="1536" height="1024" />\n\n'
+        'width="1536" height="1024" class="post-img post-img-lead" />\n\n'
         "Then your prose, every <p> opened and closed, every <h2> opened and closed.\n\n"
         "Then, AT THE END of the body — after the last paragraph of prose — add this closing block:\n\n"
         "<hr>\n\n"
