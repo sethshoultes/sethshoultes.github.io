@@ -1,0 +1,9 @@
+{%- comment -%}
+  Faint star field and distant planets behind the dark sections (#153). One fixed canvas, no layout cost.
+  Usage: {% include starfield.html %} once, at the top of a page's content.
+  It makes the .band sections slightly see-through so the stars show behind them too; text sits on a quieter column.
+{%- endcomment -%}
+<link rel="stylesheet" href="/assets/starfield.css">
+<script>document.body.classList.add('has-starfield');</script>
+<canvas class="starfield" data-starfield aria-hidden="true"></canvas>
+<script type="module" src="/assets/stars.js"></script>
