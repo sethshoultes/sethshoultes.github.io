@@ -1,0 +1,16 @@
+name = "sethshoultes-news"
+pages_build_output_dir = "public"
+compatibility_date = "2026-10-01"
+
+# The newsletter's own database (D1) and its KV (rate limits and the PDF files),
+# both in the SWS Cloudflare account. Secrets (not in this file): RESEND_API_KEY,
+# NEWS_SECRET (signs confirm, unsubscribe and download links), ADMIN_TOKEN (the
+# subscriber count). Optional var: MAILING_ADDRESS (the CAN-SPAM footer line).
+[[d1_databases]]
+binding = "DB"
+database_name = "sws-news"
+database_id = "REPLACE_AT_DEPLOY"
+
+[[kv_namespaces]]
+binding = "NEWS_KV"
+id = "REPLACE_AT_DEPLOY"
