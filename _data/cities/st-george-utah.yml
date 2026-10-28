@@ -21,7 +21,6 @@ scenes:
     body: "Here is what I do for businesses in St. George, and how I would think about yours."
     cta_label: "Read on"
     cta_href: "#services"
-flyover_note: "The scenery above is generated. It is not a photo or video of St. George."
 sections:
   - id: services
     heading: "What I do for St. George businesses"

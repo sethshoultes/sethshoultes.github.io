@@ -63,7 +63,7 @@ body.lab { background: #0b0d10; }
 .city-body { position: relative; z-index: 1; background: var(--bg); padding: 4rem 0 2rem; }
 .city-sec { padding: 1.5rem 0; }
 .city-sec h2 { margin-bottom: 1rem; }
-.city-body .flyover-note, .city-body .source, .city-sec.small { font-size: 0.9rem; color: var(--muted); }
+.city-body .source, .city-sec.small { font-size: 0.9rem; color: var(--muted); }
 .city-sec.small ul { padding-left: 1.1rem; }
 .city-body .stats { margin: 1.5rem 0 0.5rem; }
 .city-body .btn-row { margin: 1.5rem 0; }

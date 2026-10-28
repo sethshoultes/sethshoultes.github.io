@@ -42,9 +42,7 @@ layout: site
 
 <div class="city-body">
   <div class="wrap"><div class="prose">
-    {%- if c.clip %}
-    <p class="flyover-note">{{ c.flyover_note }}</p>
-    {%- else %}
+    {%- unless c.clip %}
     {%- for sc in c.scenes offset: 1 %}{% unless sc.cta_href == "#services" %}
     <section class="city-sec">
       <p class="eyebrow">{{ sc.eyebrow }}</p>
@@ -52,7 +50,7 @@ layout: site
       <p>{{ sc.body }}</p>
     </section>
     {%- endunless %}{% endfor %}
-    {%- endif %}
+    {%- endunless %}
     {%- for sec in c.sections %}
     <section id="{{ sec.id }}" class="city-sec">
       <h2>{{ sec.heading }}</h2>
