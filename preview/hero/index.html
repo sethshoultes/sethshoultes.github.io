@@ -38,7 +38,7 @@ permalink: /preview/hero/
   <p class="eyebrow">The six service variants, as they sit in a two-column hero</p>
   {%- assign variants = "answer|AI search optimization: a question flows into an AI answer that cites the site,blocks|WordPress development: blocks assemble into a page,pins|SEO: map pins land and the listing climbs the ranking,page|Web development: a page builds itself and scores 100,flow|AI services: the data flow,orb|Learn AI: the orb forms" | split: "," %}
   {%- for v in variants %}{% assign parts = v | split: "|" %}
-  <div>{% include hero-anim.html anim=parts[0] %}<p class="hero-caption">{{ parts[1] }}</p></div>
+  <div>{% assign anim = parts[0] %}{% include hero-anim.html anim=anim %}<p class="hero-caption">{{ parts[1] }}</p></div>
   {%- endfor %}
 </section>
 <script type="module" src="/assets/flow.js"></script>
