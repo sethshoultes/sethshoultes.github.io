@@ -3,6 +3,7 @@
 > Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years, and he now offers monthly AI consulting to small businesses: strategy, a fractional AI lead, or an AI agent team building for you.
 
 ## Key facts
+- Why Seth does this, in his words: "I build things that help a business grow and help people create, and I've been doing it for 25 years because I still love it."
 - Name: Seth Shoultes. Role: AI consultant, product leader, AI developer, WordPress product veteran.
 - Co-founded Event Espresso (2009 to 2021), a WordPress event plugin that won the Utah Entrepreneur Challenge in 2011.
 - Has organized WordPress meetups for over 15 years and runs a monthly AI and WordPress meetup.
@@ -43,7 +44,7 @@
 - [Neighborhood page planner](https://sethshoultes.com/tools/neighborhood-page-planner/): enter a US city and see its neighborhoods with home age, home counts and values from Census data. Plain-text version at https://sethshoultes.com/tools/neighborhood-page-planner.md
 - [Local SEO quick audit](https://sethshoultes.com/tools/local-seo-quick-audit/): enter a business, service and city to see its Google Maps listing, its reviews against nearby competitors, and which neighborhoods have a page on its site. Plain-text version at https://sethshoultes.com/tools/local-seo-quick-audit.md
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
-- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, games and videos
+- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
 - [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone
 - [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file
 - [Sitemap](https://sethshoultes.com/sitemap.xml)

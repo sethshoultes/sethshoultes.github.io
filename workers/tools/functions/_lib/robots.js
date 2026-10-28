@@ -40,15 +40,20 @@ function rulesFor(groups, agent) {
   return { rules: [], group: 'none' };
 }
 
-// status: allowed (nothing in the way), partial (the home page is open but some
-// paths are closed), blocked (the whole site is closed to this bot).
+// Paths every site closes to every crawler (WordPress's own default robots.txt closes
+// /wp-admin/). Closing only these hides no content, so it does not count as partly closed.
+const ADMIN_PATHS = ['/wp-admin/', '/wp-login.php', '/admin/', '/administrator/', '/login/'];
+const isAdminPath = (path) => ADMIN_PATHS.some((a) => path.toLowerCase().startsWith(a));
+
+// status: allowed (nothing in the way, or only admin paths closed), partial (the home
+// page is open but some content paths are closed), blocked (the whole site is closed).
 export function evaluate(groups, bot) {
   const { rules, group } = rulesFor(groups, bot.toLowerCase());
   const hits = rules.filter((r) => matches(r.path, '/'));
   const best = hits.reduce((a, r) => (!a || r.path.length > a.path.length || (r.path.length === a.path.length && r.allow) ? r : a), null);
   const line = (r) => `${r.allow ? 'Allow' : 'Disallow'}: ${r.path}`;
   if (best && !best.allow) return { status: 'blocked', group, rules: [line(best)] };
-  const closed = rules.filter((r) => !r.allow && !matches(r.path, '/'));
+  const closed = rules.filter((r) => !r.allow && !matches(r.path, '/') && !isAdminPath(r.path));
   if (closed.length) return { status: 'partial', group, rules: closed.slice(0, 5).map(line) };
   return { status: 'allowed', group, rules: [] };
 }

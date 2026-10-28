@@ -1,0 +1,19 @@
+---
+layout: null
+permalink: /projects.md
+sitemap: false
+---
+# Projects and games
+
+AI tools, WordPress plugins, browser games and videos built by Seth Shoultes.
+
+Page: {{ site.url }}/projects/
+
+## {{ site.data.games.arcade.name }}
+
+{{ site.data.games.arcade.line }} {{ site.data.games.arcade.url }}
+{% for genre in site.data.games.genres %}{% assign list = site.data.games.games | where: "genre", genre.id %}
+### {{ genre.name }}
+
+{% for g in list %}- [{{ g.title }}]({{ g.play }}): {{ g.line }}
+{% endfor %}{% endfor %}

@@ -1,0 +1,136 @@
+# Games on /projects/. One entry per game; the page, the markdown twin and the VideoGame JSON-LD all read this file.
+# image_source is the Arcade card image each local WebP (640x264) was made from. play is the live game; page is its Arcade listing.
+
+featured: [silicon-trail, typerunner, flappy-bird, word-runner]
+
+arcade:
+  url: https://arcade.adventurebuildr.com/
+  name: The AdventureBuildr Arcade
+  line: "Thirteen browser games in one place: action, adventure, simulation, strategy, tabletop and word games."
+
+genres:
+  - {id: action, name: "Action"}
+  - {id: adventure, name: "Adventure"}
+  - {id: simulation, name: "Simulation"}
+  - {id: strategy, name: "Strategy"}
+  - {id: tabletop, name: "Tabletop"}
+  - {id: word, name: "Word and typing"}
+
+games:
+  - id: silicon-trail
+    title: "The Silicon Trail"
+    genre: adventure
+    line: "A road-trip role-player where what you pack and when you rest decide whether your character makes it to the end."
+    play: https://silicontrail.org
+    page: https://arcade.adventurebuildr.com/games/silicon-trail/
+    image: /assets/img/games/silicon-trail.webp
+    alt: "Card art for The Silicon Trail"
+    image_source: https://arcade.adventurebuildr.com/_astro/silicon-trail.DOvMPfAd_Z27ziMj.jpeg
+  - id: black-wake
+    title: "Black Wake"
+    genre: strategy
+    line: "A tactics game where every match is decided by skill, not luck, and the AI opponent narrates its own turns."
+    play: https://blackwake.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/black-wake/
+    image: /assets/img/games/black-wake.webp
+    alt: "Card art for Black Wake"
+    image_source: https://arcade.adventurebuildr.com/_astro/black-wake.C-ibXfnO_1mrDk.jpeg
+  - id: gauntlet-crawler
+    title: "Gauntlet Crawler"
+    genre: action
+    line: "Four heroes fight down an endless dungeon, shooting monster generators and hunting keys against a ticking health bar."
+    play: https://gauntlet.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/gauntlet-crawler/
+    image: /assets/img/games/gauntlet-crawler.webp
+    alt: "Card art for Gauntlet Crawler"
+    image_source: https://arcade.adventurebuildr.com/_astro/gauntlet-crawler.Blhwl1wZ_xuUsJ.jpeg
+  - id: joust-1980
+    title: "Joust 1980"
+    genre: action
+    line: "Flap to stay airborne and knock enemies out from above in this arcade classic remake, with a pterodactyl that shows up as your score climbs."
+    play: https://joust-1980.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/joust-1980/
+    image: /assets/img/games/joust-1980.webp
+    alt: "Card art for Joust 1980"
+    image_source: https://arcade.adventurebuildr.com/_astro/joust-1980.CWsRc6KX_28j1Jc.jpeg
+  - id: crossy-road
+    title: "Crossy Road"
+    genre: action
+    line: "Cross the lanes, dodge cars and boulders and reach the top for the next level."
+    play: https://crossy-road.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/crossy-road/
+    image: /assets/img/games/crossy-road.webp
+    alt: "Card art for Crossy Road"
+    image_source: https://arcade.adventurebuildr.com/_astro/crossy-road.Db03VQgR_ZaqmY7.jpeg
+  - id: flappy-bird
+    title: "Flappy Bird"
+    genre: action
+    line: "Flap through the pipes and chase a spot on the global leaderboard."
+    play: https://flappy-bird.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/flappy-bird/
+    image: /assets/img/games/flappy-bird.webp
+    alt: "Card art for Flappy Bird"
+    image_source: https://arcade.adventurebuildr.com/_astro/flappy-bird.C5QOIyWP_Z2j11GW.jpeg
+  - id: pacific-skies
+    title: "Pacific Skies"
+    genre: action
+    line: "Fly a twin-boom fighter north across the Pacific in two-player online co-op, looping out of the sky to dodge fire."
+    play: https://skies.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/pacific-skies/
+    image: /assets/img/games/pacific-skies.webp
+    alt: "Card art for Pacific Skies"
+    image_source: https://arcade.adventurebuildr.com/_astro/pacific-skies.DkNwokVk_Z2epBks.jpeg
+  - id: ohmsville
+    title: "Ohmsville"
+    genre: simulation
+    line: "Wire up real circuits in a browser lab where the electronics behave like the real thing."
+    play: https://ohmsville.com
+    page: https://arcade.adventurebuildr.com/games/ohmsville/
+    image: /assets/img/games/ohmsville.webp
+    alt: "Card art for Ohmsville"
+    image_source: https://arcade.adventurebuildr.com/_astro/ohmsville.CFYQEKvi_Z1OE3IV.jpeg
+  - id: living-table
+    title: "The Living Table"
+    genre: tabletop
+    line: "A tabletop session that lives in the browser, with hex maps, dice that feel physical and pieces that snap into place."
+    play: https://table.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/living-table/
+    image: /assets/img/games/living-table.webp
+    alt: "Card art for The Living Table"
+    image_source: https://arcade.adventurebuildr.com/_astro/living-table.CAA3w-Aa_ZXckJU.jpeg
+  - id: ai-typing-star
+    title: "AI Typing Star Game"
+    genre: word
+    line: "Steer a star into floating AI and ML terms and type them to score."
+    play: https://ai-typing-star.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/ai-typing-star/
+    image: /assets/img/games/ai-typing-star.webp
+    alt: "Card art for AI Typing Star Game"
+    image_source: https://arcade.adventurebuildr.com/_astro/ai-typing-star.HK6kmJkI_ZPS8Yj.jpeg
+  - id: typerunner
+    title: "TypeRunner"
+    genre: word
+    line: "Run with WASD and type the words you meet before they catch you, with achievements across stages."
+    play: https://typerunner.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/typerunner/
+    image: /assets/img/games/typerunner.webp
+    alt: "Card art for TypeRunner"
+    image_source: https://arcade.adventurebuildr.com/_astro/typerunner.C-fam7aZ_1lHbzj.jpeg
+  - id: typing-invaders
+    title: "Typing Invaders"
+    genre: word
+    line: "Type each falling word before it reaches the bottom."
+    play: https://typing-invaders.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/typing-invaders/
+    image: /assets/img/games/typing-invaders.webp
+    alt: "Card art for Typing Invaders"
+    image_source: https://arcade.adventurebuildr.com/_astro/typing-invaders.BKQo6lUr_Z2vL1t0.jpeg
+  - id: word-runner
+    title: "Word Runner"
+    genre: word
+    line: "Move with WASD and type each word to clear it as new ones keep spawning, using programming vocabulary."
+    play: https://word-runner.adventurebuildr.com
+    page: https://arcade.adventurebuildr.com/games/word-runner/
+    image: /assets/img/games/word-runner.webp
+    alt: "Card art for Word Runner"
+    image_source: https://arcade.adventurebuildr.com/_astro/word-runner.BgegLL9c_jCsu3.jpeg

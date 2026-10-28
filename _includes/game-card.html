@@ -1,0 +1,12 @@
+{%- comment -%}
+Game card (kit link-card with a wide 640x264 card image). Param: game (an entry of site.data.games.games).
+One <a>, one <h3>, no links inside. The whole card plays the game.
+{%- endcomment -%}
+<a class="link-card game-card" href="{{ include.game.play }}" target="_blank" rel="noopener">
+  <img src="{{ include.game.image }}" alt="{{ include.game.alt }}" width="640" height="264" loading="lazy" decoding="async">
+  <span class="link-card-body">
+    <h3>{{ include.game.title }}</h3>
+    <p>{{ include.game.line }}</p>
+    <span class="meta">Play now &rarr;</span>
+  </span>
+</a>

@@ -1,0 +1,29 @@
+/* data-flow hero and scroll orb (#149): full-bleed canvases are fixed-height decoration behind real HTML text */
+.flow-hero { position: relative; overflow: hidden; min-height: 92vh; min-height: 92svh; padding: 7rem 0 max(260px, 36vh); display: flex; align-items: flex-start; background: radial-gradient(60% 50% at 80% 0%, rgba(255, 107, 44, 0.14), transparent 70%); }
+.flow-canvas, .orb-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.flow-canvas { touch-action: pan-y; }
+.flow-hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(11, 13, 16, 0.78) 0%, rgba(11, 13, 16, 0.55) 36%, rgba(11, 13, 16, 0) 52%); pointer-events: none; }
+.flow-copy { position: relative; z-index: 2; max-width: 760px; margin-inline: auto; text-align: center; pointer-events: none; }
+.flow-copy h1 { font-size: clamp(2.1rem, 4.6vw, 3.6rem); }
+.flow-copy .btn-row { justify-content: center; }
+.flow-copy .btn { pointer-events: auto; }
+.flow-spacer { padding: 5rem 1.25rem 2rem; }
+.orb-section { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; padding: 4rem 0; }
+.orb-copy { position: relative; z-index: 2; width: 100%; max-width: 440px; margin-left: max(1.25rem, calc((100vw - var(--max)) / 2)); }
+.orb-copy .btn { margin-top: 0.5rem; }
+@media (max-width: 860px) {
+  .flow-hero { min-height: 80vh; min-height: 80svh; padding: 5.25rem 0 max(230px, 30vh); }
+  .flow-copy h1 { font-size: 1.9rem; }
+  .flow-copy .lead { font-size: 0.97rem; margin-top: 1rem; }
+  .orb-section { flex-direction: column; align-items: stretch; min-height: 0; padding: 0 0 3rem; }
+  .orb-canvas { position: relative; inset: auto; flex: none; height: 52vh; height: 52svh; }
+  .orb-copy { max-width: none; margin-left: 0; padding: 0 1.25rem; }
+}
+
+/* two-column hero: the animation sits in the right column at a fixed 4:3, so nothing shifts when it loads */
+.hero-anim { margin: 0; position: relative; width: 100%; aspect-ratio: 4 / 3; }
+.hero-anim canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.hero-anim canvas[data-anim="flow"] { touch-action: pan-y; }
+.hero-variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.5rem 2rem; padding-bottom: 5rem; }
+.hero-caption { margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; }
+

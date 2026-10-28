@@ -33,7 +33,9 @@
   {%- endif %}
   {% include analytics.html %}
 </head>
-<body>
+{%- assign page_type = page.page_type -%}
+{%- if page.city %}{% assign page_type = "city" %}{% elsif page.service %}{% assign page_type = "service" %}{% elsif page.layout == "post" %}{% assign page_type = "post" %}{% endif -%}
+<body{% if page_type %} data-page-type="{{ page_type }}"{% endif %}>
 {% include nav.html %}
 <main>
 {{ content }}
