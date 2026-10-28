@@ -241,8 +241,11 @@ def ask_claude(prompt: str, system: str | None = None) -> str:
            "--setting-sources", "", "--output-format", "text"]
     if system:
         cmd += ["--system-prompt", system]
+    # An ANTHROPIC_* credential in the environment (secrets.env still exports a dead one) would win
+    # over the subscription login, so the child never sees one.
+    env = {k: v for k, v in os.environ.items() if not k.startswith("ANTHROPIC_")}
     res = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=CLAUDE_TIMEOUT_S,
-                         cwd=Path.home())
+                         cwd=Path.home(), env=env)
     out = res.stdout.strip()
     if res.returncode != 0 or not out:
         raise RuntimeError(f"claude -p failed ({res.returncode}): {(res.stderr or out)[:500]}")
