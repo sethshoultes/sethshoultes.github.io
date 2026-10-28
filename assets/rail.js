@@ -6,6 +6,9 @@
   var track = rail.querySelector('[data-rail-track]');
   var pause = rail.querySelector('[data-rail-pause]');
   var reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  var touch = matchMedia('(hover: none)'); // phones swipe; nothing moves by itself there, so no pause is needed
+  var count = rail.querySelector('[data-rail-count]');
+  var total = track.children.length;
   var step = function () { var li = track.firstElementChild; return li ? li.getBoundingClientRect().width + 20 : 300; };
   var go = function (dir) {
     var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
@@ -18,15 +21,23 @@
   rail.querySelector('[data-rail-next]').addEventListener('click', function () { go(1); });
 
   var paused = false, hover = false, visible = true, timer = 0;
-  var run = function () { return !reduced.matches && !paused && !hover && visible && !document.hidden; };
+  var still = function () { return reduced.matches || touch.matches; };
+  var run = function () { return !still() && !paused && !hover && visible && !document.hidden; };
   var tick = function () { if (run()) go(1); };
   var sync = function () { clearInterval(timer); if (run()) timer = setInterval(tick, 4500); };
-  if (!reduced.matches) pause.hidden = false;
+  pause.hidden = still();
   pause.addEventListener('click', function () { paused = !paused; pause.setAttribute('aria-pressed', paused); pause.textContent = paused ? 'Play' : 'Pause'; sync(); });
   ['mouseenter', 'focusin', 'touchstart'].forEach(function (e) { rail.addEventListener(e, function () { hover = true; sync(); }, { passive: true }); });
   ['mouseleave', 'focusout'].forEach(function (e) { rail.addEventListener(e, function () { hover = false; sync(); }); });
   new IntersectionObserver(function (en) { visible = en[0].isIntersecting; sync(); }).observe(rail);
   document.addEventListener('visibilitychange', sync);
-  reduced.addEventListener('change', function () { pause.hidden = reduced.matches; sync(); });
+  reduced.addEventListener('change', function () { pause.hidden = still(); sync(); });
+  var where = function () {
+    var i = Math.min(total, Math.round(track.scrollLeft / step()) + 1);
+    count.textContent = i + ' of ' + total;
+    rail.classList.toggle('at-end', track.scrollLeft + track.clientWidth >= track.scrollWidth - 4);
+  };
+  track.addEventListener('scroll', where, { passive: true });
+  where();
   sync();
 })();
