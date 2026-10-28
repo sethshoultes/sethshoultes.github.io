@@ -1,0 +1,10 @@
+{%- comment -%}Service link cards. Optional param: except (a service slug to leave out).{%- endcomment -%}
+<ul class="link-grid">
+  {%- for entry in site.data.services %}
+  {%- assign svc = entry[1] %}
+  {%- if svc.slug != include.except %}
+  {%- capture href %}/{{ svc.slug }}/{% endcapture %}
+  <li>{% include kit/link-card.html href=href title=svc.name line=svc.summary icon="service-icon.html" slug=svc.slug %}</li>
+  {%- endif %}
+  {%- endfor %}
+</ul>

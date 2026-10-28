@@ -1,0 +1,9 @@
+{%- comment -%}Credits for the city photos (CC BY / CC BY-SA require attribution wherever the photo is shown). Include after any card grid that shows city photos.{%- endcomment -%}
+<h3>Photo credits</h3>
+<ul class="photo-credits">
+  {%- for entry in site.data.cities %}
+  {%- assign c = entry[1] %}
+  <li>{{ c.name }}{% if c.credit_note %} ({{ c.credit_note }}){% endif %}: <a href="{{ c.card_credit.source }}" rel="noopener">{{ c.card_credit.author }}</a>, {{ c.card_credit.license }}, via Wikimedia Commons</li>
+  {%- endfor %}
+</ul>
+<p class="photo-credits-note">Coral Canyon is part of Washington City, so its photo shows Washington.</p>

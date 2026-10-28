@@ -2,6 +2,7 @@
 layout: site
 ---
 {%- assign c = site.data.cities[page.city] %}
+{%- if c.clip %}
 <div class="scrub">
   <div class="scrub-stage">
     <img src="/assets/lab/{{ c.clip }}-poster.webp" width="1280" height="720" alt="{{ c.poster_alt }}" fetchpriority="high">
@@ -24,10 +25,34 @@ layout: site
   </section>
   {%- endfor %}
 </div>
+{%- else %}
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">{{ c.scenes[0].eyebrow }}</p>
+    <h1>{{ c.scenes[0].heading }}</h1>
+    <p class="lead mt-1">{{ c.scenes[0].body }}</p>
+    <p class="btn-row"><a class="btn" href="{{ c.scenes[0].cta_href }}">{{ c.scenes[0].cta_label }}</a></p>
+    <figure class="photo-fig">
+      <img src="{{ c.card_photo }}" alt="{{ c.card_alt }}" width="720" height="480" fetchpriority="high">
+      <figcaption>{% if c.photo_note %}{{ c.photo_note }} {% endif %}Photo: <a href="{{ c.card_credit.source }}" rel="noopener">{{ c.card_credit.author }}</a>, {{ c.card_credit.license }}, via Wikimedia Commons.</figcaption>
+    </figure>
+  </div>
+</div>
+{%- endif %}
 
 <div class="city-body">
   <div class="wrap"><div class="prose">
+    {%- if c.clip %}
     <p class="flyover-note">{{ c.flyover_note }}</p>
+    {%- else %}
+    {%- for sc in c.scenes offset: 1 %}{% unless sc.cta_href == "#services" %}
+    <section class="city-sec">
+      <p class="eyebrow">{{ sc.eyebrow }}</p>
+      <h2>{{ sc.heading }}</h2>
+      <p>{{ sc.body }}</p>
+    </section>
+    {%- endunless %}{% endfor %}
+    {%- endif %}
     {%- for sec in c.sections %}
     <section id="{{ sec.id }}" class="city-sec">
       <h2>{{ sec.heading }}</h2>
@@ -58,16 +83,16 @@ layout: site
       </div>
     </section>
 
+  </div></div>
+  <div class="wrap city-more">
+    <h2>What else I offer</h2>
+    {% include service-cards.html %}
+  </div>
+  <div class="wrap"><div class="prose">
     <section class="city-sec">
       <h2>Let's talk about your business.</h2>
       <p>Tell me what you would like AI and search to do for you. I reply within two business days.</p>
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
-      <p>What else I offer:</p>
-      <ul>
-        {%- for s in site.data.services %}
-        <li><a href="/{{ s[1].slug }}/">{{ s[1].title }}</a></li>
-        {%- endfor %}
-      </ul>
       {%- if c.see_also %}
       <p>Inside this city:</p>
       <ul>
@@ -78,7 +103,6 @@ layout: site
       {%- endif %}
       <p>More places I work: <a href="/southern-utah/">AI and SEO services across Southern Utah</a>.</p>
     </section>
-
     <section class="city-sec small">
       <h3>Sources</h3>
       <ul>
