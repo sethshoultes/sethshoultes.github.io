@@ -1,5 +1,5 @@
 {
-  "stylesheets": ["/assets/site.css", "/assets/lab.css", "/assets/flow.css", "/assets/starfield.css", "/recipes/recipe.css"],
+  "stylesheets": ["/assets/site.css", "/assets/lab.css", "/assets/flow.css", "/assets/games.css", "/assets/starfield.css", "/recipes/recipe.css"],
   "skip": ["^(advanced-typing-games|game-center|typing-games|garage-door-science-hub|data|build|docs|admin|wordpress-plugins|ops|workers|scripts|arcade|html5|recipes)/"],
   "column": 720,
   "vendor": [
