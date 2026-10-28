@@ -29,7 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from daily_blog import (  # type: ignore
-    POSTS_DIR, REPO_ROOT, anthropic_client, ANTHROPIC_MODEL, _post_meta, first_text,
+    POSTS_DIR, REPO_ROOT, _post_meta, ask_claude,
 )
 
 REFERENCES_FILE = REPO_ROOT / "data" / "references.md"
@@ -180,13 +180,7 @@ def main() -> int:
     catalog = build_full_catalog(exclude_slug=args.slug)
     prompt = PROMPT_TEMPLATE.format(body=body[:10000], catalog=catalog)
 
-    client = anthropic_client()
-    msg = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=2500,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    response = first_text(msg).strip()
+    response = ask_claude(prompt)
     response = re.sub(r"^```(?:json)?\s*\n", "", response)
     response = re.sub(r"\n```\s*$", "", response)
 

@@ -4,13 +4,16 @@
 One-shot pipeline:
   1. Pick first ready idea from data/post-ideas.md, OR generate one from recent commits when empty.
   2. Pick voice (rotation: prefer voices not used in last len(voices)-1 days).
-  3. Draft post via Anthropic API with voice persona as system prompt + brief + last 3 posts as tone reference.
+  3. Draft post with `claude -p` (the signed-in Claude subscription) using the voice persona as system prompt + brief + last 3 posts as tone reference.
   4. Generate industrial-minimalist image prompt and image via OpenAI DALL-E.
   5. Validate. On fail, write failure report and exit 1.
   6. On pass: stage, commit, push. Mark idea consumed. Update voice rotation.
 
+No Anthropic API key is used anywhere: every word is written by `claude -p`, which needs the
+Claude CLI signed in on this Mac. Run from launchd by scripts/daily-blog-run.sh.
+
 ENV required:
-  ANTHROPIC_API_KEY, OPENAI_API_KEY
+  OPENAI_API_KEY (featured image only). Standard library only: no pip packages.
 ENV optional:
   REPO_ROOT (default: cwd)
   DRY_RUN=1 (write files but skip git commit/push)
@@ -31,9 +34,7 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-import anthropic
-from openai import OpenAI
-import requests
+import urllib.request
 
 REPO_ROOT = Path(os.environ.get("REPO_ROOT", ".")).resolve()
 POSTS_DIR = REPO_ROOT / "_posts"
@@ -48,8 +49,17 @@ VALIDATOR = REPO_ROOT / "scripts" / "validate_post.py"
 
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 
-ANTHROPIC_MODEL = "claude-opus-5-5"
-IMAGE_MODEL = "gpt-image-1"
+CLAUDE_BIN = os.environ.get("CLAUDE_BIN", str(Path.home() / ".local" / "bin" / "claude"))
+CLAUDE_MODEL = "claude-opus-5-5"
+CLAUDE_TIMEOUT_S = 600
+
+# The house style every generated word is written under. A missing file stops the run
+# (fail visibly); there is no bare-prompt fallback. The per-post voice file
+# (scripts/voices/<voice>.md) is added on top for the draft.
+BRAND_RULES = Path(os.environ.get(
+    "BRAND_RULES", str(Path.home() / "projects" / "herdos" / "docs" / "brand" / "write-for-a-human.md")))
+SITE_STRATEGY = REPO_ROOT / "llms.txt"  # who Seth helps, the plans and prices, the key pages
+IMAGE_MODEL = "gpt-image-2"  # gpt-image-1 now answers "model does not exist"
 
 # The fixed style suffix that gives every featured image the same pen-and-ink
 # editorial illustration look — established in skills-as-sops, whats-on-the-desk,
@@ -112,8 +122,7 @@ def mark_idea_consumed(text: str, slug: str) -> str:
 
 # ----- brain warehouse (the curated idea source) --------------------------------
 
-# In CI, the daily-blog workflow shallow-clones the private brain repo into
-# BRAIN_DIR. Locally it defaults to ~/brain. The post-warehouse holds curated
+# Read from the local ~/brain clone (BRAIN_DIR overrides it). The post-warehouse holds curated
 # candidate ideas, each a markdown file with YAML frontmatter (slug, status,
 # voice_candidates) and a `## Claim` thesis. The pipeline reads this in
 # preference to generating a topic from commits — generation was the source of
@@ -210,25 +219,43 @@ def record_voice_use(voices_state: dict, voice: str, slug: str) -> dict:
     return voices_state
 
 
-# ----- anthropic / openai -------------------------------------------------------
+# ----- claude -p / openai -------------------------------------------------------
 
-def anthropic_client() -> anthropic.Anthropic:
-    return anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-
-
-def first_text(msg) -> str:
-    """content[0] is no longer reliably the text block — newer models (e.g.
-    claude-opus-5-5) emit a leading thinking block in the same content array
-    even when extended thinking wasn't requested. Find the actual text block
-    instead of indexing position 0."""
-    for block in msg.content:
-        if getattr(block, "type", None) == "text":
-            return block.text
-    raise RuntimeError(f"no text block in response (types: {[getattr(b, 'type', None) for b in msg.content]})")
+def house_style() -> str:
+    """The brand rules and the site's own positioning, as a system-prompt block."""
+    parts = []
+    for label, path in (("BRAND RULES: write for a human", BRAND_RULES),
+                        ("SITE POSITIONING: who Seth helps and what he offers (llms.txt)", SITE_STRATEGY)):
+        if not path.is_file():
+            raise RuntimeError(f"house style file missing: {path}")
+        parts.append(f"## {label}\n\n{path.read_text(encoding='utf-8').strip()}")
+    return ("Everything you write is held to this house style. The voice below it sets who is "
+            "speaking; these set how, and who the writing serves.\n\n" + "\n\n".join(parts))
 
 
-def openai_client() -> OpenAI:
-    return OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+def ask_claude(prompt: str, system: str | None = None) -> str:
+    """Write text with `claude -p` on the signed-in subscription. No API key, no fallback:
+    if the CLI is not signed in or fails, this raises and the run reports the failure.
+    Tools, settings and session files are off so the call is a plain text completion."""
+    cmd = [CLAUDE_BIN, "-p", "--model", CLAUDE_MODEL, "--tools", "", "--no-session-persistence",
+           "--setting-sources", "", "--output-format", "text"]
+    if system:
+        cmd += ["--system-prompt", system]
+    res = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=CLAUDE_TIMEOUT_S,
+                         cwd=Path.home())
+    out = res.stdout.strip()
+    if res.returncode != 0 or not out:
+        raise RuntimeError(f"claude -p failed ({res.returncode}): {(res.stderr or out)[:500]}")
+    return out
+
+
+def post_json(url: str, key: str, payload: dict, timeout: int) -> dict:
+    """POST JSON with a bearer key using only the standard library, so the Mac's Python needs no packages."""
+    req = urllib.request.Request(
+        url, data=json.dumps(payload).encode(), method="POST",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read())
 
 
 def recent_posts_context(n: int = 3) -> str:
@@ -316,15 +343,9 @@ def generate_idea_from_repo() -> dict:
     given the recent post titles as an explicit do-not-repeat list, so it cannot
     re-enter the single-noun loop.
     """
-    client = anthropic_client()
     commits = recent_commits(20)
     avoid = recent_post_titles(20)
-    msg = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=600,
-        messages=[{
-            "role": "user",
-            "content": (
+    text = ask_claude(
                 "Recent engineering commits on this blog repo:\n\n"
                 f"{commits}\n\n"
                 "Recent post titles — do NOT propose a topic that overlaps with, restates, "
@@ -338,11 +359,9 @@ def generate_idea_from_repo() -> dict:
                 "Reply in this exact format and nothing else:\n\n"
                 "slug: <kebab-case-slug>\n"
                 "claim: <one-sentence thesis the post must defend>\n"
-                "notes: <2-3 sentences of context the writer needs>"
-            ),
-        }],
+                "notes: <2-3 sentences of context the writer needs>",
+        system=house_style(),
     )
-    text = first_text(msg).strip()
     fields = {}
     for line in text.splitlines():
         if ":" in line:
@@ -358,7 +377,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
     voice_path = VOICES_DIR / f"{voice}.md"
     if not voice_path.exists():
         raise RuntimeError(f"voice file not found: {voice_path}")
-    system_prompt = voice_path.read_text(encoding="utf-8")
+    system_prompt = voice_path.read_text(encoding="utf-8") + "\n\n" + house_style()
 
     tone_ref = recent_posts_context(3)
     available = corpus_index(25)
@@ -392,7 +411,7 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "---\n\n"
         "Then a featured image tag in this exact form (the image will be generated to match):\n\n"
         f'<img src="/blog/images/{idea["slug"]}-featured.png" alt="<short alt text>" '
-        'style="width:100%;max-width:780px;display:block;margin:0 auto 2rem;border-radius:6px" />\n\n'
+        'width="1536" height="1024" />\n\n'
         "Then your prose, every <p> opened and closed, every <h2> opened and closed.\n\n"
         "Then, AT THE END of the body — after the last paragraph of prose — add this closing block:\n\n"
         "<hr>\n\n"
@@ -425,25 +444,12 @@ def draft_post(idea: dict, voice: str, today: date) -> str:
         "doubled-prefix variant. The validator blocks the commit if you do. Output the file. Nothing else."
     )
 
-    client = anthropic_client()
-    msg = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=4000,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user}],
-    )
-    return first_text(msg).strip()
+    return ask_claude(user, system=system_prompt)
 
 
 def generate_image_prompt(idea: dict, post_text: str) -> str:
-    """Ask the API for a SUBJECT line; we append the fixed style suffix."""
-    client = anthropic_client()
-    msg = client.messages.create(
-        model=ANTHROPIC_MODEL,
-        max_tokens=300,
-        messages=[{
-            "role": "user",
-            "content": (
+    """Ask Claude for a SUBJECT line; we append the fixed style suffix."""
+    subject = ask_claude(
                 "Read this blog post and propose a single physical-object SUBJECT for the "
                 "featured image. The site's visual language is pen-and-ink editorial "
                 "illustration — hand-drawn, crosshatched, sepia-on-cream, in the register of "
@@ -463,23 +469,16 @@ def generate_image_prompt(idea: dict, post_text: str) -> str:
                 f"Post text:\n\n{post_text[:3000]}\n\n"
                 "Reply with ONE sentence describing the subject and arrangement. No preamble. "
                 "No style words — those are added automatically."
-            ),
-        }],
-    )
-    subject = first_text(msg).strip().strip('"').strip("'")
+    ).strip('"').strip("'")
     return f"{subject} {IMAGE_STYLE_SUFFIX}"
 
 
 def generate_image(prompt: str, out_path: Path) -> None:
-    client = openai_client()
-    result = client.images.generate(
-        model=IMAGE_MODEL,
-        prompt=prompt,
-        size="1536x1024",
-        quality="high",
-        n=1,
-    )
-    out_path.write_bytes(base64.b64decode(result.data[0].b64_json))
+    result = post_json(
+        "https://api.openai.com/v1/images/generations", os.environ["OPENAI_API_KEY"],
+        {"model": IMAGE_MODEL, "prompt": prompt, "size": "1536x1024", "quality": "high", "n": 1},
+        timeout=300)
+    out_path.write_bytes(base64.b64decode(result["data"][0]["b64_json"]))
 
 
 # ----- failure reporting --------------------------------------------------------
@@ -515,13 +514,9 @@ def report_failure(stage: str, summary: str, details: str = "") -> None:
     notify_from = os.environ.get("NOTIFY_FROM", "noreply@sethshoultes.com")
     if resend_key:
         try:
-            requests.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {resend_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
+            post_json(
+                "https://api.resend.com/emails", resend_key,
+                {
                     "from": notify_from,
                     "to": [notify_to],
                     "subject": f"Daily blog failed {today_str}",
@@ -600,7 +595,7 @@ def main() -> int:
     try:
         post_text = draft_post(idea, voice, today)
     except Exception as e:
-        report_failure("draft", f"Anthropic API failed during draft", repr(e))
+        report_failure("draft", "claude -p failed during draft", repr(e))
         return 1
 
     post_path = POSTS_DIR / f"{today.isoformat()}-{slug}.html"
@@ -611,7 +606,7 @@ def main() -> int:
     try:
         img_prompt = generate_image_prompt(idea, post_text)
     except Exception as e:
-        report_failure("image-prompt", "Anthropic API failed during image prompt", repr(e))
+        report_failure("image-prompt", "claude -p failed during image prompt", repr(e))
         return 1
     print(f"[info] image prompt: {img_prompt[:120]}...")
 
@@ -714,7 +709,7 @@ def main() -> int:
            "GIT_AUTHOR_NAME": git_user, "GIT_AUTHOR_EMAIL": git_email,
            "GIT_COMMITTER_NAME": git_user, "GIT_COMMITTER_EMAIL": git_email}
     subprocess.run(["git", "commit", "-m", commit_msg], cwd=REPO_ROOT, check=True, env=env)
-    subprocess.run(["git", "push"], cwd=REPO_ROOT, check=True, env=env)
+    subprocess.run(["git", "push", "origin", "HEAD:main"], cwd=REPO_ROOT, check=True, env=env)
 
     print(f"[done] published {post_path.name} in voice {voice}")
     return 0
