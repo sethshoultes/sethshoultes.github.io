@@ -1,0 +1,39 @@
+name: "Field Service Software"
+slug: field-service-software
+title: "ServiceTitan and Housecall Pro Expert for Home Service Businesses"
+description: "ServiceTitan and Housecall Pro help for home service businesses from an expert with both, and a Housecall Pro Superpro: the software your company runs on, plus the search and content that bring in the jobs."
+service_type: "Field service software consulting (ServiceTitan, Housecall Pro)"
+summary: "ServiceTitan and Housecall Pro, from an expert with both and a Housecall Pro Superpro."
+lead: "I am an expert with ServiceTitan and Housecall Pro, and I hold Housecall Pro Superpro status. I help home service businesses get more out of the software they run on."
+national: true
+badge:
+  src: /assets/img/seth-superpro-440.webp
+  width: 440
+  height: 440
+  display: 220
+  alt: "Seth Shoultes, Housecall Pro Superpro"
+  href: "https://garagedoorproservices.com/seth-shoultes-and-garage-door-pros-elevating-standards-with-superpro-status/"
+sections:
+  - id: what
+    heading: "The software I know"
+    paragraphs:
+      - "**ServiceTitan.** I am an expert with it."
+      - "**Housecall Pro.** I am an expert with it, and I hold Housecall Pro [Superpro](https://www.housecallpro.com/community/superpros/) status. Here is [what Superpro is](https://help.housecallpro.com/en/articles/2584077-what-is-a-superpro)."
+      - "**The web side of a service company.** Neighborhood pages, rank reports, staff apps and a company knowledge base, built for a garage door company over three years."
+  - id: proof
+    heading: "Where this comes from"
+    paragraphs:
+      - "I owned a garage door company for a time, grew its search traffic and online presence, then sold it. I have built on the web for over 25 years."
+  - id: start
+    heading: "How we start"
+    paragraphs:
+      - "We start with a call about your business and the software you run it on. I tell you what I see and what I would do first."
+faq:
+  - q: "Which field service software do you work with?"
+    a: "ServiceTitan and Housecall Pro. I am an expert with both."
+  - q: "What is Housecall Pro Superpro?"
+    a: "It is a Housecall Pro program that awards its status every month to home service companies committed to a dependable, transparent customer experience. I hold the status."
+  - q: "Do you only work with Southern Utah businesses?"
+    a: "Southern Utah is home, and I work with home service businesses anywhere."
+  - q: "Where do I start?"
+    a: "Book a call and tell me about your business and the software you use. I reply within two business days."
