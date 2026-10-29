@@ -6,4 +6,4 @@ files:
   - slug: why-ai-agents-skip-wordpress
     title: "Why AI agents skip WordPress"
     line: "What AI agents run into on WordPress sites, and what to change so they do not skip yours."
-    status: soon
+    status: ready
