@@ -7,7 +7,21 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
   <meta name="twitter:card" content="summary_large_image" />
-  {%- if page.og_image %}
-  <meta property="og:image" content="{{ page.og_image }}" />
-  <meta name="twitter:image" content="{{ page.og_image }}" />
+  {%- assign og_img = page.og_image | default: page.hero_image.src %}
+  {%- if og_img %}
+  <meta property="og:image" content="{{ og_img | absolute_url }}" />
+  <meta name="twitter:image" content="{{ og_img | absolute_url }}" />
   {%- endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": "{{ site.url }}{{ page.url }}#post",
+    "headline": {{ page.title | jsonify }},
+    "description": {{ page.description | default: page.subtitle | jsonify }},
+    "datePublished": "{{ page.date | date_to_xmlschema }}",
+    "mainEntityOfPage": "{{ site.url }}{{ page.url }}",
+    "author": { "@id": "{{ site.url }}/#person" }{% if page.hero_image %},
+    "image": "{{ site.url }}{{ page.hero_image.src }}"{% endif %}
+  }
+  </script>

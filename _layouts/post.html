@@ -2,6 +2,9 @@
 layout: site
 ---
 <article class="post">
+  {%- if page.hero_image %}
+  <img class="post-img post-img-lead" src="{{ page.hero_image.src }}" width="{{ page.hero_image.width }}" height="{{ page.hero_image.height }}" alt="{{ page.hero_image.alt }}" fetchpriority="high">
+  {%- endif %}
 
   <span class="post-label">{{ page.label | default: "Writing" }}</span>
 
