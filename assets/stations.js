@@ -23,7 +23,7 @@ function mount(cv) {
     const nw = innerWidth, nh = innerHeight;
     if (nw === w && Math.abs(nh - h) < 150) return;
     w = nw; h = nh;
-    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(devicePixelRatio || 1, 2);
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     draw(true);
@@ -96,15 +96,15 @@ function mount(cv) {
     if (!force && y === lastY && now - lastT < 100) return;
     lastY = y; lastT = now;
     const doc = Math.max(1, document.documentElement.scrollHeight - h);
-    const prog = reduced.matches ? 1 : clamp(y / doc);
+    const prog = reduced.matches ? 1 : clamp(y / doc / 0.92); // finished by 92% of the page, so the docked ship is on screen
     const t = reduced.matches ? 0 : now / 1000;
     ctx.clearRect(0, 0, w, h);
     const phone = w < 700;
-    const R = Math.min(w, h) * (phone ? 0.075 : 0.085);
+    const R = Math.min(w, h) * (phone ? 0.075 : w < 1500 ? 0.07 : 0.085);
     ctx.save();
-    ctx.translate(phone ? w * 0.74 : w - R * 2.7, phone ? h * 0.2 : h * 0.5);
+    ctx.translate(phone ? w * 0.66 : w - R * 3.5, phone ? h * 0.2 : h * 0.5); // the docked ship reaches about w - 0.5R, never past the edge
     // On laptop widths the margin is narrow and the station overlaps the content column, so it dims there.
-    ctx.globalAlpha = phone ? 0.5 : w < 1500 ? 0.45 : 0.85;
+    ctx.globalAlpha = phone ? 0.5 : w < 1500 ? 0.3 : 0.85;
     station(R, prog, t);
     ctx.restore();
   };
