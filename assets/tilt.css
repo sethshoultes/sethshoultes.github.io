@@ -1,0 +1,6 @@
+/* cartridge tilt on /projects/ game cards (#165); the angles come from assets/tilt.js.
+   The kit's link-card lifts 3px on hover, so the hover rule keeps that lift and adds the tilt. */
+.link-card.game-card { transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transition: transform 0.35s ease, border-color 0.2s; will-change: transform; }
+.link-card.game-card:hover, .link-card.game-card:focus-visible { transform: perspective(800px) translateY(-3px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
+.link-card.game-card.is-tilting { transition: transform 0.08s linear, border-color 0.2s; }
+@media (prefers-reduced-motion: reduce) { .link-card.game-card, .link-card.game-card:hover, .link-card.game-card:focus-visible { transform: none; transition: border-color 0.2s; } }
