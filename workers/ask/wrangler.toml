@@ -5,3 +5,14 @@ compatibility_date = "2026-10-01"
 [[kv_namespaces]]
 binding = "RATE"
 id = "a90251efb3994cdd920fe9a0681fa4f8"
+
+# /talk (#172): Workers AI embeds the question; the passages from the blog posts and the brain
+# notes marked public: true, with their embeddings, sit in one KV value (`index`) that the
+# function matches against (scripts/build-talk-index.mjs writes it). A few hundred passages are a
+# few hundred dot products, so no vector database is needed.
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "TALK"
+id = "7f0fd134bb364c3cbb280ff40f84beeb"

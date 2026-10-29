@@ -1,0 +1,33 @@
+name: "Animation, Artwork and Video"
+slug: animation-artwork-video
+title: "Custom Animation, Artwork and Video Production"
+description: "Custom animation, artwork and video production from a developer who started with Macromedia Flash and ActionScript in the 2000s: motion and imagery for websites and businesses."
+service_type: "Animation, artwork and video production"
+summary: "Custom animations, artwork and video production, from a Flash and ActionScript beginning."
+lead: "I build custom animations, artwork and video, and I have since the 2000s, when I started with Macromedia Flash and ActionScript."
+national: true
+sections:
+  - id: what
+    heading: "What I make"
+    paragraphs:
+      - "**Animations** made for your site and your brand."
+      - "**Artwork** to go with them: illustration and imagery."
+      - "**Video production,** from short clips to scenes for a page."
+  - id: proof
+    heading: "Samples you can see"
+    paragraphs:
+      - "I started in the 2000s with Macromedia Flash and ActionScript, alongside PHP and MySQL development. I still build things that move."
+      - "See the flyover video on each city page, such as [St. George](/st-george-utah/) and [Little Valley](/little-valley-st-george-utah/), and the illustrations on the [case studies](/case-studies/) page."
+  - id: start
+    heading: "How we start"
+    paragraphs:
+      - "We start with a call about what you want to show and where it will live. I tell you what I would make."
+faq:
+  - q: "What do you make?"
+    a: "Custom animations, artwork and video production."
+  - q: "How long have you done this?"
+    a: "Since the 2000s, when I started with Macromedia Flash and ActionScript."
+  - q: "Do you only work with Southern Utah businesses?"
+    a: "Southern Utah is home, and I work with businesses anywhere."
+  - q: "Where do I start?"
+    a: "Book a call and tell me what you have in mind. I reply within two business days."

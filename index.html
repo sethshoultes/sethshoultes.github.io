@@ -1,9 +1,9 @@
 ---
 layout: site
+starfield_planets: true
 title: "AI consultant for small businesses"
 description: "I help small businesses put AI to work. Monthly consulting, built on 25 years of shipping WordPress products and running real businesses."
 ---
-{% include starfield.html %}
 <section class="hero">
   <img class="hero-bg" src="/assets/img/hero-utah-1400.webp" srcset="/assets/img/hero-utah-800.webp 800w, /assets/img/hero-utah-1400.webp 1400w, /assets/img/hero-utah-2400.webp 2400w" sizes="100vw" width="2400" height="1357" fetchpriority="high" alt="Seth Shoultes in southern Utah's red rock country">
   <div class="wrap hero-grid">
@@ -205,5 +205,15 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
       <a class="btn" href="/consulting/#contact">Book a call</a>
       <a class="btn ghost" href="https://www.linkedin.com/in/shoultes/" target="_blank" rel="noopener">Connect on LinkedIn</a>
     </div>
+  </div>
+</section>
+<section id="newsletter">
+  <div class="wrap">
+    <p class="eyebrow reveal">Free PDFs</p>
+    <h2 class="reveal">Short PDFs on AI and WordPress.</h2>
+    <p class="lead reveal">One email when something new ships. <a href="/library/">See the library</a>.</p>
+    <link rel="stylesheet" href="/assets/newsletter.css">
+    {% include newsletter-form.html source="/" id="home" title='Get "Why AI agents skip WordPress" as a free PDF' %}
+    <script src="/assets/newsletter.js" defer></script>
   </div>
 </section>
