@@ -1,4 +1,7 @@
 /* /talk/ (#172): the sources under an answer and the phone button */
 .msg.bot .sources { margin: 0.6rem 0 0; padding-top: 0.5rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted); white-space: normal; }
-.msg.bot .sources a { display: block; margin-top: 0.2rem; }
+.msg.bot .sources a { display: block; }
 .talk-phone .btn { font-size: 1.25rem; }
+.msg.bot .sources a { padding: 0.45rem 0; margin-top: 0; }
+#contact { border-top: 1px solid var(--border); }
+.chip { border-color: #737b88; }
