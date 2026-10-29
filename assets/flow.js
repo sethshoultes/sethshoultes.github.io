@@ -567,14 +567,15 @@ function fleet(ctx, cv, c) {
       const vh = window.innerHeight, top = cv.getBoundingClientRect().top;
       const p = still ? 1 : clamp((vh * 0.92 - top) / (vh * 0.8));
       ctx.clearRect(0, 0, w, h);
-      const k = Math.min(w / 800, h / 360), fs = clamp(13 * k, 11, 15);
-      const cx = w * 0.3, cy = h * 0.5, rx = w * 0.2, ry = h * 0.36;
+      const k = Math.min(w / 800, h / 360), fs = clamp(13 * k, 12, 15);
+      const tall = w < h * 1.1; // phones: nodes on top, the chat below at full width
+      const cx = tall ? w * 0.5 : w * 0.3, cy = tall ? h * 0.24 : h * 0.5, rx = tall ? w * 0.3 : w * 0.2, ry = tall ? h * 0.17 : h * 0.36;
       const pos = FLEET.map((_, i) => node(i, FLEET.length, cx, cy, rx, ry));
       // the links between agents
       ctx.lineWidth = 1;
       for (let i = 0; i < FLEET.length; i++) {
         const j = (i + 1) % FLEET.length, lp = seg(p, 0.05 + i * 0.05, 0.3 + i * 0.05);
-        ctx.strokeStyle = `rgba(${A},${0.25 * lp})`;
+        ctx.strokeStyle = `rgba(${A},${0.4 * lp})`;
         ctx.beginPath(); ctx.moveTo(pos[i][0], pos[i][1]); ctx.lineTo(lerp(pos[i][0], pos[j][0], lp), lerp(pos[i][1], pos[j][1], lp)); ctx.stroke();
       }
       // a task passes along the links
@@ -583,13 +584,13 @@ function fleet(ctx, cv, c) {
       if (p > 0.3 && p < 0.72) {
         const i = Math.min(FLEET.length - 1, Math.floor(hop)), f = ease(hop - i), j = (i + 1) % FLEET.length;
         const x = lerp(pos[i][0], pos[j][0], f), y = lerp(pos[i][1], pos[j][1], f);
-        ctx.globalAlpha = 0.95; ctx.drawImage(dot, x - 13, y - 13, 26, 26);
+        ctx.globalAlpha = 1; ctx.drawImage(dot, x - 20, y - 20, 40, 40); ctx.drawImage(dot, x - 10, y - 10, 20, 20);
       }
       ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
       // the agents
       FLEET.forEach((a, i) => {
         const np = seg(p, i * 0.05, 0.12 + i * 0.05), lit = clamp(1 - Math.abs(hop - i - 0.1) / 1.2) * (p > 0.3 ? 1 : 0) + (p >= 0.72 ? 0.3 : 0);
-        const [x, y] = pos[i], bw = 96 * k + 24, bh = 34 * k + 8;
+        const [x, y] = pos[i], bw = tall ? 86 : 96 * k + 24, bh = tall ? 32 : 34 * k + 8;
         ctx.save(); ctx.globalAlpha = np;
         roundRect(ctx, x - bw / 2, y - bh / 2, bw, bh, bh / 2);
         ctx.fillStyle = c.surface2; ctx.fill();
@@ -598,7 +599,7 @@ function fleet(ctx, cv, c) {
         ctx.restore();
       });
       // the conversation, typed out on the right
-      const tx = w * 0.58, ty = h * 0.14, lh = h * 0.16, bw = w * 0.38;
+      const tx = tall ? w * 0.05 : w * 0.58, ty = tall ? h * 0.5 : h * 0.14, lh = tall ? h * 0.1 : h * 0.16, bw = tall ? w * 0.9 : w * 0.38;
       const typed = clamp((p - 0.7) / 0.3) * FLEET.length;
       FLEET.forEach((a, i) => {
         const shown = clamp(typed - i);
