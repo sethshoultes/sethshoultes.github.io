@@ -1,0 +1,8 @@
+# The free PDF library. One entry per file; /library/, its markdown twin and the JSON-LD read this.
+# The signed download links, the confirm email and the worker (workers/news/) know a file by its slug.
+intro: "Free PDFs, written to be used. Ask for one and I will email you a link. I send an email when something new ships, and you can unsubscribe in one click."
+files:
+  - slug: why-ai-agents-skip-wordpress
+    title: "Why AI agents skip WordPress"
+    line: "What AI agents run into on WordPress sites, and what to change so they do not skip yours."
+    status: soon

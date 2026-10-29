@@ -41,6 +41,7 @@
 - [Neighborhood page planner](https://sethshoultes.com/tools/neighborhood-page-planner/): enter a US city and see its neighborhoods with home age, home counts and values from Census data. Plain-text version at https://sethshoultes.com/tools/neighborhood-page-planner.md
 - [Local SEO quick audit](https://sethshoultes.com/tools/local-seo-quick-audit/): enter a business, service and city to see its Google Maps listing, its reviews against nearby competitors, and which neighborhoods have a page on its site. Plain-text version at https://sethshoultes.com/tools/local-seo-quick-audit.md
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
+- [Free PDF library](https://sethshoultes.com/library/): free PDFs by email, starting with "Why AI agents skip WordPress" (markdown: https://sethshoultes.com/library.md)
 - [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
 - [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone
 - [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file

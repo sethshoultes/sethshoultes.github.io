@@ -27,6 +27,11 @@ layout: site
   <div class="post-content">
     {{ content }}
   </div>
+  {%- if page.newsletter %}
+  <link rel="stylesheet" href="/assets/newsletter.css">
+  <aside class="post-news">{% include newsletter-form.html source=page.url id="post" %}</aside>
+  <script src="/assets/newsletter.js" defer></script>
+  {%- endif %}
 
 </article>
 {%- if page.related and page.related.size > 0 %}

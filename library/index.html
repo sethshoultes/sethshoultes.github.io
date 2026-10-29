@@ -1,0 +1,40 @@
+---
+layout: site
+title: "Free PDF library"
+description: "Free PDFs from Seth Shoultes on AI, WordPress and getting found. Ask for one and get a link by email."
+permalink: /library/
+---
+<link rel="stylesheet" href="/assets/newsletter.css">
+{% include jsonld-library.html %}
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Library</p>
+    <h1>Free PDFs.</h1>
+    <p class="lead mt-1">{{ site.data.library.intro }}</p>
+  </div>
+</div>
+<section class="pt-1">
+  <div class="wrap">
+    <div class="news-confirmed" data-news-confirmed hidden>
+      <h2>You are confirmed.</h2>
+      <p>Thank you. Here is your PDF. The link works for 7 days, and you can ask for a new one any time.</p>
+      <p><a class="btn" href="/library/">Download the PDF</a></p>
+    </div>
+    <ul class="link-grid">
+      {%- for f in site.data.library.files %}
+      <li>
+        <div class="card">
+          <div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.line }}</p>
+            {%- if f.status == "soon" %}<p class="library-soon">Ready when the essay publishes. Sign up and you get the link the moment it does.</p>{% endif %}
+          </div>
+        </div>
+      </li>
+      {%- endfor %}
+    </ul>
+    <div class="mt-1">{% include newsletter-form.html source="/library/" id="lib" %}</div>
+    <p class="mt-1"><a class="btn ghost" href="/consulting/#contact">Book a call</a></p>
+  </div>
+</section>
+<script src="/assets/newsletter.js" defer></script>

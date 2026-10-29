@@ -5,12 +5,12 @@ compatibility_date = "2026-10-01"
 # The newsletter's own database (D1) and its KV (rate limits and the PDF files),
 # both in the SWS Cloudflare account. Secrets (not in this file): RESEND_API_KEY,
 # NEWS_SECRET (signs confirm, unsubscribe and download links), ADMIN_TOKEN (the
-# subscriber count). Optional var: MAILING_ADDRESS (the CAN-SPAM footer line).
+# subscriber count).
 [[d1_databases]]
 binding = "DB"
 database_name = "sws-news"
-database_id = "REPLACE_AT_DEPLOY"
+database_id = "3d159475-11e6-41b1-93f5-4b89c160d974"
 
 [[kv_namespaces]]
 binding = "NEWS_KV"
-id = "REPLACE_AT_DEPLOY"
+id = "6a7f672b2a62449b86dc4376520d186e"

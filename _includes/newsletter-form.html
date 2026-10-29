@@ -1,0 +1,15 @@
+{%- comment -%}
+  Newsletter sign-up (#168). Usage: {% include newsletter-form.html source="/library/" %}
+  Posts to our own Worker (workers/news/) and nothing else: no third-party script, no tracker.
+  The page that holds it loads /assets/newsletter.js and /assets/newsletter.css.
+{%- endcomment -%}
+<form class="news-form" data-news data-source="{{ include.source | default: page.url }}" novalidate>
+  <p class="news-title">{{ include.title | default: "Get the free PDF" }}</p>
+  <label for="news-email-{{ include.id | default: 'a' }}">Your email</label>
+  <input id="news-email-{{ include.id | default: 'a' }}" name="email" type="email" autocomplete="email" required>
+  <input class="news-trap" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <label class="news-consent"><input name="consent" type="checkbox" required> <span>Send me an email when something new ships. Unsubscribe any time.</span></label>
+  <button class="btn" type="submit">Email me the PDF</button>
+  <p class="news-status" role="status" aria-live="polite"></p>
+  <p class="news-note">One confirmation email now, then one email when something new ships. Your address stays in our own database and is never shared.</p>
+</form>

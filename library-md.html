@@ -1,0 +1,14 @@
+---
+layout: null
+permalink: /library.md
+sitemap: false
+---
+# Free PDF library
+
+{{ site.data.library.intro }}
+
+Page: {{ site.url }}/library/
+
+{% for f in site.data.library.files %}- {{ f.title }}: {{ f.line }}
+{% endfor %}
+Sign up on the page and the link arrives by email.

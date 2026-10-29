@@ -1,31 +1,33 @@
-// Emails through Resend. The newsletter's address is its own sender so replies and
-// bounces stay out of the contact form's inbox.
+// Emails through Resend from contact@sethshoultes.com (a verified Resend domain); replies go to Seth.
 
-export const FROM = 'Seth Shoultes <newsletter@sethshoultes.com>';
+export const FROM = 'Seth Shoultes <contact@sethshoultes.com>';
+export const REPLY_TO = 'seth@smartwebutah.com';
+// The postal address CAN-SPAM wants in every email footer (Seth, 2026-10-29).
+export const MAILING_ADDRESS = '1522 Heritage Fields Dr, Washington, Utah 84780';
 export const ORIGIN = 'https://news.sethshoultes.com';
 export const SITE = 'https://sethshoultes.com';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-function footer(env, unsubscribeUrl) {
-  const addr = env.MAILING_ADDRESS ? `<br>${esc(env.MAILING_ADDRESS)}` : '';
+function footer(unsubscribeUrl) {
+  const addr = `<br>${esc(MAILING_ADDRESS)}`;
   return `<p style="color:#6b7280;font-size:13px;margin-top:32px">You are getting this because you asked for it at sethshoultes.com. <a href="${esc(unsubscribeUrl)}">Unsubscribe</a> any time, in one click.${addr}</p>`;
 }
 
-function shell(body, env, unsubscribeUrl) {
-  return `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#111827;line-height:1.6">${body}${footer(env, unsubscribeUrl)}</div>`;
+function shell(body, unsubscribeUrl) {
+  return `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#111827;line-height:1.6">${body}${footer(unsubscribeUrl)}</div>`;
 }
 
 const button = (href, label) => `<p><a href="${esc(href)}" style="background:#ff6b2c;color:#0b0d10;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700;display:inline-block">${esc(label)}</a></p>`;
 
-export function confirmEmail({ confirmUrl, unsubscribeUrl, env }) {
-  const html = shell(`<p>Hi, it's Seth.</p><p>Confirm your email and your free PDF is one click away.</p>${button(confirmUrl, 'Confirm and download')}<p>If you did not ask for this, ignore this email and nothing will happen.</p>`, env, unsubscribeUrl);
-  return { subject: 'Confirm your email to get the PDF', html, text: `Confirm your email and get your free PDF: ${confirmUrl}\n\nIf you did not ask for this, ignore this email.\nUnsubscribe: ${unsubscribeUrl}` };
+export function confirmEmail({ confirmUrl, unsubscribeUrl }) {
+  const html = shell(`<p>Hi, it's Seth.</p><p>Confirm your email and your free PDF is one click away.</p>${button(confirmUrl, 'Confirm and download')}<p>If you did not ask for this, ignore this email and nothing will happen.</p>`, unsubscribeUrl);
+  return { subject: 'Confirm your email to get the PDF', html, text: `Confirm your email and get your free PDF: ${confirmUrl}\n\nIf you did not ask for this, ignore this email.\n\nUnsubscribe: ${unsubscribeUrl}\n${MAILING_ADDRESS}` };
 }
 
-export function downloadEmail({ downloadUrl, title, unsubscribeUrl, env }) {
-  const html = shell(`<p>Hi, it's Seth.</p><p>Here is your link to <strong>${esc(title)}</strong>. It works for 7 days.</p>${button(downloadUrl, 'Download the PDF')}`, env, unsubscribeUrl);
-  return { subject: `Your download: ${title}`, html, text: `Your link to ${title} (works for 7 days): ${downloadUrl}\n\nUnsubscribe: ${unsubscribeUrl}` };
+export function downloadEmail({ downloadUrl, title, unsubscribeUrl }) {
+  const html = shell(`<p>Hi, it's Seth.</p><p>Here is your link to <strong>${esc(title)}</strong>. It works for 7 days.</p>${button(downloadUrl, 'Download the PDF')}`, unsubscribeUrl);
+  return { subject: `Your download: ${title}`, html, text: `Your link to ${title} (works for 7 days): ${downloadUrl}\n\nUnsubscribe: ${unsubscribeUrl}\n${MAILING_ADDRESS}` };
 }
 
 export async function send(env, to, mail, unsubscribeUrl, fetchImpl = fetch) {
@@ -35,6 +37,7 @@ export async function send(env, to, mail, unsubscribeUrl, fetchImpl = fetch) {
     body: JSON.stringify({
       from: FROM,
       to: [to],
+      reply_to: REPLY_TO,
       subject: mail.subject,
       html: mail.html,
       text: mail.text,
