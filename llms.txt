@@ -44,8 +44,9 @@
 - [Neighborhood page planner](https://sethshoultes.com/tools/neighborhood-page-planner/): enter a US city and see its neighborhoods with home age, home counts and values from Census data. Plain-text version at https://sethshoultes.com/tools/neighborhood-page-planner.md
 - [Local SEO quick audit](https://sethshoultes.com/tools/local-seo-quick-audit/): enter a business, service and city to see its Google Maps listing, its reviews against nearby competitors, and which neighborhoods have a page on its site. Plain-text version at https://sethshoultes.com/tools/local-seo-quick-audit.md
 - [Why AI agents skip WordPress, and what would change their mind](https://sethshoultes.com/blog/why-ai-agents-skip-wordpress.html): for anyone who builds on WordPress or hires someone to build their site. An open benchmark asked AI agents to build websites without naming a platform, and they almost never picked WordPress. Seth Shoultes looks at their reasons, which are out of date and which are real, and what would change their mind.
+- [Case studies](https://sethshoultes.com/case-studies/): A+ Garage Doors, MemberPress.ai, the agent fleet, Shipyard AI (85 shipped PRDs) and Garage Door Science
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
-- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
+- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, Shipyard AI (an agent pipeline: PRD in, production out), videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
 - [Talk to Seth](https://sethshoultes.com/talk/): chat with Seth's AI clone
 - [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file
 - [Sitemap](https://sethshoultes.com/sitemap.xml)
