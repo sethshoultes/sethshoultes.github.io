@@ -1,0 +1,6 @@
+{%- comment -%}
+  A space station and ship built as the page scrolls (#165). One fixed canvas in the margin, no layout cost.
+  Usage: {% include stations.html %} once on a page (it is on /projects/). Sits above the star field, below the content.
+{%- endcomment -%}
+<canvas class="stations" data-stations aria-hidden="true"></canvas>
+<script type="module" src="/assets/stations.js"></script>
