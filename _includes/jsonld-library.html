@@ -1,0 +1,7 @@
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"Free PDF library","url":"{{ site.url }}/library/","description":{{ site.data.library.intro | jsonify }},"author":{"@type":"Person","name":"Seth Shoultes","url":"{{ site.url }}/"},"hasPart":[
+{%- for f in site.data.library.files %}
+{"@type":"DigitalDocument","name":{{ f.title | jsonify }},"description":{{ f.line | jsonify }},"encodingFormat":"application/pdf","isAccessibleForFree":true,"author":{"@type":"Person","name":"Seth Shoultes"}}{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+]}
+</script>
