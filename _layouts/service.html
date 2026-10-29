@@ -2,40 +2,79 @@
 layout: site
 ---
 {%- assign s = site.data.services[page.service] %}
-<div class="wrap service">
+<div class="service">
   <section class="service-hero">
-    {%- if s.badge %}
-    <a class="hero-badge" href="{{ s.badge.href }}" target="_blank" rel="noopener"><img src="{{ s.badge.src }}" width="{{ s.badge.display }}" height="{{ s.badge.display }}" srcset="{{ s.badge.src }} 2x" alt="{{ s.badge.alt }}" fetchpriority="high"></a>
-    {%- endif %}
-    <p class="eyebrow">Services</p>
-    <h1>{{ s.title }}</h1>
-    <p class="lead">{{ s.lead }}</p>
-    <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+    <div class="wrap">
+      <div class="hero-split-grid{% if s.hero_variant or s.badge %} has-anim{% endif %}">
+        <div>
+          <p class="eyebrow">Services</p>
+          <h1>{{ s.title }}</h1>
+          <p class="lead">{{ s.lead }}</p>
+          <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+        </div>
+        {%- if s.hero_variant %}
+        <div class="hero-anim" data-variant="{{ s.hero_variant }}" aria-hidden="true"></div>
+        {%- elsif s.badge %}
+        <a class="hero-badge" href="{{ s.badge.href }}" target="_blank" rel="noopener"><img src="{{ s.badge.src }}" width="{{ s.badge.display }}" height="{{ s.badge.display }}" srcset="{{ s.badge.src }} 2x" alt="{{ s.badge.alt }}" fetchpriority="high"></a>
+        {%- endif %}
+      </div>
+    </div>
   </section>
-  <div class="prose">
-    {%- for sec in s.sections %}
-    <section id="{{ sec.id }}" class="service-sec">
-      <h2>{{ sec.heading }}</h2>
-      {%- for p in sec.paragraphs %}
-      {{ p | markdownify }}
-      {%- endfor %}
-    </section>
-    {%- endfor %}
 
-    <section id="faq" class="service-sec">
-      <p class="eyebrow">Questions</p>
-      <h2>Straight answers.</h2>
-      <div class="faq">
-        {%- for item in s.faq %}
-        <details>
-          <summary>{{ item.q }}</summary>
-          <p>{{ item.a }}</p>
-        </details>
+  {%- for sec in s.sections %}
+  {%- assign all_bold = true %}
+  {%- for p in sec.paragraphs %}{% assign head = p | slice: 0, 2 %}{% if head != "**" %}{% assign all_bold = false %}{% endif %}{% endfor %}
+  <section id="{{ sec.id }}" class="service-sec{% if forloop.index0 == 0 or forloop.index0 == 2 %} band{% endif %}{% unless all_bold %}{% assign body_size = sec.paragraphs | join: " " | size %}{% if body_size < 500 %} service-sec-thin{% endif %}{% endunless %}">
+    <div class="wrap">
+      <h2>{{ sec.heading }}</h2>
+      {%- if all_bold %}
+      <ul class="feature-grid{% if sec.paragraphs.size == 4 %} two-up{% endif %}">
+        {%- for p in sec.paragraphs %}
+        {%- assign parts = p | split: "**" %}
+        {%- assign title = parts[1] | strip %}
+        {%- assign last = title | slice: -1 %}
+        {%- if last == "." or last == "," %}{% assign keep = title.size | minus: 1 %}{% assign title = title | slice: 0, keep %}{% endif %}
+        {%- assign rest = parts | slice: 2, 20 | join: "**" | strip %}
+        <li><div class="feature-card"><h3>{{ title }}</h3>{% if rest != "" %}{{ rest | markdownify }}{% endif %}</div></li>
+        {%- endfor %}
+      </ul>
+      {%- else %}
+      <div class="prose">
+        {%- for p in sec.paragraphs %}
+        {{ p | markdownify }}
         {%- endfor %}
       </div>
-    </section>
-  </div>
-  <div class="service-more">
+      {%- endif %}
+    </div>
+  </section>
+  {%- endfor %}
+
+  <section id="faq" class="service-sec">
+    <div class="wrap">
+      <p class="eyebrow">Questions</p>
+      <h2>Straight answers.</h2>
+      <div class="prose">
+        <div class="faq">
+          {%- for item in s.faq %}
+          <details>
+            <summary>{{ item.q }}</summary>
+            <p>{{ item.a }}</p>
+          </details>
+          {%- endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="service-sec band cta-band">
+    <div class="wrap">
+      <h2>Want this for your business?</h2>
+      <p class="lead">Tell me what you would like AI and search to do for you, and I will tell you where I would start.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+    </div>
+  </section>
+
+  <div class="wrap service-more">
     <h2>What else I do</h2>
     {% include service-cards.html except=s.slug %}
     {%- unless s.national %}
