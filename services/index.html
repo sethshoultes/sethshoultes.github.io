@@ -5,18 +5,43 @@ title: "AI, SEO and Web Development Services"
 description: "Seth Shoultes's services: AI services, SEO, AI search optimization, web and WordPress development, and learning AI. Based in Southern Utah, working with businesses anywhere."
 permalink: /services/
 ---
-<div class="wrap hub">
-  <section>
-    <p class="eyebrow">Services</p>
-    <h1>AI, SEO and Web Development Services</h1>
-    <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
-    <div class="prose">
+<div class="hub">
+  <section class="service-hero">
+    <div class="wrap">
+      <div class="hero-split-grid{% if page.hero_variant %} has-anim{% endif %}">
+        <div>
+          <p class="eyebrow">Services</p>
+          <h1>AI, SEO and Web Development Services</h1>
+          <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
+          <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
+        </div>
+        {%- if page.hero_variant %}
+        <div class="hero-anim" data-variant="{{ page.hero_variant }}" aria-hidden="true"></div>
+        {%- endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="what">
+    <div class="wrap">
       <h2>What I do</h2>
       {% include service-cards.html %}
+    </div>
+  </section>
+
+  <section id="where">
+    <div class="wrap">
       <h2>Where I work</h2>
-      <p>I live in Washington City and work with businesses across <a href="/southern-utah/">Southern Utah</a>, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
+      <p class="lead">I live in Washington City and work with businesses across <a href="/southern-utah/">Southern Utah</a>, and with businesses anywhere through my <a href="/consulting/">monthly plans</a>.</p>
       {% include city-cards.html %}
       {% include photo-credits.html %}
+    </div>
+  </section>
+
+  <section class="band cta-band">
+    <div class="wrap">
+      <h2>Want this for your business?</h2>
+      <p class="lead">Tell me what you would like AI and search to do for you, and I will tell you where I would start.</p>
       <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
     </div>
   </section>
