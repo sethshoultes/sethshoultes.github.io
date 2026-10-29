@@ -23,5 +23,7 @@ jobs:
         run: bundle exec jekyll build
       - name: No broken internal links
         run: node scripts/check-links.mjs _site
+      - name: Embedded YouTube videos are available
+        run: node scripts/check-youtube.mjs _site
       - name: Kit checks (inline styles, images in column, alt, link cards, schema, stylesheets, vendored kit lock)
         run: node assets/vendor/site-kit/check/kit-check.mjs _site
