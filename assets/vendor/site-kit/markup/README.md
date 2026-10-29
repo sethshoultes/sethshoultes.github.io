@@ -52,4 +52,4 @@ Grid sizes: `link-grid` is 3 across; add `cols-4` (four) or `cols-5` (five, for 
 </div>
 <h3>Video title</h3>
 ```
-Load `js/video-facade.js` (deferred) on the page. The poster is self-hosted WebP; no YouTube request happens until a visitor clicks. Without JavaScript the link opens the video on YouTube. Each id is checked by the site's YouTube availability check (`data-video-id`).
+Put the boxes in `<div class="video-grid">` (3 across, 2 on tablet, 1 on phone, the same in every group so posters keep one size). Load `js/video-facade.js` (deferred) on the page. The poster is self-hosted WebP; no YouTube request happens until a visitor clicks. Without JavaScript the link opens the video on YouTube. Each id is checked by the site's YouTube availability check (`data-video-id`).

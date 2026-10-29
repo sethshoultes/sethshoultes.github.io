@@ -135,7 +135,7 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
     {%- if g.note %}
     <p class="video-group-note reveal">{{ g.note }}{% if g.link %} <a href="{{ g.link.href }}" target="_blank" rel="noopener">{{ g.link.label }} &rarr;</a>{% endif %}</p>
     {%- endif %}
-    <div class="grid grid-wide">
+    <div class="video-grid">
       {%- for v in g.videos %}
       <div class="reveal">
         <div class="video-facade-box">
