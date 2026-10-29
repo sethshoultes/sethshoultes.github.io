@@ -128,53 +128,6 @@ permalink: /consulting/
   <section id="contact">
     <h2>Book a call</h2>
     <p class="lead">Tell me a little about your business and what you'd like AI to do for it. I'll reply within two business days.</p>
-    <form id="contact-form" novalidate>
-      <label>Your name<input name="name" required maxlength="120" autocomplete="name"></label>
-      <label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
-      <label>Company<input name="company" maxlength="160" autocomplete="organization"></label>
-      <label>Interested in
-        <select name="interest">
-          <option>Not sure yet</option>
-          <option>Advisor</option>
-          <option>Fractional AI Lead</option>
-          <option>Embedded AI Team</option>
-          <option>AI Audit</option>
-          <option>Team Workshop</option>
-        </select>
-      </label>
-      <label>What would you like AI to do for your business?<textarea name="message" required maxlength="5000"></textarea></label>
-      <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn" type="submit">Send</button>
-      <p id="form-status" role="status"></p>
-    </form>
+    <p class="btn-row"><a class="btn" href="/talk/#contact">Send Seth a message</a> <a class="btn ghost" href="/talk/">Ask Seth's AI first</a></p>
   </section>
 </div>
-<script>
-  const form = document.getElementById('contact-form');
-  const status = document.getElementById('form-status');
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = form.querySelector('button');
-    const data = Object.fromEntries(new FormData(form));
-    status.className = '';
-    status.textContent = 'Sending…';
-    button.disabled = true;
-    try {
-      const res = await fetch('https://contact.sethshoultes.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || 'Sending failed. Please email seth@smartwebutah.com.');
-      form.reset();
-      status.className = 'ok';
-      status.textContent = 'Thanks! I got your message and will reply within two business days.';
-    } catch (err) {
-      status.className = 'err';
-      status.textContent = err.message;
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>

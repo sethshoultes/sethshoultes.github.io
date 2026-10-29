@@ -16,8 +16,6 @@ PRD in, production out. A team of AI agents debates, plans, builds, tests, revie
 ## {{ site.data.games.arcade.name }}
 
 {{ site.data.games.arcade.line }} {{ site.data.games.arcade.url }}
-{% for genre in site.data.games.genres %}{% assign list = site.data.games.games | where: "genre", genre.id %}
-### {{ genre.name }}
-
-{% for g in list %}- [{{ g.title }}]({{ g.play }}): {{ g.line }}
-{% endfor %}{% endfor %}
+{% assign ranked = site.data.games.games | sort: "rank" %}
+{% for g in ranked %}- [{{ g.title }}]({{ g.play }}) ({{ site.data.games.genres | where: "id", g.genre | map: "name" | first }}): {{ g.line }}
+{% endfor %}
