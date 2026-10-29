@@ -87,7 +87,10 @@ export const handle = async ({ request, env }) => {
 
   const answer = await callModel(env, system(passages), messages, 600);
   if (!answer) return reply(502, { error: UNAVAILABLE });
-  return reply(200, { answer, sources: citedSources(answer, passages), question });
+  // An answer with no valid citation is not grounded in the sources, so it is never returned as one.
+  const sources = citedSources(answer, passages);
+  if (!sources.length) return reply(200, { answer: NO_ANSWER, sources: [] });
+  return reply(200, { answer, sources, question });
 };
 
 export const onRequest = safely(handle);

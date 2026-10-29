@@ -121,6 +121,15 @@ test('talk: origin, JSON and an empty question are refused; a missing key is a J
   assert.match((await noKey.json()).error, /unavailable/);
 });
 
+test('talk: an answer with no valid citation is never returned as a grounded answer', async () => {
+  for (const text of ['Seth runs weekly L10 meetings.', 'Seth runs weekly L10 meetings [9].']) {
+    const res = await withFetch(gemini(text), () =>
+      talk({ request: post('talk', { messages: [{ role: 'user', content: 'How do you approach team management with EOS?' }] }), env: talkEnv([1, 0.1, 0]) }));
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), { answer: NO_ANSWER, sources: [] }, `uncited model output "${text}" falls back`);
+  }
+});
+
 test('talk: citations that point at no source are ignored', () => {
   assert.deepEqual(citedSources('See [1] and [9].', [{ title: 'A', url: 'u1', text: '' }]), [{ title: 'A', url: 'u1' }]);
 });
