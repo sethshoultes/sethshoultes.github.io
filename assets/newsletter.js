@@ -38,8 +38,12 @@
   var q = new URLSearchParams(location.search), dl = q.get('dl');
   // Only ever link to our own download host, whatever is in the address bar.
   if (q.get('confirmed') === '1') {
-    var link = box.querySelector('[data-news-download]');
-    if (dl && dl.indexOf(API + '/download?') === 0) { link.href = dl; link.hidden = false; box.querySelector('[data-news-wait]').hidden = true; }
+    var link = box.querySelector('[data-news-download-link]');
+    if (dl && dl.indexOf(API + '/download?') === 0) {
+      link.href = dl;
+      box.querySelectorAll('[data-news-ready]').forEach(function (el) { el.hidden = false; });
+      box.querySelector('[data-news-wait]').hidden = true;
+    }
     box.hidden = false;
     if (typeof gtag === 'function') gtag('event', 'newsletter_confirmed');
   }
