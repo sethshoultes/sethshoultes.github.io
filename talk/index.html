@@ -1,50 +1,72 @@
 ---
 layout: site
 title: "Talk to Seth"
-description: "Tell Seth what you'd like to talk about and he'll reply within two business days."
+description: "Ask Seth's AI a question about marketing, AI, SEO, video or running a team, answered from his own writing, or call, text or send a message to Seth himself."
 permalink: /talk/
 ---
-<div class="wrap talk">
-  <p class="eyebrow">Talk to Seth</p>
-  <h1>Let's talk.</h1>
-  <p class="lead mt-1">Tell me a little about you and what's on your mind: your business, a project, AI, WordPress, or just a question. I read every message and I reply within two business days.</p>
-  <form id="contact-form" class="contact-form" novalidate>
-    <label>Your name<input name="name" required maxlength="120" autocomplete="name"></label>
-    <label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
-    <label>What would you like to talk about?<textarea name="message" required minlength="10" maxlength="5000"></textarea></label>
-    <input type="hidden" name="interest" value="Talk page">
-    <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
-    <button class="btn" type="submit">Send</button>
-    <p id="form-status" role="status"></p>
-  </form>
-  <p class="small-note">Looking for plans and prices? <a href="/consulting/">See how we'd work together</a>.</p>
+<link rel="stylesheet" href="/assets/talk.css">
+<div class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Talk</p>
+    <h1>Talk to Seth's AI.</h1>
+    <p class="lead mt-1">Ask a question and get an answer from what Seth has written, with the posts it came from. It is an AI assistant, not Seth, and it says so when his writing does not cover your question.</p>
+  </div>
 </div>
-<script>
-  const form = document.getElementById('contact-form');
-  const status = document.getElementById('form-status');
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = form.querySelector('button');
-    const data = Object.fromEntries(new FormData(form));
-    status.className = '';
-    status.textContent = 'Sending…';
-    button.disabled = true;
-    try {
-      const res = await fetch('https://contact.sethshoultes.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || 'Sending failed. Please email seth@smartwebutah.com.');
-      form.reset();
-      status.className = 'ok';
-      status.textContent = 'Thanks! I got your message and will reply within two business days.';
-    } catch (err) {
-      status.className = 'err';
-      status.textContent = err.message;
-    } finally {
-      button.disabled = false;
-    }
-  });
-</script>
+
+<section class="pt-1">
+  <div class="wrap"><div class="prose">
+    <div id="chat" class="chat" aria-live="polite">
+      <div class="msg bot">Hi, I'm Seth's AI. Ask me about AI for a small business, SEO, marketing, video production or building and running a team.</div>
+    </div>
+    <div class="chips" id="chips">
+      <button type="button" class="chip">How do you approach team management with EOS?</button>
+      <button type="button" class="chip">What do you think about marketing for a small service business?</button>
+      <button type="button" class="chip">How do you approach video production?</button>
+    </div>
+    <form id="chat-form" class="chat-form" autocomplete="off">
+      <label for="chat-input" class="sr-only">Your question</label>
+      <input id="chat-input" name="q" maxlength="800" placeholder="Type your question" required>
+      <button class="btn" type="submit" id="chat-send">Ask</button>
+    </form>
+    <p class="small-note">Your question is sent to an AI service, so please don't type anything private.</p>
+  </div></div>
+</section>
+
+{%- if site.data.contact.phone != "" %}
+<section class="band" id="call">
+  <div class="wrap">
+    <h2>Call or text.</h2>
+    <p class="lead">Prefer to talk to a person? Call{% if site.data.contact.text_ok %} or text{% endif %} Seth.</p>
+    <p class="talk-phone"><a class="btn" href="tel:{{ site.data.contact.phone }}">{{ site.data.contact.phone_display }}</a></p>
+  </div>
+</section>
+{%- endif %}
+
+<section id="contact">
+  <div class="wrap">
+    <h2>Send Seth a message.</h2>
+    <p class="lead">Tell me a little about you and what's on your mind: your business, a project, AI, WordPress, or just a question. I read every message and reply within two business days. This is the one place to book a call or ask for a plan.</p>
+    <form id="contact-form" class="contact-form" novalidate>
+      <label>Your name<input name="name" required maxlength="120" autocomplete="name"></label>
+      <label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
+      <label>Company<input name="company" maxlength="160" autocomplete="organization"></label>
+      <label>Interested in
+        <select name="interest">
+          <option>Just a question</option>
+          <option>Book a call</option>
+          <option>Advisor</option>
+          <option>Fractional AI Lead</option>
+          <option>Embedded AI Team</option>
+          <option>AI Audit</option>
+          <option>Team Workshop</option>
+        </select>
+      </label>
+      <label>What would you like to talk about?<textarea name="message" required minlength="10" maxlength="5000"></textarea></label>
+      <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit">Send</button>
+      <p id="form-status" role="status"></p>
+    </form>
+    <p class="small-note">Looking for plans and prices? <a href="/consulting/">See how we'd work together</a>.</p>
+  </div>
+</section>
+<script src="/assets/talk.js" defer></script>
