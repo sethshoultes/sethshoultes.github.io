@@ -5,7 +5,7 @@
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     /* the illustration drifts inside its frame as it crosses the screen */
-    .prose img.art { animation: cs-drift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    .prose img.art { animation: cs-drift linear both; animation-timeline: view(); animation-range: cover 10% cover 90%; }
     /* "before": the problem recedes as you read on; "after": what was built comes forward */
     .cs-before { animation: cs-before linear both; animation-timeline: view(); animation-range: exit 0% exit 90%; }
     .cs-after { animation: cs-after linear both; animation-timeline: view(); animation-range: entry 5% entry 60%; }
