@@ -1,4 +1,4 @@
-// Fail if a built page embeds a YouTube video that is private, deleted or otherwise unavailable.
+// Fail if a built page embeds (iframe or video-facade) a YouTube video that is private, deleted or otherwise unavailable.
 // Run after `jekyll build`:  node scripts/check-youtube.mjs [_site]
 // Asks YouTube's oEmbed endpoint about every embedded video id: 401, 403 and 404 mean the video
 // shows "Video unavailable" to visitors, so they fail the check. Network errors, 429 and 5xx only
@@ -21,6 +21,7 @@ function* pages(dir) {
 export function embeddedIds(html) {
   const ids = new Set();
   for (const m of html.matchAll(/youtube(?:-nocookie)?\.com\/embed\/([\w-]{11})/g)) ids.add(m[1]);
+  for (const m of html.matchAll(/data-video-id="([\w-]{11})"/g)) ids.add(m[1]);
   return ids;
 }
 

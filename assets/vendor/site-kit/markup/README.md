@@ -41,3 +41,15 @@ Each site keeps a page-type spec (`_data/page-types.json`, with `docs/page-types
 `feature-card` is for text that is not a link; use `link-card` when the whole card goes somewhere. `has-anim` is added only when the page supplies a `hero-anim`; without it the hero is single column. Animation must respect reduced motion, pause off-screen and not shift layout.
 
 Grid sizes: `link-grid` is 3 across; add `cols-4` (four) or `cols-5` (five, for a service list with the current page left out). `feature-grid` is 3 across; add `two-up` for exactly four cards. Never leave a lone card on the last row.
+
+## video-facade
+```html
+<div class="video-facade-box">
+  <a class="video-facade" href="https://www.youtube.com/watch?v=ID" data-video-id="ID" data-title="Video title">
+    <img src="/assets/img/videos/ID.webp" width="640" height="360" alt="Poster for: Video title" loading="lazy">
+    <span class="sr-only">Play: Video title</span>
+  </a>
+</div>
+<h3>Video title</h3>
+```
+Load `js/video-facade.js` (deferred) on the page. The poster is self-hosted WebP; no YouTube request happens until a visitor clicks. Without JavaScript the link opens the video on YouTube. Each id is checked by the site's YouTube availability check (`data-video-id`).

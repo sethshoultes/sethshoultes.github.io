@@ -130,19 +130,26 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
   <div class="wrap">
     <p class="eyebrow reveal">Watch</p>
     <h2 class="reveal">Videos</h2>
+    {%- for g in site.data.videos %}
+    <h3 class="video-group-title reveal">{{ g.group }}</h3>
+    {%- if g.note %}
+    <p class="video-group-note reveal">{{ g.note }}{% if g.link %} <a href="{{ g.link.href }}" target="_blank" rel="noopener">{{ g.link.label }} &rarr;</a>{% endif %}</p>
+    {%- endif %}
     <div class="grid grid-wide">
+      {%- for v in g.videos %}
       <div class="reveal">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/91lK6t5oir0" title="AI Done Right: The Full First Principles Masterclass" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        <h3 class="mt-075">AI Done Right: The Full First Principles Masterclass</h3>
+        <div class="video-facade-box">
+          <a class="video-facade" href="https://www.youtube.com/watch?v={{ v.id }}" data-video-id="{{ v.id }}" data-title="{{ v.title | escape }}">
+            <img src="/assets/img/videos/{{ v.id }}.webp" width="640" height="360" alt="Poster for: {{ v.title | escape }}" loading="lazy">
+            <span class="sr-only">Play: {{ v.title | escape }}</span>
+          </a>
+        </div>
+        <h4 class="mt-075">{{ v.title | escape }}</h4>
       </div>
-      <div class="reveal">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/dXUCo4hJ-_c" title="The science of garage doors, explained" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        <h3 class="mt-075">The science of garage doors, explained</h3>
-      </div>
-      <div class="reveal">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/Od84YIAwrEk" title="Exploring Zion 2024" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        <h3 class="mt-075">Exploring Zion 2024</h3>
-      </div>
+      {%- endfor %}
+    </div>
+    {%- endfor %}
+    <script src="/assets/vendor/site-kit/js/video-facade.js" defer></script>
     </div>
   </div>
 </section>

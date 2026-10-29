@@ -19,6 +19,10 @@ test('finds embed ids, including the nocookie host', () => {
   const ids = embeddedIds(`${embed('aMkmhg8fMe8')}<iframe src="https://www.youtube-nocookie.com/embed/dXUCo4hJ-_c"></iframe>`);
   assert.deepEqual([...ids].sort(), ['aMkmhg8fMe8', 'dXUCo4hJ-_c']);
 });
+test('finds ids on video facades (data-video-id) too', () => {
+  const ids = embeddedIds('<a class="video-facade" href="https://www.youtube.com/watch?v=ASQ2PxAsYRc" data-video-id="ASQ2PxAsYRc"></a>');
+  assert.deepEqual([...ids], ['ASQ2PxAsYRc']);
+});
 test('a private or deleted video (401, 403, 404) fails and names the page', async () => {
   const root = site({ 'projects/index.html': embed('aMkmhg8fMe8') + embed('dXUCo4hJ-_c') });
   for (const code of [401, 403, 404]) {
