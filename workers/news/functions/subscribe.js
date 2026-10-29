@@ -29,7 +29,7 @@ export async function handle({ request, env }, now = new Date(), fetchImpl = fet
   }
 
   const stamp = now.toISOString();
-  const row = await env.DB.prepare('SELECT id, status FROM subscribers WHERE email = ?').bind(email).first();
+  const row = await env.DB.prepare('SELECT id, status, consent_at FROM subscribers WHERE email = ?').bind(email).first();
   let id = row?.id;
   if (!row) {
     id = crypto.randomUUID();
@@ -47,7 +47,9 @@ export async function handle({ request, env }, now = new Date(), fetchImpl = fet
   const unsubscribeUrl = `${ORIGIN}/unsubscribe?id=${id}&t=${await sign(env.NEWS_SECRET, 'unsubscribe', id)}`;
   const status = row?.status === 'unsubscribed' ? 'pending' : row?.status || 'pending';
   const ready = await pdfReady(env.NEWS_KV, DEFAULT_FILE);
-  const confirmUrl = `${ORIGIN}/confirm?id=${id}&t=${await sign(env.NEWS_SECRET, 'confirm', id)}`;
+  // The confirm link is bound to this sign-up's consent time: a new sign-up gets a new time, so an old link stops working.
+  const consentAt = row && row.status !== 'unsubscribed' ? row.consent_at : stamp;
+  const confirmUrl = `${ORIGIN}/confirm?id=${id}&t=${await sign(env.NEWS_SECRET, 'confirm', `${id}:${consentAt}`)}`;
   let mail;
   if (status !== 'confirmed') mail = confirmEmail({ confirmUrl, unsubscribeUrl, ready });
   else if (ready) mail = downloadEmail({ downloadUrl: await downloadUrl(ORIGIN, env.NEWS_SECRET, DEFAULT_FILE, now.getTime()), title: FILES[DEFAULT_FILE].title, unsubscribeUrl });

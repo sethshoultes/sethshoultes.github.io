@@ -8,11 +8,12 @@ import { downloadUrl, verify } from './_lib/sign.js';
 export async function handle({ request, env }, now = new Date()) {
   const u = new URL(request.url);
   const id = u.searchParams.get('id') || '';
-  if (!(await verify(env.NEWS_SECRET, 'confirm', id, u.searchParams.get('t')))) {
-    return page(400, 'That link did not work', 'It may be incomplete. Sign up again on sethshoultes.com/library/ and we will send a new one.');
-  }
-  const row = await env.DB.prepare('SELECT status FROM subscribers WHERE id = ?').bind(id).first();
+  const bad = () => page(400, 'That link did not work', 'It may be old or incomplete. Sign up again on sethshoultes.com/library/ and we will send a new one.');
+  const row = await env.DB.prepare('SELECT status, consent_at FROM subscribers WHERE id = ?').bind(id).first();
   if (!row) return page(404, 'That link did not work', 'We could not find this sign-up. Sign up again on sethshoultes.com/library/.');
+  // The link only works for the sign-up it was issued for, and never after an unsubscribe: a recipient who
+  // unsubscribed is not subscribed again by an old email.
+  if (row.status === 'unsubscribed' || !(await verify(env.NEWS_SECRET, 'confirm', `${id}:${row.consent_at}`, u.searchParams.get('t')))) return bad();
   if (row.status !== 'confirmed') {
     await env.DB.prepare('UPDATE subscribers SET status = ?, confirmed_at = ?, unsubscribed_at = NULL WHERE id = ?').bind('confirmed', now.toISOString(), id).run();
   }

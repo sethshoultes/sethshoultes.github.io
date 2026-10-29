@@ -188,3 +188,28 @@ test('count: needs the admin token and returns counts only', { skip: !sqlite }, 
   const ok = await count({ request: req('Bearer admin'), env: e });
   assert.deepEqual(await ok.json(), { pending: 1, confirmed: 0, unsubscribed: 0, total: 1 });
 });
+
+test('confirm: an old confirmation link never re-subscribes someone who unsubscribed, nor survives a fresh sign-up', { skip: !sqlite }, async () => {
+  const e = env(), m = mailbox();
+  await subscribe({ request: post(GOOD), env: e }, NOW, m.fetchImpl);
+  const firstLink = m.sent[0].text.match(/https:\/\/news\.sethshoultes\.com\/confirm\?[^\s]+/)[0];
+  const unsub = m.sent[0].headers['List-Unsubscribe'].slice(1, -1);
+  await unsubscribe({ request: new Request(unsub, { method: 'POST' }), env: e }, NOW);
+  assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'unsubscribed');
+
+  // The original email's link is refused and the row stays unsubscribed.
+  const refused = await confirm({ request: new Request(firstLink), env: e }, new Date(NOW.getTime() + 60000));
+  assert.equal(refused.status, 400);
+  assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'unsubscribed');
+
+  // A fresh sign-up issues a new link; the old one still does not work, the new one does.
+  e.NEWS_KV.data.clear();
+  const later = new Date(NOW.getTime() + 3600 * 1000);
+  await subscribe({ request: post(GOOD), env: e }, later, m.fetchImpl);
+  const newLink = m.sent[1].text.match(/https:\/\/news\.sethshoultes\.com\/confirm\?[^\s]+/)[0];
+  assert.notEqual(newLink, firstLink);
+  assert.equal((await confirm({ request: new Request(firstLink), env: e }, later)).status, 400);
+  assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'pending');
+  assert.equal((await confirm({ request: new Request(newLink), env: e }, later)).status, 302);
+  assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'confirmed');
+});
