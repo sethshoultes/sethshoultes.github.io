@@ -1,4 +1,4 @@
-// Faint star field with distant planets behind the dark sections (#153). Canvas 2D, no dependencies.
+// Faint star field behind the dark sections (#153), with distant planets where a page asks for them (data-planets). Canvas 2D, no dependencies.
 // One fixed layer: three depths of small stars that drift with scroll (you travel through them) and
 // three soft planets that cross the margins as the page scrolls. Decoration only, aria-hidden.
 //
@@ -101,12 +101,13 @@ function mount(cv) {
     { kind: 'moon', x: 0.84, y0: 1.7, travel: 1.25, r: 18, tint: [150, 154, 164], ph: 4.0 },
   ];
   const glowDot = (() => { const g = document.createElement('canvas'); g.width = g.height = 32; const c = g.getContext('2d'); const r = c.createRadialGradient(16, 16, 0, 16, 16, 16); r.addColorStop(0, 'rgba(225,232,245,0.55)'); r.addColorStop(0.35, 'rgba(225,232,245,0.14)'); r.addColorStop(1, 'rgba(225,232,245,0)'); c.fillStyle = r; c.fillRect(0, 0, 32, 32); return g; })();
+  const planets = cv.dataset.planets === 'true';
   let w = 0, h = 0, dpr = 1, stars = [], sprites = [], raf = 0, lastY = -1, lastT = 0;
 
   const build = () => {
     const rand = rng(153);
     const unit = clamp(w / 1200, 0.7, 1.2);
-    sprites = PLANETS.map((p) => planetSprite(p, p.r * unit, Math.min(devicePixelRatio || 1, 2)));
+    sprites = !planets ? [] : PLANETS.map((p) => planetSprite(p, p.r * unit, Math.min(devicePixelRatio || 1, 2)));
     const area = (w * h) / (1440 * 900);
     stars = [];
     LAYERS.forEach((L, li) => {
@@ -152,7 +153,7 @@ function mount(cv) {
       ctx.fillStyle = s.cool ? '#dfe7f5' : '#f1ebe2';
       ctx.beginPath(); ctx.arc(s.x, py, s.r, 0, TAU); ctx.fill();
     }
-    PLANETS.forEach((p, i) => {
+    if (planets) PLANETS.forEach((p, i) => {
       const { cv: img, S } = sprites[i];
       const cx = p.x * w + Math.cos(t * 0.05 + p.ph) * 6, cy = (p.y0 - prog * p.travel) * h + Math.sin(t * 0.05 + p.ph) * 4;
       if (cy < -S || cy > h + S) return;

@@ -1,6 +1,37 @@
 /* games on /projects/: the kit link-card with a wide card image, plus the Arcade intro (#160) */
 .game-card img { aspect-ratio: 640 / 264; }
-.game-card .meta { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: 0.4rem; }
+.game-card .meta { color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: auto; padding-top: 0.4rem; }
 .arcade-intro { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.75rem; margin: 1.5rem 0 2rem; }
 .arcade-intro p { margin: 0; max-width: 60ch; color: var(--muted); }
-.arcade-genre { margin: 2.25rem 0 1rem; font-size: 1.2rem; }
+
+/* featured row: a scroll-snap rail, swipeable on phones, with buttons and a pause for the auto-advance (#169) */
+.rail { position: relative; }
+.rail-bar { display: flex; gap: 0.5rem; justify-content: flex-end; margin-bottom: 0.75rem; }
+.rail-bar { align-items: center; }
+.rail-count { margin-right: auto; color: var(--muted); font-size: 0.9rem; }
+.rail-btn { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 999px; min-width: 2.75rem; height: 2.75rem; padding: 0 0.9rem; font: inherit; font-weight: 600; cursor: pointer; }
+.rail-btn:hover, .rail-btn:focus-visible { border-color: var(--accent); }
+.rail-track { list-style: none; margin: 0; padding: 0 0 0.75rem; display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; -webkit-overflow-scrolling: touch; -webkit-mask-image: linear-gradient(to right, #000 90%, transparent); mask-image: linear-gradient(to right, #000 90%, transparent); }
+.rail.at-end .rail-track { -webkit-mask-image: none; mask-image: none; }
+.rail-track > li { flex: 0 0 clamp(250px, 24vw, 300px); scroll-snap-align: start; }
+@media (max-width: 600px) { .rail-track > li { flex-basis: 78%; } .rail-btn:not(.rail-pause) { display: none; } .rail { margin-top: 1rem; } }
+
+/* the Arcade: one continuous grid in rank order, a small genre tag on each card */
+.game-tag { align-self: flex-start; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: var(--accent); border: 1px solid var(--border); border-radius: 999px; padding: 0.1rem 0.6rem; }
+/* The Arcade (#169): the best four games sit in a plain top row so rank reads left to right there.
+   Everything after them packs as masonry in pure CSS, so cards of different heights leave no ragged
+   rows. Where grid masonry is supported rank continues left to right; elsewhere CSS columns do the
+   packing and the rest reads down each column. No JavaScript, no library. */
+ul.link-grid.arcade-top { margin-bottom: 1.25rem; }
+ul.link-grid.arcade-grid { display: block; columns: 4; column-gap: 1.25rem; margin-top: 0; }
+ul.link-grid.arcade-grid > li { break-inside: avoid; margin: 0 0 1.25rem; }
+@media (max-width: 1000px) { ul.link-grid.arcade-grid { columns: 2; } }
+@media (max-width: 600px) { ul.link-grid.arcade-grid { columns: 1; } }
+@supports (grid-template-rows: masonry) {
+  ul.link-grid.arcade-grid { display: grid; columns: auto; grid-template-columns: repeat(4, 1fr); grid-template-rows: masonry; gap: 1.25rem; }
+  ul.link-grid.arcade-grid > li { margin: 0; }
+  @media (max-width: 1000px) { ul.link-grid.arcade-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { ul.link-grid.arcade-grid { grid-template-columns: 1fr; } }
+}
+.arcade-more .link-card { justify-content: flex-start; }
+.arcade-more .meta { align-self: flex-start; margin-top: 0.75rem; background: var(--accent); color: #0b0d10; border-radius: 999px; padding: 0.55rem 1.1rem; }
