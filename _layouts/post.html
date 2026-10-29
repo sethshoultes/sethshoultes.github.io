@@ -2,6 +2,9 @@
 layout: site
 ---
 <article class="post">
+  {%- if page.hero_image %}
+  <img class="post-img post-img-lead" src="{{ page.hero_image.src }}" width="{{ page.hero_image.width }}" height="{{ page.hero_image.height }}" alt="{{ page.hero_image.alt }}" fetchpriority="high">
+  {%- endif %}
 
   <span class="post-label">{{ page.label | default: "Writing" }}</span>
 
@@ -27,6 +30,11 @@ layout: site
   <div class="post-content">
     {{ content }}
   </div>
+  {%- if page.newsletter %}
+  <link rel="stylesheet" href="/assets/newsletter.css">
+  <aside class="post-news">{% include newsletter-form.html source=page.url id="post" title="Get this essay as a PDF" %}</aside>
+  <script src="/assets/newsletter.js" defer></script>
+  {%- endif %}
 
 </article>
 {%- if page.related and page.related.size > 0 %}

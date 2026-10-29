@@ -1,10 +1,12 @@
 {%- comment -%}
-Game card (kit link-card with a wide 640x264 card image). Param: game (an entry of site.data.games.games).
+Game card (kit link-card with a wide 640x264 card image). Params: game (an entry of site.data.games.games), tag (true to show the genre as a small tag).
 One <a>, one <h3>, no links inside. The whole card plays the game.
 {%- endcomment -%}
 <a class="link-card game-card" href="{{ include.game.play }}" target="_blank" rel="noopener">
   <img src="{{ include.game.image }}" alt="{{ include.game.alt }}" width="640" height="264" loading="lazy" decoding="async">
   <span class="link-card-body">
+    {%- if include.tag %}{% assign genre = site.data.games.genres | where: "id", include.game.genre | first %}
+    <span class="game-tag">{{ genre.name }}</span>{% endif %}
     <h3>{{ include.game.title }}</h3>
     <p>{{ include.game.line }}</p>
     <span class="meta">Play now &rarr;</span>

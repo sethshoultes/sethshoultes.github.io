@@ -1,0 +1,17 @@
+{%- comment -%}
+  Newsletter sign-up (#168). Usage: {% include newsletter-form.html source="/library/" %}
+  Posts to our own Worker (workers/news/) and nothing else: no third-party script, no tracker.
+  The page that holds it loads /assets/newsletter.js and /assets/newsletter.css.
+{%- endcomment -%}
+{%- assign pdf = site.data.library.files | first %}
+{%- assign ready = false %}{% if pdf.status == "ready" %}{% assign ready = true %}{% endif %}
+<form class="news-form" data-news{% if ready %} data-ready{% endif %} data-source="{{ include.source | default: page.url }}" novalidate>
+  <p class="news-title">{% if include.title and ready %}{{ include.title }}{% elsif ready %}Get the free PDF{% else %}Get the PDF when it is ready{% endif %}</p>
+  <label for="news-email-{{ include.id | default: 'a' }}">Your email</label>
+  <input id="news-email-{{ include.id | default: 'a' }}" name="email" type="email" autocomplete="email" required>
+  <input class="news-trap" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <label class="news-consent"><input name="consent" type="checkbox" required> <span>Send me an email when something new ships. Unsubscribe any time.</span></label>
+  <button class="btn" type="submit">{% if ready %}Email me the PDF{% else %}Email me when it is ready{% endif %}</button>
+  <p class="news-status" role="status" aria-live="polite"></p>
+  <p class="news-note">Your address stays in our own database and is only used to send you these emails.</p>
+</form>

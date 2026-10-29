@@ -1,0 +1,5 @@
+# Contact details shown on /talk/. A blank phone hides the call and text section: nothing is shown until Seth supplies the number.
+phone: ""
+phone_display: ""
+text_ok: true
+email: seth@smartwebutah.com

@@ -1,0 +1,32 @@
+# Watch page videos, grouped. Poster images live in /assets/img/videos/<id>.webp.
+# Every id here is checked against YouTube's oEmbed in CI (scripts/check-youtube.mjs).
+- group: "Featured"
+  note: "Songs, and the science of garage doors."
+  videos:
+    - id: ASQ2PxAsYRc
+      title: "Arrival — Opal & the Pips (Live)"
+    - id: QZ9tKnv4xNg
+      title: "Building a Membership Website with AI | Heavy Lifting (Rock Song) · Opal"
+    - id: dXUCo4hJ-_c
+      title: "The science of garage doors, explained"
+- group: "Stories"
+  note: "Two membership owners, in their own words."
+  videos:
+    - id: l9e4rQm_9yg
+      title: "Kajabi Alternative: A Leadership Coach Moves His Cohort to WordPress"
+    - id: q5KrDYDCe0A
+      title: "Teachable Alternative: A Yoga Teacher on Owning Her Online Course"
+- group: "Learn"
+  note: "Start with part one of the Claude Code series, or see all of the playlists on the Opal channel."
+  link:
+    href: "https://www.youtube.com/@memberpress_ai/playlists"
+    label: "All playlists on the Opal channel"
+  videos:
+    - id: ZmPHdFrdENc
+      title: "Claude Code Tutorial for Beginners: Install Claude Code (1/8)"
+    - id: 91lK6t5oir0
+      title: "AI Done Right: The Full First Principles Masterclass"
+- group: "More"
+  videos:
+    - id: Od84YIAwrEk
+      title: "Exploring Zion 2024"
