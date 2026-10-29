@@ -17,6 +17,7 @@ class FakeKV {
   constructor() { this.data = new Map(); }
   async get(k, type) { const v = this.data.get(k) ?? null; return v !== null && type === 'arrayBuffer' && typeof v === 'string' ? new TextEncoder().encode(v).buffer : v; }
   async put(k, v) { this.data.set(k, v); }
+  async list({ prefix = '', limit = 1000 } = {}) { return { keys: [...this.data.keys()].filter((k) => k.startsWith(prefix)).slice(0, limit).map((name) => ({ name })) }; }
 }
 
 // A D1-shaped wrapper over node:sqlite, loaded with the real schema.
@@ -98,6 +99,8 @@ test('subscribe, confirm, download, unsubscribe: the whole double opt-in', { ski
   assert.match(mail.headers['List-Unsubscribe'], /\/unsubscribe\?id=/);
   assert.equal(mail.headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');
   assert.ok(mail.html.includes('1522 Heritage Fields Dr, Washington, Utah 84780'));
+  assert.doesNotMatch(mail.text, /free PDF is one click/, 'no PDF is promised while none is loaded');
+  assert.match(mail.text, /the day it publishes/);
   const confirmUrl = mail.text.match(/https:\/\/news\.sethshoultes\.com\/confirm\?[^\s]+/)[0];
 
   // A tampered confirm link does nothing.
@@ -105,6 +108,10 @@ test('subscribe, confirm, download, unsubscribe: the whole double opt-in', { ski
   assert.equal(bad.status, 400);
   assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'pending');
 
+  // Not loaded yet: the confirm lands on the library with no download link.
+  const early = await confirm({ request: new Request(confirmUrl), env: e }, NOW);
+  assert.equal(early.headers.get('Location'), 'https://sethshoultes.com/library/?confirmed=1');
+  e.NEWS_KV.data.set(`pdf:${DEFAULT_FILE}`, '%PDF-1.4 test');
   const ok = await confirm({ request: new Request(confirmUrl), env: e }, NOW);
   assert.equal(ok.status, 302);
   assert.equal(e.DB.raw.prepare('SELECT status FROM subscribers').get().status, 'confirmed');
@@ -114,7 +121,6 @@ test('subscribe, confirm, download, unsubscribe: the whole double opt-in', { ski
   const dl = loc.searchParams.get('dl');
 
   // The signed link downloads the PDF, and a wrong or expired one does not.
-  e.NEWS_KV.data.set(`pdf:${DEFAULT_FILE}`, '%PDF-1.4 test');
   const file = await download({ request: new Request(dl), env: e }, NOW);
   assert.equal(file.status, 200);
   assert.equal(file.headers.get('Content-Type'), 'application/pdf');
@@ -138,6 +144,10 @@ test('subscribe: the same address twice sends once, and a confirmed address gets
   e.DB.raw.prepare("UPDATE subscribers SET status = 'confirmed'").run();
   const later = new Date(NOW.getTime() + 20 * 60 * 1000);
   e.NEWS_KV.data.clear();
+  await subscribe({ request: post(GOOD), env: e }, later, m.fetchImpl);
+  assert.equal(m.sent.length, 1, 'a confirmed address gets nothing while no PDF is loaded');
+  e.NEWS_KV.data.clear();
+  e.NEWS_KV.data.set(`pdf:${DEFAULT_FILE}`, '%PDF-1.4 test');
   await subscribe({ request: post(GOOD), env: e }, later, m.fetchImpl);
   assert.equal(m.sent.length, 2);
   assert.match(m.sent[1].subject, /^Your download/);

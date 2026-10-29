@@ -2,7 +2,7 @@
 // The reply is always the same {ok:true} so nobody can use this to learn who is on the list.
 import { CORS, EMAIL_RE, allow, json } from './_lib/http.js';
 import { ORIGIN, confirmEmail, downloadEmail, send } from './_lib/mail.js';
-import { DEFAULT_FILE, FILES } from './_lib/files.js';
+import { DEFAULT_FILE, FILES, pdfReady } from './_lib/files.js';
 import { downloadUrl, sign } from './_lib/sign.js';
 
 export const CONSENT_TEXT = 'Send me an email when something new ships. Unsubscribe any time.';
@@ -46,9 +46,12 @@ export async function handle({ request, env }, now = new Date(), fetchImpl = fet
 
   const unsubscribeUrl = `${ORIGIN}/unsubscribe?id=${id}&t=${await sign(env.NEWS_SECRET, 'unsubscribe', id)}`;
   const status = row?.status === 'unsubscribed' ? 'pending' : row?.status || 'pending';
-  const mail = status === 'confirmed'
-    ? downloadEmail({ downloadUrl: await downloadUrl(ORIGIN, env.NEWS_SECRET, DEFAULT_FILE, now.getTime()), title: FILES[DEFAULT_FILE].title, unsubscribeUrl })
-    : confirmEmail({ confirmUrl: `${ORIGIN}/confirm?id=${id}&t=${await sign(env.NEWS_SECRET, 'confirm', id)}`, unsubscribeUrl });
+  const ready = await pdfReady(env.NEWS_KV, DEFAULT_FILE);
+  const confirmUrl = `${ORIGIN}/confirm?id=${id}&t=${await sign(env.NEWS_SECRET, 'confirm', id)}`;
+  let mail;
+  if (status !== 'confirmed') mail = confirmEmail({ confirmUrl, unsubscribeUrl, ready });
+  else if (ready) mail = downloadEmail({ downloadUrl: await downloadUrl(ORIGIN, env.NEWS_SECRET, DEFAULT_FILE, now.getTime()), title: FILES[DEFAULT_FILE].title, unsubscribeUrl });
+  else return json(200, { ok: true }); // already confirmed and nothing to send yet
   await send(env, email, mail, unsubscribeUrl, fetchImpl);
   return json(200, { ok: true });
 }

@@ -1,6 +1,7 @@
 # The free PDF library. One entry per file; /library/, its markdown twin and the JSON-LD read this.
 # The signed download links, the confirm email and the worker (workers/news/) know a file by its slug.
-intro: "Free PDFs, written to be used. Ask for one and I will email you a link. I send an email when something new ships, and you can unsubscribe in one click."
+intro: "Written to be used. Ask for one and I will email you the link."
+# status: soon until the PDF is uploaded to KV (pdf:<slug>), then ready. The forms and the worker both say "when it is ready" until then.
 files:
   - slug: why-ai-agents-skip-wordpress
     title: "Why AI agents skip WordPress"

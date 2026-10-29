@@ -22,7 +22,7 @@
         return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; });
       }).then(function (res) {
         if (!res.ok) throw new Error(res.d.error || 'Something went wrong. Please try again.');
-        status.textContent = 'Check your inbox. I sent you a link to confirm your email, and the PDF comes with it.';
+        status.textContent = form.hasAttribute('data-ready') ? 'Check your inbox. I sent you a link to confirm your email, and the PDF comes with it.' : 'Check your inbox to confirm your email. I will send you the PDF the day it publishes.';
         status.className = 'news-status ok';
         form.elements.email.value = '';
         if (typeof gtag === 'function') gtag('event', 'newsletter_signup', { source: form.getAttribute('data-source') });
@@ -37,8 +37,9 @@
   if (!box) return;
   var q = new URLSearchParams(location.search), dl = q.get('dl');
   // Only ever link to our own download host, whatever is in the address bar.
-  if (q.get('confirmed') === '1' && dl && dl.indexOf(API + '/download?') === 0) {
-    box.querySelector('a').href = dl;
+  if (q.get('confirmed') === '1') {
+    var link = box.querySelector('[data-news-download]');
+    if (dl && dl.indexOf(API + '/download?') === 0) { link.href = dl; link.hidden = false; box.querySelector('[data-news-wait]').hidden = true; }
     box.hidden = false;
     if (typeof gtag === 'function') gtag('event', 'newsletter_confirmed');
   }

@@ -20,9 +20,11 @@ function shell(body, unsubscribeUrl) {
 
 const button = (href, label) => `<p><a href="${esc(href)}" style="background:#ff6b2c;color:#0b0d10;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:700;display:inline-block">${esc(label)}</a></p>`;
 
-export function confirmEmail({ confirmUrl, unsubscribeUrl }) {
-  const html = shell(`<p>Hi, it's Seth.</p><p>Confirm your email and your free PDF is one click away.</p>${button(confirmUrl, 'Confirm and download')}<p>If you did not ask for this, ignore this email and nothing will happen.</p>`, unsubscribeUrl);
-  return { subject: 'Confirm your email to get the PDF', html, text: `Confirm your email and get your free PDF: ${confirmUrl}\n\nIf you did not ask for this, ignore this email.\n\nUnsubscribe: ${unsubscribeUrl}\n${MAILING_ADDRESS}` };
+// `ready` is whether the PDF is loaded yet. Until it is, the email says so instead of promising it.
+export function confirmEmail({ confirmUrl, unsubscribeUrl, ready }) {
+  const line = ready ? 'Confirm your email and your free PDF is one click away.' : 'Confirm your email and I will send you the PDF the day it publishes.';
+  const html = shell(`<p>Hi, it's Seth.</p><p>${line}</p>${button(confirmUrl, ready ? 'Confirm and download' : 'Confirm my email')}<p>If you did not ask for this, ignore this email and nothing will happen.</p>`, unsubscribeUrl);
+  return { subject: ready ? 'Confirm your email to get the PDF' : 'Confirm your email', html, text: `${line} ${confirmUrl}\n\nIf you did not ask for this, ignore this email.\n\nUnsubscribe: ${unsubscribeUrl}\n${MAILING_ADDRESS}` };
 }
 
 export function downloadEmail({ downloadUrl, title, unsubscribeUrl }) {

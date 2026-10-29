@@ -5,3 +5,8 @@ export const FILES = {
   'why-ai-agents-skip-wordpress': { title: 'Why AI agents skip WordPress', filename: 'why-ai-agents-skip-wordpress.pdf' },
 };
 export const DEFAULT_FILE = 'why-ai-agents-skip-wordpress';
+
+// Is this PDF loaded in KV yet? Emails and the confirm redirect only promise it once it is.
+export async function pdfReady(kv, slug) {
+  return (await kv.list({ prefix: `pdf:${slug}`, limit: 1 })).keys.length > 0;
+}
