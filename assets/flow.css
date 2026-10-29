@@ -27,3 +27,9 @@
 .hero-variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.5rem 2rem; padding-bottom: 5rem; }
 .hero-caption { margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; }
 
+
+/* the agent fleet on /consulting/ (#165): a wide, fixed-ratio canvas with a real-text caption */
+.fleet-fig { margin: 2rem 0 0; }
+.fleet-fig canvas { display: block; width: 100%; aspect-ratio: 16 / 8; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.fleet-fig figcaption { margin-top: 0.75rem; color: var(--muted); font-size: 0.95rem; }
+@media (max-width: 700px) { .fleet-fig canvas { aspect-ratio: 4 / 5; } }
