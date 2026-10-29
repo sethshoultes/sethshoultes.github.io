@@ -121,8 +121,13 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
       <p>{{ site.data.games.arcade.line }}</p>
       <a class="btn" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener">Open the Arcade</a>
     </div>
-    <ul class="link-grid cols-4 arcade-grid">
-      {%- for game in ranked %}
+    <ul class="link-grid cols-4 arcade-top">
+      {%- for game in ranked limit: site.data.games.arcade_top %}
+      <li>{% include game-card.html game=game tag=true %}</li>
+      {%- endfor %}
+    </ul>
+    <ul class="link-grid arcade-grid">
+      {%- for game in ranked offset: site.data.games.arcade_top %}
       <li>{% include game-card.html game=game tag=true %}</li>
       {%- endfor %}
       <li class="arcade-more"><a class="link-card" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><span class="link-card-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p><span class="meta">Open the Arcade &rarr;</span></span></a></li>

@@ -3,6 +3,7 @@
 # image_source is the Arcade card image each local WebP (640x264) was made from. play is the live game; page is its Arcade listing.
 
 featured_count: 6
+arcade_top: 4 # the best games sit in a plain top row of the Arcade grid; the rest pack as masonry
 
 arcade:
   url: https://arcade.adventurebuildr.com/

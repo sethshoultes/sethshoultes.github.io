@@ -18,10 +18,11 @@
 
 /* the Arcade: one continuous grid in rank order, a small genre tag on each card */
 .game-tag { align-self: flex-start; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: var(--accent); border: 1px solid var(--border); border-radius: 999px; padding: 0.1rem 0.6rem; }
-/* Masonry in pure CSS (#169): cards of different heights pack with no ragged rows.
-   Where the browser supports grid masonry, rank reads left to right across the rows.
-   Elsewhere CSS columns do the packing and rank reads down each column, so the best games still
-   lead every column's top. No JavaScript, no library. */
+/* The Arcade (#169): the best four games sit in a plain top row so rank reads left to right there.
+   Everything after them packs as masonry in pure CSS, so cards of different heights leave no ragged
+   rows. Where grid masonry is supported rank continues left to right; elsewhere CSS columns do the
+   packing and the rest reads down each column. No JavaScript, no library. */
+ul.link-grid.arcade-top { margin-bottom: 1.25rem; }
 ul.link-grid.arcade-grid { display: block; columns: 4; column-gap: 1.25rem; margin-top: 0; }
 ul.link-grid.arcade-grid > li { break-inside: avoid; margin: 0 0 1.25rem; }
 @media (max-width: 1000px) { ul.link-grid.arcade-grid { columns: 2; } }
