@@ -130,12 +130,13 @@
 
 /* Service pages */
 .service-hero { padding: 8rem 0 2rem; }
-.service-hero h1 { text-wrap: balance; }
-.service-sec { padding: 1.5rem 0; }
+.service-hero h1 { text-wrap: balance; font-size: clamp(2rem, 4.8vw, 3.6rem); max-width: 20em; margin-bottom: 1.25rem; }
+.service-sec-thin { padding: 2.25rem 0; }
+.service-sec { padding: 3.5rem 0; }
 .service-sec h2 { margin-bottom: 1rem; }
-.service ul:not(.link-grid) { padding-left: 1.2rem; color: var(--muted); }
-.service ul:not(.link-grid), .hub ul:not(.link-grid):not(.photo-credits) { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
-.service ul:not(.link-grid) li, .hub ul:not(.link-grid):not(.photo-credits) li { margin-bottom: 0.4rem; }
+.service ul:not(.link-grid):not(.feature-grid) { padding-left: 1.2rem; color: var(--muted); }
+.service ul:not(.link-grid):not(.feature-grid), .hub ul:not(.link-grid):not(.photo-credits) { margin: 0 0 1.5rem; padding-left: 1.2rem; color: var(--muted); }
+.service ul:not(.link-grid):not(.feature-grid) li, .hub ul:not(.link-grid):not(.photo-credits) li { margin-bottom: 0.4rem; }
 .hub h2 { margin-top: 2.5rem; }
 .hub .lead { margin-top: 1rem; }
 .hub .prose { margin-top: 2.5rem; }
