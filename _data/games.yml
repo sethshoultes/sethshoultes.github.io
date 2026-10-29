@@ -73,7 +73,7 @@ games:
     rank: 7
     title: "Flappy Bird"
     genre: action
-    line: "Flap through the pipes and chase a spot on the global leaderboard."
+    line: "Flap through the pipes and chase a high score."
     play: https://flappy-bird.adventurebuildr.com
     page: https://arcade.adventurebuildr.com/games/flappy-bird/
     image: /assets/img/games/flappy-bird.webp
