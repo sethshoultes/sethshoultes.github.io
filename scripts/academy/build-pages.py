@@ -26,6 +26,47 @@ ALT = {
 }
 THIRD_PARTY = ("artsupplies.co.uk",)  # another company's photos: not copied, see the PR
 
+# One plain sentence for the hub card, and a short intro for the course page. Hand-written: the WordPress intros were
+# sales copy ("Unlock the power of...") and are not used. Keyed by course slug. No double quotes (they go into an include).
+BLURBS = {
+    "painting-like-bob-ross-for-beginners": (
+        "Painting the way Bob Ross taught it: wet-on-wet oils, brushes, mixing colour, then trees, water, mountains and cabins.",
+        "Start with materials and the wet-on-wet technique, then work through brushes, colour and landscapes one subject at a time. You do not need any painting experience."),
+    "html-css-basics-introduction-for-beginners": (
+        "Start here if you have never made a web page: HTML tags, then CSS to style them.",
+        "You learn how a page is structured, how to add headings, links, images and forms, and how CSS changes how it all looks."),
+    "intermediate-level-html-and-css": (
+        "Bigger pages, better CSS: semantic HTML, forms, Flexbox, Grid and responsive layouts.",
+        "For when the basics feel comfortable. The lessons cover page structure, forms, layout with Flexbox and Grid, and making a page work on a phone."),
+    "advanced-level-html-and-css": (
+        "Faster, tidier front ends: advanced Grid, CSS variables, Sass, performance and how to organise your CSS.",
+        "For people who already build pages with HTML and CSS and want the code to hold up as a site grows."),
+    "drone-flying-for-beginners-a-basic-guide": (
+        "What a drone is, how its parts work, how to fly one, and what drones are used for.",
+        "A first course in flying drones, from the parts and the controller to real uses in film, farming, rescue and delivery."),
+    "drone-piloting": (
+        "The basic skills of flying a drone, plus the rules and safety habits that go with them.",
+        "Take this after Drone Flying for Beginners. It covers basic piloting, flight dynamics, regulations and safety."),
+    "drone-piloting-advanced-techniques": (
+        "Acro mode, tuning your drone and the manoeuvres that racing and freestyle pilots use.",
+        "For pilots who are past the basics. It covers legal rules, manual control, setting up a drone for hard flying and what professional pilots do."),
+    "advanced-drone-pilot-maneuvers": (
+        "Freestyle FPV moves taken one at a time: power loops, the Immelmann, the Split-S and more.",
+        "Each lesson breaks one manoeuvre into its mechanics, with tips for getting it right."),
+    "fundamental-concepts-of-membership-websites": (
+        "How membership sites work, then step-by-step builds with WordPress and MemberPress: courses, coaching, hiking and dating sites.",
+        "Start with the ideas: tiers, subscriptions, restricting content. Then follow worked examples that set up each kind of site."),
+    "mastering-the-memberpress-rest-api": (
+        "Use the MemberPress REST API to connect other tools, automate member tasks and add your own endpoints.",
+        "For developers. The lessons cover use cases, worked examples, testing requests in Postman, OAuth and payment automation."),
+    "memberpress-event-espresso-for-non-profit-organizations": (
+        "Run memberships, events and donations for a non-profit with MemberPress and Event Espresso.",
+        "The lessons start with the ideas, then go through automations for discounts, event sign-ups, donors, volunteers and reporting."),
+    "business-startup-essentials": (
+        "A short introduction to starting a business: how to get started, plan and market.",
+        "Three written lessons so far, on getting started, planning and marketing a new business."),
+}
+
 
 def ascii_slug(s):
     s = urllib.parse.unquote(s).encode("ascii", "ignore").decode()
@@ -34,6 +75,11 @@ def ascii_slug(s):
 
 def plain_title(s):
     return re.sub(r"\s+", " ", re.sub(r"[^\x00-\x7f]", "", html.unescape(s))).strip()
+
+
+def lesson_title(s):
+    """Lesson titles in the export carry their own "3." numbers, which restart in every section: drop them, the page numbers the list."""
+    return re.sub(r"^\d+\.\s*", "", plain_title(s))
 
 
 def fetch_image(url):
@@ -75,6 +121,9 @@ def clean(content, report):
     # emoji were lost from the WordPress database long ago and became a lone "?" at the start of a heading or item
     h, n = re.subn(r"(<(?:h[1-6]|p|li|strong)\b[^>]*>)\?\s+", r"\1", h)
     report["lost_emoji"] += n
+    # YouTube embeds were stored as a bare address inside a figure: make them a real link (the video is not ours to host)
+    h = re.sub(r'<figure[^>]*>\s*<div[^>]*>\s*(https://youtu\.be/[^\s<]+)\s*</div>(.*?)</figure>',
+               lambda m: f'<p><a href="{m.group(1)}">Watch the video on YouTube</a></p>' + re.sub(r'<figcaption[^>]*>(.*?)</figcaption>', r"<p>\1</p>", m.group(2), flags=re.S), h, flags=re.S)
     h = re.sub(r"<figure>\s*</figure>", "", h)
     h = re.sub(r"<figure>\s*(<figure>|</figure>)", r"\1", h)
     # the page already has an H1: shift headings up so the lesson starts at H2
@@ -124,13 +173,18 @@ def main():
         lessons = [(s, l) for s in c["sections"] for l in s["lessons"]]
         used, flat = set(), []
         for s, l in lessons:
+            if len(re.sub(r"<[^>]+>|\s", "", clean(l["content"], dict(report, images=set())))) < 80:
+                # a lesson that was published with no text: no page, and the old address goes to the course
+                report["empty"].append(f"{cslug}/{ascii_slug(l['slug'])}")
+                redirects.append((urllib.parse.urlparse(l["link"]).path, cpath))
+                continue
             slug = ascii_slug(l["slug"]) or f"lesson-{l['id']}"
             base, n = slug, 2
             while slug in used:
                 slug, n = f"{base}-{n}", n + 1
             used.add(slug)
             flat.append((s, l, slug))
-        intro = clean(c["content"], report)
+        card, intro_text = BLURBS[cslug]
         cimg = None
         if c["image"]:
             path, w, hgt, _ = fetch_image(c["image"])
@@ -139,15 +193,13 @@ def main():
         # lesson pages
         for i, (s, l, slug) in enumerate(flat):
             body = clean(l["content"], report)
-            if len(re.sub(r"<[^>]+>|\s", "", body)) < 80:
-                report["empty"].append(f"{cslug}/{slug}")
             lpath = f"{cpath}{slug}/"
-            ltitle = plain_title(l["title"])
+            ltitle = lesson_title(l["title"])
             prev = flat[i - 1] if i else None
             nxt = flat[i + 1] if i + 1 < len(flat) else None
             nav = ['<nav class="lesson-nav" aria-label="Lessons">']
-            nav.append(f'<a class="prev" href="{cpath}{prev[2]}/"><span>Previous</span>{html.escape(plain_title(prev[1]["title"]))}</a>' if prev else "<span></span>")
-            nav.append(f'<a class="next" href="{cpath}{nxt[2]}/"><span>Next</span>{html.escape(plain_title(nxt[1]["title"]))}</a>' if nxt else f'<a class="next" href="{cpath}"><span>Finished</span>Back to the course</a>')
+            nav.append(f'<a class="prev" href="{cpath}{prev[2]}/"><span>Previous</span>{html.escape(lesson_title(prev[1]["title"]))}</a>' if prev else "<span></span>")
+            nav.append(f'<a class="next" href="{cpath}{nxt[2]}/"><span>Next</span>{html.escape(lesson_title(nxt[1]["title"]))}</a>' if nxt else f'<a class="next" href="{cpath}"><span>Finished</span>Back to the course</a>')
             nav.append("</nav>")
             page = front(layout="site", page_type="lesson", title=f"{ltitle} – {ctitle}", description=summary(body), permalink=lpath)
             page += jsonld(crumbs(("Academy", "/academy/"), (ctitle, cpath), (ltitle, lpath)))
@@ -177,11 +229,11 @@ def main():
             items = []
             for _s, l, slug in [f for f in flat if f[0] is s]:
                 n += 1
-                items.append(f'<li><a href="{cpath}{slug}/">{html.escape(plain_title(l["title"]))}</a></li>')
+                items.append(f'<li><a href="{cpath}{slug}/">{html.escape(lesson_title(l["title"]))}</a></li>')
             if items:
                 sections_html.append(f'<h2>{html.escape(plain_title(s["title"]))}</h2>\n<ol class="syllabus" start="{n - len(items) + 1}">\n' + "\n".join(items) + "\n</ol>")
         first = f"{cpath}{flat[0][2]}/" if flat else cpath
-        lead = summary(intro, 220)
+        lead = card
         course_ld = {"@context": "https://schema.org", "@type": "Course", "name": ctitle, "description": lead,
                      "url": SITE + cpath, "provider": {"@type": "Person", "name": "Seth Shoultes", "url": SITE + "/"},
                      "isAccessibleForFree": True}
@@ -193,9 +245,7 @@ def main():
     <p class="crumbs"><a href="/academy/">Academy</a></p>
     <p class="eyebrow">{len(flat)} lessons · free</p>
     <h1>{html.escape(ctitle)}</h1>{hero}
-{{% raw %}}
-{intro}
-{{% endraw %}}
+    <p>{html.escape(intro_text)}</p>
     <p class="btn-row"><a class="btn" href="{first}">Start the first lesson</a></p>
     {chr(10).join(sections_html)}
   </section>
@@ -208,17 +258,18 @@ def main():
 
     # hub + markdown twin
     card_html = []
+    assert set(BLURBS) == {c[0] for c in cards}, "every course needs a hand-written blurb"
     for cslug, ctitle, lead, cimg, n in cards:
         img = f' img="{cimg[0]}" alt=""' if cimg else ""
-        card_html.append(f'  <li>{{% include kit/link-card.html href="/academy/{cslug}/" title="{ctitle}" line="{n} lessons. {html.escape(lead[:90].rsplit(" ", 1)[0], quote=True)}..."{img} %}}</li>')
-    hub = front(layout="site", page_type="hub", title="Free Academy: Courses from Seth Shoultes",
+        card_html.append(f'  <li>{{% include kit/link-card.html href="/academy/{cslug}/" title="{html.escape(ctitle, quote=True)}" line="{html.escape(lead, quote=True)} ({n} lessons)"{img} %}}</li>')
+    hub = front(layout="site", page_type="hub", title="Academy: free courses you can read right now",
                 description="Free courses on HTML and CSS, drone piloting, membership websites, the MemberPress REST API and more. No sign-in.",
                 permalink="/academy/")
     hub += jsonld(crumbs(("Academy", "/academy/")))
     hub += f"""<div class="wrap hub">
   <section>
     <p class="eyebrow">Academy</p>
-    <h1>Free Academy: Courses from Seth Shoultes</h1>
+    <h1>Free courses you can read right now</h1>
     <p class="lead">{len(cards)} courses and {report["lessons"]} lessons, free to read, with no sign-in. Pick a course and start at the first lesson.</p>
     <div class="prose">
       <h2>Courses</h2>
@@ -226,16 +277,16 @@ def main():
 {chr(10).join(card_html)}
       </ul>
       <p class="hub-note">Looking for the Claude Academy? It lives at <a href="https://myclaudeacademy.com/">myclaudeacademy.com</a>.</p>
-      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a></p>
+      <p class="hub-note">Stuck on something? <a href="/consulting/#contact">Talk to me</a>.</p>
     </div>
   </section>
 </div>
 """
     (OUT / "index.html").write_text(hub)
     twin = "---\nlayout: null\npermalink: /academy.md\nsitemap: false\n---\n"
-    twin += f"# Free Academy: Courses from Seth Shoultes\n\n{len(cards)} courses and {report['lessons']} lessons, free to read, with no sign-in.\n\nPage: {{{{ site.url }}}}/academy/\n\n## Courses\n"
+    twin += f"# Free courses you can read right now\n\n{len(cards)} courses and {report['lessons']} lessons, free to read, with no sign-in.\n\nPage: {{{{ site.url }}}}/academy/\n\n## Courses\n"
     for cslug, ctitle, lead, cimg, n in cards:
-        twin += f"- [{ctitle}]({SITE}/academy/{cslug}/): {n} lessons. {lead}\n"
+        twin += f"- [{ctitle}]({SITE}/academy/{cslug}/): {lead} ({n} lessons)\n"
     (ROOT / "academy-md.html").write_text(twin)
 
     (ROOT / "scripts/academy/redirects.tsv").write_text("".join(f"{a}\t{b}\n" for a, b in redirects))
