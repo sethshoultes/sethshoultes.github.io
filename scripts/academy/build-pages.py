@@ -18,8 +18,8 @@ SITE = "https://sethshoultes.com"
 
 # Alt text for the images WordPress stored with none. Keyed by file name.
 ALT = {
-    "color-wheel-1015x1024.png": "A colour wheel showing primary, secondary and tertiary colours",
-    "Bob-Ross-Colours-1.jpg": "The Bob Ross oil paint colours in a row",
+    "color-wheel-1015x1024.png": "A color wheel showing primary, secondary and tertiary colors",
+    "Bob-Ross-Colours-1.jpg": "The Bob Ross oil paint colors in a row",
     "THROTTLE-AND-PITCH-Want-to-jump-higher-Push-up-on-the-joystick-for-more-throttle-683x1024.png": "Throttle and pitch: push the left stick up for more throttle",
     "Leonardo_Phoenix_Throttle_and_Pitch_Just_like_moving_a_charact_0-1024x1024.jpg": "An illustration of throttle and pitch controls on a drone remote",
     "ReadyLaunch-1024x998.webp": "The MemberPress ReadyLaunch template",
@@ -30,8 +30,8 @@ THIRD_PARTY = ("artsupplies.co.uk",)  # another company's photos: not copied, se
 # sales copy ("Unlock the power of...") and are not used. Keyed by course slug. No double quotes (they go into an include).
 BLURBS = {
     "painting-like-bob-ross-for-beginners": (
-        "Painting the way Bob Ross taught it: wet-on-wet oils, brushes, mixing colour, then trees, water, mountains and cabins.",
-        "Start with materials and the wet-on-wet technique, then work through brushes, colour and landscapes one subject at a time. You do not need any painting experience."),
+        "Painting the way Bob Ross taught it: wet-on-wet oils, brushes, mixing color, then trees, water, mountains and cabins.",
+        "Start with materials and the wet-on-wet technique, then work through brushes, color and landscapes one subject at a time. You do not need any painting experience."),
     "html-css-basics-introduction-for-beginners": (
         "Start here if you have never made a web page: HTML tags, then CSS to style them.",
         "You learn how a page is structured, how to add headings, links, images and forms, and how CSS changes how it all looks."),
@@ -39,7 +39,7 @@ BLURBS = {
         "Bigger pages, better CSS: semantic HTML, forms, Flexbox, Grid and responsive layouts.",
         "For when the basics feel comfortable. The lessons cover page structure, forms, layout with Flexbox and Grid, and making a page work on a phone."),
     "advanced-level-html-and-css": (
-        "Faster, tidier front ends: advanced Grid, CSS variables, Sass, performance and how to organise your CSS.",
+        "Faster, tidier front ends: advanced Grid, CSS variables, Sass, performance and how to organize your CSS.",
         "For people who already build pages with HTML and CSS and want the code to hold up as a site grows."),
     "drone-flying-for-beginners-a-basic-guide": (
         "What a drone is, how its parts work, how to fly one, and what drones are used for.",
@@ -48,11 +48,11 @@ BLURBS = {
         "The basic skills of flying a drone, plus the rules and safety habits that go with them.",
         "Take this after Drone Flying for Beginners. It covers basic piloting, flight dynamics, regulations and safety."),
     "drone-piloting-advanced-techniques": (
-        "Acro mode, tuning your drone and the manoeuvres that racing and freestyle pilots use.",
+        "Acro mode, tuning your drone and the maneuvers that racing and freestyle pilots use.",
         "For pilots who are past the basics. It covers legal rules, manual control, setting up a drone for hard flying and what professional pilots do."),
     "advanced-drone-pilot-maneuvers": (
         "Freestyle FPV moves taken one at a time: power loops, the Immelmann, the Split-S and more.",
-        "Each lesson breaks one manoeuvre into its mechanics, with tips for getting it right."),
+        "Each lesson breaks one maneuver into its mechanics, with tips for getting it right."),
     "fundamental-concepts-of-membership-websites": (
         "How membership sites work, then step-by-step builds with WordPress and MemberPress: courses, coaching, hiking and dating sites.",
         "Start with the ideas: tiers, subscriptions, restricting content. Then follow worked examples that set up each kind of site."),
