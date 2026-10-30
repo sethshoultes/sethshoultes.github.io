@@ -1,0 +1,26 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Keyboard Navigation and Focus Management – Advanced Level: HTML and CSS"
+description: "For many users with disabilities, the keyboard is the primary method of navigating a website. Ensuring that your site is fully keyboard navigable and that..."
+permalink: "/academy/advanced-level-html-and-css/10-keyboard-navigation-and-focus-management/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Keyboard Navigation and Focus Management", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/10-keyboard-navigation-and-focus-management/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Accessibility and SEO Best Practices</p>
+    <h1>Keyboard Navigation and Focus Management</h1>
+{% raw %}
+<p>For many users with disabilities, the keyboard is the primary method of navigating a website. Ensuring that your site is fully <strong>keyboard navigable</strong> and that focus is managed correctly is critical for accessibility.</p>
+<h2>Best Practices for Keyboard Navigation:</h2>
+<ul><li>Ensure that all interactive elements (buttons, links, forms) can be accessed via the <strong>Tab</strong> key.</li>
+<li>Use the <code>:focus</code> pseudo-class to style focusable elements, making them visible when they are in focus.<br><code>button:focus { outline: 3px solid #3498db; }</code></li>
+<li>Manage <strong>focus</strong> when modals or dynamic content are triggered to ensure that users can still navigate effectively.</li>
+</ul>
+<h2>Focus Management Example:</h2>
+<pre><code>&lt;button id=&quot;open-modal&quot;>Open Modal&lt;/button><br>&lt;div id=&quot;modal&quot; role=&quot;dialog&quot; aria-hidden=&quot;true&quot;><br>  &lt;button id=&quot;close-modal&quot;>Close Modal&lt;/button><br>&lt;/div><br><br>&lt;script><br>  document.getElementById('open-modal').addEventListener('click', function () {<br>    document.getElementById('modal').setAttribute('aria-hidden', 'false');<br>    document.getElementById('close-modal').focus(); // Move focus to the modal<br>  });<br>&lt;/script><br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/9-mobile-optimization-and-responsive-design/"><span>Previous</span>Mobile Optimization and Responsive Design</a><a class="next" href="/academy/advanced-level-html-and-css/11-testing-tools-for-accessibility-and-seo/"><span>Next</span>Testing Tools for Accessibility and SEO</a></nav>
+</div>

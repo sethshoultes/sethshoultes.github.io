@@ -1,0 +1,39 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "OOCSS (Object-Oriented CSS) – Advanced Level: HTML and CSS"
+description: "OOCSS (Object-Oriented CSS) is a methodology that emphasizes the separation of structure and skin (presentation). The goal of OOCSS is to create reusable,..."
+permalink: "/academy/advanced-level-html-and-css/3-oocss-object-oriented-css/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "OOCSS (Object-Oriented CSS)", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/3-oocss-object-oriented-css/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Architecture and Methodologies</p>
+    <h1>OOCSS (Object-Oriented CSS)</h1>
+{% raw %}
+<p><strong>OOCSS (Object-Oriented CSS)</strong> is a methodology that emphasizes the separation of structure and skin (presentation). The goal of OOCSS is to create reusable, flexible styles by treating UI components as “objects.” This separation reduces duplication and ensures that styles are easy to maintain and reuse.</p>
+<h2>Principles of OOCSS:</h2>
+<ol><li><strong>Separation of Structure and Skin</strong>:<ul><li><strong>Structure</strong>: Defines the layout and positioning of elements (e.g., width, height, padding).</li>
+<li><strong>Skin</strong>: Defines the visual styling (e.g., colors, borders, fonts).</li>
+</ul>
+</li>
+<li><strong>Separation of Containers and Content</strong>:<ul><li>OOCSS encourages reusable styles that aren’t tied to a specific context or container.</li>
+</ul>
+</li>
+</ol>
+<h2>Example of OOCSS:</h2>
+<pre><code>/* Structure (layout) */<br>.box {<br>  width: 300px;<br>  padding: 20px;<br>}<br><br>/* Skin (visual styling) */<br>.box--blue {<br>  background-color: #3498db;<br>  color: white;<br>}<br><br>.box--green {<br>  background-color: #2ecc71;<br>  color: white;<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The <strong>box</strong> class defines the structure.</li>
+<li>The <strong>box--blue</strong> and <strong>box--green</strong> classes define different skins, allowing flexibility in styling without duplicating the layout rules.</li>
+</ul>
+<h2>Key Benefits of OOCSS:</h2>
+<ul><li><strong>Reusability</strong>: Encourages creating generic styles that can be reused in different contexts.</li>
+<li><strong>Consistency</strong>: Promotes consistent styles across a project by separating layout and design.</li>
+<li><strong>Efficiency</strong>: Reduces duplication and makes maintenance easier.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/2-bem-block-element-modifier-methodology/"><span>Previous</span>BEM (Block Element Modifier) Methodology</a><a class="next" href="/academy/advanced-level-html-and-css/4-smacss-scalable-and-modular-architecture-for-css/"><span>Next</span>SMACSS (Scalable and Modular Architecture for CSS)</a></nav>
+</div>

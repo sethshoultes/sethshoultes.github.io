@@ -1,0 +1,104 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Semantic HTML and Advanced Elements – Intermediate Level: HTML and CSS"
+description: "Semantic HTML is about using the right HTML tags to describe the content's meaning. This improves SEO and accessibility. Key Elements: : Defines..."
+permalink: "/academy/intermediate-level-html-and-css/semantic-html-and-advanced-elements/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Semantic HTML and Advanced Elements", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/semantic-html-and-advanced-elements/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>Semantic HTML and Advanced Elements</h1>
+{% raw %}
+<p><strong>Semantic HTML</strong> is about using the right HTML tags to describe the content's meaning. This improves SEO and accessibility.</p>
+<h3>Key Elements:</h3>
+<ul><li><strong><code>&lt;article></code></strong>: Defines independent content like a blog post.</li>
+<li><strong><code>&lt;section></code></strong>: Groups related content.</li>
+<li><strong><code>&lt;aside></code></strong>: For side content, like a sidebar.</li>
+<li><strong><code>&lt;form></code></strong>: For collecting user input.</li>
+</ul>
+<h3>Example: A Simple Contact Form</h3>
+<pre><code>&lt;form action=&quot;/submit&quot; method=&quot;post&quot;><br>  &lt;label for=&quot;name&quot;>Name:&lt;/label><br>  &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot;><br><br>  &lt;label for=&quot;email&quot;>Email:&lt;/label><br>  &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;><br><br>  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;><br>&lt;/form></code></pre>
+<h2><strong>Deep Dive into Semantic HTML and Advanced Elements</strong></h2>
+<p><strong>Semantic HTML</strong> refers to using HTML elements that clearly describe their meaning in a human- and machine-readable way. In this section, we will explore the importance of semantic HTML, how it improves accessibility and SEO, and dive into some <strong>advanced HTML elements</strong> that enhance the structure and interactivity of your web pages.</p>
+<hr/>
+<h2><strong>What is Semantic HTML?</strong></h2>
+<p>In HTML, <strong>semantic elements</strong> clearly define the purpose of the content they contain. This contrasts with <strong>non-semantic elements</strong>, which do not describe their content meaningfully.</p>
+<h3><strong>Non-Semantic Elements</strong>:</h3>
+<ul><li><code>&lt;div></code>: Generic container with no meaning.</li>
+<li><code>&lt;span></code>: Generic inline container with no meaning.</li>
+</ul>
+<h3><strong>Semantic Elements</strong>:</h3>
+<ul><li><code>&lt;header></code>: Represents the header section of a document or section.</li>
+<li><code>&lt;nav></code>: Contains navigation links.</li>
+<li><code>&lt;article></code>: Independent, self-contained content (e.g., blog posts, news articles).</li>
+<li><code>&lt;section></code>: Defines a section in a document.</li>
+<li><code>&lt;footer></code>: Represents the footer of a document or section.</li>
+<li><code>&lt;main></code>: Specifies the main content of the page.</li>
+</ul>
+<hr/>
+<h2><strong>Why Use Semantic HTML?</strong></h2>
+<ol><li><strong>Accessibility</strong>:<br>Semantic HTML helps screen readers and other assistive technologies understand the structure of a webpage. For instance, screen readers can easily navigate between headings, articles, sections, and navigation menus when semantic elements are used properly.</li>
+<li><strong>SEO (Search Engine Optimization)</strong>:<br>Search engines use semantic HTML to understand the content of your page better. By using elements like <code>&lt;article></code>, <code>&lt;header></code>, and <code>&lt;nav></code>, search engines can prioritize relevant content, improving your site’s ranking.</li>
+<li><strong>Maintainability</strong>:<br>Semantic HTML improves the readability and maintainability of code. Future developers (or your future self) will find it easier to understand the structure and purpose of each part of the page.</li>
+<li><strong>Cleaner and More Organized Structure</strong>:<br>Semantic HTML provides clear, meaningful tags, making your code more organized and easier to debug.</li>
+</ol>
+<hr/>
+<h2><strong>Common Semantic HTML Elements and Their Uses</strong></h2>
+<p>Let’s look at some essential semantic elements and when to use them in your projects.</p>
+<h3>1. <strong><code>&lt;header&gt;</code></strong>:</h3>
+<p>The <code>&lt;header&gt;</code> element is used to group introductory content or navigation links. It typically contains a logo, site name, navigation, or search bar.</p>
+<pre><code>&lt;header><br>  &lt;h1>Website Title&lt;/h1><br>  &lt;nav><br>    &lt;ul><br>      &lt;li>&lt;a href=&quot;#&quot;>Home&lt;/a>&lt;/li><br>      &lt;li>&lt;a href=&quot;#&quot;>About&lt;/a>&lt;/li><br>      &lt;li>&lt;a href=&quot;#&quot;>Contact&lt;/a>&lt;/li><br>    &lt;/ul><br>  &lt;/nav><br>&lt;/header><br></code></pre>
+<h3>2. <strong><code>&lt;nav&gt;</code></strong>:</h3>
+<p>The <code>&lt;nav&gt;</code> element is used to define a block of navigation links. It should be used for the main navigation sections, such as menus or internal site links.</p>
+<pre><code>&lt;nav><br>  &lt;ul><br>    &lt;li>&lt;a href=&quot;#home&quot;>Home&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#services&quot;>Services&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#contact&quot;>Contact&lt;/a>&lt;/li><br>  &lt;/ul><br>&lt;/nav><br></code></pre>
+<h3>3. <strong><code>&lt;main&gt;</code></strong>:</h3>
+<p>The <code>&lt;main&gt;</code> element is intended for the dominant content of the body of a document. There should only be one <code>&lt;main&gt;</code> element per page.</p>
+<pre><code>&lt;main><br>  &lt;article><br>    &lt;h2>Blog Post Title&lt;/h2><br>    &lt;p>This is the content of the blog post.&lt;/p><br>  &lt;/article><br>&lt;/main><br></code></pre>
+<h3>4. <strong><code>&lt;section&gt;</code></strong>:</h3>
+<p>The <code>&lt;section&gt;</code> element groups related content into a distinct part of the page. It’s useful when organizing content into logical sections.</p>
+<pre><code>&lt;section><br>  &lt;h2>Our Services&lt;/h2><br>  &lt;p>We offer web design, development, and SEO services.&lt;/p><br>&lt;/section><br></code></pre>
+<h3>5. <strong><code>&lt;article&gt;</code></strong>:</h3>
+<p>The <code>&lt;article&gt;</code> element represents independent, self-contained content, such as a blog post, comment, or forum post. It's great for content that could be distributed or reused on its own.</p>
+<pre><code>&lt;article><br>  &lt;h2>Latest News&lt;/h2><br>  &lt;p>This is an independent article that could stand alone outside the page.&lt;/p><br>&lt;/article><br></code></pre>
+<h3>6. <strong><code>&lt;footer&gt;</code></strong>:</h3>
+<p>The <code>&lt;footer&gt;</code> element contains footer information, usually including copyright information, social media links, or secondary navigation.</p>
+<pre><code>&lt;footer><br>  &lt;p>© 2024 My Website. All rights reserved.&lt;/p><br>&lt;/footer><br></code></pre>
+<h3>7. <strong><code>&lt;aside&gt;</code></strong>:</h3>
+<p>The <code>&lt;aside&gt;</code> element represents content related to the main content but separate from it, such as sidebars, callout boxes, or advertisements.</p>
+<pre><code>&lt;aside><br>  &lt;h3>Related Articles&lt;/h3><br>  &lt;ul><br>    &lt;li>&lt;a href=&quot;#&quot;>How to Use CSS Grid&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#&quot;>Mastering Flexbox&lt;/a>&lt;/li><br>  &lt;/ul><br>&lt;/aside><br></code></pre>
+<hr/>
+<h2><strong>Advanced HTML Elements</strong></h2>
+<p>Beyond the basic semantic elements, HTML offers advanced elements that can enrich user experiences by adding media, interactive content, and forms.</p>
+<h3>1. <strong><code>&lt;figure&gt;</code> and <code>&lt;figcaption&gt;</code></strong>:</h3>
+<p>Use the <code>&lt;figure&gt;</code> element to associate images, diagrams, or code snippets with a <code>&lt;figcaption&gt;</code> element, which provides a caption for the figure.</p>
+<pre><code>&lt;figure><br>  &lt;img src=&quot;diagram.png&quot; alt=&quot;Website architecture diagram&quot;><br>  &lt;figcaption>Figure 1: Diagram of website architecture.&lt;/figcaption><br>&lt;/figure><br></code></pre>
+<h3>2. <strong><code>&lt;audio&gt;</code> and <code>&lt;video&gt;</code></strong>:</h3>
+<p>These elements allow embedding multimedia content directly into your webpage. They support controls for playback, such as pause and volume adjustment.</p>
+<pre><code>&lt;audio controls><br>  &lt;source src=&quot;audiofile.mp3&quot; type=&quot;audio/mpeg&quot;><br>  Your browser does not support the audio element.<br>&lt;/audio><br><br>&lt;video controls><br>  &lt;source src=&quot;movie.mp4&quot; type=&quot;video/mp4&quot;><br>  Your browser does not support the video element.<br>&lt;/video><br></code></pre>
+<h3>3. <strong><code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code></strong>:</h3>
+<p>The <code>&lt;details></code> element creates an expandable section of content and the <code>&lt;summary></code> element defines the heading that the user clicks on to reveal the content.</p>
+<pre><code>&lt;details><br>  &lt;summary>Click here for more information&lt;/summary><br>  &lt;p>This is the hidden content revealed when you click on the summary.&lt;/p><br>&lt;/details><br></code></pre>
+<h3>4. <strong><code>&lt;form&gt;</code> and Related Input Types</strong>:</h3>
+<p>Forms allow users to input data and interact with your website. HTML5 introduced new input types like <code>email</code>, <code>url</code>, and <code>date</code>, improving user experience and validation.</p>
+<pre><code>&lt;form action=&quot;/submit&quot; method=&quot;post&quot;><br>  &lt;label for=&quot;email&quot;>Email:&lt;/label><br>  &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;><br><br>  &lt;label for=&quot;dob&quot;>Date of Birth:&lt;/label><br>  &lt;input type=&quot;date&quot; id=&quot;dob&quot; name=&quot;dob&quot;><br><br>  &lt;input type=&quot;submit&quot; value=&quot;Submit&quot;><br>&lt;/form><br></code></pre>
+<hr/>
+<h2><strong>Best Practices for Semantic HTML</strong></h2>
+<ol><li><strong>Use Appropriate Elements</strong>:<br>Always choose semantic elements based on their meaning, not just their visual appearance. For instance, use <code>&lt;h1></code> to <code>&lt;h6></code> for headings, <code>&lt;p></code> for paragraphs, and <code>&lt;article></code> for self-contained content.</li>
+<li><strong>Organize Your Content</strong>:<br>Break your content into meaningful sections with <code>&lt;header></code>, <code>&lt;nav></code>, <code>&lt;section></code>, and <code>&lt;footer></code> for a clear structure.</li>
+<li><strong>ARIA Roles and Accessibility</strong>:<br>Use <strong>ARIA roles</strong> (Accessible Rich Internet Applications) where necessary to enhance accessibility, especially for interactive elements like forms.</li>
+<li><strong>Avoid Overusing <code>&lt;div></code> and <code>&lt;span></code></strong>:<br>Overusing non-semantic elements like <code>&lt;div></code> and <code>&lt;span></code> can make your code harder to read and maintain. Try to use meaningful tags where possible.</li>
+</ol>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li><strong>Semantic HTML</strong> helps search engines, assistive technologies, and other developers understand the structure and purpose of your content.</li>
+<li>Using elements like <code>&lt;header></code>, <code>&lt;main></code>, <code>&lt;article></code>, and <code>&lt;footer></code> leads to more accessible, maintainable, and SEO-friendly websites.</li>
+<li><strong>Advanced HTML elements</strong>, such as multimedia elements (<code>&lt;video></code>, <code>&lt;audio></code>), forms, and expandable sections (<code>&lt;details></code>), provide interactive and rich user experiences.</li>
+</ul>
+<p></p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><span></span><a class="next" href="/academy/intermediate-level-html-and-css/flexbox-the-flexible-layout-system/"><span>Next</span>Flexbox: The Flexible Layout System</a></nav>
+</div>

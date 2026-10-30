@@ -1,0 +1,27 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Optimizing JavaScript for Performance – Advanced Level: HTML and CSS"
+description: "JavaScript can significantly impact page performance if it’s not optimized. Poorly written or bloated JavaScript can lead to slow rendering and poor user..."
+permalink: "/academy/advanced-level-html-and-css/9-optimizing-javascript-for-performance/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Optimizing JavaScript for Performance", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/9-optimizing-javascript-for-performance/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Web Performance Optimization</p>
+    <h1>Optimizing JavaScript for Performance</h1>
+{% raw %}
+<p>JavaScript can significantly impact page performance if it’s not optimized. Poorly written or bloated JavaScript can lead to slow rendering and poor user experiences, especially on mobile devices.</p>
+<h2>Techniques to Optimize JavaScript:</h2>
+<ul><li><strong>Minify and compress JavaScript</strong>: Use tools like <strong>UglifyJS</strong> or <strong>Terser</strong> to reduce file sizes.</li>
+<li><strong>Defer non-critical scripts</strong>: Use the <code>defer</code> attribute to load non-critical JavaScript after the page has finished parsing.</li>
+</ul>
+<pre><code>&lt;script src=&quot;script.js&quot; defer>&lt;/script><br></code></pre>
+<ul><li><strong>Reduce DOM manipulation</strong>: Excessive DOM manipulation can slow down performance. Optimize DOM access and updates by batching changes.</li>
+<li><strong>Use Web Workers</strong>: If you have heavy computations, move them to <strong>Web Workers</strong> to prevent blocking the main thread and ensure the UI remains responsive.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/8-using-browser-devtools-for-performance-auditing/"><span>Previous</span>Using Browser DevTools for Performance Auditing</a><a class="next" href="/academy/advanced-level-html-and-css/10-modern-performance-techniques-http-2-webp-and-server-side-rendering-ssr/"><span>Next</span>Modern Performance Techniques: HTTP/2, WebP, and Server-Side Rendering (SSR)</a></nav>
+</div>

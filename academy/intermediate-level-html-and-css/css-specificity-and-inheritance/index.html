@@ -1,0 +1,148 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "CSS Specificity and Inheritance – Intermediate Level: HTML and CSS"
+description: "Understanding How CSS is Applied CSS Specificity and Inheritance are key concepts that determine how styles are applied to HTML elements when there are..."
+permalink: "/academy/intermediate-level-html-and-css/css-specificity-and-inheritance/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "CSS Specificity and Inheritance", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/css-specificity-and-inheritance/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>CSS Specificity and Inheritance</h1>
+{% raw %}
+<h2><strong>Understanding How CSS is Applied</strong></h2>
+<p><strong>CSS Specificity</strong> and <strong>Inheritance</strong> are key concepts that determine how styles are applied to HTML elements when there are conflicting or overlapping rules—understanding how specificity and inheritance work will help you write cleaner, more efficient CSS and troubleshoot styling issues when your styles aren’t behaving as expected.</p>
+<p>In this section, we'll break down how specificity is calculated, how inheritance works, and provide tips for writing CSS that avoids common pitfalls.</p>
+<hr/>
+<h2><strong>What You Will Learn:</strong></h2>
+<ol><li><strong>What is CSS Specificity?</strong></li>
+<li><strong>How Specificity is Calculated</strong></li>
+<li><strong>CSS Inheritance and How it Works</strong></li>
+<li><strong>The Cascade and the Importance of Order</strong></li>
+<li><strong>Common Issues and How to Solve Them</strong></li>
+<li><strong>Best Practices for Managing Specificity and Inheritance</strong></li>
+</ol>
+<hr/>
+<h2><strong>1. What is CSS Specificity?</strong></h2>
+<p><strong>CSS Specificity</strong> is a way for the browser to determine which CSS rule is applied to an element when there are multiple rules targeting the same element. It acts as a ranking system, where rules with higher specificity take precedence over rules with lower specificity.</p>
+<p>For example, if two CSS rules conflict (both targeting the same element), the rule with higher specificity will be applied.</p>
+<h3>Example:</h3>
+<pre>htmlCopy code<code>&lt;div class=&quot;box&quot;&gt;&lt;/div&gt;
+</code></pre>
+<pre>cssCopy code<code>/* This rule has a lower specificity */
+.box {
+  background-color: blue;
+}
+
+/* This rule has a higher specificity because of the ID selector */
+#main .box {
+  background-color: red;
+}
+</code></pre>
+<p>In this case, the element will have a <strong>red</strong> background because the rule with the higher specificity (<code>#main .box</code>) wins.</p>
+<hr/>
+<h2><strong>2. How Specificity is Calculated</strong></h2>
+<p>Specificity is calculated based on the types of selectors used in the CSS rule. The more specific the selector, the higher its specificity score. Specificity is broken down into four categories, usually visualized as a four-digit number:</p>
+<ul><li><strong>Inline styles</strong> (e.g., <code>style=&quot;color: red;&quot;</code>) have the highest specificity.</li>
+<li><strong>ID selectors</strong> (e.g., <code>#id</code>) have high specificity.</li>
+<li><strong>Class selectors</strong>, <strong>attribute selectors</strong>, and <strong>pseudo-classes</strong> (e.g., <code>.class</code>, <code>[type=&quot;text&quot;]</code>, <code>:hover</code>) have medium specificity.</li>
+<li><strong>Element selectors</strong> (e.g., <code>div</code>, <code>p</code>, <code>h1</code>) and <strong>pseudo-elements</strong> (e.g., <code>::before</code>, <code>::after</code>) have low specificity.</li>
+</ul>
+<h3>Specificity Formula:</h3>
+<p>Imagine specificity as a set of points or weights, typically represented as <code>(a, b, c, d)</code>:</p>
+<ul><li><strong>a</strong>: Inline styles.</li>
+<li><strong>b</strong>: ID selectors.</li>
+<li><strong>c</strong>: Class selectors, attribute selectors, and pseudo-classes.</li>
+<li><strong>d</strong>: Element selectors and pseudo-elements.</li>
+</ul>
+<p>Here’s how CSS assigns values to each type of selector:</p>
+<figure><table class="has-fixed-layout"><thead><tr><th>Selector Type</th><th>Specificity Points</th><th>Example</th></tr></thead><tbody><tr><td>Inline Styles</td><td>1000</td><td><code>&lt;div&gt;</code></td></tr><tr><td>ID Selectors</td><td>100</td><td><code>#header</code></td></tr><tr><td>Classes, Attributes, Pseudo-Classes</td><td>10</td><td><code>.box</code>, <code>[type=&quot;text&quot;]</code>, <code>:hover</code></td></tr><tr><td>Elements and Pseudo-Elements</td><td>1</td><td><code>div</code>, <code>p</code>, <code>::before</code></td></tr></tbody></table></figure>
+<h3>Example:</h3>
+<pre><code>&lt;div id=&quot;main&quot; class=&quot;box&quot;&gt;&lt;/div&gt;<br></code></pre>
+<pre><code>div {                /* Specificity: (0, 0, 0, 1) */<br>  color: blue;<br>}<br><br>.box {              /* Specificity: (0, 0, 1, 0) */<br>  color: green;<br>}<br><br>#main .box {        /* Specificity: (0, 1, 1, 0) */<br>  color: red;<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li><code>div</code> has a specificity of <strong>(0, 0, 0, 1)</strong>.</li>
+<li><code>.box</code> has a specificity of <strong>(0, 0, 1, 0)</strong>.</li>
+<li><code>#main .box</code> has a specificity of <strong>(0, 1, 1, 0)</strong>, so this rule wins, and the color will be red.</li>
+</ul>
+<h3>Note:</h3>
+<ul><li>If two selectors have the same specificity, the one that appears later in the CSS file is applied.</li>
+<li>Inline styles will always override styles defined in external stylesheets because their specificity is higher.</li>
+</ul>
+<hr/>
+<h2><strong>3. CSS Inheritance and How it Works</strong></h2>
+<p><strong>CSS Inheritance</strong> is a mechanism where some CSS properties are automatically applied to an element's children. Not all properties are inherited by default. For example, text-related properties such as <code>font-family</code>, <code>color</code>, and <code>line-height</code> are typically inherited, while layout-related properties like <code>margin</code>, <code>padding</code>, and <code>border</code> are not.</p>
+<h3>Example of Inheritance:</h3>
+<pre><code>&lt;div class=&quot;parent&quot;&gt;<br>  &lt;p&gt;This is a child element.&lt;/p&gt;<br>&lt;/div&gt;<br></code></pre>
+<pre>cssCopy code<code>.parent {
+  color: blue; /* Text color is inherited by the child */
+}
+
+p {
+  margin: 20px; /* This property is not inherited */
+}
+</code></pre>
+<p>In this example, the <code>color</code> property will be inherited by the <code>&lt;p&gt;</code> element, making the text inside the paragraph blue. However, the <code>margin</code> property is not inherited, so the paragraph needs its own <code>margin</code> declaration.</p>
+<h3>How to Force Inheritance:</h3>
+<p>You can force inheritance using the <code>inherit</code> keyword. This can be useful for properties that are not inherited by default.</p>
+<pre><code>p {<br>  margin: inherit; /* The child element will inherit its parent's margin */<br>}<br></code></pre>
+<h3>Preventing Inheritance:</h3>
+<p>In some cases, you may want to prevent properties from being inherited. You can use the <code>initial</code> keyword to reset a property to its default value.</p>
+<pre><code>p {<br>  color: initial; /* Resets the color property to the browser's default */<br>}<br></code></pre>
+<hr/>
+<h2><strong>4. The Cascade and the Importance of Order</strong></h2>
+<p>CSS stands for <strong>Cascading Style Sheets</strong>, and the <strong>cascade</strong> refers to how styles are applied in a specific order. When multiple styles apply to the same element, the browser decides which one to apply based on the following principles:</p>
+<h3>The Cascade Principles:</h3>
+<ol><li><strong>Source of the Style</strong>: Inline styles have the highest precedence, followed by external styles, and finally, browser defaults.</li>
+<li><strong>Specificity</strong>: Rules with higher specificity take precedence.</li>
+<li><strong>Order of Appearance</strong>: When specificity is the same, the rule that appears later in the stylesheet wins.</li>
+</ol>
+<h3>Example:</h3>
+<pre><code>p {<br>  color: blue; /* First rule */<br>}<br><br>p {<br>  color: red; /* Second rule, same specificity but appears later */<br>}<br></code></pre>
+<p>In this case, the paragraph text will be red because the second rule appears later in the cascade.</p>
+<h3>The <code>!important</code> Declaration:</h3>
+<p>The <code>!important</code> flag can be used to force a rule to override other rules, regardless of specificity. However, it should be used sparingly, as it can make your CSS harder to maintain.</p>
+<pre>cssCopy code<code>p {
+  color: blue !important; /* This will override any other color rule */
+}
+</code></pre>
+<hr/>
+<h2><strong>5. Common Issues and How to Solve Them</strong></h2>
+<h3><strong>Issue 1: Unexpected Styles Being Applied</strong></h3>
+<p>This usually happens due to specificity conflicts. If an element is being styled by a rule you didn't expect, check the specificity of the conflicting rules and the order in which they are applied.</p>
+<h3>Solution:</h3>
+<ul><li>Use the browser’s <strong>developer tools</strong> to inspect the element and see which styles are being applied and why.</li>
+<li>Ensure that your selectors are specific enough or adjust the order in which the styles are applied.</li>
+</ul>
+<h3><strong>Issue 2: Inline Styles Overriding External Styles</strong></h3>
+<p>Since inline styles have the highest specificity, they will always override styles from external stylesheets unless you use <code>!important</code>.</p>
+<h3>Solution:</h3>
+<ul><li>Avoid using inline styles when possible, as they are harder to maintain and debug.</li>
+</ul>
+<h3><strong>Issue 3: Styles Not Being Inherited</strong></h3>
+<p>If you're expecting a property to be inherited but it isn't, it might be because the property isn’t inheritable by default (e.g., layout properties like <code>margin</code> or <code>padding</code>).</p>
+<h3>Solution:</h3>
+<ul><li>Use the <code>inherit</code> keyword to force the property to be inherited.</li>
+</ul>
+<hr/>
+<h2><strong>6. Best Practices for Managing Specificity and Inheritance</strong></h2>
+<ol><li><strong>Use Class Selectors Instead of IDs</strong>:<br>IDs are very specific and should be reserved for unique elements. Using classes helps keep specificity manageable and allows for more reusable styles.</li>
+<li><strong>Avoid Using <code>!important</code></strong>:<br>While <code>!important</code> can be helpful for overriding styles, it should be used sparingly because it makes your code harder to maintain and debug. Instead, try to resolve conflicts using specificity and the cascade.</li>
+<li><strong>Follow a Consistent Naming Convention</strong>:<br>Using a methodology like <strong>BEM (Block Element Modifier)</strong> helps keep specificity low and CSS modular. For example: <code>.block__element--modifier { /* BEM naming convention */ }</code></li>
+<li><strong>Write Modular, Reusable Styles</strong>:<br>Use reusable class names and avoid deeply nested selectors. The more specific your selectors, the harder it will be to maintain your styles in large projects.</li>
+<li><strong>Use Inheritance Wisely</strong>:<br>Take advantage of CSS inheritance to reduce redundancy. For example, set <code>color</code> and <code>font-family</code> on a container element so that all child elements inherit these styles.</li>
+</ol>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li><strong>Specificity</strong> determines which CSS rules are applied when there are conflicts. Rules with higher specificity take precedence over those with lower specificity.</li>
+<li><strong>Inheritance</strong> allows certain properties to be passed down from parent to child elements, but not all properties are inherited by default.</li>
+<li><strong>The Cascade</strong> refers to the order in which CSS rules are applied, with inline styles taking the highest precedence, followed by external styles and browser defaults.</li>
+<li>Use <strong>developer tools</strong> to troubleshoot specificity issues, and try to avoid using <code>!important</code> unless absolutely necessary.</li>
+</ul>
+<p></p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/intermediate-level-html-and-css/css-transitions-and-animations/"><span>Previous</span>CSS Transitions and Animations</a><a class="next" href="/academy/intermediate-level-html-and-css/part-1-css-flexbox-practice-exercise/"><span>Next</span>Part 1: CSS Flexbox Practice Exercise</a></nav>
+</div>

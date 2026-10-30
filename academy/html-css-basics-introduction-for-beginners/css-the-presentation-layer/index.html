@@ -1,0 +1,45 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "CSS: The Presentation Layer – Introduction to HTML and CSS"
+description: "CSS is like the skin or clothes of a webpage. It styles the HTML elements to make them visually appealing. Key Concepts: Selectors : CSS applies styles to..."
+permalink: "/academy/html-css-basics-introduction-for-beginners/css-the-presentation-layer/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Introduction to HTML and CSS", "item": "https://sethshoultes.com/academy/html-css-basics-introduction-for-beginners/"}, {"@type": "ListItem", "position": 3, "name": "CSS: The Presentation Layer", "item": "https://sethshoultes.com/academy/html-css-basics-introduction-for-beginners/css-the-presentation-layer/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/html-css-basics-introduction-for-beginners/">Introduction to HTML and CSS</a></p>
+    <p class="eyebrow">Fundamental Concepts of HTML/CSS</p>
+    <h1>CSS: The Presentation Layer</h1>
+{% raw %}
+<p>CSS is like the <strong>skin</strong> or <strong>clothes</strong> of a webpage. It styles the HTML elements to make them visually appealing.</p>
+<h2>Key Concepts:</h2>
+<ol><li><strong>Selectors</strong>:<ul><li>CSS applies styles to HTML elements using <strong>selectors</strong>. A selector is a way to "select" the HTML elements you want to style.<ul><li>Example: <code>p { color: blue; }</code></li>
+<li>Here, the <strong>selector</strong> is <code>p</code>, and it applies the style to all <code>&lt;p></code> elements on the page.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Properties and Values</strong>:<ul><li>CSS comprises of <strong>properties</strong> (what you want to change) and <strong>values</strong> (how you want to change it). Example: <code>h1 { color: red; font-size: 30px; }</code><ul><li><code>color</code> is the property and <code>red</code> is the value.</li>
+<li><code>font-size</code> is the property and <code>30px</code> is the value.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>The Box Model</strong>:<ul><li>Every HTML element is treated as a <strong>box</strong> by the browser. The box model defines the size of these boxes. It consists of:<ul><li><strong>Content</strong>: The actual content inside the element (text, images, etc.)</li>
+<li><strong>Padding</strong>: Space between the content and the border.<strong>Border</strong>: The border around the padding and content.</li>
+<li><strong>Margin</strong>: Space outside the border between this element and others. Example:<br><code>div { margin: 20px; padding: 10px; border: 1px solid black; } </code></li>
+</ul>
+</li>
+<li>Visualizing the Box Model:<br><code>graph TD; <br>    Margin --> Border; <br>    Border --> Padding; <br>    Padding --> Content;</code></li>
+</ul>
+</li>
+<li><strong>Cascading</strong>:<ul><li>CSS stands for <strong>Cascading Style Sheets</strong> because styles can "cascade" from one rule to another.</li>
+<li>More specific rules override less specific ones. For example, a style applied directly to an element will override a style applied to the entire page.</li>
+</ul>
+</li>
+</ol>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/html-css-basics-introduction-for-beginners/html-the-structure-of-a-webpage/"><span>Previous</span>HTML: The Structure of a Webpage</a><a class="next" href="/academy/html-css-basics-introduction-for-beginners/how-html-and-css-work-together/"><span>Next</span>How HTML and CSS Work Together</a></nav>
+</div>

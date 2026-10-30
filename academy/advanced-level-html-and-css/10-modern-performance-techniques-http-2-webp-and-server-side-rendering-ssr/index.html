@@ -1,0 +1,31 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Modern Performance Techniques: HTTP/2, WebP, and Server-Side Rendering (SSR) – Advanced Level: HTML and CSS"
+description: "HTTP/2 : HTTP/2 is a major revision of the HTTP protocol that improves performance by allowing browsers to download multiple assets in parallel over a..."
+permalink: "/academy/advanced-level-html-and-css/10-modern-performance-techniques-http-2-webp-and-server-side-rendering-ssr/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Modern Performance Techniques: HTTP/2, WebP, and Server-Side Rendering (SSR)", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/10-modern-performance-techniques-http-2-webp-and-server-side-rendering-ssr/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Web Performance Optimization</p>
+    <h1>Modern Performance Techniques: HTTP/2, WebP, and Server-Side Rendering (SSR)</h1>
+{% raw %}
+<h2><strong>HTTP/2</strong>:</h2>
+<p>HTTP/2 is a major revision of the HTTP protocol that improves performance by allowing browsers to download multiple assets in parallel over a single connection. It also reduces overhead and increases page load speed.</p>
+<ul><li><strong>Enable HTTP/2</strong> on your server to take advantage of its performance benefits.</li>
+<li>Many hosting providers (like Cloudflare, AWS, and Netlify) offer HTTP/2 by default.</li>
+</ul>
+<h2><strong>WebP Images</strong>:</h2>
+<p><strong>WebP</strong> is a modern image format that provides superior compression compared to JPEG and PNG. By using WebP, you can significantly reduce image file sizes without noticeable loss in quality.</p>
+<h2>Example of WebP Support:</h2>
+<pre><code>&lt;picture><br>  &lt;source srcset=&quot;image.webp&quot; type=&quot;image/webp&quot;><br>  &lt;img src=&quot;image.jpg&quot; alt=&quot;Fallback image for non-WebP browsers&quot;><br>&lt;/picture><br></code></pre>
+<p>In this example, the browser will load the <strong>WebP</strong> image if supported, otherwise it will load the <strong>JPEG</strong> fallback.</p>
+<h2><strong>Server-Side Rendering (SSR)</strong>:</h2>
+<p><strong>Server-Side Rendering (SSR)</strong> generates the HTML for a webpage on the server rather than the client. This reduces the time it takes for content to appear on the page, especially for users with slower devices.</p>
+<p>Frameworks like <strong>Next.js</strong> (for React) and <strong>Nuxt.js</strong> (for Vue.js) offer SSR out of the box, improving performance for JavaScript-heavy websites.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/9-optimizing-javascript-for-performance/"><span>Previous</span>Optimizing JavaScript for Performance</a><a class="next" href="/academy/advanced-level-html-and-css/key-takeaways-5/"><span>Next</span>Key Takeaways</a></nav>
+</div>

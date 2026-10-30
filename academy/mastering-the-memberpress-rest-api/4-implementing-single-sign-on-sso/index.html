@@ -1,0 +1,29 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Implementing Single Sign-On (SSO) – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "If you run a corporate membership site or one that requires seamless access across multiple platforms, implementing Single Sign-On (SSO) allows users to..."
+permalink: "/academy/mastering-the-memberpress-rest-api/4-implementing-single-sign-on-sso/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "Implementing Single Sign-On (SSO)", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/4-implementing-single-sign-on-sso/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Taking MemberPress REST API to the Next Stage</p>
+    <h1>Implementing Single Sign-On (SSO)</h1>
+{% raw %}
+<p>If you run a corporate membership site or one that requires seamless access across multiple platforms, implementing <strong>Single Sign-On (SSO)</strong> allows users to access MemberPress using existing credentials (like Google, Microsoft, or Facebook logins).</p>
+<h2>Example: Implement SSO with OAuth 2.0</h2>
+<h3>Steps:</h3>
+<ol><li><strong>Set Up an OAuth Server</strong>:<ul><li>Use a service like <strong>Auth0</strong> to manage user authentication and grant access tokens using OAuth 2.0.</li>
+</ul>
+</li>
+<li><strong>Modify MemberPress Authentication</strong>:<ul><li>Customize the login process to authenticate users against your OAuth server. This can be done by hooking into WordPress's login system.</li></ul>Here’s a simplified version of what the code might look like:<br><code>function custom_sso_authenticate($user, $username, $password) { $response = wp_remote_post('https://auth.your-oauth-server.com/token', array( 'body' => array( 'client_id' => 'YOUR_CLIENT_ID', 'client_secret' => 'YOUR_CLIENT_SECRET', 'grant_type' => 'password', 'username' => $username, 'password' => $password ) )); $response_body = wp_remote_retrieve_body($response); $data = json_decode($response_body, true); if (isset($data['access_token'])) { // Authenticate user in WordPress based on OAuth token } } add_filter('authenticate', 'custom_sso_authenticate', 10, 3);</code></li>
+<li><strong>Authenticate Users</strong>:<ul><li>Users can now log in using their existing credentials from your OAuth provider (e.g., Google or Microsoft), which simplifies the login experience and provides better security.</li>
+</ul>
+</li>
+</ol>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/3-advanced-payment-workflows/"><span>Previous</span>Advanced Payment Workflows</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/5-custom-reporting-dashboards/"><span>Next</span>Custom Reporting Dashboards</a></nav>
+</div>

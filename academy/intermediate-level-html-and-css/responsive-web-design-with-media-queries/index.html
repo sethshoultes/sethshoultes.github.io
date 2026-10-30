@@ -1,0 +1,131 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Responsive Web Design with Media Queries – Intermediate Level: HTML and CSS"
+description: "Responsive Web Design is the practice of building websites that adapt and respond to different screen sizes, ensuring an optimal viewing experience across..."
+permalink: "/academy/intermediate-level-html-and-css/responsive-web-design-with-media-queries/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Responsive Web Design with Media Queries", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/responsive-web-design-with-media-queries/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>Responsive Web Design with Media Queries</h1>
+{% raw %}
+<p><strong>Responsive Web Design</strong> is the practice of building websites that adapt and respond to different screen sizes, ensuring an optimal viewing experience across a wide range of devices, from desktop monitors to mobile phones. A key tool for achieving this is <strong>CSS media queries</strong>. Media queries allow you to apply CSS styles based on characteristics of the user's device, such as screen width, height, or orientation.</p>
+<p>In this section, we will cover the essentials of media queries, explore how they work, and walk through practical examples of how to implement responsive designs.</p>
+<hr/>
+<h2><strong>What You Will Learn:</strong></h2>
+<ol><li><strong>What Are Media Queries?</strong></li>
+<li><strong>How Media Queries Work</strong></li>
+<li><strong>Breakpoints in Responsive Design</strong></li>
+<li><strong>Media Query Syntax</strong></li>
+<li><strong>Creating Responsive Layouts with Media Queries</strong></li>
+<li><strong>Using Viewport Units and <code>calc()</code> for Responsive Design</strong></li>
+<li><strong>Common Patterns in Responsive Web Design</strong></li>
+</ol>
+<hr/>
+<h2><strong>1. What Are Media Queries?</strong></h2>
+<p><strong>Media queries</strong> allow you to apply specific CSS rules based on the properties of the device that is displaying the webpage. For example, you can change the layout, font size, or image scaling depending on whether the user is viewing the website on a mobile phone, tablet, or desktop.</p>
+<p>This is essential for <strong>responsive web design</strong>, where the goal is to ensure the webpage looks good and is easy to navigate on all devices.</p>
+<h3>Example Use Case:</h3>
+<ul><li>On a <strong>large screen</strong> (like a desktop), you might want to display content in multiple columns.</li>
+<li>On a <strong>small screen</strong> (like a mobile phone), you may switch to a single-column layout for better readability.</li>
+</ul>
+<hr/>
+<h2><strong>2. How Media Queries Work</strong></h2>
+<p>Media queries allow CSS to respond to various conditions, such as:</p>
+<ul><li><strong>Viewport width and height</strong> (<code>min-width</code>, <code>max-width</code>)</li>
+<li><strong>Device orientation</strong> (<code>portrait</code>, <code>landscape</code>)</li>
+<li><strong>Device resolution</strong> (<code>min-resolution</code>, <code>max-resolution</code>)</li>
+<li><strong>Aspect ratio</strong> (<code>min-aspect-ratio</code>, <code>max-aspect-ratio</code>)</li>
+</ul>
+<p>You can set breakpoints at which the layout changes to adapt to the current screen size or other characteristics.</p>
+<hr/>
+<h2><strong>3. Breakpoints in Responsive Design</strong></h2>
+<p><strong>Breakpoints</strong> are the points at which your design "breaks" or adjusts to accommodate a different screen size. These are usually defined by the width of the viewport and are commonly used to switch layouts at specific widths.</p>
+<h3>Common Breakpoints:</h3>
+<ul><li><strong>Mobile (small devices)</strong>: <code>max-width: 600px</code></li>
+<li><strong>Tablets (medium devices)</strong>: <code>min-width: 601px and max-width: 1024px</code></li>
+<li><strong>Desktop (large devices)</strong>: <code>min-width: 1025px</code></li>
+</ul>
+<p>Breakpoints are not fixed rules, and you can adjust them depending on the design of your site and the types of devices your audience uses.</p>
+<hr/>
+<h2><strong>4. Media Query Syntax</strong></h2>
+<p>Media queries are written using the <code>@media</code> rule in CSS. Here’s a basic syntax example:</p>
+<pre><code>@media (max-width: 768px) {<br>  /* CSS rules for devices with a screen width of 768px or less */<br>  body {<br>    font-size: 14px;<br>  }<br>}<br><br>@media (min-width: 769px) {<br>  /* CSS rules for devices with a screen width of 769px or more */<br>  body {<br>    font-size: 18px;<br>  }<br>}<br></code></pre>
+<ul><li><strong><code>max-width</code></strong>: Targets devices with a width <strong>up to</strong> a certain size.</li>
+<li><strong><code>min-width</code></strong>: Targets devices with a width <strong>greater than or equal to</strong> a certain size.</li>
+</ul>
+<p>You can also combine conditions using <code>and</code>:</p>
+<pre><code>@media (min-width: 601px) and (max-width: 1024px) {<br>  /* CSS for tablets */<br>}<br></code></pre>
+<hr/>
+<h2><strong>5. Creating Responsive Layouts with Media Queries</strong></h2>
+<p>Let’s walk through some practical examples to demonstrate how media queries can create responsive layouts.</p>
+<h3>Example 1: Responsive Font Size</h3>
+<p>You can adjust the font size based on the device size for better readability.</p>
+<pre><code>body {<br>  font-size: 16px; /* Default font size for large screens */<br>}<br><br>@media (max-width: 600px) {<br>  body {<br>    font-size: 14px; /* Smaller font for mobile devices */<br>  }<br>}<br></code></pre>
+<h3>Example 2: Responsive Two-Column Layout for Desktop, Single-Column for Mobile</h3>
+<p>This example switches from a two-column layout on larger screens to a single-column layout on smaller screens.</p>
+<pre><code>&lt;div class=&quot;container&quot;><br>  &lt;div class=&quot;column&quot;>Column 1&lt;/div><br>  &lt;div class=&quot;column&quot;>Column 2&lt;/div><br>&lt;/div><br></code></pre>
+<pre>cssCopy code<code>/* Default two-column layout for larger screens */
+.container {
+  display: flex;
+}
+
+.column {
+  flex: 1; /* Each column takes up half the available space */
+  padding: 20px;
+}
+
+/* Single-column layout for mobile devices */
+@media (max-width: 600px) {
+  .container {
+    display: block;
+  }
+
+  .column {
+    width: 100%;
+    padding: 10px;
+  }
+}
+</code></pre>
+<h3>Example 3: Changing Navigation Styles on Mobile</h3>
+<p>On a large screen, the navigation menu can be displayed horizontally, but on smaller screens, you might want a vertical, stacked menu.</p>
+<pre><code>/* Horizontal navigation for desktop */<br>nav ul {<br>  display: flex;<br>  justify-content: space-around;<br>  list-style-type: none;<br>}<br><br>/* Stacked navigation for mobile devices */<br>@media (max-width: 600px) {<br>  nav ul {<br>    display: block;<br>  }<br><br>  nav ul li {<br>    margin-bottom: 10px;<br>  }<br>}<br></code></pre>
+<hr/>
+<h2><strong>6. Using Viewport Units and <code>calc()</code> for Responsive Design</strong></h2>
+<p>In addition to media queries, you can use <strong>viewport units</strong> (<code>vw</code>, <code>vh</code>, <code>vmin</code>, <code>vmax</code>) and the <strong><code>calc()</code> function</strong> to create responsive layouts. These units are relative to the viewport size, making them perfect for responsive design.</p>
+<h3>Viewport Units:</h3>
+<ul><li><strong><code>vw</code></strong>: 1% of the viewport width.</li>
+<li><strong><code>vh</code></strong>: 1% of the viewport height.</li>
+<li><strong><code>vmin</code></strong>: 1% of the smaller dimension (width or height).</li>
+<li><strong><code>vmax</code></strong>: 1% of the larger dimension (width or height).</li>
+</ul>
+<h3>Example: Responsive Typography with Viewport Units</h3>
+<pre><code>h1 {<br>  font-size: 4vw; /* The font size is 4% of the viewport width */<br>}<br></code></pre>
+<h3>Example: Using <code>calc()</code> for Responsive Padding</h3>
+<pre><code>.container {<br>  padding: calc(10px + 2vw); /* Combines a fixed value with a responsive one */<br>}<br></code></pre>
+<hr/>
+<h2><strong>7. Common Patterns in Responsive Web Design</strong></h2>
+<p>Here are some common design patterns you can implement with media queries:</p>
+<h3><strong>Fluid Grids</strong>:</h3>
+<p>A fluid grid system uses percentages for column widths, allowing the layout to adjust fluidly to different screen sizes.</p>
+<pre><code>.container {<br>  display: grid;<br>  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid columns */<br>  gap: 20px;<br>}<br></code></pre>
+<h3><strong>Responsive Images</strong>:</h3>
+<p>Images should scale appropriately with screen size. You can achieve this using the <code>max-width</code> property.</p>
+<pre><code>img {<br>  max-width: 100%; /* Prevents the image from exceeding its container’s width */<br>  height: auto; /* Keeps the aspect ratio */<br>}<br></code></pre>
+<h3><strong>Mobile-First Approach</strong>:</h3>
+<p>In a mobile-first approach, you design for the smallest screens first and use media queries to progressively enhance the design for larger screens.</p>
+<pre><code>/* Mobile-first styles */<br>.container {<br>  padding: 10px;<br>}<br><br>/* Styles for tablets and larger screens */<br>@media (min-width: 600px) {<br>  .container {<br>    padding: 20px;<br>  }<br>}<br><br>/* Styles for desktops */<br>@media (min-width: 1024px) {<br>  .container {<br>    padding: 40px;<br>  }<br>}<br></code></pre>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li><strong>Media queries</strong> allow you to apply specific CSS rules based on the screen size, resolution, or orientation of the user's device, ensuring a responsive design.</li>
+<li>Use <strong>breakpoints</strong> to adjust your layout at various screen widths, such as mobile, tablet, and desktop.</li>
+<li><strong>Viewport units</strong> and the <strong><code>calc()</code> function</strong> can help create truly flexible designs that scale with the browser window.</li>
+<li>Following a <strong>mobile-first approach</strong> ensures that your design starts simple and scales up for larger devices, improving performance and user experience.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/intermediate-level-html-and-css/css-grid-two-dimensional-layouts/"><span>Previous</span>CSS Grid: Two-Dimensional Layouts</a><a class="next" href="/academy/intermediate-level-html-and-css/css-transitions-and-animations/"><span>Next</span>CSS Transitions and Animations</a></nav>
+</div>

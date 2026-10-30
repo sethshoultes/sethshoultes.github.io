@@ -1,0 +1,32 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Custom Reporting Dashboards – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Advanced users often need custom reports and dashboards that go beyond the default MemberPress reporting. By combining MemberPress API data with a..."
+permalink: "/academy/mastering-the-memberpress-rest-api/5-custom-reporting-dashboards/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "Custom Reporting Dashboards", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/5-custom-reporting-dashboards/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Taking MemberPress REST API to the Next Stage</p>
+    <h1>Custom Reporting Dashboards</h1>
+{% raw %}
+<p>Advanced users often need custom reports and dashboards that go beyond the default MemberPress reporting. By combining MemberPress API data with a visualization tool like <strong>Google Data Studio</strong> or <strong>Tableau</strong>, you can create live dashboards that display membership trends, revenue data, and more.</p>
+<h2>Example: Visualizing Member Growth in Google Data Studio</h2>
+<h3>Steps:</h3>
+<ol><li><strong>Pull Data from MemberPress API</strong>:<ul><li>Create a scheduled script that pulls membership data from the API and sends it to Google Sheets: <code>GET https://your-site.com/wp-json/mp/v1/members</code></li>
+</ul>
+</li>
+<li><strong>Connect Google Sheets to Data Studio</strong>:<ul><li>Import the Google Sheets data into Google Data Studio to create custom reports and charts.</li>
+</ul>
+</li>
+<li><strong>Create Dashboards</strong>:<ul><li>Build interactive charts to display metrics like <strong>monthly active members</strong>, <strong>new subscriptions</strong>, <strong>churn rate</strong>, and <strong>lifetime value (LTV)</strong>.</li>
+</ul>
+</li>
+</ol>
+<p>This approach gives you a visual, at-a-glance view of your membership site’s performance without needing to manually download data.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/4-implementing-single-sign-on-sso/"><span>Previous</span>Implementing Single Sign-On (SSO)</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/1-wordpress-plugin-development-and-customization/"><span>Next</span>WordPress Plugin Development and Customization</a></nav>
+</div>

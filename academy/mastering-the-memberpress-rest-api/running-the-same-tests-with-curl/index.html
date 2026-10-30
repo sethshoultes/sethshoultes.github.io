@@ -1,0 +1,27 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Running the Same Tests with cURL – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "If you prefer using cURL for command-line API testing, here are some cURL equivalents for the same tests: Retrieving Members (GET Request): Creating a..."
+permalink: "/academy/mastering-the-memberpress-rest-api/running-the-same-tests-with-curl/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "Running the Same Tests with cURL", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/running-the-same-tests-with-curl/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Exploring the MemberPress REST API Hands-On</p>
+    <h1>Running the Same Tests with cURL</h1>
+{% raw %}
+<p>If you prefer using cURL for command-line API testing, here are some cURL equivalents for the same tests:</p>
+<h2>Retrieving Members (GET Request):</h2>
+<pre><code>curl -X GET &quot;https://your-site.com/wp-json/mp/v1/members&quot; \<br>     -H &quot;Authorization: Bearer YOUR_API_KEY&quot;<br></code></pre>
+<h2>Creating a Member (POST Request):</h2>
+<pre><code>curl -X POST &quot;https://your-site.com/wp-json/mp/v1/members&quot; \<br>     -H &quot;Authorization: Bearer YOUR_API_KEY&quot; \<br>     -H &quot;Content-Type: application/json&quot; \<br>     -d '{<br>           &quot;username&quot;: &quot;newmember&quot;,<br>           &quot;email&quot;: &quot;newmember@example.com&quot;,<br>           &quot;password&quot;: &quot;strongpassword123&quot;<br>         }'<br></code></pre>
+<h2>Updating Member Info (PUT Request):</h2>
+<pre><code>curl -X PUT &quot;https://your-site.com/wp-json/mp/v1/members/3&quot; \<br>     -H &quot;Authorization: Bearer YOUR_API_KEY&quot; \<br>     -H &quot;Content-Type: application/json&quot; \<br>     -d '{&quot;email&quot;: &quot;newemail@example.com&quot;}'<br></code></pre>
+<h2>Deleting a Member (DELETE Request):</h2>
+<pre><code>curl -X DELETE &quot;https://your-site.com/wp-json/mp/v1/members/3&quot; \<br>     -H &quot;Authorization: Bearer YOUR_API_KEY&quot;<br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/5-example-deleting-a-member-delete-request/"><span>Previous</span>Example: Deleting a Member (DELETE Request)</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/1-creating-custom-api-endpoints/"><span>Next</span>Creating Custom API Endpoints</a></nav>
+</div>

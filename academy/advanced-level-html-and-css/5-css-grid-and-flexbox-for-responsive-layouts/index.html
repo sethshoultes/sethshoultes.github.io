@@ -1,0 +1,28 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "CSS Grid and Flexbox for Responsive Layouts – Advanced Level: HTML and CSS"
+description: "CSS Grid and Flexbox are powerful tools for creating responsive layouts that can adapt to any screen size. Combining these layout systems with media..."
+permalink: "/academy/advanced-level-html-and-css/5-css-grid-and-flexbox-for-responsive-layouts/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "CSS Grid and Flexbox for Responsive Layouts", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/5-css-grid-and-flexbox-for-responsive-layouts/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Advanced Responsive Web Design Techniques</p>
+    <h1>CSS Grid and Flexbox for Responsive Layouts</h1>
+{% raw %}
+<p><strong>CSS Grid</strong> and <strong>Flexbox</strong> are powerful tools for creating responsive layouts that can adapt to any screen size. Combining these layout systems with media queries allows you to build complex, dynamic layouts that respond to device changes.</p>
+<h2>Example: Responsive Layout with CSS Grid</h2>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid columns */<br>  gap: 20px;<br>}<br></code></pre>
+<p>In this example, the grid will create as many columns as can fit in the available space, with a minimum width of 200px per column.</p>
+<h2>Example: Responsive Layout with Flexbox</h2>
+<pre><code>.container {<br>  display: flex;<br>  flex-wrap: wrap;<br>  justify-content: space-between;<br>}<br><br>.item {<br>  flex-basis: 30%;<br>  margin: 10px;<br>}<br><br>@media (max-width: 600px) {<br>  .item {<br>    flex-basis: 100%;<br>  }<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>On larger screens, the items are arranged in a multi-column layout.</li>
+<li>On smaller screens, the items stack vertically, taking up the full width.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/4-responsive-images-with-srcset-and-sizes/"><span>Previous</span>Responsive Images with srcset and sizes</a><a class="next" href="/academy/advanced-level-html-and-css/6-mobile-first-design-approach/"><span>Next</span>Mobile-First Design Approach</a></nav>
+</div>

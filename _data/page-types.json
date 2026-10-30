@@ -62,6 +62,29 @@
         { "id": "og:title", "need": "contains", "value": "property=\"og:title\"" },
         { "id": "sitemap entry", "need": "sitemap" }
       ]
+    },
+    "course": {
+      "reference": "/academy/html-css-basics-introduction-for-beginners/",
+      "pattern": "^/academy/[a-z0-9-]+/$",
+      "parts": [
+        { "id": "one h1", "need": "min_count", "value": "<h1>", "min": 1 },
+        { "id": "lesson list (syllabus)", "need": "min_count", "value": "class=\"syllabus\"", "min": 1 },
+        { "id": "start button", "need": "contains", "value": "class=\"btn\"" },
+        { "id": "Course schema", "need": "jsonld", "value": "Course" },
+        { "id": "BreadcrumbList schema", "need": "jsonld", "value": "BreadcrumbList" },
+        { "id": "sitemap entry", "need": "sitemap" },
+        { "id": "linked from /academy/", "need": "linked_from", "value": "/academy/" }
+      ]
+    },
+    "lesson": {
+      "reference": "/academy/html-css-basics-introduction-for-beginners/basic-html-tags-you-should-know/",
+      "pattern": "^/academy/[a-z0-9-]+/[a-z0-9-]+/$",
+      "parts": [
+        { "id": "article with one h1", "need": "regex", "value": "<article class=\"prose lesson\">[\\s\\S]*<h1>" },
+        { "id": "previous and next lesson links", "need": "contains", "value": "class=\"lesson-nav\"" },
+        { "id": "BreadcrumbList schema", "need": "jsonld", "value": "BreadcrumbList" },
+        { "id": "sitemap entry", "need": "sitemap" }
+      ]
     }
   }
 }
