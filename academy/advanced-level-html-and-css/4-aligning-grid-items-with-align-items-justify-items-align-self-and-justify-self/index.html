@@ -1,0 +1,28 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "4. Aligning Grid Items with align-items, justify-items, align-self, and justify-self – Advanced Level: HTML and CSS"
+description: "CSS Grid provides great control over how grid items are aligned both horizontally and vertically. : Aligns items vertically within their grid cells..."
+permalink: "/academy/advanced-level-html-and-css/4-aligning-grid-items-with-align-items-justify-items-align-self-and-justify-self/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "4. Aligning Grid Items with align-items, justify-items, align-self, and justify-self", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/4-aligning-grid-items-with-align-items-justify-items-align-self-and-justify-self/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Grid Advanced Features</p>
+    <h1>4. Aligning Grid Items with align-items, justify-items, align-self, and justify-self</h1>
+{% raw %}
+<p>CSS Grid provides great control over how grid items are aligned both horizontally and vertically.</p>
+<ul><li><strong><code>align-items</code></strong>: Aligns items vertically within their grid cells (cross-axis).</li>
+<li><strong><code>justify-items</code></strong>: Aligns items horizontally within their grid cells (main axis).</li>
+<li><strong><code>align-self</code></strong>: Allows you to align individual grid items vertically.</li>
+<li><strong><code>justify-self</code></strong>: Allows you to align individual grid items horizontally.</li>
+</ul>
+<h2>Example:</h2>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: 1fr 1fr;<br>  align-items: center; /* Aligns items vertically to the center */<br>  justify-items: center; /* Aligns items horizontally to the center */<br>}<br></code></pre>
+<p>You can override these values for individual items using <code>align-self</code> or <code>justify-self</code>:</p>
+<pre><code>.grid-item {<br>  align-self: end; /* Aligns this specific item to the bottom */<br>  justify-self: start; /* Aligns this specific item to the left */<br>}<br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/3-explicit-vs-implicit-grids/"><span>Previous</span>3. Explicit vs. Implicit Grids</a><a class="next" href="/academy/advanced-level-html-and-css/5-auto-placement-and-dense-packing-with-grid-auto-flow/"><span>Next</span>5. Auto-Placement and Dense Packing with grid-auto-flow</a></nav>
+</div>

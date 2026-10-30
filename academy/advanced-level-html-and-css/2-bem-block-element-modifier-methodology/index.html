@@ -1,0 +1,47 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "2. BEM (Block Element Modifier) Methodology – Advanced Level: HTML and CSS"
+description: "BEM (Block Element Modifier) is one of the most popular CSS methodologies. It provides a clear, convention-based naming system for organizing CSS. The..."
+permalink: "/academy/advanced-level-html-and-css/2-bem-block-element-modifier-methodology/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "2. BEM (Block Element Modifier) Methodology", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/2-bem-block-element-modifier-methodology/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Architecture and Methodologies</p>
+    <h1>2. BEM (Block Element Modifier) Methodology</h1>
+{% raw %}
+<p><strong>BEM (Block Element Modifier)</strong> is one of the most popular CSS methodologies. It provides a clear, convention-based naming system for organizing CSS. The main idea behind BEM is to break down a UI into independent blocks and manage their styles based on their state and context.</p>
+<h2><strong>BEM Naming Convention:</strong></h2>
+<ul><li><strong>Block</strong>: Represents a reusable component (e.g., <code>header</code>, <code>nav</code>, <code>button</code>).</li>
+<li><strong>Element</strong>: Represents a part of the block (e.g., <code>header__logo</code>, <code>nav__item</code>).</li>
+<li><strong>Modifier</strong>: Represents a variation of the block or element (e.g., <code>button--primary</code>, <code>nav__item--active</code>).</li>
+</ul>
+<h2>Example of BEM:</h2>
+<pre>htmlCopy code<code>&lt;div class=&quot;card&quot;&gt;
+  &lt;div class=&quot;card__header&quot;&gt;
+    &lt;h2 class=&quot;card__title&quot;&gt;Card Title&lt;/h2&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;card__body&quot;&gt;
+    &lt;p class=&quot;card__text&quot;&gt;This is a card description.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;button class=&quot;button button--primary&quot;&gt;Click Me&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h2>Explanation:</h2>
+<ul><li><strong>Block</strong>: <code>card</code>, <code>button</code></li>
+<li><strong>Element</strong>: <code>card__header</code>, <code>card__title</code>, <code>card__text</code></li>
+<li><strong>Modifier</strong>: <code>button--primary</code></li>
+</ul>
+<p>In this example, each component is self-contained, making it easier to style and modify without affecting other parts of the project.</p>
+<h2>Key Benefits of BEM:</h2>
+<ul><li><strong>Clarity</strong>: The naming convention is explicit, making it easy to understand the relationship between elements.</li>
+<li><strong>Modularity</strong>: Components are self-contained and can be reused across the project.</li>
+<li><strong>Avoids Specificity Issues</strong>: Because of the predictable structure, BEM helps avoid specificity wars.</li>
+</ul>
+<p></p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/1-why-css-architecture-matters/"><span>Previous</span>1. Why CSS Architecture Matters</a><a class="next" href="/academy/advanced-level-html-and-css/3-oocss-object-oriented-css/"><span>Next</span>3. OOCSS (Object-Oriented CSS)</a></nav>
+</div>

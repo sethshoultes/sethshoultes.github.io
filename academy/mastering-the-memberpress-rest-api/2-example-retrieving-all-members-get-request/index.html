@@ -1,0 +1,29 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "2. Example: Retrieving All Members (GET Request) – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Description: In this example, you’ll retrieve the list of members from your MemberPress site. Steps: In Postman, set the request method to GET . Enter the..."
+permalink: "/academy/mastering-the-memberpress-rest-api/2-example-retrieving-all-members-get-request/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "2. Example: Retrieving All Members (GET Request)", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/2-example-retrieving-all-members-get-request/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Exploring the MemberPress REST API Hands-On</p>
+    <h1>2. Example: Retrieving All Members (GET Request)</h1>
+{% raw %}
+<h2>Description:</h2>
+<p>In this example, you’ll retrieve the list of members from your MemberPress site.</p>
+<h2>Steps:</h2>
+<ol><li>In Postman, set the request method to <strong>GET</strong>.</li>
+<li>Enter the URL: <code>https://your-site.com/wp-json/mp/v1/members</code></li>
+<li>In the <strong>Authorization</strong> tab, select <strong>Bearer Token</strong> and add your <strong>API Key</strong>.</li>
+<li>Click <strong>Send</strong>.</li>
+</ol>
+<h2>Expected Response:</h2>
+<p>The API should return a JSON response with member information, such as:</p>
+<pre><code>[<br>    {<br>        &quot;id&quot;: 1,<br>        &quot;username&quot;: &quot;johndoe&quot;,<br>        &quot;email&quot;: &quot;johndoe@example.com&quot;,<br>        &quot;status&quot;: &quot;active&quot;<br>    },<br>    {<br>        &quot;id&quot;: 2,<br>        &quot;username&quot;: &quot;janedoe&quot;,<br>        &quot;email&quot;: &quot;janedoe@example.com&quot;,<br>        &quot;status&quot;: &quot;active&quot;<br>    }<br>]<br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/1-set-up-postman-to-test-memberpress-api/"><span>Previous</span>1. Set Up Postman to Test MemberPress API</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/3-example-creating-a-new-member-post-request/"><span>Next</span>3. Example: Creating a New Member (POST Request)</a></nav>
+</div>

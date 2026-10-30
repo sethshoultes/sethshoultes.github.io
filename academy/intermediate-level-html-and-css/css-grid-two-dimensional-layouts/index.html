@@ -1,0 +1,142 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "CSS Grid: Two-Dimensional Layouts – Intermediate Level: HTML and CSS"
+description: "CSS Grid Layout is a powerful layout system that allows you to design complex, two-dimensional layouts. Unlike Flexbox, which works best for..."
+permalink: "/academy/intermediate-level-html-and-css/css-grid-two-dimensional-layouts/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "CSS Grid: Two-Dimensional Layouts", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/css-grid-two-dimensional-layouts/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>CSS Grid: Two-Dimensional Layouts</h1>
+{% raw %}
+<p><strong>CSS Grid Layout</strong> is a powerful layout system that allows you to design complex, two-dimensional layouts. Unlike Flexbox, which works best for one-dimensional layouts (either rows or columns), CSS Grid excels in creating both <strong>rows and columns</strong> at the same time, giving you fine control over the layout of your web pages.</p>
+<p>With CSS Grid, you can create layouts that include:</p>
+<ul><li>Multi-row and multi-column designs.</li>
+<li>Overlapping grid items.</li>
+<li>Explicit control over the size and placement of grid items.</li>
+</ul>
+<hr/>
+<h2><strong>What You Will Learn:</strong></h2>
+<ol><li><strong>The CSS Grid Basics</strong></li>
+<li><strong>Creating Grid Containers and Grid Items</strong></li>
+<li><strong>Grid Tracks (Columns and Rows)</strong></li>
+<li><strong>Placing Items in the Grid</strong></li>
+<li><strong>Grid Template Areas</strong></li>
+<li><strong>Responsive Grids with Media Queries</strong></li>
+<li><strong>Advanced Grid Features and Functions</strong></li>
+</ol>
+<hr/>
+<h2><strong>1. The CSS Grid Basics</strong></h2>
+<p>CSS Grid uses a <strong>grid container</strong> and <strong>grid items</strong>. To use CSS Grid, you need to define a container as a grid by setting its <code>display</code> property to <code>grid</code>.</p>
+<h3>Basic Grid Setup:</h3>
+<pre><code>&lt;div class=&quot;grid-container&quot;><br>  &lt;div class=&quot;grid-item&quot;>Item 1&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Item 2&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Item 3&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Item 4&lt;/div><br>&lt;/div><br></code></pre>
+<pre><code>.grid-container {<br>  display: grid; /* Turns the container into a grid */<br>}<br></code></pre>
+<hr/>
+<h2><strong>2. Creating Grid Containers and Grid Items</strong></h2>
+<p>Grid layout starts with a <strong>grid container</strong>, which defines the structure of the grid. Inside the container, you can define <strong>grid items</strong>, which are the children of the grid container.</p>
+<h3>Defining Columns and Rows:</h3>
+<p>The basic syntax for defining rows and columns is done using the <code>grid-template-columns</code> and <code>grid-template-rows</code> properties.</p>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: 1fr 2fr; /* Two columns: the first takes 1 fraction, the second takes 2 fractions */<br>  grid-template-rows: auto 100px; /* Two rows: the first adapts to the content, the second is 100px high */<br>}<br></code></pre>
+<ul><li><strong>1fr</strong> means "one fraction of the available space."</li>
+<li><strong>auto</strong> means the size is determined by the content.</li>
+</ul>
+<h3>Example:</h3>
+<pre><code>&lt;div class=&quot;grid-container&quot;><br>  &lt;div class=&quot;grid-item&quot;>Header&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Sidebar&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Main Content&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Footer&lt;/div><br>&lt;/div><br></code></pre>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: 1fr 3fr; /* Sidebar takes 1 part, Main Content takes 3 parts */<br>  grid-template-rows: auto auto auto; /* Rows will adjust to content size */<br>}<br></code></pre>
+<hr/>
+<h2><strong>3. Grid Tracks (Columns and Rows)</strong></h2>
+<p>A <strong>grid track</strong> is a row or a column. You can define the number and size of tracks (columns and rows) using these properties:</p>
+<h3><strong><code>grid-template-columns</code> and <code>grid-template-rows</code></strong>:</h3>
+<p>These properties define the size of each column and row in the grid.</p>
+<pre><code>.grid-container {<br>  grid-template-columns: 100px 1fr 2fr; /* 3 columns: first is 100px, second takes 1 part, third takes 2 parts */<br>  grid-template-rows: auto 200px; /* 2 rows: first adapts to content, second is 200px high */<br>}<br></code></pre>
+<ul><li><strong>Fixed sizes</strong>: Columns or rows can have fixed sizes, like <code>100px</code> or <code>200px</code>.</li>
+<li><strong>Flexible sizes</strong>: Using <code>fr</code> (fractions), you can create flexible layouts where the remaining space is divided proportionally.</li>
+</ul>
+<h3><strong><code>repeat()</code> function</strong>:</h3>
+<p>The <code>repeat()</code> function simplifies the process of creating multiple grid tracks with the same size.</p>
+<pre>cssCopy code<code>.grid-container {
+  grid-template-columns: repeat(3, 1fr); /* Creates 3 equal-width columns */
+}
+</code></pre>
+<hr/>
+<h2><strong>4. Placing Items in the Grid</strong></h2>
+<p>Once the grid is set up, you can place grid items explicitly in specific rows and columns.</p>
+<h3><strong><code>grid-column</code> and <code>grid-row</code></strong>:</h3>
+<p>These properties allow you to position an item within the grid. You can specify which column or row a grid item should start and end.</p>
+<pre><code>.grid-item:nth-child(1) {<br>  grid-column: 1 / 3; /* The item spans from column 1 to column 3 */<br>  grid-row: 1;        /* The item is placed in the first row */<br>}<br></code></pre>
+<h3>Example:</h3>
+<pre><code>&lt;div class=&quot;grid-container&quot;><br>  &lt;div class=&quot;grid-item&quot;>Item 1&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Item 2&lt;/div><br>  &lt;div class=&quot;grid-item&quot;>Item 3&lt;/div><br>&lt;/div><br></code></pre>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: 1fr 1fr;<br>}<br><br>.grid-item:nth-child(1) {<br>  grid-column: 1 / span 2; /* Item 1 spans two columns */<br>}<br></code></pre>
+<p>You can use <strong><code>span</code></strong> to make items span across multiple columns or rows.</p>
+<hr/>
+<h2><strong>5. Grid Template Areas</strong></h2>
+<p>The <code>grid-template-areas</code> property allows you to assign names to sections of the grid and then place items into those named areas. This makes the layout more intuitive and readable.</p>
+<h3>Example with Grid Areas:</h3>
+<pre><code>&lt;div class=&quot;grid-container&quot;><br>  &lt;div class=&quot;header&quot;>Header&lt;/div><br>  &lt;div class=&quot;sidebar&quot;>Sidebar&lt;/div><br>  &lt;div class=&quot;content&quot;>Main Content&lt;/div><br>  &lt;div class=&quot;footer&quot;>Footer&lt;/div><br>&lt;/div><br></code></pre>
+<pre>cssCopy code<code>.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    &quot;header header&quot;
+    &quot;sidebar content&quot;
+    &quot;footer footer&quot;;
+}
+
+.header {
+  grid-area: header;
+}
+
+.sidebar {
+  grid-area: sidebar;
+}
+
+.content {
+  grid-area: content;
+}
+
+.footer {
+  grid-area: footer;
+}
+</code></pre>
+<p>In this example:</p>
+<ul><li>The <strong>grid-template-areas</strong> property defines the layout by using named areas (<code>header</code>, <code>sidebar</code>, <code>content</code>, <code>footer</code>).</li>
+<li>The grid items are placed into their corresponding areas using the <code>grid-area</code> property.</li>
+</ul>
+<hr/>
+<h2><strong>6. Responsive Grids with Media Queries</strong></h2>
+<p>CSS Grid works beautifully for creating <strong>responsive layouts</strong>. By combining <strong>media queries</strong> with grid properties, you can adapt the layout based on the screen size.</p>
+<h3>Example of a Responsive Grid:</h3>
+<pre><code>/* Default layout for large screens */<br>.grid-container {<br>  display: grid;<br>  grid-template-columns: 1fr 3fr; /* Sidebar and Main Content */<br>}<br><br>/* For small screens, change to a single-column layout */<br>@media (max-width: 600px) {<br>  .grid-container {<br>    grid-template-columns: 1fr; /* One-column layout */<br>  }<br>}<br></code></pre>
+<p>With this approach, you can make your grid automatically adjust for different screen sizes, making your design fully responsive.</p>
+<hr/>
+<h2><strong>7. Advanced Grid Features and Functions</strong></h2>
+<h3><strong><code>minmax()</code> function</strong>:</h3>
+<p>The <code>minmax()</code> function lets you define a size range for grid tracks, ensuring that they stay within a minimum and maximum value.</p>
+<pre><code>.grid-container {<br>  grid-template-columns: repeat(3, minmax(100px, 1fr)); /* 3 columns, each at least 100px, but flexible */<br>}<br></code></pre>
+<h3><strong><code>auto-fit</code> and <code>auto-fill</code></strong>:</h3>
+<p>These functions automatically fill the grid with as many columns (or rows) as will fit in the container, making your grid flexible based on screen size.</p>
+<ul><li><strong><code>auto-fit</code></strong>: Expands the columns to fill the available space.</li>
+<li><strong><code>auto-fill</code></strong>: Fills the available space with columns but doesn’t stretch them.</li>
+</ul>
+<pre><code>.grid-container {<br>  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));<br>}<br></code></pre>
+<p>In this example, the grid will create as many columns as can fit in the container, with each column having a minimum width of 150px and growing to fill available space.</p>
+<h3><strong><code>grid-auto-rows</code> and <code>grid-auto-columns</code></strong>:</h3>
+<p>If you don’t explicitly define the number of rows or columns, Grid will create them automatically based on the content. You can control their size with <code>grid-auto-rows</code> and <code>grid-auto-columns</code>.</p>
+<pre><code>.grid-container {<br>  grid-auto-rows: 100px; /* Automatically create rows with a height of 100px */<br>}<br></code></pre>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li>CSS Grid is a powerful system for creating complex, responsive layouts with rows and columns.</li>
+<li>Use <code>grid-template-columns</code> and <code>grid-template-rows</code> to define the structure of your grid.</li>
+<li>You can explicitly position grid items with <code>grid-column</code> and <code>grid-row</code> or use named areas with <code>grid-template-areas</code>.</li>
+<li>Responsive grids can be easily created using media queries and the flexibility of grid tracks.</li>
+<li>Advanced functions like <code>minmax()</code>, <code>repeat()</code>, <code>auto-fit</code>, and <code>auto-fill</code> allow for greater control over your layouts.</li>
+</ul>
+<p></p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/intermediate-level-html-and-css/flexbox-the-flexible-layout-system/"><span>Previous</span>Flexbox: The Flexible Layout System</a><a class="next" href="/academy/intermediate-level-html-and-css/responsive-web-design-with-media-queries/"><span>Next</span>Responsive Web Design with Media Queries</a></nav>
+</div>

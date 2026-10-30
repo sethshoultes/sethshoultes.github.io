@@ -1,0 +1,39 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "3. Building Advanced Payment Automations Using Stripe – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "If you are using Stripe to manage payments for your membership site, you can leverage Stripe’s API to build advanced payment workflows. This could include..."
+permalink: "/academy/mastering-the-memberpress-rest-api/3-building-advanced-payment-automations-using-stripe/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "3. Building Advanced Payment Automations Using Stripe", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/3-building-advanced-payment-automations-using-stripe/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Creating Custom API Endpoints, Testing OAuth Workflows, and Advanced Payment Automations</p>
+    <h1>3. Building Advanced Payment Automations Using Stripe</h1>
+{% raw %}
+<p>If you are using <strong>Stripe</strong> to manage payments for your membership site, you can leverage Stripe’s API to build advanced payment workflows. This could include handling failed payments, issuing refunds, or upgrading subscriptions.</p>
+<h2>Example: Automating Failed Payment Retries with Stripe</h2>
+<h3>Steps:</h3>
+<ol><li><strong>Set Up a Webhook for Failed Payments</strong>:<ul><li>In your Stripe dashboard, create a <strong>Webhook</strong> that listens for payment events such as <code>invoice.payment_failed</code>.</li>
+<li>Set the webhook to send a notification to a custom handler URL (for example, <code>https://your-site.com/stripe-webhook</code>).</li>
+</ul>
+</li>
+<li><strong>Handle the Webhook in WordPress</strong>:<ul><li>In your WordPress installation, create a custom plugin or use the same one from earlier to handle Stripe webhook events: <code>add_action('rest_api_init', function() { register_rest_route('custom_mp/v1', '/stripe-webhook', array( 'methods' => 'POST', 'callback' => 'handle_stripe_webhook', 'permission_callback' => '__return_true', )); }); function handle_stripe_webhook(WP_REST_Request $request) { $body = json_decode($request->get_body(), true); if ($body['type'] == 'invoice.payment_failed') { $customer_id = $body['data']['object']['customer']; // Logic to retry payment or notify the member } return new WP_REST_Response('Webhook received', 200); }</code></li>
+</ul>
+</li>
+<li><strong>Automate Payment Retry</strong>:<ul><li>After receiving a failed payment event, you can use Stripe’s API to retry the payment: <code>curl https://api.stripe.com/v1/invoices/inv_12345/pay \ -u sk_test_your_secret_key:</code></li>
+</ul>
+</li>
+<li><strong>Notify the User</strong>:<ul><li>If the retry succeeds, notify the member by email or via a message on their account page.</li>
+</ul>
+</li>
+</ol>
+<h3>Customization:</h3>
+<ul><li><strong>Automate Refunds</strong>: Use the Stripe API to automatically issue refunds for failed payments after multiple retries.</li>
+<li><strong>Notify Admins</strong>: Set up notifications in Slack or email to alert site admins when payments fail or when retries succeed.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/2-testing-oauth-2-0-workflows-for-secure-api-authentication/"><span>Previous</span>2. Testing OAuth 2.0 Workflows for Secure API Authentication</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/"><span>Finished</span>Back to the course</a></nav>
+</div>

@@ -1,0 +1,25 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "4. Overriding and Cascading CSS Variables – Advanced Level: HTML and CSS"
+description: "CSS Variables follow the cascading rules of CSS, meaning variables can be overridden in more specific contexts. The most specific rule will always take..."
+permalink: "/academy/advanced-level-html-and-css/4-overriding-and-cascading-css-variables/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "4. Overriding and Cascading CSS Variables", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/4-overriding-and-cascading-css-variables/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Variables (Custom Properties)</p>
+    <h1>4. Overriding and Cascading CSS Variables</h1>
+{% raw %}
+<p>CSS Variables follow the <strong>cascading</strong> rules of CSS, meaning variables can be overridden in more specific contexts. The most specific rule will always take precedence, following the same principles as specificity and inheritance.</p>
+<h2>Example of Cascading and Overriding:</h2>
+<pre><code>:root {<br>  --font-size: 18px;<br>}<br><br>p {<br>  font-size: var(--font-size); /* Default size */<br>}<br><br>.section p {<br>  --font-size: 24px; /* Override for p elements inside .section */<br>  font-size: var(--font-size);<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>All <code>&lt;p></code> elements have a default font size of <code>18px</code>, defined in the global <code>:root</code> scope.</li>
+<li>However, within <code>.section</code>, the <code>&lt;p></code> elements have a font size of <code>24px</code>, overriding the global value.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/3-global-vs-local-variables/"><span>Previous</span>3. Global vs. Local Variables</a><a class="next" href="/academy/advanced-level-html-and-css/5-fallback-values-for-css-variables/"><span>Next</span>5. Fallback Values for CSS Variables</a></nav>
+</div>

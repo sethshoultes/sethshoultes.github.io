@@ -1,0 +1,26 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "6. Optimizing Web Fonts – Advanced Level: HTML and CSS"
+description: "While custom web fonts improve the design of your website, they can also slow down your site’s performance if not optimized correctly. Techniques for..."
+permalink: "/academy/advanced-level-html-and-css/6-optimizing-web-fonts/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "6. Optimizing Web Fonts", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/6-optimizing-web-fonts/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Web Performance Optimization</p>
+    <h1>6. Optimizing Web Fonts</h1>
+{% raw %}
+<p>While custom web fonts improve the design of your website, they can also slow down your site’s performance if not optimized correctly.</p>
+<h2>Techniques for Optimizing Web Fonts:</h2>
+<ul><li><strong>Limit font weights and styles</strong>: Only load the font weights and styles you need.</li>
+<li><strong>Use <code>font-display: swap</code></strong>: This ensures that text is displayed using a fallback font until the custom font is fully loaded, improving perceived performance.</li>
+</ul>
+<pre><code>@font-face {<br>  font-family: 'MyFont';<br>  src: url('myfont.woff2') format('woff2');<br>  font-display: swap;<br>}<br></code></pre>
+<ul><li><strong>Use modern formats like WOFF2</strong>: Web Open Font Format 2 (WOFF2) offers better compression for faster loading.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/5-caching-and-content-delivery-networks-cdns/"><span>Previous</span>5. Caching and Content Delivery Networks (CDNs)</a><a class="next" href="/academy/advanced-level-html-and-css/7-reducing-http-requests/"><span>Next</span>7. Reducing HTTP Requests</a></nav>
+</div>

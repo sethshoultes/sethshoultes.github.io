@@ -1,0 +1,36 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "6. ITCSS (Inverted Triangle CSS) – Advanced Level: HTML and CSS"
+description: "ITCSS (Inverted Triangle CSS) is a methodology that focuses on organizing CSS in layers, following the principle of specificity . It uses an inverted..."
+permalink: "/academy/advanced-level-html-and-css/6-itcss-inverted-triangle-css/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "6. ITCSS (Inverted Triangle CSS)", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/6-itcss-inverted-triangle-css/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Architecture and Methodologies</p>
+    <h1>6. ITCSS (Inverted Triangle CSS)</h1>
+{% raw %}
+<p><strong>ITCSS (Inverted Triangle CSS)</strong> is a methodology that focuses on organizing CSS in layers, following the principle of <strong>specificity</strong>. It uses an inverted triangle to represent the flow from low-specificity rules to high-specificity rules, helping avoid specificity issues.</p>
+<h2>ITCSS Layers:</h2>
+<ol><li><strong>Settings</strong>: Global variables like colors and font sizes.</li>
+<li><strong>Tools</strong>: Mixins, functions, and other utilities.</li>
+<li><strong>Generic</strong>: Reset styles (e.g., normalize.css).</li>
+<li><strong>Elements</strong>: Base styles for HTML elements (e.g., <code>h1</code>, <code>p</code>).</li>
+<li><strong>Objects</strong>: Generic reusable layout components.</li>
+<li><strong>Components</strong>: Specific UI components (e.g., <code>header</code>, <code>card</code>).</li>
+<li><strong>Trumps</strong>: Highly specific styles (e.g., utility classes, overrides).</li>
+</ol>
+<h2>Example:</h2>
+<pre><code>/* Settings */<br>$primary-color: #3498db;<br>$font-size-base: 16px;<br><br>/* Tools */<br>@mixin clearfix {<br>  &amp;::after {<br>    content: '';<br>    display: table;<br>    clear: both;<br>  }<br>}<br><br>/* Generic */<br>* {<br>  box-sizing: border-box;<br>}<br><br>/* Elements */<br>h1 {<br>  font-size: 2rem;<br>}<br><br>/* Objects */<br>.container {<br>  max-width: 1200px;<br>  margin: 0 auto;<br>}<br><br>/* Components */<br>.card {<br>  padding: 20px;<br>  background-color: #f9f9f9;<br>}<br><br>/* Trumps */<br>.u-hidden {<br>  display: none !important;<br>}<br></code></pre>
+<p>In this example, ITCSS helps to layer styles in a predictable, scalable way, reducing specificity issues.</p>
+<h2>Key Benefits of ITCSS:</h2>
+<ul><li><strong>Scalability</strong>: Helps large projects stay organized with a clear structure.</li>
+<li><strong>Avoids Specificity Problems</strong>: By placing low-specificity rules at the top and high-specificity rules at the bottom, ITCSS minimizes specificity issues.</li>
+<li><strong>Modular and Maintainable</strong>: The layered approach makes it easier to maintain and modify styles.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/5-atomic-css/"><span>Previous</span>5. Atomic CSS</a><a class="next" href="/academy/advanced-level-html-and-css/7-css-in-js-styled-components-and-emotion/"><span>Next</span>7. CSS-in-JS: Styled Components and Emotion</a></nav>
+</div>

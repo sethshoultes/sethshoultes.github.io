@@ -1,0 +1,40 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "1. Set Up Postman to Test MemberPress API – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Let’s walk through some real-world tests and simulations to help you interact with the MemberPress REST API . By testing the API in action, you'll gain a..."
+permalink: "/academy/mastering-the-memberpress-rest-api/1-set-up-postman-to-test-memberpress-api/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "1. Set Up Postman to Test MemberPress API", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/1-set-up-postman-to-test-memberpress-api/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Exploring the MemberPress REST API Hands-On</p>
+    <h1>1. Set Up Postman to Test MemberPress API</h1>
+{% raw %}
+<p>Let’s walk through some real-world <strong>tests and simulations</strong> to help you interact with the <strong>MemberPress REST API</strong>. By testing the API in action, you'll gain a clearer understanding of how it works and how you can integrate it with your membership site or external systems.</p>
+<h3>Tools you’ll need:</h3>
+<ul><li><strong>Postman</strong>: A popular tool to send requests to REST APIs and analyze responses.</li>
+<li><strong>cURL</strong>: A command-line tool that allows you to send HTTP requests to APIs.</li>
+</ul>
+<h2>🚀 Step-by-Step Simulation with Postman</h2>
+<p>Before starting, you’ll need to ensure that the API is enabled in MemberPress and that you have your <strong>API Key</strong>.</p>
+<h3>Setting up Postman:</h3>
+<ol><li><strong>Download and Install Postman</strong>: <a>Get Postman</a></li>
+<li><strong>Create a New Request</strong>:<ul><li>Open Postman and click on "New" to create a new request.</li>
+<li>Choose the method (GET, POST, PUT, DELETE) depending on what action you want to perform.</li>
+</ul>
+</li>
+<li><strong>Set the Request URL</strong>:<ul><li>The URL should follow the pattern:<br><code>https://your-site.com/wp-json/mp/v1/{endpoint}</code></li>
+<li>Example endpoint: <code>/members</code> for retrieving members.</li>
+</ul>
+</li>
+<li><strong>Add Authorization</strong>:<ul><li>Go to the <strong>Authorization</strong> tab in Postman and select <strong>Bearer Token</strong>.</li>
+<li>Paste your MemberPress <strong>API Key</strong> in the token field.</li>
+</ul>
+</li>
+</ol>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/10-plugin-development-and-customization/"><span>Previous</span>10. Plugin Development and Customization</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/2-example-retrieving-all-members-get-request/"><span>Next</span>2. Example: Retrieving All Members (GET Request)</a></nav>
+</div>

@@ -1,0 +1,23 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "7. Dynamic CSS Variables with JavaScript – Advanced Level: HTML and CSS"
+description: "CSS Variables can be manipulated dynamically using JavaScript, enabling powerful interactions and theme-switching functionality. Example: Changing..."
+permalink: "/academy/advanced-level-html-and-css/7-dynamic-css-variables-with-javascript/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "7. Dynamic CSS Variables with JavaScript", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/7-dynamic-css-variables-with-javascript/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Variables (Custom Properties)</p>
+    <h1>7. Dynamic CSS Variables with JavaScript</h1>
+{% raw %}
+<p>CSS Variables can be manipulated dynamically using JavaScript, enabling powerful interactions and theme-switching functionality.</p>
+<h2>Example: Changing Variables with JavaScript</h2>
+<p>You can access and update CSS Variables using the <code>setProperty()</code> method on the document’s <code>style</code> property.</p>
+<pre><code>&lt;button onclick=&quot;changePrimaryColor('#e74c3c')&quot;>Change Color&lt;/button><br><br>&lt;script><br>  function changePrimaryColor(newColor) {<br>    document.documentElement.style.setProperty('--primary-color', newColor);<br>  }<br>&lt;/script><br></code></pre>
+<p>In this example, clicking the button will change the <code>--primary-color</code> to a new value, dynamically updating the styles on the page.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/6-advanced-techniques-theming-with-css-variables/"><span>Previous</span>6. Advanced Techniques: Theming with CSS Variables</a><a class="next" href="/academy/advanced-level-html-and-css/8-performance-and-best-practices/"><span>Next</span>8. Performance and Best Practices</a></nav>
+</div>

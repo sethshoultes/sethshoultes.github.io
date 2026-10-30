@@ -1,0 +1,29 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "5. Example: Deleting a Member (DELETE Request) – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Description: This example will demonstrate how to delete a member using a DELETE request. Steps: In Postman, set the request method to DELETE . Enter the..."
+permalink: "/academy/mastering-the-memberpress-rest-api/5-example-deleting-a-member-delete-request/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "5. Example: Deleting a Member (DELETE Request)", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/5-example-deleting-a-member-delete-request/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Exploring the MemberPress REST API Hands-On</p>
+    <h1>5. Example: Deleting a Member (DELETE Request)</h1>
+{% raw %}
+<h2>Description:</h2>
+<p>This example will demonstrate how to delete a member using a <strong>DELETE</strong> request.</p>
+<h2>Steps:</h2>
+<ol><li>In Postman, set the request method to <strong>DELETE</strong>.</li>
+<li>Enter the URL: <br><code>https://your-site.com/wp-json/mp/v1/members/{member_id} </code>Replace <code>{member_id}</code> with the ID of the member you want to delete (e.g., <code>3</code>).</li>
+<li>In the <strong>Authorization</strong> tab, select <strong>Bearer Token</strong> and add your <strong>API Key</strong>.</li>
+<li>Click <strong>Send</strong>.</li>
+</ol>
+<h2>Expected Response:</h2>
+<p>A confirmation showing that the member has been deleted:</p>
+<pre><code>{<br>    &quot;deleted&quot;: true,<br>    &quot;id&quot;: 3<br>}<br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/4-example-updating-member-information-put-request/"><span>Previous</span>4. Example: Updating Member Information (PUT Request)</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/running-the-same-tests-with-curl/"><span>Next</span>Running the Same Tests with cURL</a></nav>
+</div>

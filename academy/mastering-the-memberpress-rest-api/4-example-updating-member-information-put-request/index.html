@@ -1,0 +1,39 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "4. Example: Updating Member Information (PUT Request) – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Description: In this example, you will update a member’s information, such as their email or password. Steps: In Postman, set the request method to PUT ...."
+permalink: "/academy/mastering-the-memberpress-rest-api/4-example-updating-member-information-put-request/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "4. Example: Updating Member Information (PUT Request)", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/4-example-updating-member-information-put-request/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Exploring the MemberPress REST API Hands-On</p>
+    <h1>4. Example: Updating Member Information (PUT Request)</h1>
+{% raw %}
+<h2>Description:</h2>
+<p>In this example, you will update a member’s information, such as their email or password.</p>
+<h2>Steps:</h2>
+<ol><li>In Postman, set the request method to <strong>PUT</strong>.</li>
+<li>Enter the URL:<br><code>https://your-site.com/wp-json/mp/v1/members/{member_id} </code>Replace <code>{member_id}</code> with the ID of the member you want to update (e.g., <code>3</code>).</li>
+<li>In the <strong>Authorization</strong> tab, select <strong>Bearer Token</strong> and add your <strong>API Key</strong>.</li>
+<li>Go to the <strong>Body</strong> tab and select <strong>raw</strong> with the format set to <strong>JSON</strong>.</li>
+<li>Enter the new information for the member, for example:<br><code>{ &quot;email&quot;: &quot;newemail@example.com&quot; }</code></li>
+<li>Click <strong>Send</strong>.</li>
+</ol>
+<h2>Expected Response:</h2>
+<p>A confirmation showing the updated details:</p>
+<pre><code>{
+    &quot;id&quot;: 3,
+    &quot;username&quot;: &quot;newmember&quot;,
+    &quot;email&quot;: &quot;newemail@example.com&quot;,
+    &quot;status&quot;: &quot;active&quot;
+}
+</code>
+
+</pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/3-example-creating-a-new-member-post-request/"><span>Previous</span>3. Example: Creating a New Member (POST Request)</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/5-example-deleting-a-member-delete-request/"><span>Next</span>5. Example: Deleting a Member (DELETE Request)</a></nav>
+</div>

@@ -1,0 +1,30 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "5. Caching and Content Delivery Networks (CDNs) – Advanced Level: HTML and CSS"
+description: "Caching stores parts of your website in a user's browser or server, so they don’t have to be reloaded every time the user visits the site. CDNs deliver..."
+permalink: "/academy/advanced-level-html-and-css/5-caching-and-content-delivery-networks-cdns/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "5. Caching and Content Delivery Networks (CDNs)", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/5-caching-and-content-delivery-networks-cdns/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Web Performance Optimization</p>
+    <h1>5. Caching and Content Delivery Networks (CDNs)</h1>
+{% raw %}
+<p><strong>Caching</strong> stores parts of your website in a user's browser or server, so they don’t have to be reloaded every time the user visits the site. <strong>CDNs</strong> deliver content from servers located close to the user, reducing latency and improving load times.</p>
+<h2>Browser Caching:</h2>
+<p>Set caching headers for static resources like images, CSS, and JavaScript to reduce load times on repeat visits.</p>
+<pre><code>Cache-Control: max-age=31536000, public<br></code></pre>
+<h2>Content Delivery Network (CDN):</h2>
+<p>A <strong>CDN</strong> distributes your website’s static assets (like CSS, JavaScript, and images) across multiple geographically distributed servers. When a user visits your site, the assets are delivered from the server closest to them, reducing latency and load time.</p>
+<p>Popular CDNs:</p>
+<ul><li><strong>Cloudflare</strong></li>
+<li><strong>Amazon CloudFront</strong></li>
+<li><strong>Fastly</strong></li>
+<li><strong>Akamai</strong></li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/4-lazy-loading-and-asynchronous-loading/"><span>Previous</span>4. Lazy Loading and Asynchronous Loading</a><a class="next" href="/academy/advanced-level-html-and-css/6-optimizing-web-fonts/"><span>Next</span>6. Optimizing Web Fonts</a></nav>
+</div>

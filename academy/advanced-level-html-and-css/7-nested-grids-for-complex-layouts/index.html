@@ -1,0 +1,26 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "7. Nested Grids for Complex Layouts – Advanced Level: HTML and CSS"
+description: "Nested grids allow you to create a grid inside another grid, providing more control over individual sections of a webpage. Example: In this example: The..."
+permalink: "/academy/advanced-level-html-and-css/7-nested-grids-for-complex-layouts/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "7. Nested Grids for Complex Layouts", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/7-nested-grids-for-complex-layouts/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Grid Advanced Features</p>
+    <h1>7. Nested Grids for Complex Layouts</h1>
+{% raw %}
+<p><strong>Nested grids</strong> allow you to create a grid inside another grid, providing more control over individual sections of a webpage.</p>
+<h2>Example:</h2>
+<pre><code>&lt;div class=&quot;parent-grid&quot;><br>  &lt;div class=&quot;nested-grid&quot;><br>    &lt;div class=&quot;nested-item&quot;>Item 1&lt;/div><br>    &lt;div class=&quot;nested-item&quot;>Item 2&lt;/div><br>  &lt;/div><br>&lt;/div><br></code></pre>
+<pre><code>.parent-grid {<br>  display: grid;<br>  grid-template-columns: 1fr 2fr;<br>}<br><br>.nested-grid {<br>  display: grid;<br>  grid-template-columns: repeat(2, 1fr);<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The <strong><code>parent-grid</code></strong> is the main grid layout.</li>
+<li>Inside one of the grid items, we have a <strong>nested grid</strong> to manage sub-layouts.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/6-grid-item-ordering-with-grid-row-and-grid-column/"><span>Previous</span>6. Grid Item Ordering with grid-row and grid-column</a><a class="next" href="/academy/advanced-level-html-and-css/8-responsive-grids-with-repeat-auto-fill-and-auto-fit/"><span>Next</span>8. Responsive Grids with repeat(), auto-fill, and auto-fit</a></nav>
+</div>

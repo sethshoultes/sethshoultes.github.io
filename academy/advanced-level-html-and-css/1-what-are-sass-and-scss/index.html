@@ -1,0 +1,27 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "1. What are SASS and SCSS? – Advanced Level: HTML and CSS"
+description: "SASS (Syntactically Awesome Style Sheets) is a CSS preprocessor that adds features missing from standard CSS, such as variables, nesting, mixins, and..."
+permalink: "/academy/advanced-level-html-and-css/1-what-are-sass-and-scss/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "1. What are SASS and SCSS?", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/1-what-are-sass-and-scss/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Preprocessors: SASS/SCSS</p>
+    <h1>1. What are SASS and SCSS?</h1>
+{% raw %}
+<p><strong>SASS (Syntactically Awesome Style Sheets)</strong> is a <strong>CSS preprocessor</strong> that adds features missing from standard CSS, such as variables, nesting, mixins, and more. SASS has two syntaxes:</p>
+<ul><li><strong>SASS</strong> syntax (older) uses indentation instead of curly braces and semicolons.</li>
+<li><strong>SCSS</strong> syntax (newer) is more similar to traditional CSS, using curly braces <code>{}</code> and semicolons <code>;</code>.</li>
+</ul>
+<p>SCSS is the more commonly used syntax today because of its similarity to CSS, so we’ll focus on SCSS in this guide.</p>
+<h2>Example of SCSS:</h2>
+<pre><code>$primary-color: #3498db;<br><br>body {<br>  background-color: $primary-color;<br>  font-size: 16px;<br><br>  h1 {<br>    color: darken($primary-color, 10%);<br>  }<br>}<br></code></pre>
+<h2>Example of SASS:</h2>
+<pre><code>$primary-color: #3498db<br><br>body<br>  background-color: $primary-color<br>  font-size: 16px<br><br>  h1<br>    color: darken($primary-color, 10%)<br></code></pre>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/css-preprocessors-sass-scss/"><span>Previous</span>CSS Preprocessors: SASS/SCSS</a><a class="next" href="/academy/advanced-level-html-and-css/2-variables-in-sass-scss/"><span>Next</span>2. Variables in SASS/SCSS</a></nav>
+</div>

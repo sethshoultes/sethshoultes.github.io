@@ -290,3 +290,27 @@
 
 /* post hero image above the title (outside .post-content) */
 .post > .post-img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0 0 2rem; border-radius: 6px; }
+
+/* academy: courses and lessons (page types course and lesson) */
+.academy { padding-block: 6rem 4rem; }
+.academy .crumbs { font-size: 0.9rem; color: var(--muted); margin: 0 0 1rem; }
+.academy .eyebrow { margin: 0 0 0.5rem; }
+.academy h1 { text-wrap: balance; margin: 0 0 1.5rem; }
+.academy .course-img { display: block; width: 100%; max-width: 100%; height: auto; max-height: 22rem; object-fit: cover; border-radius: var(--radius, 8px); margin: 0 0 2rem; }
+.academy .lesson img { display: block; max-width: 100%; height: auto; margin: 1.5rem 0; border-radius: 6px; }
+.academy .lesson pre { overflow-x: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-size: 0.9rem; line-height: 1.5; }
+.academy .lesson :not(pre) > code { overflow-wrap: anywhere; }
+.academy .lesson table, .academy .lesson figure { max-width: 100%; overflow-x: auto; display: block; }
+.academy .syllabus { margin: 0 0 1.5rem; padding-left: 1.6rem; }
+.academy .syllabus li { margin-bottom: 0.4rem; }
+.academy h2 { margin-top: 2.5rem; font-size: clamp(1.4rem, 3vw, 1.9rem); }
+.academy h3 { font-size: clamp(1.15rem, 2.4vw, 1.4rem); }
+.academy h1, .academy h2, .academy h3, .academy p, .academy li { overflow-wrap: anywhere; }
+.academy .lesson code, .academy .course code { overflow-wrap: anywhere; white-space: pre-wrap; }
+.academy .lesson pre code { white-space: pre; overflow-wrap: normal; }
+.lesson-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 3rem auto 0; max-width: var(--col, 720px); }
+.lesson-nav a { display: block; padding: 1rem 1.2rem; border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: inherit; }
+.lesson-nav a:hover { border-color: currentColor; }
+.lesson-nav a span { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.lesson-nav .next { text-align: right; grid-column: 2; }
+@media (max-width: 600px) { .lesson-nav { grid-template-columns: 1fr; } .lesson-nav .next { grid-column: 1; text-align: left; } }

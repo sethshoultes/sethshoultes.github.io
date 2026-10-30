@@ -1,0 +1,26 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "5. Auto-Placement and Dense Packing with grid-auto-flow – Advanced Level: HTML and CSS"
+description: "By default, grid items are placed in rows and columns in the order they appear in the HTML. The property controls how the browser places items in the..."
+permalink: "/academy/advanced-level-html-and-css/5-auto-placement-and-dense-packing-with-grid-auto-flow/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "5. Auto-Placement and Dense Packing with grid-auto-flow", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/5-auto-placement-and-dense-packing-with-grid-auto-flow/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Grid Advanced Features</p>
+    <h1>5. Auto-Placement and Dense Packing with grid-auto-flow</h1>
+{% raw %}
+<p>By default, grid items are placed in rows and columns in the order they appear in the HTML. The <strong><code>grid-auto-flow</code></strong> property controls how the browser places items in the grid.</p>
+<ul><li><strong><code>row</code></strong> (default): Items are placed in rows.</li>
+<li><strong><code>column</code></strong>: Items are placed in columns.</li>
+<li><strong><code>dense</code></strong>: Allows the grid to fill in gaps more efficiently by backfilling empty spaces.</li>
+</ul>
+<h2>Example:</h2>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-auto-flow: dense; /* Fill gaps if smaller items fit */<br>  grid-template-columns: repeat(3, 1fr);<br>}<br></code></pre>
+<p>The <code>dense</code> keyword is useful when items of different sizes create gaps in the grid, as it tries to fill these gaps with smaller items.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/4-aligning-grid-items-with-align-items-justify-items-align-self-and-justify-self/"><span>Previous</span>4. Aligning Grid Items with align-items, justify-items, align-self, and justify-self</a><a class="next" href="/academy/advanced-level-html-and-css/6-grid-item-ordering-with-grid-row-and-grid-column/"><span>Next</span>6. Grid Item Ordering with grid-row and grid-column</a></nav>
+</div>
