@@ -18,8 +18,8 @@ permalink: /library/
     <div class="news-confirmed" data-news-confirmed hidden>
       <h2>You are confirmed.</h2>
       <p data-news-wait>Thank you. I will email you the PDF the day it publishes.</p>
-      <p data-news-download hidden>Thank you. Here is your PDF. The link works for 7 days, and you can ask for a new one any time.</p>
-      <p><a class="btn" data-news-download href="/library/" hidden>Download the PDF</a></p>
+      <p data-news-ready hidden>Thank you. Here is your PDF. The link works for 7 days, and you can ask for a new one any time.</p>
+      <p data-news-ready hidden><a class="btn" data-news-download-link href="/library/">Download the PDF</a></p>
     </div>
     <ul class="link-grid">
       {%- for f in site.data.library.files %}
