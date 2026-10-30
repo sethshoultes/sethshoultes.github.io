@@ -290,3 +290,13 @@
 
 /* post hero image above the title (outside .post-content) */
 .post > .post-img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0 0 2rem; border-radius: 6px; }
+
+/* post: speed table and chart (blog/i-moved-my-wordpress-site-four-ways) */
+.post-content .hint { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.3rem; }
+@media (min-width: 720px) { .post-content .hint { display: none; } }
+.post-content .table-wrap table { border-collapse: collapse; min-width: 40rem; }
+.post-content .table-wrap th, .post-content .table-wrap td { white-space: nowrap; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; }
+.post-content .table-wrap th:first-child, .post-content .table-wrap td:first-child { position: sticky; left: 0; background: var(--bg); }
+.post-content figure.chart { margin: 1.5rem 0; max-width: 30rem; }
+.post-content figure.chart figcaption { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.6rem; }
+.post-content figure.chart svg { width: 100%; height: auto; display: block; }
