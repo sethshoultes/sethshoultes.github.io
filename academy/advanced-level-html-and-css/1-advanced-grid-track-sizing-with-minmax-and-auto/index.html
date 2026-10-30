@@ -1,0 +1,34 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Advanced Grid Track Sizing with minmax() and auto – Advanced Level: HTML and CSS"
+description: "The function and the keyword allow you to create responsive grids where elements grow and shrink dynamically. Function: The function defines a minimum and..."
+permalink: "/academy/advanced-level-html-and-css/1-advanced-grid-track-sizing-with-minmax-and-auto/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Advanced Grid Track Sizing with minmax() and auto", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/1-advanced-grid-track-sizing-with-minmax-and-auto/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Grid Advanced Features</p>
+    <h1>Advanced Grid Track Sizing with minmax() and auto</h1>
+{% raw %}
+<p>The <strong><code>minmax()</code></strong> function and the <strong><code>auto</code></strong> keyword allow you to create responsive grids where elements grow and shrink dynamically.</p>
+<h2><strong><code>minmax()</code> Function:</strong></h2>
+<p>The <code>minmax()</code> function defines a minimum and maximum size for grid tracks. This is particularly useful when you want to create flexible columns that shrink down but don’t get too small.</p>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: repeat(3, minmax(200px, 1fr));<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The grid creates 3 columns.</li>
+<li>Each column has a minimum width of 200px and can grow to take up the remaining space (<code>1fr</code>).</li>
+</ul>
+<h2><strong><code>auto</code> Keyword:</strong></h2>
+<p>The <code>auto</code> keyword sizes a grid track based on the content inside. This allows you to create tracks that adjust to the size of their content.</p>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: 200px auto 1fr;<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The first column is 200px.</li>
+<li>The second column is as wide as its content.</li>
+<li>The third column takes up the remaining space.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/css-grid-advanced-layouts/"><span>Previous</span>CSS Grid: Advanced Layouts</a><a class="next" href="/academy/advanced-level-html-and-css/2-grid-template-areas-for-intuitive-layouts/"><span>Next</span>Grid Template Areas for Intuitive Layouts</a></nav>
+</div>

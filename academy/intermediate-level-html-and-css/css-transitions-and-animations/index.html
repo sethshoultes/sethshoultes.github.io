@@ -1,0 +1,123 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "CSS Transitions and Animations – Intermediate Level: HTML and CSS"
+description: "CSS transitions and animations are powerful tools that allow developers to create smooth and visually appealing changes in the appearance of elements on a..."
+permalink: "/academy/intermediate-level-html-and-css/css-transitions-and-animations/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "CSS Transitions and Animations", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/css-transitions-and-animations/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>CSS Transitions and Animations</h1>
+{% raw %}
+<p>CSS transitions and animations are powerful tools that allow developers to create smooth and visually appealing changes in the appearance of elements on a webpage. These effects improve user experience by providing feedback and interactivity without relying on JavaScript. By using transitions and animations, you can animate changes in colors, sizes, positions, opacity, and more.</p>
+<p>In this section, we'll explore how CSS transitions and animations work, their key properties, and how to implement them effectively.</p>
+<hr/>
+<h2><strong>What You Will Learn:</strong></h2>
+<ol><li><strong>What Are CSS Transitions?</strong></li>
+<li><strong>How to Create Transitions</strong></li>
+<li><strong>What Are CSS Animations?</strong></li>
+<li><strong>How to Create Keyframe Animations</strong></li>
+<li><strong>Examples of Common Transitions and Animations</strong></li>
+<li><strong>Best Practices for CSS Transitions and Animations</strong></li>
+</ol>
+<hr/>
+<h2><strong>1. What Are CSS Transitions?</strong></h2>
+<p><strong>CSS Transitions</strong> provide a way to gradually change an element’s property values over time. Instead of an immediate change, transitions allow you to control the timing, duration, and behavior of a property change when an event occurs (such as hovering over or clicking on an element).</p>
+<h3>Example: Button with a Hover Transition</h3>
+<p>When you hover over the button, its background color will change gradually over a set duration.</p>
+<pre><code>&lt;button class=&quot;btn&quot;>Hover Me&lt;/button><br></code></pre>
+<pre><code>.btn {<br>  background-color: blue;<br>  color: white;<br>  padding: 10px 20px;<br>  border: none;<br>  cursor: pointer;<br>  transition: background-color 0.3s ease; /* Transition lasts 0.3 seconds */<br>}<br><br>.btn:hover {<br>  background-color: green; /* On hover, background changes to green */<br>}<br></code></pre>
+<p>In this example, the button’s background color transitions smoothly from blue to green over 0.3 seconds when hovered. Without a transition, this change would happen instantly.</p>
+<hr/>
+<h2><strong>2. How to Create Transitions</strong></h2>
+<p>CSS transitions are defined using the <code>transition</code> property. This property controls <strong>what</strong> should transition and <strong>how</strong> it should behave.</p>
+<h3>Key Properties of Transitions:</h3>
+<ul><li><strong><code>transition-property</code></strong>: Specifies which CSS property you want to animate (e.g., <code>color</code>, <code>background-color</code>, <code>transform</code>).</li>
+<li><strong><code>transition-duration</code></strong>: Defines how long the transition will last (e.g., <code>0.5s</code> for half a second).</li>
+<li><strong><code>transition-timing-function</code></strong>: Defines the speed curve of the transition. Common values include:<ul><li><code>ease</code>: Starts slow, speeds up, then slows down (default).</li>
+<li><code>linear</code>: Constant speed throughout.</li>
+<li><code>ease-in</code>: Starts slow, then speeds up.</li>
+<li><code>ease-out</code>: Starts fast, then slows down.</li>
+<li><code>ease-in-out</code>: Slow at the beginning and end.</li>
+</ul>
+</li>
+<li><strong><code>transition-delay</code></strong>: Defines when the transition should start (e.g., <code>1s</code> for a 1-second delay).</li>
+</ul>
+<h3>Syntax:</h3>
+<pre><code>.element {<br>  transition: property duration timing-function delay;<br>}<br></code></pre>
+<h3>Example: Transitioning Multiple Properties</h3>
+<p>You can transition multiple properties at once by separating them with commas.</p>
+<pre><code>.box {<br>  width: 100px;<br>  height: 100px;<br>  background-color: red;<br>  transition: width 0.5s ease, background-color 0.5s ease;<br>}<br><br>.box:hover {<br>  width: 200px; /* Changes size on hover */<br>  background-color: blue; /* Changes color on hover */<br>}<br></code></pre>
+<p>In this example, the box will grow in width and change its background color when hovered, both over 0.5 seconds.</p>
+<hr/>
+<h2><strong>3. What Are CSS Animations?</strong></h2>
+<p>While CSS transitions animate changes between two states (before and after an event), <strong>CSS animations</strong> provide more control by allowing you to create <strong>keyframes</strong> that define multiple stages of an animation. This makes CSS animations ideal for more complex effects, like rotating elements, bouncing animations, and continuous motion.</p>
+<h3>Example: Simple CSS Animation</h3>
+<p>Here, a square will move from left to right, back and forth, continuously.</p>
+<pre><code>&lt;div class=&quot;square&quot;>&lt;/div><br></code></pre>
+<pre><code>.square {<br>  width: 100px;<br>  height: 100px;<br>  background-color: red;<br>  position: relative;<br>  animation: move 2s infinite; /* Name of animation, 2s duration, infinite loop */<br>}<br><br>@keyframes move {<br>  0% {<br>    left: 0;<br>  }<br>  100% {<br>    left: 300px;<br>  }<br>}<br></code></pre>
+<p>In this example, the <code>@keyframes</code> define the starting point (<code>0%</code>) and the ending point (<code>100%</code>) of the animation. The square moves from left (position 0) to right (position 300px) in 2 seconds and then loops continuously.</p>
+<hr/>
+<h2><strong>4. How to Create Keyframe Animations</strong></h2>
+<p>CSS animations are created using the <code>@keyframes</code> rule, which defines the stages of the animation. You can specify multiple keyframes at various percentages to control how an element behaves at each stage.</p>
+<h3>Key Properties of CSS Animations:</h3>
+<ul><li><strong><code>animation-name</code></strong>: The name of the animation (must match the name defined in <code>@keyframes</code>).</li>
+<li><strong><code>animation-duration</code></strong>: How long the animation lasts.</li>
+<li><strong><code>animation-timing-function</code></strong>: Controls the speed of the animation.</li>
+<li><strong><code>animation-delay</code></strong>: Delays the start of the animation.</li>
+<li><strong><code>animation-iteration-count</code></strong>: Specifies how many times the animation will play (e.g., <code>infinite</code> for looping).</li>
+<li><strong><code>animation-direction</code></strong>: Defines whether the animation should play in reverse (<code>reverse</code>), alternate directions (<code>alternate</code>), or forward (<code>normal</code>).</li>
+</ul>
+<h3>Example: Bouncing Ball Animation</h3>
+<p>A ball that bounces up and down using keyframes.</p>
+<pre><code>&lt;div class=&quot;ball&quot;>&lt;/div><br></code></pre>
+<pre><code>.ball {<br>  width: 50px;<br>  height: 50px;<br>  background-color: orange;<br>  border-radius: 50%;<br>  position: relative;<br>  animation: bounce 2s infinite;<br>}<br><br>@keyframes bounce {<br>  0%, 100% {<br>    top: 0; /* Start and end at the top */<br>  }<br>  50% {<br>    top: 200px; /* Bounce down to 200px */<br>  }<br>}<br></code></pre>
+<p>This animation makes the ball move up and down in a continuous loop, simulating a bouncing effect.</p>
+<h3>Advanced Example: Multi-Step Animation</h3>
+<p>In this example, the animation changes at multiple keyframes, rotating and changing color at different percentages.</p>
+<pre><code>.square {<br>  width: 100px;<br>  height: 100px;<br>  background-color: blue;<br>  animation: rotate-color-change 5s infinite;<br>}<br><br>@keyframes rotate-color-change {<br>  0% {<br>    transform: rotate(0deg);<br>    background-color: blue;<br>  }<br>  25% {<br>    transform: rotate(90deg);<br>    background-color: red;<br>  }<br>  50% {<br>    transform: rotate(180deg);<br>    background-color: green;<br>  }<br>  75% {<br>    transform: rotate(270deg);<br>    background-color: yellow;<br>  }<br>  100% {<br>    transform: rotate(360deg);<br>    background-color: blue;<br>  }<br>}<br></code></pre>
+<p>In this example, the square rotates 360 degrees and changes color at 25%, 50%, and 75% stages.</p>
+<hr/>
+<h2><strong>5. Examples of Common Transitions and Animations</strong></h2>
+<h3><strong>Example 1: Fade In/Out Animation</strong></h3>
+<pre><code>&lt;div class=&quot;fade-box&quot;>&lt;/div><br></code></pre>
+<pre><code>.fade-box {<br>  width: 200px;<br>  height: 200px;<br>  background-color: lightblue;<br>  opacity: 0; /* Initially invisible */<br>  animation: fade-in 2s forwards;<br>}<br><br>@keyframes fade-in {<br>  0% {<br>    opacity: 0;<br>  }<br>  100% {<br>    opacity: 1;<br>  }<br>}<br></code></pre>
+<p>This animation fades the box in over 2 seconds.</p>
+<h3><strong>Example 2: Button with a Bounce Effect on Hover</strong></h3>
+<pre><code>&lt;button class=&quot;btn-bounce&quot;>Click Me&lt;/button><br></code></pre>
+<pre>cssCopy code<code>.btn-bounce {
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-bounce:hover {
+  transform: scale(1.1); /* Button &quot;grows&quot; slightly when hovered */
+}
+</code></pre>
+<hr/>
+<h2><strong>6. Best Practices for CSS Transitions and Animations</strong></h2>
+<ol><li><strong>Keep Animations Subtle and Purposeful</strong>:<br>Overusing animations can make a website feel overwhelming or unprofessional. Use transitions and animations to <strong>enhance</strong> the user experience rather than distract from it.</li>
+<li><strong>Optimize Performance</strong>:<br>Animations can sometimes affect page performance, especially if they involve complex properties like <code>box-shadow</code> or <code>background-blur</code>. For better performance, animate properties like <code>transform</code> and <code>opacity</code>, which can be handled efficiently by the browser.</li>
+<li><strong>Use <code>will-change</code> for Performance Optimization</strong>:<br>The <code>will-change</code> property allows you to optimize rendering by telling the browser which elements will change. For example: <code>.element { will-change: transform, opacity; }</code></li>
+<li><strong>Consider Accessibility</strong>:<br>Some users may be sensitive to motion, especially if the animations are too fast or aggressive. Make sure to allow users to disable animations using the <code>prefers-reduced-motion</code> media query: <code>@media (prefers-reduced-motion: reduce) { /* Disable or simplify animations */ .element { animation: none; } }</code></li>
+<li><strong>Use Easing Functions Thoughtfully</strong>:<br>Easing functions (e.g., <code>ease-in</code>, <code>ease-out</code>, <code>linear</code>) control the speed of an animation. Choose an appropriate easing function that matches the motion you're trying to achieve.</li>
+</ol>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li><strong>Transitions</strong> are used to animate a change in state (e.g., color, size) between two points, often triggered by events like hover or focus.</li>
+<li><strong>Animations</strong> allow more complex, multi-step animations using keyframes, enabling you to define specific states at various points in time.</li>
+<li><strong>Keyframe animations</strong> are ideal for creating continuous or repeated effects, such as bouncing, spinning, or color changes.</li>
+<li>Use <strong>performance-friendly properties</strong> like <code>transform</code> and <code>opacity</code> for smoother animations.</li>
+<li>Always keep <strong>accessibility</strong> in mind, using media queries like <code>prefers-reduced-motion</code> when necessary.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/intermediate-level-html-and-css/responsive-web-design-with-media-queries/"><span>Previous</span>Responsive Web Design with Media Queries</a><a class="next" href="/academy/intermediate-level-html-and-css/css-specificity-and-inheritance/"><span>Next</span>CSS Specificity and Inheritance</a></nav>
+</div>

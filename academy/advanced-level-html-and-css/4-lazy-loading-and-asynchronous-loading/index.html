@@ -1,0 +1,28 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Lazy Loading and Asynchronous Loading – Advanced Level: HTML and CSS"
+description: "Lazy loading delays the loading of off-screen resources (like images and videos) until they are needed. This reduces initial load time and saves bandwidth..."
+permalink: "/academy/advanced-level-html-and-css/4-lazy-loading-and-asynchronous-loading/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Lazy Loading and Asynchronous Loading", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/4-lazy-loading-and-asynchronous-loading/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Web Performance Optimization</p>
+    <h1>Lazy Loading and Asynchronous Loading</h1>
+{% raw %}
+<p><strong>Lazy loading</strong> delays the loading of off-screen resources (like images and videos) until they are needed. This reduces initial load time and saves bandwidth for users who may not scroll down to view all content.</p>
+<h2>Lazy Loading Images:</h2>
+<pre>htmlCopy code<code>&lt;img src=&quot;placeholder.jpg&quot; data-src=&quot;image.jpg&quot; alt=&quot;Lazy load example&quot; loading=&quot;lazy&quot;&gt;
+</code></pre>
+<p>The <strong><code>loading=&quot;lazy&quot;</code></strong> attribute defers the loading of images until they enter the viewport.</p>
+<h2>Asynchronous Loading for JavaScript:</h2>
+<p>Load non-essential JavaScript files asynchronously to avoid blocking the initial rendering of the page.</p>
+<pre>htmlCopy code<code>&lt;script src=&quot;script.js&quot; async&gt;&lt;/script&gt;
+</code></pre>
+<p>Using the <code>async</code> attribute ensures that the script is loaded asynchronously, allowing the page to load faster.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/3-optimizing-images-and-fonts/"><span>Previous</span>Optimizing Images and Fonts</a><a class="next" href="/academy/advanced-level-html-and-css/5-caching-and-content-delivery-networks-cdns/"><span>Next</span>Caching and Content Delivery Networks (CDNs)</a></nav>
+</div>

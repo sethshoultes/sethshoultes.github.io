@@ -1,0 +1,29 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Responsive Grids with repeat(), auto-fill, and auto-fit – Advanced Level: HTML and CSS"
+description: "Creating responsive grids is one of the most powerful features of CSS Grid. You can use the function along with and to create grids that automatically..."
+permalink: "/academy/advanced-level-html-and-css/8-responsive-grids-with-repeat-auto-fill-and-auto-fit/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Responsive Grids with repeat(), auto-fill, and auto-fit", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/8-responsive-grids-with-repeat-auto-fill-and-auto-fit/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Grid Advanced Features</p>
+    <h1>Responsive Grids with repeat(), auto-fill, and auto-fit</h1>
+{% raw %}
+<p>Creating <strong>responsive grids</strong> is one of the most powerful features of CSS Grid. You can use the <code>repeat()</code> function along with <strong><code>auto-fill</code></strong> and <strong><code>auto-fit</code></strong> to create grids that automatically adjust to different screen sizes.</p>
+<h2><strong><code>auto-fill</code> vs. <code>auto-fit</code></strong>:</h2>
+<ul><li><strong><code>auto-fill</code></strong>: Fills the grid with as many columns as possible, even if there are empty spaces.</li>
+<li><strong><code>auto-fit</code></strong>: Similar to <code>auto-fill</code>, but collapses any empty columns, making the grid more compact.</li>
+</ul>
+<h2>Example: Responsive Grid Using <code>auto-fit</code> and <code>minmax()</code></h2>
+<pre><code>.grid-container {<br>  display: grid;<br>  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));<br>  gap: 10px;<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The grid will create as many 200px-wide columns as fit in the container.</li>
+<li>The columns expand to fill the available space (<code>1fr</code>), creating a fully responsive layout.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/7-nested-grids-for-complex-layouts/"><span>Previous</span>Nested Grids for Complex Layouts</a><a class="next" href="/academy/advanced-level-html-and-css/key-takeaways/"><span>Next</span>Key Takeaways</a></nav>
+</div>

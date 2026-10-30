@@ -1,0 +1,64 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Creating Custom API Endpoints – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "Let's dive into some hands-on tests and simulations! We’ll cover: Creating custom API endpoints in WordPress for MemberPress. Testing OAuth 2.0 workflows..."
+permalink: "/academy/mastering-the-memberpress-rest-api/1-creating-custom-api-endpoints-2/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "Creating Custom API Endpoints", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/1-creating-custom-api-endpoints-2/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Tests and Simulations: Creating Custom API Endpoints, Testing OAuth Workflows, and Advanced Payment Automations</p>
+    <h1>Creating Custom API Endpoints</h1>
+{% raw %}
+<p>Let's dive into some hands-on tests and simulations! We’ll cover:</p>
+<ol><li><strong>Creating custom API endpoints</strong> in WordPress for MemberPress.</li>
+<li><strong>Testing OAuth 2.0 workflows</strong> for secure API authentication.</li>
+<li><strong>Building advanced payment automations</strong> using Stripe.</li>
+</ol>
+<p>These examples will help you extend your site's functionality, secure your API, and automate complex payment flows.</p>
+<p>MemberPress relies on the WordPress REST API. You can extend the default capabilities by adding <strong>custom API endpoints</strong> to handle specific workflows, such as retrieving member statistics, accessing premium content, or modifying user data.</p>
+<h2>Example: Create a Custom API Endpoint to Retrieve Active Members</h2>
+<h3>Steps:</h3>
+<ol><li><strong>Create a Custom Plugin</strong>:<ul><li>In your WordPress installation, create a new plugin to add custom API functionality.</li>
+<li>Go to <code>wp-content/plugins/</code>, and create a folder called <code>custom-memberpress-api</code>. Inside that folder, create a file named <code>custom-memberpress-api.php</code>.</li>
+</ul>
+</li>
+<li><strong>Add the Following Code</strong>: <code>&lt;?php /* Plugin Name: Custom MemberPress API Description: Adds custom API endpoints to retrieve active members. */ // Register the custom API endpoint on plugin activation add_action('rest_api_init', function() { register_rest_route('custom_mp/v1', '/active-members', array( 'methods' => 'GET', 'callback' => 'get_active_members', 'permission_callback' => '__return_true', )); }); // Define the callback function that returns active members function get_active_members() { global $wpdb; $active_members = $wpdb->get_results(&quot;SELECT * FROM {$wpdb->prefix}members WHERE status = 'active'&quot;); return new WP_REST_Response($active_members, 200); }</code><ul><li>This code defines a new REST API route: <code>/wp-json/custom_mp/v1/active-members</code>.</li>
+<li>The <code>get_active_members()</code> function retrieves all active members from the WordPress database and returns them in the response.</li>
+</ul>
+</li>
+<li><strong>Activate the Plugin</strong>:<ul><li>Go to your WordPress admin dashboard, navigate to <strong>Plugins</strong>, and activate the "Custom MemberPress API" plugin.</li>
+</ul>
+</li>
+<li><strong>Test the Custom Endpoint</strong>:<ul><li>Use <strong>Postman</strong> or <strong>cURL</strong> to test your new endpoint.</li>
+<li>Send a <strong>GET</strong> request to: <code>https://your-site.com/wp-json/custom_mp/v1/active-members</code></li>
+</ul>
+</li>
+</ol>
+<h3>Expected Response:</h3>
+<p>You should receive a JSON response listing all active members:</p>
+<pre><code>[
+    {
+        &quot;id&quot;: 1,
+        &quot;username&quot;: &quot;john_doe&quot;,
+        &quot;email&quot;: &quot;john@example.com&quot;,
+        &quot;status&quot;: &quot;active&quot;
+    },
+    {
+        &quot;id&quot;: 2,
+        &quot;username&quot;: &quot;jane_doe&quot;,
+        &quot;email&quot;: &quot;jane@example.com&quot;,
+        &quot;status&quot;:</code> <code>&quot;active&quot;
+    }
+]
+</code></pre>
+<h2>Customization Ideas:</h2>
+<ul><li><strong>Add Parameters</strong>: You could extend the endpoint to allow filtering by membership levels or dates, such as retrieving members who joined in the last 30 days.</li>
+<li><strong>Permissions</strong>: Replace <code>__return_true</code> with a custom permission callback to ensure only authenticated users can access the endpoint.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/10-wordpress-rest-api-customizations/"><span>Previous</span>WordPress REST API Customizations</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/2-testing-oauth-2-0-workflows-for-secure-api-authentication/"><span>Next</span>Testing OAuth 2.0 Workflows for Secure API Authentication</a></nav>
+</div>

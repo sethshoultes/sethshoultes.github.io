@@ -1,0 +1,80 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Setting Up Your First Automation – Building Membership Websites with WordPress"
+description: "Now that you have a solid understanding of how Uncanny Automator and MemberPress work together, it’s time to set up a test automation ! This hands-on..."
+permalink: "/academy/fundamental-concepts-of-membership-websites/setting-up-your-first-automation/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Building Membership Websites with WordPress", "item": "https://sethshoultes.com/academy/fundamental-concepts-of-membership-websites/"}, {"@type": "ListItem", "position": 3, "name": "Setting Up Your First Automation", "item": "https://sethshoultes.com/academy/fundamental-concepts-of-membership-websites/setting-up-your-first-automation/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/fundamental-concepts-of-membership-websites/">Building Membership Websites with WordPress</a></p>
+    <p class="eyebrow">Uncanny Automator with MemberPress</p>
+    <h1>Setting Up Your First Automation</h1>
+{% raw %}
+<p>Now that you have a solid understanding of how <strong>Uncanny Automator</strong> and <strong>MemberPress</strong> work together, it’s time to <strong>set up a test automation</strong>! This hands-on approach will help solidify the concepts and give you a functional automation on your site.</p>
+<p>We’ll walk through the setup of a <strong>basic automation</strong>: <strong>Sending a Welcome Email</strong> when a user purchases a membership.</p>
+<hr/>
+<h2>🛠 Step 1: Set Up MemberPress &amp; Uncanny Automator</h2>
+<p>Before you begin creating your automation, make sure that both <strong>MemberPress</strong> and <strong>Uncanny Automator</strong> are installed and activated on your WordPress site.</p>
+<ol><li><strong>Install MemberPress</strong>:<ul><li>Go to your WordPress dashboard.</li>
+<li>Navigate to <strong>Plugins > Add New</strong>.</li>
+<li>Search for <strong>MemberPress</strong> and install the plugin.</li>
+<li>Once installed, configure your membership settings.</li>
+</ul>
+</li>
+<li><strong>Install Uncanny Automator</strong>:<ul><li>Go to <strong>Plugins > Add New</strong>.</li>
+<li>Search for <strong>Uncanny Automator</strong> and install the plugin.</li>
+<li>Activate the plugin and review the introductory guide.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>🛠 Step 2: Create a New Automation Recipe</h2>
+<ol><li>In the WordPress dashboard, go to the <strong>Uncanny Automator</strong> plugin.</li>
+<li>Click on <strong>Add New</strong> to create a new <strong>recipe</strong> (automation).</li>
+<li>You’ll be asked whether the recipe should be <strong>Logged-in Users</strong> or <strong>Everyone</strong>. Since this automation is triggered when a user buys a membership, select <strong>Logged-in Users</strong>.</li>
+</ol>
+<hr/>
+<h2>🛠 Step 3: Define the Trigger (MemberPress)</h2>
+<ol><li>Choose <strong>MemberPress</strong> as the plugin for the <strong>trigger</strong>.</li>
+<li>Select the trigger event: <strong>User purchases a membership</strong>.<ul><li>If you have multiple membership levels, select the specific membership level you want to target (e.g., "Gold Membership").</li>
+<li>If you want to automate this for all memberships, leave it as the default.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>🛠 Step 4: Define the Action (Send an Email)</h2>
+<ol><li>Now that you’ve set the trigger, it’s time to define the <strong>action</strong>. For this example, we’ll send a welcome email.</li>
+<li>Choose <strong>Send an Email</strong> as the action:<ul><li>Add the <strong>recipient's email address</strong>. You can select the <strong>user’s email</strong> dynamically (since it's a welcome email, the user who purchased the membership will receive the email). Write the subject line for the email (e.g., "Welcome to our Membership!"). Compose the body of the email. Here’s an example message:</li></ul><code>Hi {user_first_name}, Welcome to the [membership name] community! We’re thrilled to have you on board. As a member, you now have exclusive access to [mention some perks]. If you have any questions, feel free to reach out to us at [your contact email]. Best regards, The [Your Site] Team</code></li>
+<li>Save the action.</li>
+</ol>
+<hr/>
+<h2>🛠 Step 5: Test Your Automation</h2>
+<ol><li>Once you have both the <strong>trigger</strong> and <strong>action</strong> set up, you can test the recipe.</li>
+<li>Before activating it for all users, use the <strong>test mode</strong>:<ul><li>Log in as a test user.</li>
+<li>Purchase a membership in MemberPress (use a test payment gateway like <strong>PayPal Sandbox</strong> or <strong>Stripe Test Mode</strong>).</li>
+<li>Check whether the welcome email is sent to your test user’s email address.</li>
+</ul>
+</li>
+<li>If the test works as expected, you can go back to Uncanny Automator and <strong>activate the recipe</strong>.</li>
+</ol>
+<hr/>
+<h2>🛠 Step 6: Activate the Recipe</h2>
+<p>Once you’ve confirmed that everything is working as it should:</p>
+<ol><li>Go back to the Uncanny Automator dashboard.</li>
+<li>Find the recipe you created and switch it from <strong>Draft</strong> to <strong>Live</strong>.</li>
+</ol>
+<p>Now, any new users who purchase the membership will automatically receive the welcome email!</p>
+<hr/>
+<h2>✅ Final Thoughts:</h2>
+<p>This test automation was a simple example, but it demonstrates the power of automating tasks using Uncanny Automator and MemberPress. With these tools, you can set up more advanced automations, like:</p>
+<ul><li>Enrolling users in online courses.</li>
+<li>Sending admin notifications.</li>
+<li>Offering renewal discounts or reminders.</li>
+</ul>
+<p>As you get more comfortable, you can explore integrating other plugins and tools to create more complex workflows that save time and increase member engagement.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/fundamental-concepts-of-membership-websites/examples-for-understanding-uncanny-automator-memberpress-integration/"><span>Previous</span>Examples for Understanding Uncanny Automator &amp; MemberPress Integration</a><a class="next" href="/academy/fundamental-concepts-of-membership-websites/related-themes-and-readings-expanding-your-knowledge/"><span>Next</span>Related Themes and Readings: Expanding Your Knowledge</a></nav>
+</div>

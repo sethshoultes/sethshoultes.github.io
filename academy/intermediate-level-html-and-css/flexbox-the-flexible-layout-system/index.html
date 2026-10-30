@@ -1,0 +1,146 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Flexbox: The Flexible Layout System – Intermediate Level: HTML and CSS"
+description: "Flexbox (short for Flexible Box Layout ) is one of the most powerful layout tools in CSS. It was designed to improve the way items are aligned and..."
+permalink: "/academy/intermediate-level-html-and-css/flexbox-the-flexible-layout-system/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Intermediate Level: HTML and CSS", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Flexbox: The Flexible Layout System", "item": "https://sethshoultes.com/academy/intermediate-level-html-and-css/flexbox-the-flexible-layout-system/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/intermediate-level-html-and-css/">Intermediate Level: HTML and CSS</a></p>
+    <p class="eyebrow">HTML Elements and Semantic Structure</p>
+    <h1>Flexbox: The Flexible Layout System</h1>
+{% raw %}
+<p>Flexbox (short for <strong>Flexible Box Layout</strong>) is one of the most powerful layout tools in CSS. It was designed to improve the way items are aligned and distributed within a container, even when their size is unknown or dynamic. Unlike traditional layout methods (like floats or inline-block), Flexbox makes it easier to build fluid and responsive layouts that adapt seamlessly to different screen sizes and content changes.</p>
+<hr/>
+<h2><strong>What You Will Learn:</strong></h2>
+<ol><li><strong>How Flexbox Works</strong></li>
+<li><strong>Key Properties for the Flex Container</strong></li>
+<li><strong>Key Properties for Flex Items</strong></li>
+<li><strong>Real-World Examples</strong></li>
+<li><strong>Common Use Cases</strong></li>
+<li><strong>Flexbox vs. Other Layout Methods</strong></li>
+</ol>
+<hr/>
+<h2><strong>1. How Flexbox Works</strong></h2>
+<p>The <strong>flexbox model</strong> revolves around two key components:</p>
+<ul><li><strong>Flex Container</strong>: This is the parent element where Flexbox is applied. It controls the layout of the child items.</li>
+<li><strong>Flex Items</strong>: These are the child elements of the flex container. They are aligned and distributed inside the flex container based on the properties you set.</li>
+</ul>
+<h3>Basic Structure:</h3>
+<pre><code>&lt;div class=&quot;flex-container&quot;><br>  &lt;div class=&quot;flex-item&quot;>Item 1&lt;/div><br>  &lt;div class=&quot;flex-item&quot;>Item 2&lt;/div><br>  &lt;div class=&quot;flex-item&quot;>Item 3&lt;/div><br>&lt;/div><br></code></pre>
+<p>To enable Flexbox, you need to set the <code>display</code> property of the container to <code>flex</code>:</p>
+<pre>cssCopy code<code>.flex-container {
+  display: flex;
+}
+</code></pre>
+<hr/>
+<h2><strong>2. Key Properties for the Flex Container</strong></h2>
+<p>Once the container is set to <code>display: flex</code>, you can control how its child items (flex items) behave using several key properties:</p>
+<h3><strong><code>flex-direction</code></strong>:</h3>
+<p>This property defines the main axis (horizontal or vertical) along which the flex items are placed.</p>
+<ul><li><code>row</code>: Items are placed horizontally (left to right).</li>
+<li><code>row-reverse</code>: Items are placed horizontally (right to left).</li>
+<li><code>column</code>: Items are placed vertically (top to bottom).</li>
+<li><code>column-reverse</code>: Items are placed vertically (bottom to top).</li>
+</ul>
+<pre><code>.flex-container {<br>  display: flex;<br>  flex-direction: row; /* Horizontal row (default) */<br>}<br></code></pre>
+<h3><strong><code>justify-content</code></strong>:</h3>
+<p>This property controls how items are aligned along the main axis (horizontal if <code>flex-direction: row</code>, vertical if <code>flex-direction: column</code>).</p>
+<ul><li><code>flex-start</code>: Align items to the start of the flex container (default).</li>
+<li><code>flex-end</code>: Align items to the end of the flex container.</li>
+<li><code>center</code>: Center the items.</li>
+<li><code>space-between</code>: Distribute items evenly, with space between them.</li>
+<li><code>space-around</code>: Distribute items evenly, with space before, between, and after each item.</li>
+</ul>
+<pre><code>.flex-container {<br>  display: flex;<br>  justify-content: center; /* Center items horizontally */<br>}<br></code></pre>
+<h3><strong><code>align-items</code></strong>:</h3>
+<p>This property controls how items are aligned along the <strong>cross-axis</strong> (perpendicular to the main axis).</p>
+<ul><li><code>stretch</code>: Stretch items to fill the container (default).</li>
+<li><code>flex-start</code>: Align items to the start of the cross axis.</li>
+<li><code>flex-end</code>: Align items to the end of the cross axis.</li>
+<li><code>center</code>: Center items along the cross axis.</li>
+<li><code>baseline</code>: Align items based on their text baseline.</li>
+</ul>
+<pre><code>.flex-container {<br>  display: flex;<br>  align-items: center; /* Center items vertically */<br>}<br></code></pre>
+<h3><strong><code>flex-wrap</code></strong>:</h3>
+<p>By default, all items are placed on a single line (they will shrink to fit). <code>flex-wrap</code> allows items to wrap onto multiple lines if necessary.</p>
+<ul><li><code>nowrap</code>: All items are on one line (default).</li>
+<li><code>wrap</code>: Items wrap onto multiple lines if needed.</li>
+<li><code>wrap-reverse</code>: Items wrap onto multiple lines, but in reverse order.</li>
+</ul>
+<pre><code>.flex-container {<br>  display: flex;<br>  flex-wrap: wrap; /* Items will wrap to the next line if necessary */<br>}<br></code></pre>
+<h3><strong><code>align-content</code></strong>:</h3>
+<p>When the items wrap, this property controls the alignment of the rows. It only works when there's extra space in the cross-axis (i.e., multiple lines of content).</p>
+<ul><li><code>flex-start</code>: Align the rows to the start.</li>
+<li><code>flex-end</code>: Align the rows to the end.</li>
+<li><code>center</code>: Center the rows.</li>
+<li><code>space-between</code>: Distribute the rows evenly with no space at the start or end.</li>
+<li><code>space-around</code>: Distribute the rows with equal space around each row.</li>
+<li><code>stretch</code>: Stretch the rows to take up the remaining space (default).</li>
+</ul>
+<pre><code>.flex-container {<br>  display: flex;<br>  flex-wrap: wrap;<br>  align-content: space-between; /* Space between rows */<br>}<br></code></pre>
+<hr/>
+<h2><strong>3. Key Properties for Flex Items</strong></h2>
+<p>You can also control the behavior of individual <strong>flex items</strong> within the container:</p>
+<h3><strong><code>flex-grow</code></strong>:</h3>
+<p>Specifies how much a flex item should grow relative to the rest of the items in the container.</p>
+<ul><li><code>flex-grow: 1</code>: The item will grow to fill available space.</li>
+<li><code>flex-grow: 0</code>: The item will not grow (default).</li>
+</ul>
+<pre><code>.flex-item {<br>  flex-grow: 1; /* Each item will grow to take equal space */<br>}<br></code></pre>
+<h3><strong><code>flex-shrink</code></strong>:</h3>
+<p>Specifies how much a flex item should shrink relative to the other items if there’s not enough space.</p>
+<ul><li><code>flex-shrink: 1</code>: The item will shrink to fit the container (default).</li>
+<li><code>flex-shrink: 0</code>: The item will not shrink.</li>
+</ul>
+<pre><code>.flex-item {<br>  flex-shrink: 0; /* The item will not shrink if space is limited */<br>}<br></code></pre>
+<h3><strong><code>flex-basis</code></strong>:</h3>
+<p>Defines the initial size of a flex item before space is distributed according to <code>flex-grow</code> or <code>flex-shrink</code>.</p>
+<ul><li>Can be set to any length unit, percentage, or <code>auto</code>.</li>
+</ul>
+<pre>cssCopy code<code>.flex-item {
+  flex-basis: 200px; /* Each item will start with a width of 200px */
+}
+</code></pre>
+<h3><strong><code>align-self</code></strong>:</h3>
+<p>Overrides the <code>align-items</code> property for individual flex items, allowing different alignment for specific items.</p>
+<ul><li><code>flex-start</code>, <code>flex-end</code>, <code>center</code>, <code>baseline</code>, <code>stretch</code>.</li>
+</ul>
+<pre>cssCopy code<code>.flex-item {
+  align-self: center; /* This item will be vertically centered */
+}
+</code></pre>
+<hr/>
+<h2><strong>4. Real-World Flexbox Examples</strong></h2>
+<h3><strong>Example 1: Horizontal Navigation Bar</strong></h3>
+<pre><code>&lt;nav class=&quot;flex-container&quot;><br>  &lt;a href=&quot;#&quot;>Home&lt;/a><br>  &lt;a href=&quot;#&quot;>About&lt;/a><br>  &lt;a href=&quot;#&quot;>Services&lt;/a><br>  &lt;a href=&quot;#&quot;>Contact&lt;/a><br>&lt;/nav><br></code></pre>
+<pre><code>.flex-container {<br>  display: flex;<br>  justify-content: space-around; /* Evenly distribute links */<br>  background-color: #333;<br>}<br><br>.flex-container a {<br>  color: white;<br>  padding: 14px 20px;<br>  text-decoration: none;<br>}<br></code></pre>
+<h3><strong>Example 2: Responsive Card Layout</strong></h3>
+<pre><code>&lt;div class=&quot;flex-container&quot;><br>  &lt;div class=&quot;card&quot;>Card 1&lt;/div><br>  &lt;div class=&quot;card&quot;>Card 2&lt;/div><br>  &lt;div class=&quot;card&quot;>Card 3&lt;/div><br>&lt;/div><br></code></pre>
+<pre><code>.flex-container {<br>  display: flex;<br>  flex-wrap: wrap; /* Cards will wrap onto the next line */<br>  gap: 20px;<br>}<br><br>.card {<br>  flex-basis: calc(33.333% - 20px); /* 3 cards per row */<br>  background-color: lightgray;<br>  padding: 20px;<br>}<br></code></pre>
+<hr/>
+<h2><strong>5. Common Flexbox Use Cases</strong></h2>
+<ul><li><strong>Centering Elements</strong>: Flexbox is one of the simplest ways to center content both horizontally and vertically.</li>
+<li><strong>Navigation Bars</strong>: Align navigation items in a row, with space evenly distributed between them.</li>
+<li><strong>Responsive Layouts</strong>: Flexbox is perfect for building responsive grid systems that automatically adjust based on screen size.</li>
+<li><strong>Equal-Height Columns</strong>: Create layouts where columns in the same row have equal height, regardless of their content size.</li>
+</ul>
+<hr/>
+<h2><strong>6. Flexbox vs. Other Layout Methods</strong></h2>
+<ul><li><strong>Flexbox vs. CSS Grid</strong>:<br><strong>Flexbox</strong> is best suited for <strong>one-dimensional layouts</strong> (either row or column), while <strong>CSS Grid</strong> is better for <strong>two-dimensional layouts</strong> (both rows and columns). Flexbox is often used inside a grid to control individual items' alignment.</li>
+<li><strong>Flexbox vs. Float Layouts</strong>:<br>Float layouts were commonly used before Flexbox for multi-column designs. However, floats were never meant for layout purposes, leading to complicated and less predictable layouts compared to Flexbox.</li>
+<li><strong>Flexbox vs. Inline-Block</strong>:<br>Inline-block layouts were another workaround for creating flexible layouts before Flexbox. Flexbox is far more flexible and easier to control in terms of spacing and alignment.</li>
+</ul>
+<hr/>
+<h2><strong>Key Takeaways</strong></h2>
+<ul><li>Flexbox simplifies the process of aligning and distributing space among items in a container.</li>
+<li>Use Flexbox properties like <code>justify-content</code>, <code>align-items</code>, and <code>flex-direction</code> to control layout.</li>
+<li>Flexbox is ideal for responsive, flexible, and fluid layouts where items need to adapt to varying screen sizes.</li>
+<li>For more complex two-dimensional layouts, consider using <strong>CSS Grid</strong>.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/intermediate-level-html-and-css/semantic-html-and-advanced-elements/"><span>Previous</span>Semantic HTML and Advanced Elements</a><a class="next" href="/academy/intermediate-level-html-and-css/css-grid-two-dimensional-layouts/"><span>Next</span>CSS Grid: Two-Dimensional Layouts</a></nav>
+</div>

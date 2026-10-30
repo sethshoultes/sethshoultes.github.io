@@ -1,0 +1,31 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Accessible Navigation and ARIA Roles – Advanced Level: HTML and CSS"
+description: "A key aspect of accessibility is ensuring that navigation is intuitive and functional for all users, including those using assistive technologies like..."
+permalink: "/academy/advanced-level-html-and-css/4-accessible-navigation-and-aria-roles/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Accessible Navigation and ARIA Roles", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/4-accessible-navigation-and-aria-roles/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">Accessibility and SEO Best Practices</p>
+    <h1>Accessible Navigation and ARIA Roles</h1>
+{% raw %}
+<p>A key aspect of accessibility is ensuring that <strong>navigation</strong> is intuitive and functional for all users, including those using assistive technologies like screen readers. <strong>ARIA (Accessible Rich Internet Applications)</strong> roles and attributes enhance HTML elements by providing additional information about the structure and functionality of a webpage.</p>
+<h2>Best Practices for Accessible Navigation:</h2>
+<ul><li>Use <code>&lt;nav></code> for navigation bars to define a section of the page for navigation links.</li>
+<li>Ensure all interactive elements (links, buttons, forms) are keyboard accessible.</li>
+<li>Use <strong>ARIA roles</strong> to provide more information about complex UI components, such as menus or sliders.</li>
+</ul>
+<h2>Example of ARIA Roles in a Navigation Menu:</h2>
+<pre><code>&lt;nav role=&quot;navigation&quot; aria-label=&quot;Main Menu&quot;><br>  &lt;ul><br>    &lt;li>&lt;a href=&quot;#home&quot;>Home&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#about&quot;>About&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#services&quot;>Services&lt;/a>&lt;/li><br>    &lt;li>&lt;a href=&quot;#contact&quot;>Contact&lt;/a>&lt;/li><br>  &lt;/ul><br>&lt;/nav><br></code></pre>
+<h2>Common ARIA Roles:</h2>
+<ul><li><strong><code>role=&quot;navigation&quot;</code></strong>: Defines a group of navigational elements.</li>
+<li><strong><code>role=&quot;button&quot;</code></strong>: Enhances clickable elements that are not natively buttons (e.g., <code>&lt;div></code> used as a button).</li>
+<li><strong><code>aria-label</code></strong>: Provides descriptive labels for elements, improving accessibility.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/3-using-semantic-html-for-accessibility-and-seo/"><span>Previous</span>Using Semantic HTML for Accessibility and SEO</a><a class="next" href="/academy/advanced-level-html-and-css/5-optimizing-images-with-alt-text/"><span>Next</span>Optimizing Images with Alt Text</a></nav>
+</div>

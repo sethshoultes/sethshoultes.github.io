@@ -1,0 +1,34 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Advanced Payment Workflows – Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows"
+description: "If your membership site has complex payment needs (e.g., handling refunds, failed payments, or prorated upgrades), using the MemberPress API in..."
+permalink: "/academy/mastering-the-memberpress-rest-api/3-advanced-payment-workflows/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/"}, {"@type": "ListItem", "position": 3, "name": "Advanced Payment Workflows", "item": "https://sethshoultes.com/academy/mastering-the-memberpress-rest-api/3-advanced-payment-workflows/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/mastering-the-memberpress-rest-api/">Mastering the MemberPress REST API: Custom Integrations, Automation, and Advanced Workflows</a></p>
+    <p class="eyebrow">Taking MemberPress REST API to the Next Stage</p>
+    <h1>Advanced Payment Workflows</h1>
+{% raw %}
+<p>If your membership site has complex payment needs (e.g., handling refunds, failed payments, or prorated upgrades), using the MemberPress API in combination with third-party payment processors like <strong>Stripe</strong> or <strong>PayPal</strong> can streamline operations.</p>
+<h2>Example: Automating Failed Payment Retries with Stripe API</h2>
+<p>Let’s say you want to automatically retry failed payments after a certain period (e.g., 3 days) and notify the user when a payment succeeds after a retry.</p>
+<h3>Steps:</h3>
+<ol><li><strong>Set Up a Webhook for Failed Payments</strong>:<ul><li>MemberPress can notify you via webhook when a payment fails.</li>
+<li>Use this event to call the <strong>Stripe API</strong> and schedule a retry.</li>
+</ul>
+</li>
+<li><strong>Create an API Call to Retry Payments</strong>:<ul><li>Once you receive the failed payment webhook, call the Stripe API’s payment intent retry feature:<br><code>curl https://api.stripe.com/v1/payment_intents/pi_123456789/confirm \ -u sk_test_key: \ -d &quot;payment_method&quot;=&quot;pm_card_visa&quot;</code></li>
+</ul>
+</li>
+<li><strong>Notify the User Upon Success</strong>:<ul><li>If the retry is successful, send a notification email via your preferred email marketing API (e.g., MailChimp or ActiveCampaign).</li>
+</ul>
+</li>
+</ol>
+<p>This kind of automation ensures that your billing workflow is efficient, reducing the number of lost memberships due to failed payments.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/mastering-the-memberpress-rest-api/2-automating-workflows-with-webhooks-and-api-triggers/"><span>Previous</span>Automating Workflows with Webhooks and API Triggers</a><a class="next" href="/academy/mastering-the-memberpress-rest-api/4-implementing-single-sign-on-sso/"><span>Next</span>Implementing Single Sign-On (SSO)</a></nav>
+</div>

@@ -1,0 +1,25 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Mixins for Reusable Code Blocks – Advanced Level: HTML and CSS"
+description: "Mixins in SASS/SCSS are blocks of reusable styles that can be included in multiple selectors. This is particularly useful for avoiding repetition and can..."
+permalink: "/academy/advanced-level-html-and-css/5-mixins-for-reusable-code-blocks/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Mixins for Reusable Code Blocks", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/5-mixins-for-reusable-code-blocks/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Preprocessors: SASS/SCSS</p>
+    <h1>Mixins for Reusable Code Blocks</h1>
+{% raw %}
+<p><strong>Mixins</strong> in SASS/SCSS are blocks of reusable styles that can be included in multiple selectors. This is particularly useful for avoiding repetition and can include dynamic arguments to make the mixins more flexible.</p>
+<h2>Example of a Mixin:</h2>
+<pre><code>@mixin border-radius($radius) {<br>  -webkit-border-radius: $radius;<br>  -moz-border-radius: $radius;<br>  border-radius: $radius;<br>}<br><br>.button {<br>  @include border-radius(10px); /* Applying the mixin with a 10px radius */<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The <code>@mixin</code> directive defines a mixin named <code>border-radius</code>, which accepts a parameter <code>$radius</code>.</li>
+<li>The mixin is then included in the <code>.button</code> class using the <code>@include</code> directive, passing in a radius of <code>10px</code>.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/4-partials-and-imports-for-modular-css/"><span>Previous</span>Partials and Imports for Modular CSS</a><a class="next" href="/academy/advanced-level-html-and-css/6-inheritance-with-extend/"><span>Next</span>Inheritance with @extend</a></nav>
+</div>

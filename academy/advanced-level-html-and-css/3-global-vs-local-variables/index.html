@@ -1,0 +1,31 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Global vs. Local Variables – Advanced Level: HTML and CSS"
+description: "CSS Variables can be defined globally or locally. Variables defined in the selector are global, meaning they can be used anywhere in the stylesheet...."
+permalink: "/academy/advanced-level-html-and-css/3-global-vs-local-variables/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Global vs. Local Variables", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/3-global-vs-local-variables/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Variables (Custom Properties)</p>
+    <h1>Global vs. Local Variables</h1>
+{% raw %}
+<p>CSS Variables can be defined globally or locally. Variables defined in the <code>:root</code> selector are global, meaning they can be used anywhere in the stylesheet. However, you can also define <strong>local variables</strong> that are scoped to specific elements or components.</p>
+<h2>Global Variables:</h2>
+<p>When defined under the <code>:root</code> selector, variables are available globally throughout the entire document.</p>
+<pre><code>:root {<br>  --global-color: #ff5733;<br>}<br></code></pre>
+<h2>Local Variables:</h2>
+<p>Local variables are scoped to specific elements or selectors and override global variables within that scope.</p>
+<pre><code>.section {<br>  --section-color: #2980b9; /* Local variable for this section only */<br>  background-color: var(--section-color);<br>}<br></code></pre>
+<h2>Example:</h2>
+<pre><code>:root {<br>  --primary-color: #3498db; /* Global variable */<br>}<br><br>.section {<br>  --primary-color: #8e44ad; /* Local variable (overrides global within .section) */<br>  background-color: var(--primary-color);<br>}<br></code></pre>
+<p>In this example:</p>
+<ul><li>The global variable <code>--primary-color</code> is <strong>blue</strong>.</li>
+<li>Inside the <code>.section</code> class, <code>--primary-color</code> is redefined as <strong>purple</strong>, overriding the global value.</li>
+</ul>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/2-how-to-define-and-use-css-variables/"><span>Previous</span>How to Define and Use CSS Variables</a><a class="next" href="/academy/advanced-level-html-and-css/4-overriding-and-cascading-css-variables/"><span>Next</span>Overriding and Cascading CSS Variables</a></nav>
+</div>

@@ -1,0 +1,27 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Partials and Imports for Modular CSS – Advanced Level: HTML and CSS"
+description: "Partials allow you to split your CSS into multiple files, each containing specific styles for a component or section. This keeps your codebase organized..."
+permalink: "/academy/advanced-level-html-and-css/4-partials-and-imports-for-modular-css/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Partials and Imports for Modular CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/4-partials-and-imports-for-modular-css/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Preprocessors: SASS/SCSS</p>
+    <h1>Partials and Imports for Modular CSS</h1>
+{% raw %}
+<p><strong>Partials</strong> allow you to split your CSS into multiple files, each containing specific styles for a component or section. This keeps your codebase organized and modular, especially in large projects. These partials can be imported into your main SCSS file using the <code>@import</code> directive.</p>
+<p>Partials are SCSS files that start with an underscore (e.g., <code>_header.scss</code>). The underscore tells SASS that the file is a partial and should not be compiled into a standalone CSS file.</p>
+<h2>Example:</h2>
+<ul><li><code>_header.scss</code>:scssCopy code<code>header { background-color: #3498db; color: white; padding: 20px; }</code></li>
+<li><code>_footer.scss</code>:scssCopy code<code>footer { background-color: #2c3e50; color: #ecf0f1; padding: 20px; }</code></li>
+<li><strong>Main SCSS file</strong> (e.g., <code>style.scss</code>):scssCopy code<code>@import 'header'; @import 'footer';</code></li>
+</ul>
+<p>When compiled, <code>style.scss</code> will include the styles from both <code>_header.scss</code> and <code>_footer.scss</code> into a single CSS file.</p>
+<p></p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/3-nesting-for-cleaner-code/"><span>Previous</span>Nesting for Cleaner Code</a><a class="next" href="/academy/advanced-level-html-and-css/5-mixins-for-reusable-code-blocks/"><span>Next</span>Mixins for Reusable Code Blocks</a></nav>
+</div>

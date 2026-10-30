@@ -1,0 +1,97 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Getting Started – MemberPress & Event Espresso for Non-profit Organizations"
+description: "Let’s walk through the process of setting up a Zap in Zapier that automatically creates a personalized discount code in Event Espresso when a new member..."
+permalink: "/academy/memberpress-event-espresso-for-non-profit-organizations/getting-started/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "MemberPress & Event Espresso for Non-profit Organizations", "item": "https://sethshoultes.com/academy/memberpress-event-espresso-for-non-profit-organizations/"}, {"@type": "ListItem", "position": 3, "name": "Getting Started", "item": "https://sethshoultes.com/academy/memberpress-event-espresso-for-non-profit-organizations/getting-started/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/memberpress-event-espresso-for-non-profit-organizations/">MemberPress &amp; Event Espresso for Non-profit Organizations</a></p>
+    <p class="eyebrow">Step-by-Step Guide: Setting Up Automated Discount Creation Using Zapier</p>
+    <h1>Getting Started</h1>
+{% raw %}
+<p>Let’s walk through the process of setting up a <strong>Zap</strong> in <strong>Zapier</strong> that automatically creates a <strong>personalized discount code</strong> in <strong>Event Espresso</strong> when a new member joins via <strong>MemberPress</strong>. I’ll guide you step by step to ensure you can automate this workflow efficiently.</p>
+<hr/>
+<h2>Step 1: <strong>Create a Zapier Account (If You Don’t Have One)</strong></h2>
+<ol><li>Go to <a href="https://zapier.com/">Zapier’s website</a> and sign up for an account.</li>
+<li>Once signed in, click the <strong>Create Zap</strong> button in the upper-right corner.</li>
+</ol>
+<hr/>
+<h2>Step 2: <strong>Set Up MemberPress as the Trigger</strong></h2>
+<h3>1. <strong>Choose the Trigger App</strong></h3>
+<ul><li>In the <strong>Trigger</strong> section, search for <strong>MemberPress</strong>.</li>
+<li>Select it as the <strong>Trigger App</strong>.</li>
+</ul>
+<h3>2. <strong>Select the Trigger Event</strong></h3>
+<ul><li>Choose <strong>New Membership</strong> or <strong>Membership Renewal</strong> as the <strong>Trigger Event</strong> depending on whether you want this Zap to activate for new members only or for both new and renewing members.</li>
+</ul>
+<h3>3. <strong>Connect Your MemberPress Account</strong></h3>
+<ul><li>If this is your first time connecting <strong>MemberPress</strong> to Zapier, click <strong>Connect a New Account</strong>.</li>
+<li>You’ll be prompted to enter your <strong>MemberPress API key</strong>. You can find this key in your MemberPress dashboard under the <strong>Developer</strong> settings.</li>
+</ul>
+<h3>4. <strong>Set Trigger Filters (Optional)</strong></h3>
+<ul><li>If you want the Zap to trigger only for certain membership tiers (e.g., only for <strong>Wolf Protectors</strong> or <strong>Bear Guardians</strong>), you can add filters in this step:<ul><li>Click <strong>Filter Setup</strong> and specify the membership levels (e.g., "membership level is equal to 'Wolf Protector'").</li>
+</ul>
+</li>
+</ul>
+<h3>5. <strong>Test the Trigger</strong></h3>
+<ul><li>After setting up the trigger, Zapier will pull sample data from your MemberPress account (like member names, membership levels, etc.) to ensure everything is connected properly. Run a test to make sure it's fetching the correct information.</li>
+</ul>
+<hr/>
+<h2>Step 3: <strong>Set Up Event Espresso as the Action</strong></h2>
+<h3>1. <strong>Choose the Action App</strong></h3>
+<ul><li>In the <strong>Action</strong> section, search for <strong>Event Espresso</strong>.</li>
+<li>Select it as the <strong>Action App</strong>.</li>
+</ul>
+<h3>2. <strong>Select the Action Event</strong></h3>
+<ul><li>Choose <strong>Create Discount Code</strong> (or similar) as the <strong>Action Event</strong>.</li>
+</ul>
+<h3>3. <strong>Connect Your Event Espresso Account</strong></h3>
+<ul><li>If you haven’t connected Event Espresso to Zapier before, click <strong>Connect a New Account</strong>.</li>
+<li>Follow the prompts to log into your <strong>WordPress</strong> site and connect Event Espresso to Zapier. You may need to enable the <strong>Zapier integration add-on</strong> in your Event Espresso plugin if it’s not already installed.</li>
+</ul>
+<h3>4. <strong>Customize the Discount Code Settings</strong></h3>
+<ul><li><strong>Discount Code</strong>: Create a dynamic discount code using the member’s name or a custom code, such as <strong>JOHNDOE10</strong> or <strong>WILDLIFE10</strong>.</li>
+<li><strong>Discount Amount</strong>: Based on the member’s tier, set the discount percentage or amount:<ul><li><strong>Wolf Protector</strong>: 10% discount.</li>
+<li><strong>Bear Guardian</strong>: 100% discount (free tickets).</li>
+</ul>
+</li>
+<li><strong>Expiration Date</strong>: Set an expiration date for the discount code if necessary, such as valid only for the next event or for a limited time (e.g., valid for 30 days).</li>
+<li><strong>Ticket Type</strong>: Specify which event or ticket type the discount applies to (e.g., General Admission, VIP).</li>
+</ul>
+<hr/>
+<h2>Step 4: <strong>Send a Personalized Email to the New Member</strong></h2>
+<h3>1. <strong>Choose the Email App</strong></h3>
+<ul><li>In the <strong>Action</strong> section, click the <strong>+</strong> button to add another action.</li>
+<li>Choose an <strong>email service</strong> (like Gmail, Outlook, or Zapier’s built-in Email tool) as the <strong>Action App</strong>.</li>
+</ul>
+<h3>2. <strong>Select the Action Event</strong></h3>
+<ul><li>Choose <strong>Send Email</strong> as the <strong>Action Event</strong>.</li>
+</ul>
+<h3>3. <strong>Customize the Email Content</strong></h3>
+<ul><li><strong>To</strong>: Use the member’s email pulled from the <strong>MemberPress trigger</strong>.</li>
+<li><strong>Subject</strong>: Set a personalized subject line like "Welcome to Wildlife Defenders! Here’s Your Event Discount Code."</li>
+<li><strong>Body</strong>: Write a personalized message. Include the discount code generated from <strong>Event Espresso</strong> by pulling the <strong>Discount Code</strong> data from the previous step.</li>
+</ul>
+<p>Example:</p>
+<pre><code>Hi {{Member First Name}},<br><br>Welcome to the **Wolf Protector** membership! As a thank you for supporting Wildlife Defenders, we’re offering you a **10% discount** on our upcoming event, the **Wildlife Conservation Gala**.<br><br>Your discount code is: **{{Discount Code}}**<br><br>Use this code at [Event Registration Link] to save on your tickets.<br><br>We look forward to seeing you at the event!<br><br>Best regards,  <br>The Wildlife Defenders Team<br></code></pre>
+<h3>4. <strong>Test the Email</strong></h3>
+<ul><li>Run a test to ensure that Zapier sends an email to the member with the correct discount code from Event Espresso.</li>
+</ul>
+<hr/>
+<h2>Step 5: <strong>Test Your Zap</strong></h2>
+<p>Now that everything is set up, it’s time to test the full process:</p>
+<ol><li><strong>Run a Test Zap</strong>: Go back to your Zap dashboard and run a test from start to finish. Sign up as a new member in <strong>MemberPress</strong>.</li>
+<li><strong>Check</strong> that a discount code is generated in <strong>Event Espresso</strong>.</li>
+<li><strong>Verify</strong> that the member receives an email with the correct discount code and details.</li>
+<li><strong>Check</strong> the discount in Event Espresso to confirm it applies to the correct event or ticket type.</li>
+</ol>
+<hr/>
+<h2>Step 6: <strong>Activate Your Zap</strong></h2>
+<p>Once you’ve tested the Zap and everything works smoothly, <strong>turn it on</strong>. Zapier will now automatically create discount codes and send personalized emails whenever a new member joins or renews through <strong>MemberPress</strong>.</p>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/memberpress-event-espresso-for-non-profit-organizations/summary-of-steps/"><span>Previous</span>Summary of Steps</a><a class="next" href="/academy/memberpress-event-espresso-for-non-profit-organizations/bonus-advanced-customization-ideas/"><span>Next</span>Bonus: Advanced Customization Ideas</a></nav>
+</div>

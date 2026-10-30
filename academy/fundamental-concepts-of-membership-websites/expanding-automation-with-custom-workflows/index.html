@@ -1,0 +1,126 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Expanding Automation with Custom Workflows – Building Membership Websites with WordPress"
+description: "You’ve mastered the basics of creating automations with Uncanny Automator and MemberPress , and now it’s time to take things to the next level. Let’s dive..."
+permalink: "/academy/fundamental-concepts-of-membership-websites/expanding-automation-with-custom-workflows/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Building Membership Websites with WordPress", "item": "https://sethshoultes.com/academy/fundamental-concepts-of-membership-websites/"}, {"@type": "ListItem", "position": 3, "name": "Expanding Automation with Custom Workflows", "item": "https://sethshoultes.com/academy/fundamental-concepts-of-membership-websites/expanding-automation-with-custom-workflows/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/fundamental-concepts-of-membership-websites/">Building Membership Websites with WordPress</a></p>
+    <p class="eyebrow">Uncanny Automator with MemberPress</p>
+    <h1>Expanding Automation with Custom Workflows</h1>
+{% raw %}
+<p>You’ve mastered the basics of creating automations with <strong>Uncanny Automator</strong> and <strong>MemberPress</strong>, and now it’s time to take things to the next level. Let’s dive into some <strong>advanced automation techniques</strong> that will allow you to create more complex workflows and integrate with external systems.</p>
+<hr/>
+<h2>1. <strong>Using Webhooks for Custom Integrations</strong></h2>
+<p>A <strong>webhook</strong> is a method of sending real-time data from one system to another. With webhooks, you can extend your WordPress automations to external apps and services.</p>
+<h3>🔧 Example: Send Membership Data to a CRM Using Webhooks</h3>
+<p>Let’s say you want to send new membership data from your WordPress site to an external CRM like <strong>HubSpot</strong>, <strong>Salesforce</strong>, or <strong>Zoho CRM</strong>. You can use webhooks to push this data automatically every time a user purchases a membership.</p>
+<h4>Steps:</h4>
+<ol><li><strong>Set Up a Webhook URL</strong>:<ul><li>In your CRM (like HubSpot), create a webhook URL that will receive data from your WordPress site.</li>
+</ul>
+</li>
+<li><strong>Create a New Recipe in Uncanny Automator</strong>:<ul><li><strong>Trigger</strong>: Select <strong>MemberPress</strong> and choose <strong>User purchases a membership</strong> as the trigger.</li>
+<li><strong>Action</strong>: Select <strong>Webhook</strong> as the action. You’ll be prompted to enter the <strong>Webhook URL</strong> provided by your CRM.</li>
+</ul>
+</li>
+<li><strong>Send Data</strong>:<ul><li>You can specify the data to send, such as the <strong>user’s email</strong>, <strong>membership level</strong>, and <strong>purchase date</strong>. This information will be pushed to the external system.</li>
+</ul>
+</li>
+<li><strong>Test and Activate</strong>:<ul><li>Perform a test purchase on your site, and check whether the data is correctly received in your CRM. Once tested, activate the recipe.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>2. <strong>Chaining Automations with Conditional Logic</strong></h2>
+<p>Sometimes you need more control over your automations, like only triggering certain actions if specific conditions are met. <strong>Conditional logic</strong> allows you to fine-tune when and how automations are triggered.</p>
+<h3>🔧 Example: Sending a Special Offer to Members Based on Their Subscription Status</h3>
+<p>Let’s say you want to send a <strong>discount email</strong> only to members who haven’t logged in for over 30 days.</p>
+<h4>Steps:</h4>
+<ol><li><strong>Create a Trigger with Conditions</strong>:<ul><li>In Uncanny Automator, create a recipe with the <strong>MemberPress</strong> trigger: <strong>User hasn't logged in for X days</strong> (set this to 30 days).</li>
+</ul>
+</li>
+<li><strong>Conditional Logic</strong>:<ul><li>Add a <strong>condition</strong> that checks the user’s membership status. For example, you could set a condition that the email should only be sent to users who have an <strong>active membership</strong>.</li>
+</ul>
+</li>
+<li><strong>Action</strong>:<ul><li>The action could be to send a <strong>special discount offer</strong> to encourage them to log back in or renew their membership.</li>
+</ul>
+</li>
+<li><strong>Test and Activate</strong>:<ul><li>Once you’re happy with the logic, test the automation and activate it. Only users who meet both conditions (30 days inactive and active membership) will receive the email.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>3. <strong>Advanced Reporting with Google Sheets Integration</strong></h2>
+<p>For membership sites, tracking data and performance metrics can be crucial. You can use <strong>Google Sheets integration</strong> to automatically collect data and create reports on membership activity.</p>
+<h3>🔧 Example: Create a Daily Report of New Memberships in Google Sheets</h3>
+<h4>Steps:</h4>
+<ol><li><strong>Trigger</strong>:<ul><li>Create a recipe in Uncanny Automator with the <strong>MemberPress</strong> trigger: <strong>User purchases a membership</strong>.</li>
+</ul>
+</li>
+<li><strong>Action</strong>:<ul><li>Choose <strong>Google Sheets</strong> as the action.</li>
+<li>Set up the Google Sheet to receive membership data such as:<ul><li><strong>User’s name</strong>.</li>
+<li><strong>Membership level</strong>.</li>
+<li><strong>Date of purchase</strong>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Daily Summary</strong>:<ul><li>You can automate this further by creating a daily summary report that tallies the number of new memberships and emails it to you.</li>
+</ul>
+</li>
+<li><strong>Test</strong>:<ul><li>Run a test purchase and verify that the membership data is correctly added to your Google Sheet.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>4. <strong>Connecting to External Automation Platforms: Zapier &amp; Integromat</strong></h2>
+<p>For advanced workflows that extend beyond WordPress, <strong>Zapier</strong> or <strong>Make (formerly Integromat)</strong> can be used to connect your membership site with thousands of other apps and services.</p>
+<h3>🔧 Example: Automatically Create a Task in Asana When a New Member Joins</h3>
+<p>If you use a project management tool like <strong>Asana</strong>, <strong>Trello</strong>, or <strong>Monday.com</strong>, you can automate the creation of tasks for your team based on MemberPress events.</p>
+<h4>Steps:</h4>
+<ol><li><strong>Zapier or Integromat</strong>:<ul><li>Set up an account with Zapier or Make.</li>
+<li>Create a <strong>Zap</strong> (in Zapier) or <strong>Scenario</strong> (in Make) that starts with a webhook.</li>
+</ul>
+</li>
+<li><strong>Webhook Setup in Uncanny Automator</strong>:<ul><li>In Uncanny Automator, set up a recipe where the trigger is <strong>User purchases a membership</strong>, and the action is a webhook that sends data to Zapier or Make.</li>
+</ul>
+</li>
+<li><strong>Create a Task in Asana</strong>:<ul><li>On Zapier or Make, set the next step to <strong>Create a Task in Asana</strong>.</li>
+<li>Include information like the <strong>new member’s name</strong>, <strong>membership level</strong>, and <strong>subscription date</strong>.</li>
+</ul>
+</li>
+<li><strong>Test</strong>:<ul><li>After testing, any time a new user purchases a membership, a task will automatically be created in Asana for your team to follow up.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>5. <strong>Custom Member Experiences with Personalization</strong></h2>
+<p>Using <strong>custom fields</strong> and <strong>personalization</strong> tokens, you can create highly tailored member experiences based on user data.</p>
+<h3>🔧 Example: Personalized Welcome Messages</h3>
+<h4>Steps:</h4>
+<ol><li><strong>Set Up Custom Fields</strong>:<ul><li>In MemberPress, create <strong>custom fields</strong> for information like the user’s preferred communication style or interests during signup.</li>
+</ul>
+</li>
+<li><strong>Trigger</strong>:<ul><li>In Uncanny Automator, create a recipe where the <strong>trigger</strong> is the completion of the membership registration.</li>
+</ul>
+</li>
+<li><strong>Personalized Email</strong>:<ul><li>In the <strong>Action</strong>, set up a <strong>custom email</strong> that pulls data from these custom fields. For instance:</li></ul><code>Hi {user_first_name}, Welcome to [Your Site]! Since you mentioned you’re interested in [custom_field:interest], we recommend starting with this exclusive content: [link]. Best regards, The [Your Site] Team</code></li>
+<li><strong>Test</strong>:<ul><li>When a new user signs up and fills out the custom fields, they’ll receive a personalized email that makes them feel valued and understood.</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2>Summary of Advanced Automations:</h2>
+<ol><li><strong>Webhooks</strong>: Send real-time membership data to CRMs and other external systems.</li>
+<li><strong>Conditional Logic</strong>: Fine-tune automations by adding conditional triggers.</li>
+<li><strong>Google Sheets Integration</strong>: Create automated reports that track membership activity.</li>
+<li><strong>Zapier &amp; Integromat</strong>: Connect your membership site to thousands of external apps like Asana or Trello.</li>
+<li><strong>Personalization</strong>: Tailor your automations to the individual user’s preferences and actions.</li>
+</ol>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/fundamental-concepts-of-membership-websites/related-themes-and-readings-expanding-your-knowledge/"><span>Previous</span>Related Themes and Readings: Expanding Your Knowledge</a><a class="next" href="/academy/fundamental-concepts-of-membership-websites/mastering-uncanny-automator-memberpress-integration/"><span>Next</span>Intermediate Level: Mastering Uncanny Automator &amp; MemberPress Integration</a></nav>
+</div>

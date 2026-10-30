@@ -1,0 +1,28 @@
+---
+layout: "site"
+page_type: "lesson"
+title: "Performance and Best Practices – Advanced Level: HTML and CSS"
+description: "Performance Considerations: CSS Variables are optimized for performance, even when they are used frequently or updated dynamically. They can be changed in..."
+permalink: "/academy/advanced-level-html-and-css/8-performance-and-best-practices/"
+---
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Academy", "item": "https://sethshoultes.com/academy/"}, {"@type": "ListItem", "position": 2, "name": "Advanced Level: HTML and CSS", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/"}, {"@type": "ListItem", "position": 3, "name": "Performance and Best Practices", "item": "https://sethshoultes.com/academy/advanced-level-html-and-css/8-performance-and-best-practices/"}]}</script>
+<div class="wrap academy">
+  <article class="prose lesson">
+    <p class="crumbs"><a href="/academy/">Academy</a> / <a href="/academy/advanced-level-html-and-css/">Advanced Level: HTML and CSS</a></p>
+    <p class="eyebrow">CSS Variables (Custom Properties)</p>
+    <h1>Performance and Best Practices</h1>
+{% raw %}
+<h2><strong>Performance Considerations:</strong></h2>
+<ul><li>CSS Variables are optimized for performance, even when they are used frequently or updated dynamically. They can be changed in real time without reloading the page, making them ideal for dynamic features like theme switching.</li>
+<li>Avoid overusing deeply nested CSS Variables, as it may make debugging harder and impact maintainability.</li>
+</ul>
+<h2><strong>Best Practices:</strong></h2>
+<ol><li><strong>Organize Variables in the <code>:root</code> Selector</strong>:<br>Define global variables at the root level (<code>:root</code>) so they are available throughout your entire stylesheet.</li>
+<li><strong>Use Descriptive Variable Names</strong>:<br>Use clear, descriptive names for your variables (e.g., <code>--primary-color</code>, <code>--font-size</code>) to make your CSS more readable and maintainable.</li>
+<li><strong>Leverage CSS Variables for Theming</strong>:<br>Use variables to define key design tokens like colors, spacing, and typography, making it easier to apply themes or adjust styles globally.</li>
+<li><strong>Use Fallbacks</strong>:<br>Always include fallback values when using variables in critical places to ensure compatibility with older browsers or when a variable might be missing.</li>
+</ol>
+{% endraw %}
+  </article>
+  <nav class="lesson-nav" aria-label="Lessons"><a class="prev" href="/academy/advanced-level-html-and-css/7-dynamic-css-variables-with-javascript/"><span>Previous</span>Dynamic CSS Variables with JavaScript</a><a class="next" href="/academy/advanced-level-html-and-css/key-takeaways-3/"><span>Next</span>Key Takeaways</a></nav>
+</div>
