@@ -307,7 +307,7 @@
 .academy ul, .academy ol { margin: 0 0 1.25rem; }
 .academy li { margin-bottom: 0.35rem; }
 .academy .lesson h2, .academy .lesson h3, .academy .lesson h4 { margin-top: 2rem; margin-bottom: 0.6rem; }
-.hub .link-grid { align-items: start; }
+.academy .video-link a { display: inline-block; padding: 0.75rem 0; font-weight: 600; }
 .academy h2 { margin-top: 2.5rem; font-size: clamp(1.4rem, 3vw, 1.9rem); }
 .academy h3 { font-size: clamp(1.15rem, 2.4vw, 1.4rem); }
 .academy h1, .academy h2, .academy h3, .academy p, .academy li { overflow-wrap: anywhere; }

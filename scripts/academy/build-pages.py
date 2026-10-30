@@ -82,14 +82,25 @@ def lesson_title(s):
     return re.sub(r"^\d+\.\s*", "", plain_title(s))
 
 
+def lesson_source(l):
+    """The color-wheel lesson 1 was saved with lesson 2 pasted on the end under its own heading: cut it there, lesson 2 has its own page."""
+    return re.split(r"<h[1-6][^>]*>\s*Lesson \d", l["content"])[0]
+
+
 def fetch_image(url):
     """Copy a smartwebutah.com upload into assets/academy/ and return (site path, width, height)."""
     name = urllib.parse.unquote(url.rsplit("/", 1)[1])
     safe = ascii_slug(name.rsplit(".", 1)[0]) + "." + name.rsplit(".", 1)[1].lower()
     dest = IMG / safe
-    if not dest.exists():
+    if not dest.exists() and not (IMG / (safe.rsplit(".", 1)[0] + ".jpg")).exists():
         req = urllib.request.Request(urllib.parse.quote(url, safe=":/%"), headers={"User-Agent": "academy-export"})
         dest.write_bytes(urllib.request.urlopen(req, timeout=60).read())
+        if safe.endswith(".png") and dest.stat().st_size > 400_000:  # big screenshots and covers: a JPEG at 1280 wide is a tenth of the weight
+            jpg = dest.with_suffix(".jpg")
+            subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "82", "-Z", "1280", str(dest), "--out", str(jpg)], check=True, capture_output=True)
+            dest.unlink()
+    if not dest.exists():
+        safe, dest = safe.rsplit(".", 1)[0] + ".jpg", dest.with_suffix(".jpg")
     assert dest.stat().st_size > 0, url
     info = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", str(dest)], capture_output=True, text=True).stdout
     w, h = (int(re.search(rf"{k}: (\d+)", info).group(1)) for k in ("pixelWidth", "pixelHeight"))
@@ -123,7 +134,7 @@ def clean(content, report):
     report["lost_emoji"] += n
     # YouTube embeds were stored as a bare address inside a figure: make them a real link (the video is not ours to host)
     h = re.sub(r'<figure[^>]*>\s*<div[^>]*>\s*(https://youtu\.be/[^\s<]+)\s*</div>(.*?)</figure>',
-               lambda m: f'<p><a href="{m.group(1)}">Watch the video on YouTube</a></p>' + re.sub(r'<figcaption[^>]*>(.*?)</figcaption>', r"<p>\1</p>", m.group(2), flags=re.S), h, flags=re.S)
+               lambda m: f'<p class="video-link">This lesson is a video on YouTube, so it plays on youtube.com, not here.</p><p class="video-link"><a href="{m.group(1)}">Watch the video</a></p>' + re.sub(r'<figcaption[^>]*>(.*?)</figcaption>', r"<p>\1</p>", m.group(2), flags=re.S), h, flags=re.S)
     h = re.sub(r"<figure>\s*</figure>", "", h)
     h = re.sub(r"<figure>\s*(<figure>|</figure>)", r"\1", h)
     # the page already has an H1: shift headings up so the lesson starts at H2
@@ -159,9 +170,12 @@ def crumbs(*items):
 
 def main():
     data = json.loads(SRC.read_text())
-    for p in (OUT, IMG):
-        shutil.rmtree(p, ignore_errors=True)
-        p.mkdir(parents=True)
+    shutil.rmtree(OUT, ignore_errors=True)
+    OUT.mkdir(parents=True)
+    IMG.mkdir(parents=True, exist_ok=True)
+    for f in IMG.iterdir():  # cover-*.jpg are made by make-covers.py, not fetched: keep them
+        if not f.name.startswith("cover-"):
+            f.unlink()
     report = {"images": set(), "dropped_third_party": 0, "placeholder_links": 0, "lost_emoji": 0, "empty": [], "lessons": 0}
     redirects = [("/courses/", "/academy/")]
     cards = []
@@ -173,7 +187,7 @@ def main():
         lessons = [(s, l) for s in c["sections"] for l in s["lessons"]]
         used, flat = set(), []
         for s, l in lessons:
-            if len(re.sub(r"<[^>]+>|\s", "", clean(l["content"], dict(report, images=set())))) < 80:
+            if len(re.sub(r"<[^>]+>|\s", "", clean(lesson_source(l), dict(report, images=set())))) < 80:
                 # a lesson that was published with no text: no page, and the old address goes to the course
                 report["empty"].append(f"{cslug}/{ascii_slug(l['slug'])}")
                 redirects.append((urllib.parse.urlparse(l["link"]).path, cpath))
@@ -186,13 +200,17 @@ def main():
             flat.append((s, l, slug))
         card, intro_text = BLURBS[cslug]
         cimg = None
-        if c["image"]:
+        own = IMG / f"cover-{cslug}.jpg"
+        if own.exists():  # a picture made for a course that had none
+            info = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", str(own)], capture_output=True, text=True).stdout
+            cimg = (f"/assets/academy/{own.name}", *(int(re.search(rf"{k}: (\d+)", info).group(1)) for k in ("pixelWidth", "pixelHeight")))
+        elif c["image"]:
             path, w, hgt, _ = fetch_image(c["image"])
             cimg = (path, w, hgt)
 
         # lesson pages
         for i, (s, l, slug) in enumerate(flat):
-            body = clean(l["content"], report)
+            body = clean(lesson_source(l), report)
             lpath = f"{cpath}{slug}/"
             ltitle = lesson_title(l["title"])
             prev = flat[i - 1] if i else None
