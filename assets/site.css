@@ -384,4 +384,5 @@
   .mp-items input[type="checkbox"] { width: 1rem; height: 1rem; }
   .mp-day input, .mp-day select { background: none; color: #000; }
   .mp-note:placeholder-shown { display: none; }
+  .mp-day input { outline: none; }
 }
