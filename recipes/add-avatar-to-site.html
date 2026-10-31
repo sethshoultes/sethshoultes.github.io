@@ -1,52 +1,19 @@
 ---
+layout: "site"
+page_type: "recipe"
+title: "Add a Real-Time Avatar to a Static Site | AI Recipes"
+description: "Step-by-step recipe for embedding a synchronous, speaking avatar into a webpage using HeyGen and ElevenLabs. Cloudflare Worker token exchange, SDK integration, and gotchas."
+permalink: "/recipes/add-avatar-to-site.html"
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  {% include agent-hints.html %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add a Real-Time Avatar to a Static Site — Recipe</title>
-  <meta name="description" content="Step-by-step recipe for embedding a synchronous, speaking avatar into a webpage using HeyGen and ElevenLabs. Cloudflare Worker token exchange, SDK integration, and gotchas." />
-
-  <meta property="og:title" content="Add a Real-Time Avatar to a Static Site" />
-  <meta property="og:description" content="A speaking avatar in your webpage, wired to an ElevenLabs agent via HeyGen. The full integration recipe." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/recipes/add-avatar-to-site.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/recipes/recipe.css" />
-  {% include analytics.html %}
-</head>
-<body>
-
-<nav class="recipe-nav">
-  <div class="recipe-nav-inner">
-    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
-    <a href="/recipes/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      All recipes
-    </a>
-  </div>
-</nav>
-
-<main class="recipe">
-
-  <span class="eyebrow">Recipe · Voice UI</span>
-  <h1>Add a Real-Time Avatar to a Static Site</h1>
-  <p class="subtitle">A synchronous, speaking avatar embedded in a webpage — voice clone, lip sync, and all — wired to an ElevenLabs agent behind a Cloudflare Worker that mints temporary tokens.</p>
-
-  <div class="recipe-meta">
-    <span><strong>Time:</strong> ~35 min</span>
-    <span><strong>Difficulty:</strong> intermediate</span>
-    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-avatar-to-site/SKILL.md"><code>add-avatar-to-site</code></a></span>
-  </div>
-
-  <h2>Why an avatar</h2>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AI Recipes", "item": "https://sethshoultes.com/recipes/"}, {"@type": "ListItem", "position": 2, "name": "Add a Real-Time Avatar to a Static Site", "item": "https://sethshoultes.com/recipes/add-avatar-to-site.html"}]}</script>
+<div class="wrap recipe">
+  <article class="prose">
+    <p class="crumbs"><a href="/recipes/">AI Recipes</a> / Voice UI</p>
+    <h1>Add a Real-Time Avatar to a Static Site</h1>
+    <p class="lead">A synchronous, speaking avatar embedded in a webpage — voice clone, lip sync, and all — wired to an ElevenLabs agent behind a Cloudflare Worker that mints temporary tokens.</p>
+    <ul class="recipe-meta"><li><strong>Time:</strong> ~35 min</li><li><strong>Difficulty:</strong> intermediate</li><li><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-avatar-to-site/SKILL.md"><code>add-avatar-to-site</code></a></li></ul>
+{% raw %}
+<h2>Why an avatar</h2>
 
   <p>A chat widget is fine for text. But when the person on the other end is a voice clone of the site owner, reading answers aloud with lip sync, the interaction becomes something else. Visitors stop scrolling and start talking. The avatar becomes the interface.</p>
 
@@ -71,7 +38,7 @@
     <li>Node.js 18+ and <code>wrangler</code> CLI installed for the Worker.</li>
   </ul>
 
-  <hr class="divider" />
+  <hr>
 
   <h2>Step 1 — Gather credentials</h2>
 
@@ -280,10 +247,6 @@ npx wrangler secret put HEYGEN_AVATAR_UUID</code></pre>
       <li>Related recipe: <a href="/recipes/register-elevenlabs-client-tool.html">Register an ElevenLabs client tool</a></li>
     </ul>
   </div>
-
-  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
-
-</main>
-
-</body>
-</html>
+{% endraw %}
+  </article>
+</div>

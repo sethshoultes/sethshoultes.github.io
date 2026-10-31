@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Fail if a page, post, layout or include carries an inline style="..." attribute.
-# Styles belong in a class in assets/site.css or recipes/recipe.css.
+# Styles belong in a class in assets/site.css.
 #
 # Excluded on purpose: the games and arcade, vendored builds, standalone sub-sites that
 # carry their own stylesheet (garage-door-science-hub), docs and tooling.

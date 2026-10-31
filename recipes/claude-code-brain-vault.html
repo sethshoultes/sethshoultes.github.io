@@ -1,53 +1,19 @@
 ---
+layout: "site"
+page_type: "recipe"
+title: "Set up Claude Code with a Brain Vault | AI Recipes"
+description: "A step-by-step recipe for wiring an Obsidian brain vault to Claude Code as persistent memory. Hooks, skills, auto-commit, semantic search."
+permalink: "/recipes/claude-code-brain-vault.html"
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  {% include agent-hints.html %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set up Claude Code with a Brain Vault — Recipe</title>
-  <meta name="description" content="A step-by-step recipe for wiring an Obsidian brain vault to Claude Code as persistent memory. Hooks, skills, auto-commit, semantic search." />
-
-  <meta property="og:title" content="Set up Claude Code with a Brain Vault" />
-  <meta property="og:description" content="A persistent memory system for Claude Code — an Obsidian vault, a /brain skill, hooks, auto-commit, semantic search." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/recipes/claude-code-brain-vault.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/recipes/recipe.css" />
-  {% include analytics.html %}
-</head>
-<body>
-
-<nav class="recipe-nav">
-  <div class="recipe-nav-inner">
-    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
-    <a href="/recipes/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      All recipes
-    </a>
-  </div>
-</nav>
-
-<main class="recipe">
-
-  <span class="eyebrow">Recipe · Knowledge management</span>
-  <h1>Set up Claude Code with a Brain Vault</h1>
-  <p class="subtitle">An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory — so the next session knows what the last one figured out.</p>
-
-  <div class="recipe-meta">
-    <span><strong>Time:</strong> ~25 min</span>
-    <span><strong>Difficulty:</strong> intermediate</span>
-    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></span>
-    <span><strong>Reference repo:</strong> <a href="https://github.com/sethshoultes/building-with-ai-brain"><code>github.com/sethshoultes/building-with-ai-brain</code></a></span>
-  </div>
-
-  <h2>Why a brain vault</h2>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AI Recipes", "item": "https://sethshoultes.com/recipes/"}, {"@type": "ListItem", "position": 2, "name": "Set up Claude Code with a Brain Vault", "item": "https://sethshoultes.com/recipes/claude-code-brain-vault.html"}]}</script>
+<div class="wrap recipe">
+  <article class="prose">
+    <p class="crumbs"><a href="/recipes/">AI Recipes</a> / Knowledge management</p>
+    <h1>Set up Claude Code with a Brain Vault</h1>
+    <p class="lead">An Obsidian vault at <code>~/brain</code> wired to Claude Code as persistent memory — so the next session knows what the last one figured out.</p>
+    <ul class="recipe-meta"><li><strong>Time:</strong> ~25 min</li><li><strong>Difficulty:</strong> intermediate</li><li><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/set-up-claude-code-with-brain-vault/SKILL.md"><code>set-up-claude-code-with-brain-vault</code></a></li><li><strong>Reference repo:</strong> <a href="https://github.com/sethshoultes/building-with-ai-brain"><code>github.com/sethshoultes/building-with-ai-brain</code></a></li></ul>
+{% raw %}
+<h2>Why a brain vault</h2>
 
   <p>I work across a lot of projects with Claude Code. Each session has a context window, which closes when the session closes. A pattern I figured out yesterday in one project is gone tomorrow when I'm in a different project unless I wrote it down somewhere both me and Claude can read.</p>
 
@@ -78,7 +44,7 @@
     <li>Python 3.9+ for the search script.</li>
   </ul>
 
-  <hr class="divider" />
+  <hr>
 
   <h2>Step 1 — Create the vault</h2>
 
@@ -418,10 +384,6 @@ brain "the time I broke production"      # works even with vague queries</code><
       <li>Reference essay: <a href="/blog/skills-as-sops.html">Skills as SOPs</a> — what makes the brain skill installable</li>
     </ul>
   </div>
-
-  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
-
-</main>
-
-</body>
-</html>
+{% endraw %}
+  </article>
+</div>
