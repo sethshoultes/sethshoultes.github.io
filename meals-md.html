@@ -1,0 +1,25 @@
+---
+layout: null
+permalink: /meals.md
+sitemap: false
+---
+# The Shoultes family meal planner
+
+A free weekly meal planner with the Shoultes family favorites. Pick the week's dinners and the grocery list builds itself, grouped by store. It saves in your browser; no sign-in.
+
+Page: {{ site.url }}/meals/
+
+## The meals
+
+{% for m in site.data.meals.meals %}### {{ m.name }}
+
+{{ m.blurb }}
+{% if m.glance %}
+At a glance: {{ m.glance }}
+{% endif %}
+Ingredients:
+{% for i in m.ingredients %}- {{ i.item }}{% if i.qty %}, {{ i.qty }}{% endif %}{% if i.note %} ({{ i.note }}){% endif %}
+{% endfor %}{% if m.source %}
+Method: {{ m.source.url }} ({{ m.source.name }})
+{% endif %}
+{% endfor %}

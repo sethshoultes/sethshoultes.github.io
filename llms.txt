@@ -49,6 +49,7 @@
 - [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
 - [Free PDF library](https://sethshoultes.com/library/): free PDFs by email, starting with "Why AI agents skip WordPress" (markdown: https://sethshoultes.com/library.md)
 - [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, Shipyard AI (an agent pipeline: PRD in, production out), videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
+- [Shoultes family meal planner](https://sethshoultes.com/meals/): a free weekly meal planner with five family favorites and a grocery list grouped by store, saved in your browser. Plain-text version at https://sethshoultes.com/meals.md
 - [Talk to Seth](https://sethshoultes.com/talk/): ask Seth's AI (answers from his writing, with sources), or send Seth a message (markdown: https://sethshoultes.com/talk.md)
 - [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file
 - [Sitemap](https://sethshoultes.com/sitemap.xml)

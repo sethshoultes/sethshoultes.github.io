@@ -1,0 +1,55 @@
+stores:
+  - { key: costco, name: "Costco" }
+  - { key: smiths, name: "Smith's" }
+  - { key: other, name: "Anywhere else" }
+
+meals:
+  - slug: costco-salmon-in-the-air-fryer
+    name: "Costco salmon in the air fryer"
+    kind: "Seth's way"
+    blurb: "Salmon from Costco, cooked in the air fryer."
+    ingredients:
+      - { item: "Salmon", note: "from Costco", store: costco }
+  - slug: ooni-pizza
+    name: "Homemade pizza in the Ooni"
+    kind: "Seth's way"
+    blurb: "Pizzas made in our Ooni wood-fired oven from a simple pizza dough mix that costs 89 cents at Smith's."
+    ingredients:
+      - { item: "Pizza dough mix", note: "89 cents at Smith's", store: smiths }
+  - slug: hamburger-stir-fry
+    name: "Hamburger stir fry"
+    kind: "Seth's way"
+    blurb: "Hamburger and bagged cabbage mix with ramen noodle packs and teriyaki sauce."
+    ingredients:
+      - { item: "Hamburger" }
+      - { item: "Mixed cabbage", note: "the bagged kind" }
+      - { item: "Ramen noodle packs" }
+      - { item: "Teriyaki sauce" }
+  - slug: slow-cooker-ramen
+    name: "Slow cooker ramen with beef"
+    kind: "Family favorite"
+    blurb: "A cousin of the stir fry that cooks while you are out. It comes from Real Food Whole Life."
+    source: { name: "Real Food Whole Life", url: "https://realfoodwholelife.com/recipes/easiest-slow-cooker-ramen-noodles-with-beef/" }
+    ingredients:
+      - { item: "Lean ground beef", qty: "1 pound" }
+      - { item: "Slaw mix", qty: "9 ounces, about 4 cups" }
+      - { item: "Shredded carrots", qty: "2 cups" }
+      - { item: "Garlic", qty: "3 cloves" }
+      - { item: "Low-sodium tamari or soy sauce", qty: "⅓ cup" }
+      - { item: "Chicken stock", qty: "2 cups" }
+      - { item: "Brown sugar", qty: "1 teaspoon" }
+      - { item: "Ramen noodles", qty: "2 packages, 3 ounces each", note: "added at the end; the flavor packets are not used" }
+  - slug: biscuits-and-gravy-casserole
+    name: "Biscuits and gravy casserole with sausage and eggs"
+    kind: "Family favorite"
+    blurb: "A weekend breakfast that feeds eight and can be put together the night before. It is Jamie Sanders' recipe from Scattered Thoughts of a Crafty Mom."
+    glance: "About 20 minutes to prepare, then 35 to 45 minutes at 350°F in a greased 13×9 pan. A pan made ahead and baked cold takes longer."
+    source: { name: "Scattered Thoughts of a Crafty Mom", url: "https://www.scatteredthoughtsofacraftymom.com/sausage-and-gravy-breakfast-casserole/" }
+    ingredients:
+      - { item: "Biscuit dough", qty: "1 can, 8 count" }
+      - { item: "Eggs", qty: "6" }
+      - { item: "Peppered gravy mix", qty: "1 packet, 2¾ ounces, made up to 2 cups" }
+      - { item: "Pork sausage", qty: "1 pound, any flavor" }
+      - { item: "Shredded cheese", qty: "1 cup" }
+      - { item: "Milk", qty: "½ cup" }
+      - { item: "Salt and pepper" }

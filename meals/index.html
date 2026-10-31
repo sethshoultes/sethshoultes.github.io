@@ -1,0 +1,65 @@
+---
+layout: site
+page_type: planner
+title: "The Shoultes Family Meal Planner: a free weekly planner with a grocery list"
+description: "A free weekly meal planner with the Shoultes family favorites, and a grocery list that builds itself, grouped by store. Saved in your browser; no sign-in."
+permalink: /meals/
+---
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Projects","item":"https://sethshoultes.com/projects/"},{"@type":"ListItem","position":2,"name":"Family meal planner","item":"https://sethshoultes.com/meals/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Shoultes family meals","itemListElement":[{% for m in site.data.meals.meals %}{"@type":"ListItem","position":{{ forloop.index }},"item":{"@type":"Recipe","name":{{ m.name | jsonify }},"description":{{ m.blurb | jsonify }},"recipeIngredient":{{ m.ingredients | map: "item" | jsonify }}{% if m.source %},"isBasedOn":{{ m.source.url | jsonify }}{% endif %}}}{% unless forloop.last %},{% endunless %}{% endfor %}]}</script>
+<div class="wrap meals">
+  <section>
+    <p class="eyebrow"><a href="/projects/">Projects</a> / Free tool</p>
+    <h1>The Shoultes family meal planner</h1>
+    <p class="lead">Pick the week's dinners and the grocery list builds itself, grouped by store. These are the meals we actually cook. It saves in this browser, so there is nothing to sign in to.</p>
+
+    <div id="mp" class="mp">
+      <p id="mp-status" class="mp-status" role="status"></p>
+
+      <h2>This week</h2>
+      <p class="mp-help">Choose a meal for each day, type your own, or drag a meal from further down onto a day. Add a note for the things that are not dinner, like soccer or guild.</p>
+      <div id="mp-week" class="mp-week"></div>
+      <noscript><p class="mp-empty">The planner needs JavaScript. The meals and their ingredients are listed below.</p></noscript>
+
+      <h2>Grocery list</h2>
+      <div class="mp-tools">
+        <button type="button" class="btn" id="mp-copy" disabled>Copy</button>
+        <button type="button" class="btn ghost" id="mp-text" disabled>Text it</button>
+        <button type="button" class="btn ghost" id="mp-print" disabled>Print</button>
+        <button type="button" class="btn ghost" id="mp-clear">Clear checkmarks</button>
+        <button type="button" class="btn ghost" id="mp-reset">New week</button>
+      </div>
+      <div id="mp-list" class="mp-list" aria-live="polite"></div>
+      <form id="mp-extra-form" class="mp-extra">
+        <label for="mp-extra">Add something else to the list</label>
+        <span class="mp-extra-row"><input id="mp-extra" type="text" placeholder="Milk, paper towels"><button class="btn ghost" type="submit">Add</button></span>
+      </form>
+
+      <h2 id="meals">The meals</h2>
+      <p class="mp-help">Ingredients are in our own words. For the family favorites that came from another cook, the method is on their page, linked on the card. Seth's own meals are listed as he describes them.</p>
+      <p class="mp-pickrow"><label for="mp-pick">Add to</label>
+        <select id="mp-pick"><option value="mon">Monday</option><option value="tue">Tuesday</option><option value="wed">Wednesday</option><option value="thu">Thursday</option><option value="fri">Friday</option><option value="sat">Saturday</option><option value="sun">Sunday</option></select></p>
+      <ul class="link-grid mp-meals">
+        {%- for m in site.data.meals.meals %}
+        <li class="mp-meal" id="{{ m.slug }}" data-meal="{{ m.slug }}">
+          <p class="mp-kind">{{ m.kind }}</p>
+          <h3>{{ m.name }}</h3>
+          <p>{{ m.blurb }}</p>
+          {%- if m.glance %}<p class="mp-glance"><strong>At a glance:</strong> {{ m.glance }}</p>{% endif %}
+          <h4>Ingredients</h4>
+          <ul>
+            {%- for i in m.ingredients %}
+            <li>{{ i.item }}{% if i.qty %}, {{ i.qty }}{% endif %}{% if i.note %} ({{ i.note }}){% endif %}</li>
+            {%- endfor %}
+          </ul>
+          {%- if m.source %}<p><a href="{{ m.source.url }}" target="_blank" rel="noopener">The method is on {{ m.source.name }} &rarr;</a></p>{% endif %}
+          <button type="button" class="btn ghost" data-add-meal="{{ m.slug }}" aria-label="Add {{ m.name }} to the week">Add to the week</button>
+        </li>
+        {%- endfor %}
+      </ul>
+      <script id="mp-data" type="application/json">{{ site.data.meals | jsonify }}</script>
+    </div>
+    <p class="hub-note">A meal you cook all the time? Tell me and I will add it.</p>
+  </section>
+</div>
+<script src="/assets/meals.js" defer></script>
