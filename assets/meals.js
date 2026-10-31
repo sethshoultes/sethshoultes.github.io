@@ -23,7 +23,7 @@
         var m = bySlug[id];
         if (!m) return;
         m.ingredients.forEach(function (ing) {
-          add(ing.item, ing.store, [ing.qty, m.name].filter(Boolean).join(' for '));
+          add(ing.item, ing.store, [ing.qty, m.short || m.name].filter(Boolean).join(' for '));
         });
       });
     });

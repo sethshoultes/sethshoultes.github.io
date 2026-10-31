@@ -5,18 +5,21 @@ stores:
 
 meals:
   - slug: costco-salmon-in-the-air-fryer
+    short: "Salmon"
     name: "Costco salmon in the air fryer"
     kind: "Seth's way"
     blurb: "Salmon from Costco, cooked in the air fryer."
     ingredients:
       - { item: "Salmon", note: "from Costco", store: costco }
   - slug: ooni-pizza
+    short: "Pizza"
     name: "Homemade pizza in the Ooni"
     kind: "Seth's way"
     blurb: "Pizzas made in our Ooni wood-fired oven from a simple pizza dough mix that costs 89 cents at Smith's."
     ingredients:
       - { item: "Pizza dough mix", note: "89 cents at Smith's", store: smiths }
   - slug: hamburger-stir-fry
+    short: "Stir fry"
     name: "Hamburger stir fry"
     kind: "Seth's way"
     blurb: "Hamburger and bagged cabbage mix with ramen noodle packs and teriyaki sauce."
@@ -26,6 +29,7 @@ meals:
       - { item: "Ramen noodle packs" }
       - { item: "Teriyaki sauce" }
   - slug: slow-cooker-ramen
+    short: "Ramen"
     name: "Slow cooker ramen with beef"
     kind: "Family favorite"
     blurb: "A cousin of the stir fry that cooks while you are out. It comes from Real Food Whole Life."
@@ -40,6 +44,7 @@ meals:
       - { item: "Brown sugar", qty: "1 teaspoon" }
       - { item: "Ramen noodles", qty: "2 packages, 3 ounces each", note: "added at the end; the flavor packets are not used" }
   - slug: biscuits-and-gravy-casserole
+    short: "Biscuit casserole"
     name: "Biscuits and gravy casserole with sausage and eggs"
     kind: "Family favorite"
     blurb: "A weekend breakfast that feeds eight and can be put together the night before. It is Jamie Sanders' recipe from Scattered Thoughts of a Crafty Mom."
