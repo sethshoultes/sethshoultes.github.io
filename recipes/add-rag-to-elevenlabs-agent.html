@@ -1,52 +1,19 @@
 ---
+layout: "site"
+page_type: "recipe"
+title: "Wire RAG into an ElevenLabs Agent | AI Recipes"
+description: "Step-by-step recipe for connecting external documents to an ElevenLabs Conversational AI agent via retrieval-augmented generation. API calls, vectorization, and the GitHub Action gotcha."
+permalink: "/recipes/add-rag-to-elevenlabs-agent.html"
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  {% include agent-hints.html %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wire RAG into an ElevenLabs Agent — Recipe</title>
-  <meta name="description" content="Step-by-step recipe for connecting external documents to an ElevenLabs Conversational AI agent via retrieval-augmented generation. API calls, vectorization, and the GitHub Action gotcha." />
-
-  <meta property="og:title" content="Wire RAG into an ElevenLabs Agent" />
-  <meta property="og:description" content="Give your ElevenLabs voice agent a memory of your content — docs, posts, runbooks — so it answers from source instead of training." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/recipes/add-rag-to-elevenlabs-agent.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/recipes/recipe.css" />
-  {% include analytics.html %}
-</head>
-<body>
-
-<nav class="recipe-nav">
-  <div class="recipe-nav-inner">
-    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
-    <a href="/recipes/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      All recipes
-    </a>
-  </div>
-</nav>
-
-<main class="recipe">
-
-  <span class="eyebrow">Recipe · Knowledge retrieval</span>
-  <h1>Wire RAG into an ElevenLabs Agent</h1>
-  <p class="subtitle">Connect external documents to your ElevenLabs Conversational AI agent so it retrieves relevant context before answering — and attributes answers to source titles.</p>
-
-  <div class="recipe-meta">
-    <span><strong>Time:</strong> ~20 min</span>
-    <span><strong>Difficulty:</strong> intermediate</span>
-    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-rag-to-elevenlabs-agent/SKILL.md"><code>add-rag-to-elevenlabs-agent</code></a></span>
-  </div>
-
-  <h2>Why RAG</h2>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AI Recipes", "item": "https://sethshoultes.com/recipes/"}, {"@type": "ListItem", "position": 2, "name": "Wire RAG into an ElevenLabs Agent", "item": "https://sethshoultes.com/recipes/add-rag-to-elevenlabs-agent.html"}]}</script>
+<div class="wrap recipe">
+  <article class="prose">
+    <p class="crumbs"><a href="/recipes/">AI Recipes</a> / Knowledge retrieval</p>
+    <h1>Wire RAG into an ElevenLabs Agent</h1>
+    <p class="lead">Connect external documents to your ElevenLabs Conversational AI agent so it retrieves relevant context before answering — and attributes answers to source titles.</p>
+    <ul class="recipe-meta"><li><strong>Time:</strong> ~20 min</li><li><strong>Difficulty:</strong> intermediate</li><li><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/add-rag-to-elevenlabs-agent/SKILL.md"><code>add-rag-to-elevenlabs-agent</code></a></li></ul>
+{% raw %}
+<h2>Why RAG</h2>
 
   <p>An ElevenLabs agent without RAG answers from its training data. That is fine for general knowledge. It is wrong for specific knowledge: your product docs, your pricing, your runbooks, your blog posts. The agent will hallucinate confidently about things it was never trained on.</p>
 
@@ -70,7 +37,7 @@
     <li>If your site is on GitHub Pages: a repo with GitHub Actions enabled.</li>
   </ul>
 
-  <hr class="divider" />
+  <hr>
 
   <h2>Step 1 — Create knowledge-base entries</h2>
 
@@ -156,7 +123,7 @@ jobs:
 
       - name: Re-create knowledge base entries
         env:
-          ELEVENLABS_API_KEY: {% raw %}${{ secrets.ELEVENLABS_API_KEY }}{% endraw %}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: |
           # Delete old entries (optional — or just update in place)
           # This script re-creates and re-attaches knowledge base documents
@@ -164,7 +131,7 @@ jobs:
 
       - name: Vectorize
         env:
-          ELEVENLABS_API_KEY: {% raw %}${{ secrets.ELEVENLABS_API_KEY }}{% endraw %}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: |
           # Poll until vectorization is complete
           python3 scripts/vectorize_kb.py</code></pre>
@@ -210,10 +177,6 @@ jobs:
       <li>Related recipe: <a href="/recipes/register-elevenlabs-client-tool.html">Register an ElevenLabs client tool</a></li>
     </ul>
   </div>
-
-  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
-
-</main>
-
-</body>
-</html>
+{% endraw %}
+  </article>
+</div>

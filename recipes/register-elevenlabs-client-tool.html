@@ -1,52 +1,19 @@
 ---
+layout: "site"
+page_type: "recipe"
+title: "Register an ElevenLabs Client Tool | AI Recipes"
+description: "Step-by-step recipe for letting an ElevenLabs agent invoke functions that run inside a visitor's browser to display UI elements like cards, modals, or scroll actions."
+permalink: "/recipes/register-elevenlabs-client-tool.html"
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  {% include agent-hints.html %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register an ElevenLabs Client Tool — Recipe</title>
-  <meta name="description" content="Step-by-step recipe for letting an ElevenLabs agent invoke functions that run inside a visitor's browser to display UI elements like cards, modals, or scroll actions." />
-
-  <meta property="og:title" content="Register an ElevenLabs Client Tool" />
-  <meta property="og:description" content="Give your ElevenLabs voice agent the ability to change the page it's running in — open modals, scroll to sections, play videos." />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://sethshoultes.com/recipes/register-elevenlabs-client-tool.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:image" content="https://sethshoultes.com/blog/images/skills-as-sops-featured.png" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/recipes/recipe.css" />
-  {% include analytics.html %}
-</head>
-<body>
-
-<nav class="recipe-nav">
-  <div class="recipe-nav-inner">
-    <a href="/recipes/" class="logo">Seth Shoultes · Recipes</a>
-    <a href="/recipes/" class="nav-back">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-      All recipes
-    </a>
-  </div>
-</nav>
-
-<main class="recipe">
-
-  <span class="eyebrow">Recipe · Voice-driven UI</span>
-  <h1>Register an ElevenLabs Client Tool</h1>
-  <p class="subtitle">Let an ElevenLabs voice agent invoke functions that run inside the visitor's browser — open cards, scroll to sections, play videos — by wiring client-side tool calls to the page's JavaScript.</p>
-
-  <div class="recipe-meta">
-    <span><strong>Time:</strong> ~25 min</span>
-    <span><strong>Difficulty:</strong> intermediate</span>
-    <span><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/register-elevenlabs-client-tool/SKILL.md"><code>register-elevenlabs-client-tool</code></a></span>
-  </div>
-
-  <h2>Why client tools</h2>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AI Recipes", "item": "https://sethshoultes.com/recipes/"}, {"@type": "ListItem", "position": 2, "name": "Register an ElevenLabs Client Tool", "item": "https://sethshoultes.com/recipes/register-elevenlabs-client-tool.html"}]}</script>
+<div class="wrap recipe">
+  <article class="prose">
+    <p class="crumbs"><a href="/recipes/">AI Recipes</a> / Voice-driven UI</p>
+    <h1>Register an ElevenLabs Client Tool</h1>
+    <p class="lead">Let an ElevenLabs voice agent invoke functions that run inside the visitor's browser — open cards, scroll to sections, play videos — by wiring client-side tool calls to the page's JavaScript.</p>
+    <ul class="recipe-meta"><li><strong>Time:</strong> ~25 min</li><li><strong>Difficulty:</strong> intermediate</li><li><strong>Companion skill:</strong> <a href="https://github.com/sethshoultes/building-with-ai-skills/blob/main/skills/register-elevenlabs-client-tool/SKILL.md"><code>register-elevenlabs-client-tool</code></a></li></ul>
+{% raw %}
+<h2>Why client tools</h2>
 
   <p>A voice agent that only talks is a chatbot with audio. A voice agent that can change the page it's running on is a UI layer. Client tools are the bridge: the agent decides to do something, the platform passes the invocation to the browser, and the page executes it.</p>
 
@@ -69,7 +36,7 @@
     <li>Basic JavaScript and DOM manipulation knowledge.</li>
   </ul>
 
-  <hr class="divider" />
+  <hr>
 
   <h2>Step 1 — Define the client tool</h2>
 
@@ -239,10 +206,6 @@ conversation.onMessage((message) => {
       <li>Related recipe: <a href="/recipes/add-rag-to-elevenlabs-agent.html">Wire RAG into an ElevenLabs agent</a></li>
     </ul>
   </div>
-
-  <p class="bio">Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes about it at <a href="/blog/">sethshoultes.com/blog</a>.</p>
-
-</main>
-
-</body>
-</html>
+{% endraw %}
+  </article>
+</div>
