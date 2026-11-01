@@ -3,15 +3,22 @@ name: Refresh meetup events
 # Daily, and on demand. Reads the public Meetup group page; no secrets.
 on:
   schedule:
+    # Once a day is enough: the group page changes a few times a week, and a stale list for under a day costs nothing.
     - cron: "17 13 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: meetup
+  cancel-in-progress: true
+
 jobs:
   refresh:
+    # GitHub-hosted on purpose: this repo is public (a fork must never reach our runner), and the job pushes with the repo token.
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
