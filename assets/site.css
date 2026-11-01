@@ -342,6 +342,7 @@
 .recipe .lead { margin: 0 0 1.25rem; }
 .recipe-hub { padding-block: 6rem 4rem; }
 .recipe pre, .recipe pre code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.recipe td code { overflow-wrap: break-word; }
 .recipe .recipe-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; list-style: none; padding: 0; margin: 0 0 2rem; font-size: 0.95rem; color: var(--muted); }
 .recipe .recipe-meta li { margin: 0; }
 .recipe hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
@@ -356,3 +357,4 @@
 .lesson-nav a span { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .lesson-nav .next { text-align: right; grid-column: 2; }
 @media (max-width: 600px) { .lesson-nav { grid-template-columns: 1fr; } .lesson-nav .next { grid-column: 1; text-align: left; } }
+@media (max-width: 480px) { .recipe table { display: table; width: 100%; table-layout: fixed; font-size: 0.8rem; } .recipe th, .recipe td { padding: 0.45rem 0.4rem; overflow-wrap: anywhere; } .recipe td code { font-size: 0.72rem; } }
