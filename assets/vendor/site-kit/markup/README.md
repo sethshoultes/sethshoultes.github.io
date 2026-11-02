@@ -6,7 +6,7 @@ Canonical markup for each kit component. Adapters (`jekyll/_includes/kit/`, late
 ```html
 <a class="link-card" href="/city/">
   <img src="/photo.webp" alt="Describe the place" width="720" height="480" loading="lazy" decoding="async">
-  <span class="link-card-body"><h3>Title</h3><p>One short line.</p></span>
+  <div class="link-card-body"><h3>Title</h3><p>One short line.</p></div>
 </a>
 ```
 One `<a>`, one `<h3>`, no links inside. Photo needs alt, width, height, lazy. Service variant: an SVG icon (`class="link-card-icon" aria-hidden="true"`) in place of the photo. Put cards in `<ul class="link-grid">` (works anywhere, no `.hub` needed) (add `cols-4` for four across); the grid is 3 across, 2 on tablet, 1 on phone.
