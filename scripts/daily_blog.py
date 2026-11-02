@@ -705,6 +705,9 @@ def main() -> int:
     commit_msg = f"Publish '{title or slug}'\n\nVoice: {voice}\nIdea: {idea.get('claim', '')[:120]}\n"
 
     paths = [str(post_path), str(image_path), str(IMAGES_JSON), str(VOICES_FILE)]
+    webp_path = image_path.with_suffix(".webp")
+    if webp_path.exists():
+        paths.append(str(webp_path))
     if not idea_was_generated:
         paths.append(str(IDEAS_FILE))
 
