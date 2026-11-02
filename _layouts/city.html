@@ -26,6 +26,7 @@ layout: site
 </div>
 
 <div class="city-body">
+  {% include page-video.html slug=page.city %}
   <div class="wrap"><div class="prose">
     {%- for sec in c.sections %}
     <section id="{{ sec.id }}" class="city-sec">
