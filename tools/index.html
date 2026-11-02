@@ -14,21 +14,14 @@ description: "Free tools for small business owners: see how AI and search find y
   </section>
   <div class="grid">
     {%- for t in tools %}
-    {%- if t.external %}
-    <a class="card" href="{{ t.external }}" target="_blank" rel="noopener">
-      <span class="tag">WordPress plugin</span>
-      <h3>{{ t.name }}</h3>
-      <p>{{ t.summary }}</p>
-      <span class="meta">Visit crawlpress.com</span>
-    </a>
-    {%- else %}
+    {%- unless t.external %}
     <a class="card" href="/tools/{{ t.slug }}/">
       <span class="tag">Free tool</span>
       <h3>{{ t.name }}</h3>
       <p>{{ t.summary }}</p>
       <span class="meta">Open the tool</span>
     </a>
-    {%- endif %}
+    {%- endunless %}
     {%- endfor %}
     {%- for m in page_data.more %}
     <a class="card" href="{{ m.href }}">
@@ -37,6 +30,16 @@ description: "Free tools for small business owners: see how AI and search find y
       <p>{{ m.summary }}</p>
       <span class="meta">{{ m.meta }}</span>
     </a>
+    {%- endfor %}
+    {%- for t in tools %}
+    {%- if t.external %}
+    <a class="card" href="{{ t.external }}" target="_blank" rel="noopener">
+      <span class="tag">WordPress plugin</span>
+      <h3>{{ t.name }}</h3>
+      <p>{{ t.summary }}</p>
+      <span class="meta">Visit crawlpress.com</span>
+    </a>
+    {%- endif %}
     {%- endfor %}
   </div>
   <div class="prose">

@@ -1,10 +1,10 @@
 title: "Free Tools for Small Businesses"
 description: "Free tools for small business owners: see how AI and search find you, and fix what they miss. Schema generator, AI crawler check, llms.txt builder and more."
-lead: "Small tools I built for my own clients, free for you. Each one answers one question about how search and AI assistants see your business."
+lead: "Small tools I built for my own clients, free for you. Most answer one question about how search and AI assistants see your business. Two more are for anyone: a readiness check for your business and my family's meal planner."
 more:
   - name: "Is your business ready for AI?"
     href: "/ai-readiness/"
-    tag: "Free check"
+    tag: "Free tool"
     summary: "Answer four quick questions and get a short, honest scorecard with three places AI could help first. It takes about two minutes, with nothing to sign up for."
     meta: "Take the check"
   - name: "The Shoultes family meal planner"
