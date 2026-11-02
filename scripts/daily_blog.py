@@ -546,21 +546,13 @@ def main() -> int:
     if force_publish:
         print("[info] FORCE_PUBLISH=1 (bypassing safety checks)")
 
-    # 0. Don't let the bot double-post itself. Operator-authored posts on the
-    # same date are fine — only block if THIS pipeline already ran today.
-    # Source of truth: data/voices.json history, which the bot writes on
-    # successful publish. Bypassed by FORCE_PUBLISH.
+    # 0. Don't double-post (unless FORCE_PUBLISH overrides).
     if not force_publish:
-        try:
-            voices_state_check = json.loads(VOICES_FILE.read_text(encoding="utf-8"))
-            last_run = voices_state_check.get("history", [])
-            if last_run and last_run[-1].get("date") == today.isoformat():
-                print(f"[skip] bot already published on {today}: "
-                      f"{last_run[-1].get('slug')} ({last_run[-1].get('voice')}). "
-                      f"Set FORCE_PUBLISH=1 to override.")
-                return 2
-        except Exception as e:
-            print(f"[warn] could not read voices history: {e}")
+        existing_today = list(POSTS_DIR.glob(f"{today.isoformat()}-*.html"))
+        if existing_today:
+            print(f"[skip] post for {today} already exists: {existing_today[0].name}. "
+                  f"Set FORCE_PUBLISH=1 to override.")
+            return 2
 
     # 1. Pick idea. Priority: curated in-repo backlog -> brain warehouse ->
     # last-resort generation. The warehouse is the primary source; generation
