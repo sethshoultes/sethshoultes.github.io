@@ -7,9 +7,9 @@ Rules: the card is one <a>; one <h3>; no links inside; photo has width/height, l
   {%- if include.img %}
   <img src="{{ include.img }}" alt="{{ include.alt }}" width="720" height="480" loading="lazy" decoding="async">
   {%- endif %}
-  <span class="link-card-body">
+  <div class="link-card-body">
     {%- if include.icon %}{% include {{ include.icon }} slug=include.slug %}{% endif %}
     <h3>{{ include.title }}</h3>
     <p>{{ include.line }}</p>
-  </span>
+  </div>
 </a>

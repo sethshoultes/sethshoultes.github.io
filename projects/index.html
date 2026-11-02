@@ -144,7 +144,7 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
       {%- for game in ranked offset: site.data.games.arcade_top %}
       <li>{% include game-card.html game=game tag=true %}</li>
       {%- endfor %}
-      <li class="arcade-more"><a class="link-card" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><span class="link-card-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p><span class="meta">Open the Arcade &rarr;</span></span></a></li>
+      <li class="arcade-more"><a class="link-card" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><div class="link-card-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p><span class="meta">Open the Arcade &rarr;</span></div></a></li>
     </ul>
   </div>
 </section>
@@ -173,7 +173,6 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
     </div>
     {%- endfor %}
     <script src="/assets/vendor/site-kit/js/video-facade.js" defer></script>
-    </div>
   </div>
 </section>
 <script src="/assets/tilt.js" defer></script>
