@@ -1,0 +1,5 @@
+# The site is served by GitHub Pages. Netlify is linked to this repo but has no build set up
+# for the Jekyll site, so every deploy preview failed at the "Deploying" step and nothing read it.
+# Exit 0 tells Netlify to skip the build, so the preview check reports skipped, not failed.
+[build]
+  ignore = "exit 0"
