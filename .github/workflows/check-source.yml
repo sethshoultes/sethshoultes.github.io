@@ -1,19 +1,37 @@
 name: Check source
 
+# Rules 3, 4 and 9 of the fleet standard (herdos docs/standards/tests-and-ci.md, herdos#3429; this repo's issue is #195).
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]   # a draft runs nothing: the jobs skip while draft, ready_for_review starts them
+    # Docs-only changes run nothing. Only docs/ and README.md: the other *.md files here (privacy, terms, a book page) are served pages.
+    paths-ignore: ["docs/**", "README.md"]
   push:
     branches: [main]
+    paths-ignore: ["docs/**", "README.md"]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: check-source-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Runner: ubuntu-latest on purpose. This repo is public, so GitHub-hosted minutes are free, and a public repo must not
+# run fork PRs on our self-hosted runner. The build needs GitHub's image (ruby/setup-ruby with a bundler cache).
 jobs:
   inline-styles:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - name: No inline styles
         run: scripts/check-inline-styles.sh
   broken-links:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
