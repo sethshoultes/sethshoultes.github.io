@@ -1,0 +1,18 @@
+{%- comment -%}
+A page's own video, under its intro. Params: slug. Renders nothing until _data/page_videos.json has an entry
+for the slug (scripts/fill-page-videos.py writes it from the YouTube ids). Poster is self-hosted; the
+youtube-nocookie player loads only on click (assets/page-video.js).
+{%- endcomment -%}
+{%- assign v = site.data.page_videos[include.slug] %}
+{%- if v %}
+<section class="page-video wrap" aria-label="Video">
+  <div class="video-facade-box">
+    <a class="video-facade" href="https://www.youtube.com/watch?v={{ v.id }}" data-video-id="{{ v.id }}" data-title="{{ v.title | escape }}">
+      <img src="/assets/img/videos/{{ v.id }}.webp" width="1280" height="720" alt="Poster for: {{ v.title | escape }}" loading="lazy" decoding="async">
+      <span class="sr-only">Play: {{ v.title | escape }}</span>
+    </a>
+  </div>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","name":{{ v.title | jsonify }},"description":{{ v.description | jsonify }},"thumbnailUrl":"{{ site.url }}/assets/img/videos/{{ v.id }}.webp","uploadDate":{{ v.uploadDate | jsonify }},"duration":{{ v.duration | jsonify }},"embedUrl":"https://www.youtube-nocookie.com/embed/{{ v.id }}"}</script>
+  <script src="/assets/page-video.js" defer></script>
+</section>
+{%- endif %}
