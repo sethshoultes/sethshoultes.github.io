@@ -635,6 +635,17 @@ def main() -> int:
         report_failure("image-generate", "OpenAI image generation failed", repr(e))
         return 1
     print(f"[info] wrote {image_path.name}")
+    # A WebP twin keeps the lead image light (the post layout serves it when it exists); best-effort, the PNG still works.
+    try:
+        subprocess.run(["cwebp", "-quiet", "-q", "80", "-resize", "1200", "0", str(image_path), "-o", str(image_path.with_suffix(".webp"))], check=True, timeout=60)
+        wrapped = re.sub(
+            rf'(<img[^>]+src="/blog/images/{re.escape(slug)}-featured\.png"[^>]*>)',
+            rf'<picture><source srcset="/blog/images/{slug}-featured.webp" type="image/webp">\1</picture>',
+            post_path.read_text(encoding="utf-8"), count=1,
+        )
+        post_path.write_text(wrapped, encoding="utf-8")
+    except Exception as e:
+        print(f"[warn] no WebP twin for {image_path.name}: {e}")
 
     # Update images.json
     try:

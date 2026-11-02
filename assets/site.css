@@ -289,7 +289,7 @@
 #why { padding: 3.5rem 0; }
 
 /* post hero image above the title (outside .post-content) */
-.post > .post-img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0 0 2rem; border-radius: 6px; }
+.post > .post-img, .post > picture > .post-img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0 0 2rem; border-radius: 6px; }
 
 /* post: speed table and chart (blog/i-moved-my-wordpress-site-four-ways) */
 .post-content .hint { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.3rem; }
@@ -436,3 +436,6 @@
 .service-fig { margin: 2.5rem auto; }
 .service-fig img { display: block; width: 100%; max-width: var(--col, 720px); height: auto; border-radius: 10px; border: 1px solid var(--border); }
 .service-fig figcaption { margin-top: 0.5rem; font-size: 0.85rem; color: var(--muted); }
+
+
+.post-content picture { display: block; }

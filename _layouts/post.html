@@ -3,7 +3,14 @@ layout: site
 ---
 <article class="post">
   {%- if page.hero_image %}
-  <img class="post-img post-img-lead" src="{{ page.hero_image.src }}" width="{{ page.hero_image.width }}" height="{{ page.hero_image.height }}" alt="{{ page.hero_image.alt }}" fetchpriority="high">
+  {%- assign hero_webp = page.hero_image.src | replace: ".png", ".webp" %}
+  {%- assign hero_has_webp = site.static_files | where: "path", hero_webp | first %}
+  <picture>
+    {%- if hero_has_webp %}
+    <source srcset="{{ hero_webp }}" type="image/webp">
+    {%- endif %}
+    <img class="post-img post-img-lead" src="{{ page.hero_image.src }}" width="{{ page.hero_image.width }}" height="{{ page.hero_image.height }}" alt="{{ page.hero_image.alt }}" fetchpriority="high">
+  </picture>
   {%- endif %}
 
   <span class="post-label">{{ page.label | default: "Writing" }}</span>
