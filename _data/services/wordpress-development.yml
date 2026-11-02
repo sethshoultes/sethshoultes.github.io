@@ -32,3 +32,11 @@ faq:
     a: "Yes. Southern Utah is home, and I work with businesses anywhere."
   - q: "Where do I start?"
     a: "Book a call and tell me about your site. I reply within two business days."
+figures:
+  - after: what
+    img: /assets/img/services/art-blog.webp
+    kind: art
+    alt: "Abstract illustration: flowing contour lines with one orange line running through them. Art, not a photo."
+    width: 1200
+    height: 450
+    caption: "An illustration, not a photo."

@@ -35,3 +35,17 @@ faq:
     a: "Yes. I run workshops inside companies. See the Team Workshop on my consulting page."
   - q: "How do I start?"
     a: "Book a call and tell me where you are with AI. I reply within two business days."
+figures:
+  - after: who
+    img: /assets/img/services/art-meetup.webp
+    kind: art
+    alt: "Abstract illustration: overlapping orange rings with scattered points, like people gathering. Art, not a photo of the meetup."
+    width: 1200
+    height: 450
+    caption: "An illustration, not a photo of the meetup."
+  - after: ways
+    img: /assets/img/services/shot-academy.webp
+    alt: "The free Academy page on sethshoultes.com: courses and lessons anyone can read."
+    width: 1200
+    height: 750
+    caption: "The free Academy: courses and lessons, no sign-in."

@@ -36,3 +36,17 @@ faq:
     a: "No. I treat them as one job: I build pages around a real question, for search results and AI answers together."
   - q: "Do you work outside Southern Utah?"
     a: "Yes. Southern Utah is home, and my monthly plans work from anywhere."
+figures:
+  - after: what
+    img: /assets/img/services/art-fleet.webp
+    kind: art
+    alt: "Abstract illustration: small orange shapes orbiting a central ring, like a coordinated team of agents. Art, not a screenshot."
+    width: 1200
+    height: 456
+    caption: "An illustration, not a screenshot."
+  - after: do
+    img: /assets/img/services/shot-llms.webp
+    alt: "The top of sethshoultes.com/llms.txt in plain text: a heading with Seth Shoultes, a one-paragraph summary of who he is and what he offers, then a Key facts list."
+    width: 1200
+    height: 777
+    caption: "My own llms.txt, the plain-text summary AI assistants read first (the top of the file)."

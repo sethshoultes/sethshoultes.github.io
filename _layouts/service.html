@@ -48,6 +48,12 @@ layout: site
       {%- endif %}
     </div>
   </section>
+  {%- for fig in s.figures %}{% if fig.after == sec.id %}
+  <figure class="service-fig{% if fig.kind == 'art' %} service-fig-art{% endif %} wrap">
+    <img src="{{ fig.img }}" alt="{{ fig.alt }}" width="{{ fig.width | default: 1200 }}" height="{{ fig.height | default: 750 }}" loading="lazy" decoding="async">
+    <figcaption>{{ fig.caption }}</figcaption>
+  </figure>
+  {%- endif %}{% endfor %}
   {%- endfor %}
 
   <section id="faq" class="service-sec">
