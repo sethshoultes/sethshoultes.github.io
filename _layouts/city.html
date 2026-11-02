@@ -37,7 +37,7 @@ layout: site
       {%- if forloop.first and c.card_photo %}
       <figure class="city-photo">
         <img src="{{ c.card_photo }}" alt="{{ c.card_alt }}" width="720" height="480" loading="lazy" decoding="async">
-        <figcaption>Photo{% if c.credit_note %} ({{ c.credit_note }}){% endif %}: <a href="{{ c.card_credit.source }}" rel="noopener">{{ c.card_credit.author }}</a>, {{ c.card_credit.license }}, via Wikimedia Commons</figcaption>
+        <figcaption>{% if c.photo_place %}This photo shows {{ c.photo_place }}. {% endif %}Photo: <a href="{{ c.card_credit.source }}" rel="noopener">{{ c.card_credit.author }}</a>, {{ c.card_credit.license }}, via Wikimedia Commons</figcaption>
       </figure>
       {%- endif %}
       {%- if sec.id == 'numbers' %}
