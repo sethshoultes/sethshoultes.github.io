@@ -1,47 +1,78 @@
 name: Check source
 
-# Rules 3, 4 and 9 of the fleet standard (herdos docs/standards/tests-and-ci.md, herdos#3429; this repo's issue is #195).
+# Fleet standard (herdos docs/standards/tests-and-ci.md, herdos#3429; this repo's issue is #195).
+# Rule 1: a change runs only the areas of .github/test-map.json it touches; a path in no area fails by name.
+# Rule 2: the full suite runs nightly and on demand, and on a PR or push only when a core file changed.
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]   # a draft runs nothing: the jobs skip while draft, ready_for_review starts them
-    # Docs-only changes run nothing. Only docs/ and README.md: the other *.md files here (privacy, terms, a book page) are served pages.
+    types: [opened, synchronize, reopened, ready_for_review]   # a draft runs nothing: the jobs skip while draft
     paths-ignore: ["docs/**", "README.md"]
   push:
     branches: [main]
     paths-ignore: ["docs/**", "README.md"]
+  schedule:
+    - cron: "37 9 * * *"    # nightly full suite: once a day finds a regression by morning, at the cost of one 1.5-minute run
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: check-source-${{ github.event.pull_request.number || github.ref }}
+  group: check-source-${{ github.event_name == 'schedule' && 'nightly' || github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 # Runner: ubuntu-latest on purpose. This repo is public, so GitHub-hosted minutes are free, and a public repo must not
-# run fork PRs on our self-hosted runner. The build needs GitHub's image (ruby/setup-ruby with a bundler cache).
+# run fork PRs on our self-hosted runner. The site build needs GitHub's image (ruby/setup-ruby with a bundler cache).
 jobs:
-  inline-styles:
+  select:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      areas: ${{ steps.pick.outputs.areas }}
+      full: ${{ steps.pick.outputs.full }}
     steps:
       - uses: actions/checkout@v4
-      - name: No inline styles
-        run: scripts/check-inline-styles.sh
-  broken-links:
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+        with:
+          fetch-depth: 0
+      - id: pick
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then base="HEAD~1"; fi
+          git diff --name-only "$base" HEAD > "$RUNNER_TEMP/changed.txt" || : > "$RUNNER_TEMP/changed.txt"
+          all=""
+          case "${{ github.event_name }}" in schedule|workflow_dispatch) all="--all" ;; esac
+          python3 .github/ci/test-map-select.py --map .github/test-map.json --changed "$RUNNER_TEMP/changed.txt" $all | tee -a "$GITHUB_OUTPUT"
+          # a core change runs the full suite: every area (a later line in GITHUB_OUTPUT wins)
+          if grep -q '^full=true' "$GITHUB_OUTPUT"; then
+            python3 -c 'import json; print("areas=" + json.dumps(sorted(json.load(open(".github/test-map.json"))["areas"])))' >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    # one leg per touched area; a full run (core change, nightly, on demand) is every area
+    needs: select
+    if: needs.select.outputs.areas != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        area: ${{ fromJSON(needs.select.outputs.areas) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
+        if: matrix.area == 'site'
         with:
           bundler-cache: true
-      - name: Build the site
-        run: bundle exec jekyll build
-      - name: No broken internal links
-        run: node scripts/check-links.mjs _site
-      - name: Embedded YouTube videos are available
-        run: node scripts/check-youtube.mjs _site
-      - name: Kit checks (inline styles, images in column, alt, link cards, schema, stylesheets, vendored kit lock)
-        run: node assets/vendor/site-kit/check/kit-check.mjs _site
+      - name: Run the area's tests
+        env:
+          AREA: ${{ matrix.area }}
+        run: |
+          set -euo pipefail
+          cmd="$(python3 -c 'import json,os; print(json.load(open(".github/test-map.json"))["areas"][os.environ["AREA"]]["run"])')"
+          bash -c "$cmd"
