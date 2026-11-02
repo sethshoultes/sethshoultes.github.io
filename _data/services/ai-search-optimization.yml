@@ -48,5 +48,5 @@ figures:
     img: /assets/img/services/shot-llms.webp
     alt: "The top of sethshoultes.com/llms.txt in plain text: a heading with Seth Shoultes, a one-paragraph summary of who he is and what he offers, then a Key facts list."
     width: 1200
-    height: 818
+    height: 777
     caption: "My own llms.txt, the plain-text summary AI assistants read first (the top of the file)."
