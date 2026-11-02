@@ -15,10 +15,16 @@ on:
       - "scripts/add-post-to-rag.py"
   workflow_dispatch:
 
+concurrency:
+  group: sync-rag
+  cancel-in-progress: false   # never cut an ingest short; a newer run queues behind it
+
 jobs:
   sync:
     name: Add new blog URLs to ElevenLabs knowledge base
+    # GitHub-hosted on purpose: this repo is public, and the job holds the ElevenLabs secret, so it must not run on our runner.
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
