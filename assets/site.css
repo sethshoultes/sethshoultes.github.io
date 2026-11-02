@@ -425,3 +425,4 @@
   .mp-note:placeholder-shown { display: none; }
   .mp-day input { outline: none; }
 }
+.consulting li a, .consulting td a { text-decoration: underline; text-underline-offset: 0.2em; }
