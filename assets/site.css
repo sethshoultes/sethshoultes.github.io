@@ -426,3 +426,8 @@
   .mp-day input { outline: none; }
 }
 .consulting li a, .consulting td a { text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* city pages: one credited place photo in the first body section (_layouts/city.html) */
+.city-photo { margin: 1.5rem 0 0; }
+.city-photo img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 10px; }
+.city-photo figcaption { margin: 0.5rem 0 1.5rem; font-size: 0.85rem; color: var(--muted); }
