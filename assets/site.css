@@ -437,5 +437,3 @@
 .service-fig { margin: 2.5rem auto; }
 .service-fig img { display: block; width: 100%; max-width: var(--col, 720px); height: auto; border-radius: 10px; border: 1px solid var(--border); }
 .service-fig figcaption { margin-top: 0.5rem; font-size: 0.85rem; color: var(--muted); }
-
-
