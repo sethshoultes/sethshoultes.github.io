@@ -312,6 +312,44 @@
           "value": "/recipes/"
         }
       ]
+    },
+    "planner": {
+      "reference": "/meals/",
+      "parts": [
+        {
+          "id": "one h1",
+          "need": "min_count",
+          "value": "<h1>",
+          "min": 1
+        },
+        {
+          "id": "the planner",
+          "need": "contains",
+          "value": "id=\"mp\""
+        },
+        {
+          "id": "BreadcrumbList schema",
+          "need": "jsonld",
+          "value": "BreadcrumbList"
+        },
+        {
+          "id": "markdown twin",
+          "need": "twin"
+        },
+        {
+          "id": "llms.txt entry",
+          "need": "llms"
+        },
+        {
+          "id": "sitemap entry",
+          "need": "sitemap"
+        },
+        {
+          "id": "linked from /projects/",
+          "need": "linked_from",
+          "value": "/projects/"
+        }
+      ]
     }
   }
 }
