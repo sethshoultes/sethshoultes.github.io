@@ -31,3 +31,17 @@ faq:
     a: "I build with nearly 20 years of SEO behind me. I will tell you plainly what I think is realistic for your market."
   - q: "Where do I start?"
     a: "Book a call and tell me about your business. I reply within two business days."
+figures:
+  - after: what
+    img: /assets/img/services/art-gds.webp
+    kind: art
+    alt: "Abstract illustration: stacked horizontal panels like a sectional door, with orange light rising behind them. Art, not a photo."
+    width: 1200
+    height: 450
+    caption: "An illustration, not a photo."
+  - after: proof
+    img: /assets/img/services/shot-tools.webp
+    alt: "The Free Tools page on sethshoultes.com: a grid of small tools for small businesses."
+    width: 1200
+    height: 750
+    caption: "My free tools page: small web tools I built and run."

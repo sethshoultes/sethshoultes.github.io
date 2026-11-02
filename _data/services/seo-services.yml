@@ -38,3 +38,17 @@ faq:
     a: "A clear plan for how you will be found, the pages and content to make it happen, and a way to earn reviews. It starts with a call about your business."
   - q: "Is SEO part of your AI work?"
     a: "Yes. My AI services come with SEO built in, so what I build for you is made to be found."
+figures:
+  - after: what
+    img: /assets/img/services/art-aplus.webp
+    kind: art
+    alt: "Abstract illustration of a street grid drawn in thin lines, with a few neighborhood blocks glowing orange. Not a real map."
+    width: 1200
+    height: 450
+    caption: "An illustration, not a map."
+  - after: proof
+    img: /assets/img/services/shot-city.webp
+    alt: "The St. George, Utah page on sethshoultes.com, with its headline and a short intro over a flyover of the valley."
+    width: 1200
+    height: 750
+    caption: "A city page I built: local facts, sources and a flyover."

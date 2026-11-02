@@ -38,3 +38,17 @@ faq:
     a: "I work on monthly plans, and you can also start with a single project. The current plans and prices are on my consulting page."
   - q: "Where do I start?"
     a: "Book a call and tell me about your business. I reply within two business days."
+figures:
+  - after: what
+    img: /assets/img/services/art-memberpress.webp
+    kind: art
+    alt: "Abstract illustration: floating interface cards around a small glowing orange orb, like an assistant. Art, not a screenshot."
+    width: 1200
+    height: 450
+    caption: "An illustration, not a screenshot."
+  - after: proof
+    img: /assets/img/services/shot-ask.webp
+    alt: "The Ask Seth's AI page on sethshoultes.com: a chat box with three suggested questions."
+    width: 1200
+    height: 750
+    caption: "My own Ask page: an assistant that answers from what is on this site."
