@@ -14,19 +14,30 @@ description: "Free tools for small business owners: see how AI and search find y
   </section>
   <div class="grid">
     {%- for t in tools %}
+    {%- unless t.external %}
+    <a class="card" href="/tools/{{ t.slug }}/">
+      <span class="tag">Free tool</span>
+      <h3>{{ t.name }}</h3>
+      <p>{{ t.summary }}</p>
+      <span class="meta">Open the tool</span>
+    </a>
+    {%- endunless %}
+    {%- endfor %}
+    {%- for m in page_data.more %}
+    <a class="card" href="{{ m.href }}">
+      <span class="tag">{{ m.tag }}</span>
+      <h3>{{ m.name }}</h3>
+      <p>{{ m.summary }}</p>
+      <span class="meta">{{ m.meta }}</span>
+    </a>
+    {%- endfor %}
+    {%- for t in tools %}
     {%- if t.external %}
     <a class="card" href="{{ t.external }}" target="_blank" rel="noopener">
       <span class="tag">WordPress plugin</span>
       <h3>{{ t.name }}</h3>
       <p>{{ t.summary }}</p>
       <span class="meta">Visit crawlpress.com</span>
-    </a>
-    {%- else %}
-    <a class="card" href="/tools/{{ t.slug }}/">
-      <span class="tag">Free tool</span>
-      <h3>{{ t.name }}</h3>
-      <p>{{ t.summary }}</p>
-      <span class="meta">Open the tool</span>
     </a>
     {%- endif %}
     {%- endfor %}
@@ -69,7 +80,10 @@ description: "Free tools for small business owners: see how AI and search find y
         "@type": "ItemList",
         "itemListElement": [
           {%- for t in tools %}
-          { "@type": "ListItem", "position": {{ forloop.index }}, "name": {{ t.name | jsonify }}, "url": {% if t.external %}{{ t.external | jsonify }}{% else %}"{{ site.url }}/tools/{{ t.slug }}/"{% endif %} }{% unless forloop.last %},{% endunless %}
+          { "@type": "ListItem", "position": {{ forloop.index }}, "name": {{ t.name | jsonify }}, "url": {% if t.external %}{{ t.external | jsonify }}{% else %}"{{ site.url }}/tools/{{ t.slug }}/"{% endif %} },
+          {%- endfor %}
+          {%- for m in page_data.more %}
+          { "@type": "ListItem", "position": {{ tools.size | plus: forloop.index }}, "name": {{ m.name | jsonify }}, "url": "{{ site.url }}{{ m.href }}" }{% unless forloop.last %},{% endunless %}
           {%- endfor %}
         ]
       }

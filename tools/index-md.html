@@ -17,6 +17,12 @@ Page: {{ site.url }}/tools/
 
 {% if t.external %}Link: {{ t.external }}{% else %}Tool: {{ site.url }}/tools/{{ t.slug }}/ (plain text: {{ site.url }}/tools/{{ t.slug }}.md){% endif %}
 
+{% endfor %}{% for m in page_data.more %}## {{ m.name }}
+
+{{ m.summary }}
+
+Link: {{ site.url }}{{ m.href }}
+
 {% endfor %}## Questions
 
 {% for item in page_data.faq %}### {{ item.q }}
