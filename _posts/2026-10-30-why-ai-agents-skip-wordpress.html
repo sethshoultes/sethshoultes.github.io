@@ -24,7 +24,7 @@ hero_image:
 
 <h2>Starting, going live, and moving in</h2>
 
-<img class="post-img" src="/blog/images/wpab-agent-chooses-a-stack.webp" width="1344" height="752" alt="A request for a bakery website goes to a robot, which can send it to a static site, a site builder or WordPress, the last drawn faded" loading="lazy">
+<img class="post-img" src="/blog/images/wpab-agent-chooses-a-stack.webp" width="1000" height="560" alt="A request for a bakery website goes to a robot, which can send it to a static site, a site builder or WordPress, the last drawn faded" loading="lazy">
 
 <p>The benchmark says the first job is "making WordPress as quick to start, take live and move a site into as what agents reach for now." Some of what stands in the way is out of date. Some of it is real.</p>
 
@@ -32,7 +32,7 @@ hero_image:
 
 <pre><code>npx @wp-playground/cli@latest start</code></pre>
 
-<img class="post-img" src="/blog/images/wpab-one-command-start.webp" width="1344" height="752" alt="A terminal running the command npx @wp-playground/cli@latest start, with an arrow pointing to an empty browser window" loading="lazy">
+<img class="post-img" src="/blog/images/wpab-one-command-start.webp" width="1000" height="560" alt="A terminal running the command npx @wp-playground/cli@latest start, with an arrow pointing to an empty browser window" loading="lazy">
 
 <p>The benchmark's fact check is careful about it. The belief is misleading for a local start and true for the live site, which still needs a host with PHP and MySQL. The catch is that an agent has to know the command exists. When I checked, wordpress.org/llms.txt, the file WordPress publishes for agents to read, didn't mention Playground.</p>
 
@@ -40,7 +40,7 @@ hero_image:
 
 <p><strong>Moving in.</strong> This is the one I care most about. One request hands the agent a folder: "Hand-coded client site in this folder. They want to manage the content themselves from now on." In every run with that site, the agents kept the HTML and bolted on a separate editor instead of moving the site into WordPress. One explained: "I'd have to turn the existing HTML and CSS into a WordPress theme."</p>
 
-<img class="post-img" src="/blog/images/wpab-cms-bolted-on.webp" width="1344" height="752" alt="A page of hand-written HTML with a bulky editing console strapped to its side with tape and cables" loading="lazy">
+<img class="post-img" src="/blog/images/wpab-cms-bolted-on.webp" width="1000" height="560" alt="A page of hand-written HTML with a bulky editing console strapped to its side with tape and cables" loading="lazy">
 
 <p>Half of that is out of date. People still picture a WordPress theme as a folder of PHP templates, but block themes are built from HTML template files. The minimum is one stylesheet and one HTML file. The other half is true. Your pages still have to become WordPress blocks, and WordPress itself doesn't ship a tool for that. The benchmark's fact check: "true today. No WordPress.org tool converts HTML to a block theme, though company tools now do." So the tools exist. The agents just don't know about them.</p>
 
@@ -56,7 +56,7 @@ hero_image:
 
 <p>Second, we're going to test the converters. We'll take one hand-coded sample site, run the existing HTML-to-WordPress tools on it, and score how faithful each result is. The scoring rules get written down before the first run, the sample site goes in a public repo, and every run happens on a fresh, throwaway WordPress. We'll publish what we find, including what doesn't work. That's the next piece in this series.</p>
 
-<img class="post-img" src="/blog/images/wpab-html-to-blocks.webp" width="1344" height="752" alt="HTML tags like div, h1, p and img pour into a funnel and come out as a row of neat WordPress content blocks" loading="lazy">
+<img class="post-img" src="/blog/images/wpab-html-to-blocks.webp" width="1000" height="560" alt="HTML tags like div, h1, p and img pour into a funnel and come out as a row of neat WordPress content blocks" loading="lazy">
 
 <p>Third, we're showing what an agent can do once a site is on WordPress. Opal is the AI agent inside MemberPress.ai. You connect a WordPress site that runs MemberPress and tell her what your membership needs. She sets up the membership levels and pages, and once you've said what you want, she handles the rest.</p>
 
