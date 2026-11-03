@@ -1,18 +1,19 @@
 /* data-flow hero and scroll orb (#149): full-bleed canvases are fixed-height decoration behind real HTML text */
-.flow-hero { position: relative; overflow: hidden; min-height: 92vh; min-height: 92svh; padding: 7rem 0 max(260px, 36vh); display: flex; align-items: flex-start; background: radial-gradient(60% 50% at 80% 0%, rgba(255, 107, 44, 0.14), transparent 70%); }
+.flow-hero { position: relative; overflow: hidden; min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); padding: 6.25rem 0 max(300px, 42vh); display: flex; align-items: flex-start; background: radial-gradient(60% 50% at 80% 0%, rgba(255, 107, 44, 0.14), transparent 70%); }
 .flow-canvas, .orb-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .flow-canvas { touch-action: pan-y; }
 .flow-hero::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(11, 13, 16, 0.78) 0%, rgba(11, 13, 16, 0.55) 36%, rgba(11, 13, 16, 0) 52%); pointer-events: none; }
-.flow-copy { position: relative; z-index: 2; max-width: 760px; margin-inline: auto; text-align: center; pointer-events: none; }
+.flow-copy { position: relative; z-index: 2; max-width: 880px; margin-inline: auto; text-align: center; pointer-events: none; }
 .flow-copy h1 { font-size: clamp(2.1rem, 4.6vw, 3.6rem); }
+.flow-copy .lead { max-width: 70ch; margin: 1.1rem auto 0; }
 .flow-copy .btn-row { justify-content: center; }
 .flow-copy .btn { pointer-events: auto; }
-.flow-spacer { padding: 5rem 1.25rem 2rem; }
-.orb-section { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; padding: 4rem 0; }
+.flow-spacer { padding: 3rem 1.25rem 0; }
+.orb-section { position: relative; overflow: hidden; min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); display: flex; align-items: flex-end; padding: 5rem 0 4rem; }
 .orb-copy { position: relative; z-index: 2; width: 100%; max-width: 440px; margin-left: max(1.25rem, calc((100vw - var(--max)) / 2)); }
 .orb-copy .btn { margin-top: 0.5rem; }
 @media (max-width: 860px) {
-  .flow-hero { min-height: 80vh; min-height: 80svh; padding: 5.25rem 0 max(230px, 30vh); }
+  .flow-hero { min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); padding: 5.25rem 0 max(300px, 40svh); }
   .flow-copy h1 { font-size: 1.9rem; }
   .flow-copy .lead { font-size: 0.97rem; margin-top: 1rem; }
   .orb-section { flex-direction: column; align-items: stretch; min-height: 0; padding: 0 0 3rem; }
