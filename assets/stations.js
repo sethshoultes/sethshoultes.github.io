@@ -17,7 +17,7 @@ function mount(cv) {
   const hex = (css.getPropertyValue('--accent').trim() || '#ff6b2c').replace('#', '');
   const accent = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(',');
   const LINE = '170,186,212';
-  let w = 0, h = 0, raf = 0, onScreen = true, lastY = -1, lastT = 0;
+  let w = 0, h = 0, raf = 0, lastY = -1, lastT = 0;
 
   const size = () => {
     const nw = innerWidth, nh = innerHeight;
@@ -109,7 +109,7 @@ function mount(cv) {
     ctx.restore();
   };
 
-  const tick = () => { raf = 0; draw(false); if (onScreen && !document.hidden && !reduced.matches) raf = requestAnimationFrame(tick); };
+  const tick = () => { raf = 0; draw(false); if (!document.hidden && !reduced.matches) raf = requestAnimationFrame(tick); };
   const sync = () => {
     if (!document.hidden && !reduced.matches && !raf) raf = requestAnimationFrame(tick);
     if ((document.hidden || reduced.matches) && raf) { cancelAnimationFrame(raf); raf = 0; }
