@@ -24,6 +24,10 @@ sections:
     heading: "Where this comes from"
     paragraphs:
       - "I owned a garage door company for a time, grew its search traffic and online presence, then sold it. I have built on the web for over 25 years."
+  - id: written
+    heading: "What I've written about Housecall Pro"
+    paragraphs:
+      - "I have written about the tool for garage door businesses: [What Housecall Pro does for a home-service business like a garage door company](https://smartwebutah.com/how-housecall-pro-revolutionizes-scheduling-dispatch-for-garage-door-businesses/). It is on smartwebutah.com, my own agency's site."
   - id: start
     heading: "How we start"
     paragraphs:
@@ -37,3 +41,6 @@ faq:
     a: "Southern Utah is home, and I work with home service businesses anywhere."
   - q: "Where do I start?"
     a: "Book a call and tell me about your business and the software you use. I reply within two business days."
+subject_of:
+  - name: "What Housecall Pro does for a home-service business like a garage door company"
+    url: "https://smartwebutah.com/how-housecall-pro-revolutionizes-scheduling-dispatch-for-garage-door-businesses/"
