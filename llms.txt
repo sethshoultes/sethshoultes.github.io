@@ -1,3 +1,7 @@
+---
+layout: null
+sitemap: false
+---
 # Seth Shoultes
 
 > Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years, and he now offers monthly AI consulting to small businesses: strategy, a fractional AI lead, or an AI agent team building for you.
@@ -55,6 +59,12 @@
 - [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file
 - [Sitemap](https://sethshoultes.com/sitemap.xml)
 
+## {{ site.data.games.arcade.name }}
+
+{{ site.data.games.arcade.line }} {{ site.data.games.arcade.url }}
+{% assign ranked = site.data.games.games | sort: "rank" %}
+{% for g in ranked %}- [{{ g.title }}]({{ g.play }}) ({{ site.data.games.genres | where: "id", g.genre | map: "name" | first }}): {{ g.line }}
+{% endfor %}
 ## Contact
 - Book a call: https://sethshoultes.com/consulting/#contact
 - LinkedIn: https://www.linkedin.com/in/shoultes/
