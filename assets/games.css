@@ -31,3 +31,9 @@
 .game-row-body p { margin: 0; color: var(--muted); font-size: 0.875rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .game-row-more { border-color: var(--accent); }
 .game-row-more .game-row-body h3 { color: var(--accent); }
+
+/* tap targets on /projects/ (#160): the card text links, the inline Arcade link and the video-group link are at least 44 px tall on phones */
+@media (max-width: 700px) {
+  .card .links a, .video-group-note a { display: inline-flex; align-items: center; min-height: 44px; }
+  .lead a[href="#arcade"] { display: inline-block; padding: 0.6rem 0; }
+}
