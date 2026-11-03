@@ -8,6 +8,7 @@
   var send = document.getElementById('chat-send');
   var chips = document.getElementById('chips');
   var history = [];
+  var RECENT_TURNS = 9; // the latest turns only (odd, so the slice always starts with a user turn); a long chat never grows the request
 
   function add(role, text) {
     var d = document.createElement('div');
@@ -24,7 +25,7 @@
     box.className = 'sources';
     box.appendChild(document.createTextNode('From Seth’s writing:'));
     sources.forEach(function (s) {
-      if (s.url.indexOf('https://sethshoultes.com/') !== 0) return; // only ever link to this site
+      if (!s || typeof s.url !== 'string' || s.url.indexOf('https://sethshoultes.com/') !== 0) return; // only ever link to this site, and skip a source with no url
       var a = document.createElement('a');
       a.href = s.url;
       a.textContent = s.title;
@@ -39,7 +40,7 @@
     send.disabled = true;
     var wait = add('assistant', 'Looking through Seth’s writing…');
     try {
-      var res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) });
+      var res = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history.slice(-RECENT_TURNS) }) });
       var data = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(data.error || '');
       wait.textContent = data.answer;
