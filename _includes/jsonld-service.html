@@ -11,6 +11,13 @@
       "description": {{ s.description | jsonify }},
       "url": "{{ site.url }}/{{ s.slug }}/",
       "provider": { "@id": "{{ site.url }}/#person" },
+      {%- if s.subject_of %}
+      "subjectOf": [
+        {%- for w in s.subject_of %}
+        { "@type": "CreativeWork", "name": {{ w.name | jsonify }}, "url": {{ w.url | jsonify }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor %}
+      ],
+      {%- endif %}
       "areaServed": {% if s.national %}"US"{% else %}{ "@type": "State", "name": "Utah" }{% endif %}
     },
     {
