@@ -129,12 +129,12 @@ function flow(ctx, cv, c, getQuality) {
     const tall = w < 700 && w < h * 1.3 || w < h * 0.9;
     // The scene fills the lower part of a full-bleed canvas; the headline sits over the top.
     const copy = cv.parentElement.querySelector('.flow-copy');
-    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.04 : h * 0.04;
+    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.065 : h * 0.04;
     const ay = Math.min(top, h * 0.78);
     const A = { x: w * 0.04, y: ay, w: w * 0.92, h: h * 0.96 - ay };
     const X = (f) => A.x + A.w * f, Y = (f) => A.y + A.h * f;
     const src = [], cards = [];
-    const win = tall ? { x: X(0.08), y: Y(0.38), w: A.w * 0.84, h: A.h * 0.24 } : { x: X(0.37), y: Y(0), w: A.w * 0.26, h: A.h };
+    const win = tall ? { x: X(0.08), y: Y(0.35), w: A.w * 0.84, h: A.h * 0.3 } : { x: X(0.31), y: Y(0), w: A.w * 0.38, h: A.h };
     for (let i = 0; i < 3; i++) {
       if (tall) {
         const cx = X(0.2 + 0.3 * i), bw = A.w * 0.27, bh = A.h * 0.16;
@@ -142,8 +142,8 @@ function flow(ctx, cv, c, getQuality) {
         cards.push({ x: cx - bw / 2, y: A.y + A.h - bh * 1.2, w: bw, h: bh * 1.2, label: ANSWERS[i] });
       } else {
         const cy = Y(0.17 + 0.33 * i), bh = A.h * 0.22;
-        src.push({ x: A.x, y: cy - bh / 2, w: A.w * 0.19, h: bh, label: SOURCES[i] });
-        cards.push({ x: A.x + A.w * 0.79, y: cy - bh / 2, w: A.w * 0.21, h: bh * 1.1, label: ANSWERS[i] });
+        src.push({ x: A.x, y: cy - bh / 2, w: A.w * 0.2, h: bh, label: SOURCES[i] });
+        cards.push({ x: A.x + A.w * 0.8, y: cy - bh / 2, w: A.w * 0.2, h: bh * 1.1, label: ANSWERS[i] });
       }
     }
     const routes = [];
@@ -187,10 +187,12 @@ function flow(ctx, cv, c, getQuality) {
     g.strokeStyle = c.border; g.stroke();
     g.fillStyle = c.border;
     for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(x + 16 + i * 14, y + 16, 4, 0, TAU); g.fill(); }
-    g.fillStyle = `rgba(${accent},0.9)`;
-    roundRect(g, x + 16, y + 38, ww * 0.42, 8, 4); g.fill();
+    if (y + 38 + 8 < y + wh - 10) {
+      g.fillStyle = `rgba(${accent},0.9)`;
+      roundRect(g, x + 16, y + 38, ww * 0.42, 8, 4); g.fill();
+    }
     g.fillStyle = c.border;
-    for (let i = 0; i < 6; i++) { roundRect(g, x + 16, y + 62 + i * 18, ww * (0.78 - (i % 3) * 0.14), 6, 3); g.fill(); }
+    for (let i = 0; i < 6 && y + 62 + i * 18 + 6 < y + wh - 12; i++) { roundRect(g, x + 16, y + 62 + i * 18, ww * (0.78 - (i % 3) * 0.14), 6, 3); g.fill(); }
   };
 
   const at = (r, t, p) => {
@@ -281,14 +283,14 @@ function orb(ctx, cv, c, getQuality) {
       if (!t0) t0 = now;
       const vh = window.innerHeight, top = cv.getBoundingClientRect().top;
       const p = still ? 1 : cv.dataset.assemble === 'time' ? clamp((now - t0) / 3200) : clamp((vh * 0.95 - top) / (vh * 0.6));
-      const wide = w > 860, R = Math.min(w * (wide ? 0.3 : 0.42), h * 0.4), cx = wide ? w * 0.62 : w / 2, cy = h * 0.5;
+      const wide = w > 860, R = Math.min(w * (wide ? 0.3 : 0.42), h * 0.36), cx = wide ? w * 0.62 : w / 2, cy = h * 0.52;
       const spin = still ? 0.6 : now * 0.00025;
       const cs = Math.cos(spin), sn = Math.sin(spin);
       const live = Math.floor(MAX * getQuality() * (w < 600 ? 0.65 : 1));
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'lighter';
       const e0 = ease(p);
-      if (e0 > 0.02) { const s = R * (3.2 + (still ? 0 : Math.sin(now * 0.002) * 0.15)) * (0.4 + 0.6 * e0); ctx.globalAlpha = e0 * e0 * 0.55; ctx.drawImage(core, cx - s / 2, cy - s / 2, s, s); }
+      if (e0 > 0.02) { const s = Math.min(R * (3.2 + (still ? 0 : Math.sin(now * 0.002) * 0.15)) * (0.4 + 0.6 * e0), h, 2 * Math.min(cx, w - cx)); ctx.globalAlpha = e0 * e0 * 0.55; ctx.drawImage(core, cx - s / 2, cy - s / 2, s, s); }
       for (let k = 0; k < live; k++) {
         const q = ps[Math.floor((k * MAX) / live)], e = ease(clamp((p - q.st) / 0.6));
         const x3 = q.ux * cs + q.uz * sn, z3 = -q.ux * sn + q.uz * cs, per = 1 / (1 - z3 * 0.25);
@@ -302,7 +304,7 @@ function orb(ctx, cv, c, getQuality) {
       }
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
-      if (e0 > 0.4) { ctx.beginPath(); ctx.ellipse(cx, cy, R * 1.28, R * 0.4, -0.35, 0, TAU); ctx.strokeStyle = `rgba(${accent},${0.28 * e0})`; ctx.lineWidth = 1; ctx.stroke(); }
+      if (e0 > 0.4) { ctx.beginPath(); ctx.ellipse(cx, cy, Math.min(R * 1.28, w * 0.46), R * 0.4, -0.35, 0, TAU); ctx.strokeStyle = `rgba(${accent},${0.28 * e0})`; ctx.lineWidth = 1; ctx.stroke(); }
     },
   };
 }
