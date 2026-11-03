@@ -192,7 +192,23 @@ function flow(ctx, cv, c, getQuality) {
       roundRect(g, x + 16, y + 38, ww * 0.42, 8, 4); g.fill();
     }
     g.fillStyle = c.border;
-    for (let i = 0; i < 6 && y + 62 + i * 18 + 6 < y + wh - 12; i++) { roundRect(g, x + 16, y + 62 + i * 18, ww * (0.78 - (i % 3) * 0.14), 6, 3); g.fill(); }
+    const lines = [];
+    const room = geo.tall ? wh - 12 : wh - 56; // desktop keeps the bottom strip for the citation chip
+    for (let i = 0; i < 12 && 62 + i * 18 + 6 < room; i++) lines.push({ x: x + 16, y: y + 62 + i * 18, w: ww * (0.78 - (i % 3) * 0.14) * (geo.tall ? 1 : 0.62) });
+    for (const l of lines) { roundRect(g, l.x, l.y, l.w, 6, 3); g.fill(); }
+    geo.win.lines = lines;
+    if (!geo.tall && wh >= 200) {
+      // an image block beside the text, and the line that says this page is what the answer cites
+      const ix = x + ww * 0.7, iy = y + 62, iw = ww * 0.24, ih = Math.min(wh * 0.3, 110);
+      roundRect(g, ix, iy, iw, ih, 8); g.fillStyle = c.surface; g.fill(); g.strokeStyle = c.border; g.stroke();
+      g.beginPath(); g.moveTo(ix + 10, iy + ih - 10); g.lineTo(ix + iw * 0.4, iy + ih * 0.45); g.lineTo(ix + iw * 0.62, iy + ih * 0.7); g.lineTo(ix + iw - 10, iy + ih * 0.3);
+      g.strokeStyle = `rgba(${accent},0.7)`; g.lineWidth = 2; g.stroke(); g.lineWidth = 1;
+      const cy2 = y + wh - 34;
+      roundRect(g, x + 16, cy2, ww * 0.62, 22, 11); g.fillStyle = `rgba(${accent},0.16)`; g.fill();
+      g.beginPath(); g.arc(x + 30, cy2 + 11, 4, 0, TAU); g.fillStyle = `rgba(${accent},0.95)`; g.fill();
+      g.fillStyle = c.muted; g.textAlign = 'left'; g.font = `600 ${clamp(w * 0.0095, 10, 12)}px Inter, -apple-system, sans-serif`;
+      g.fillText('yourbusiness.com: cited in the answer', x + 42, cy2 + 11);
+    }
   };
 
   const at = (r, t, p) => {
@@ -227,6 +243,7 @@ function flow(ctx, cv, c, getQuality) {
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(back, 0, 0, w, h);
       const win = geo.win;
+      if (winPulse > 0.01 && win.lines) { ctx.fillStyle = `rgba(${accent},${winPulse * 0.4})`; for (const l of win.lines) { roundRect(ctx, l.x, l.y, l.w, 6, 3); ctx.fill(); } } // the page lights up as the data lands
       if (winPulse > 0.01) { roundRect(ctx, win.x, win.y, win.w, win.h, 14); ctx.strokeStyle = `rgba(${accent},${winPulse * 0.7})`; ctx.lineWidth = 2; ctx.stroke(); }
       for (let i = 0; i < 3; i++) if (cardPulse[i] > 0.01) { const a = geo.cards[i]; roundRect(ctx, a.x, a.y, a.w, a.h, 10); ctx.strokeStyle = `rgba(${accent},${cardPulse[i] * 0.8})`; ctx.lineWidth = 2; ctx.stroke(); }
       for (let i = ripples.length - 1; i >= 0; i--) { ripples[i].age += dt; if (ripples[i].age > 1.1) ripples.splice(i, 1); }
