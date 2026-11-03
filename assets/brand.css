@@ -1,5 +1,7 @@
+/* Metric-matched stand-in for Inter while it loads, so the swap does not reflow wrapped text (CLS, #83). */
+@font-face { font-family: 'Inter Fallback'; src: local('Arial'), local('Helvetica'); size-adjust: 107.4%; ascent-override: 90.2%; descent-override: 22.5%; line-gap-override: 0%; }
 :root {
   --bg: #0b0d10; --surface: #14171c; --surface-2: #1b1f26; --text: #f4f4f5; --muted: #a1a7b0;
   --accent: #ff6b2c; --border: #262b33;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
 }
