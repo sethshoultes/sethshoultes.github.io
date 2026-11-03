@@ -21,9 +21,9 @@
 /* The Arcade (#169): one compact stream of rows after the featured rail. Two columns on desktop, one on phones;
    each row is a small thumbnail, the genre tag, the title and one line, and the whole row is the link. */
 .arcade-note { color: var(--muted); margin: 0 0 1rem; }
-.arcade-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem 1.25rem; }
-@media (max-width: 700px) { .arcade-list { grid-template-columns: 1fr; gap: 0.6rem; } }
-.game-row { display: flex; gap: 1rem; align-items: center; min-height: 4.5rem; padding: 0.6rem 0.9rem 0.6rem 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: inherit; }
+.arcade-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem 1.25rem; grid-auto-rows: 1fr; }
+@media (max-width: 700px) { .arcade-list { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 0.6rem; } }
+.game-row { display: flex; gap: 1rem; align-items: center; min-height: 4.5rem; height: 100%; box-sizing: border-box; padding: 0.6rem 0.9rem 0.6rem 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: inherit; }
 .game-row:hover, .game-row:focus-visible { border-color: var(--accent); }
 .game-row img { flex: none; width: 96px; height: auto; aspect-ratio: 640 / 264; object-fit: cover; border-radius: 6px; }
 .game-row-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
