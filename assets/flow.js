@@ -129,7 +129,7 @@ function flow(ctx, cv, c, getQuality) {
     const tall = w < 700 && w < h * 1.3 || w < h * 0.9;
     // The scene fills the lower part of a full-bleed canvas; the headline sits over the top.
     const copy = cv.parentElement.querySelector('.flow-copy');
-    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.04 : h * 0.04;
+    const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.065 : h * 0.04;
     const ay = Math.min(top, h * 0.78);
     const A = { x: w * 0.04, y: ay, w: w * 0.92, h: h * 0.96 - ay };
     const X = (f) => A.x + A.w * f, Y = (f) => A.y + A.h * f;
@@ -304,7 +304,7 @@ function orb(ctx, cv, c, getQuality) {
       }
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
-      if (e0 > 0.4) { ctx.beginPath(); ctx.ellipse(cx, cy, R * 1.28, R * 0.4, -0.35, 0, TAU); ctx.strokeStyle = `rgba(${accent},${0.28 * e0})`; ctx.lineWidth = 1; ctx.stroke(); }
+      if (e0 > 0.4) { ctx.beginPath(); ctx.ellipse(cx, cy, Math.min(R * 1.28, w * 0.46), R * 0.4, -0.35, 0, TAU); ctx.strokeStyle = `rgba(${accent},${0.28 * e0})`; ctx.lineWidth = 1; ctx.stroke(); }
     },
   };
 }
