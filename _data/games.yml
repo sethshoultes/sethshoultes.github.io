@@ -106,8 +106,8 @@ games:
     play: https://table.adventurebuildr.com
     page: https://arcade.adventurebuildr.com/games/living-table/
     image: /assets/img/games/living-table.webp
-    alt: "Card art for The Living Table"
-    image_source: https://arcade.adventurebuildr.com/_astro/living-table.CAA3w-Aa_ZXckJU.jpeg
+    alt: "The Living Table start screen, with its title and three scenarios"
+    image_source: https://table.adventurebuildr.com (live-page screenshot, 1280x528 scaled to 640x264)
   - id: ai-typing-star
     rank: 13
     title: "AI Typing Star Game"
