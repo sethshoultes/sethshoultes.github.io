@@ -7,19 +7,13 @@ permalink: /services/
 hero_variant: flow
 ---
 <div class="hub">
-  <section class="service-hero">
-    <div class="wrap">
-      <div class="hero-split-grid{% if page.hero_variant %} has-anim{% endif %}">
-        <div>
-          <p class="eyebrow">Services</p>
-          <h1>AI, SEO and Web Development Services</h1>
-          <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
-          <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
-        </div>
-        {%- if page.hero_variant %}
-        <div class="hero-anim" data-variant="{{ page.hero_variant }}" aria-hidden="true"></div>
-        {%- endif %}
-      </div>
+  <section class="flow-hero">
+    <canvas class="flow-canvas" data-anim="flow" aria-hidden="true"></canvas>
+    <div class="wrap flow-copy">
+      <p class="eyebrow">Services</p>
+      <h1>AI, SEO and Web Development Services</h1>
+      <p class="lead">AI that gets real work done, with SEO built in. I help businesses get found, in search and in AI answers, and get more done with less.</p>
+      <p class="btn-row"><a class="btn" href="/consulting/#contact">Book a call</a> <a class="btn ghost" href="/consulting/">See the plans</a></p>
     </div>
   </section>
 
