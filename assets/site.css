@@ -427,6 +427,7 @@
   .mp-day input { outline: none; }
 }
 .consulting li a, .consulting td a { text-decoration: underline; text-underline-offset: 0.2em; }
+.service p a:not(.btn), .service li a:not(.link-card), .hub p a:not(.btn), .hub li a:not(.link-card) { text-decoration: underline; text-underline-offset: 0.2em; } /* links inside running text must not rely on colour alone (axe link-in-text-block) */
 
 /* city pages: one credited place photo in the first body section (_layouts/city.html) */
 .city-photo { margin: 1.5rem 0 0; }
