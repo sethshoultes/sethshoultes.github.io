@@ -17,7 +17,7 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
   <div class="wrap">
     <p class="eyebrow">Projects</p>
     <h1>Things I've built.</h1>
-    <p class="lead mt-1">Tools for creators and businesses, a few experiments, and some games for fun.</p>
+    <p class="lead mt-1">Tools for creators and businesses, a few experiments, and some games for fun. <a href="#games">Play something &darr;</a></p>
   </div>
 </div>
 <section class="pt-1">
@@ -136,16 +136,12 @@ description: "AI tools, WordPress plugins, browser games and videos built by Set
       <p>{{ site.data.games.arcade.line }}</p>
       <a class="btn" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener">Open the Arcade</a>
     </div>
-    <ul class="link-grid cols-4 arcade-top">
-      {%- for game in ranked limit: site.data.games.arcade_top %}
-      <li>{% include game-card.html game=game tag=true %}</li>
+    <p class="arcade-note">The first six games are above. These are the rest.</p>
+    <ul class="arcade-list">
+      {%- for game in ranked offset: site.data.games.featured_count %}
+      <li>{% include game-row.html game=game %}</li>
       {%- endfor %}
-    </ul>
-    <ul class="link-grid arcade-grid">
-      {%- for game in ranked offset: site.data.games.arcade_top %}
-      <li>{% include game-card.html game=game tag=true %}</li>
-      {%- endfor %}
-      <li class="arcade-more"><a class="link-card" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><div class="link-card-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p><span class="meta">Open the Arcade &rarr;</span></div></a></li>
+      <li class="arcade-more"><a class="game-row game-row-more" href="{{ site.data.games.arcade.url }}" target="_blank" rel="noopener"><span class="game-row-body"><h3>See every game</h3><p>The Arcade has the full library and a place to keep your favourites.</p></span></a></li>
     </ul>
   </div>
 </section>

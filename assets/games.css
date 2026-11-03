@@ -18,20 +18,16 @@
 
 /* the Arcade: one continuous grid in rank order, a small genre tag on each card */
 .game-tag { align-self: flex-start; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; color: var(--accent); border: 1px solid var(--border); border-radius: 999px; padding: 0.1rem 0.6rem; }
-/* The Arcade (#169): the best four games sit in a plain top row so rank reads left to right there.
-   Everything after them packs as masonry in pure CSS, so cards of different heights leave no ragged
-   rows. Where grid masonry is supported rank continues left to right; elsewhere CSS columns do the
-   packing and the rest reads down each column. No JavaScript, no library. */
-ul.link-grid.arcade-top { margin-bottom: 1.25rem; }
-ul.link-grid.arcade-grid { display: block; columns: 4; column-gap: 1.25rem; margin-top: 0; }
-ul.link-grid.arcade-grid > li { break-inside: avoid; margin: 0 0 1.25rem; }
-@media (max-width: 1000px) { ul.link-grid.arcade-grid { columns: 2; } }
-@media (max-width: 600px) { ul.link-grid.arcade-grid { columns: 1; } }
-@supports (grid-template-rows: masonry) {
-  ul.link-grid.arcade-grid { display: grid; columns: auto; grid-template-columns: repeat(4, 1fr); grid-template-rows: masonry; gap: 1.25rem; }
-  ul.link-grid.arcade-grid > li { margin: 0; }
-  @media (max-width: 1000px) { ul.link-grid.arcade-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 600px) { ul.link-grid.arcade-grid { grid-template-columns: 1fr; } }
-}
-.arcade-more .link-card { justify-content: flex-start; }
-.arcade-more .meta { align-self: flex-start; margin-top: 0.75rem; background: var(--accent); color: #0b0d10; border-radius: 999px; padding: 0.55rem 1.1rem; }
+/* The Arcade (#169): one compact stream of rows after the featured rail. Two columns on desktop, one on phones;
+   each row is a small thumbnail, the genre tag, the title and one line, and the whole row is the link. */
+.arcade-note { color: var(--muted); margin: 0 0 1rem; }
+.arcade-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem 1.25rem; }
+@media (max-width: 700px) { .arcade-list { grid-template-columns: 1fr; gap: 0.6rem; } }
+.game-row { display: flex; gap: 1rem; align-items: center; min-height: 4.5rem; padding: 0.6rem 0.9rem 0.6rem 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: inherit; }
+.game-row:hover, .game-row:focus-visible { border-color: var(--accent); }
+.game-row img { flex: none; width: 96px; height: auto; aspect-ratio: 640 / 264; object-fit: cover; border-radius: 6px; }
+.game-row-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.game-row-body h3 { margin: 0; font-size: 1rem; }
+.game-row-body p { margin: 0; color: var(--muted); font-size: 0.875rem; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.game-row-more { border-color: var(--accent); }
+.game-row-more .game-row-body h3 { color: var(--accent); }

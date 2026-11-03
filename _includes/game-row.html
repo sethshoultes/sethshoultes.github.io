@@ -1,0 +1,13 @@
+{%- comment -%}
+Compact Arcade row: small thumbnail, genre tag, title, one line. Params: game (an entry of site.data.games.games).
+One <a>, one <h3>, no links inside. The whole row plays the game.
+{%- endcomment -%}
+{%- assign genre = site.data.games.genres | where: "id", include.game.genre | first -%}
+<a class="game-row" href="{{ include.game.play }}" target="_blank" rel="noopener">
+  <img src="{{ include.game.image }}" alt="{{ include.game.alt | replace: 'Card art for', 'Screenshot of' }}" width="640" height="264" loading="lazy" decoding="async">
+  <span class="game-row-body">
+    <span class="game-tag">{{ genre.name }}</span>
+    <h3>{{ include.game.title }}</h3>
+    <p>{{ include.game.line }}</p>
+  </span>
+</a>
