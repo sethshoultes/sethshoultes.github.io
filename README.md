@@ -74,4 +74,4 @@ Seth's Clone knowledge base.
 
 ## Contact
 
-[sethshoultes.com/talk](https://sethshoultes.com/talk/)
+[sethshoultes.com/talk](https://sethshoultes.com/talk/). Mail to `talk@mail.sethshoultes.com` gets an agent-written draft that Seth approves: see `docs/talk-inbox.md`.
