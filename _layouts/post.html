@@ -3,7 +3,7 @@ layout: site
 ---
 <article class="post">
   {%- if page.hero_image %}
-  {%- assign hero_webp = page.hero_image.src | replace: ".png", ".webp" %}
+  {%- assign hero_webp = page.hero_image.src | replace: ".png", ".webp" | replace: ".jpg", ".webp" %}
   {%- assign hero_has_webp = site.static_files | where: "path", hero_webp | first %}
   <picture>
     {%- if hero_has_webp %}
