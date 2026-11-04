@@ -149,8 +149,8 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
 
 <section id="work-with-me">
   <div class="wrap">
-    <p class="eyebrow reveal">Work with me</p>
-    <ul class="work-row reveal">
+    <h2 class="eyebrow reveal">Work with me</h2>
+    <ul class="work-row reveal" role="list">
       {%- assign work_slugs = "field-service-software,google-ads,animation-artwork-video" | split: "," %}
       {%- for slug in work_slugs %}
       {%- assign svc = site.data.services[slug] %}
