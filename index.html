@@ -147,6 +147,19 @@ description: "I help small businesses put AI to work. Monthly consulting, built 
   </div>
 </section>
 
+<section id="work-with-me">
+  <div class="wrap">
+    <h2 class="eyebrow reveal">Work with me</h2>
+    <ul class="work-row reveal" role="list">
+      {%- assign work_slugs = "field-service-software,google-ads,animation-artwork-video" | split: "," %}
+      {%- for slug in work_slugs %}
+      {%- assign svc = site.data.services[slug] %}
+      <li><a href="/{{ svc.slug }}/">{{ svc.name }}</a><span>{{ svc.summary }}</span></li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+
 <section class="band" id="books">
   <div class="wrap">
     <p class="eyebrow reveal">Reading list</p>
