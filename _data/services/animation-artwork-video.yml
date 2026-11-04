@@ -5,6 +5,7 @@ description: "Custom animation, artwork and video production from a developer wh
 service_type: "Animation, artwork and video production"
 summary: "Custom animations, artwork and video production, from a Flash and ActionScript beginning."
 lead: "I build custom animations, artwork and video, and I have since the 2000s, when I started with Macromedia Flash and ActionScript."
+hero_variant: orb
 national: true
 sections:
   - id: what
