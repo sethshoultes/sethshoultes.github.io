@@ -38,6 +38,12 @@
 }
 
 /* about photos */
+/* "Work with me" row on the homepage (#163): three plain links, each with one line of why */
+.work-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 2rem; }
+.work-row li { display: flex; flex-direction: column; gap: 0.25rem; border-top: 1px solid var(--border); padding-top: 0.9rem; min-width: 0; }
+.work-row a { font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; }
+.work-row span { color: var(--muted); font-size: 0.95rem; }
+@media (max-width: 860px) { .work-row { grid-template-columns: 1fr; gap: 0.5rem; } }
 .about-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 3rem; align-items: start; }
 .about-photos { display: grid; gap: 1.25rem; justify-items: start; }
 .about-photos figure { margin: 0; }
