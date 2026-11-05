@@ -131,7 +131,20 @@ function flow(ctx, cv, c, getQuality) {
     const copy = cv.parentElement.querySelector('.flow-copy');
     const top = copy ? copy.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + h * 0.065 : h * 0.04;
     const ay = Math.min(top, h * 0.78);
-    const A = { x: w * 0.04, y: ay, w: w * 0.92, h: h * 0.96 - ay };
+    // The scene sits in the same column as the page's own content, so its cards line up with the cards below instead of
+    // spanning the whole screen. The column is measured from an empty .wrap (the site's own container class), because the
+    // headline's wrap is narrower; on a phone that column is nearly the full width, so nothing changes there.
+    const probe = document.createElement('div');
+    probe.className = 'wrap';
+    probe.style.cssText = 'visibility:hidden;height:0;position:absolute;left:0;right:0';
+    cv.parentElement.appendChild(probe);
+    const pr = probe.getBoundingClientRect(), ps = getComputedStyle(probe), cr = cv.getBoundingClientRect();
+    const padL = parseFloat(ps.paddingLeft), padR = parseFloat(ps.paddingRight); // read while it is still in the page
+    probe.remove();
+    const colLeft = pr.left - cr.left + padL || 0;
+    const colW = pr.width - padL - padR || w;
+    const ax = Math.max(w * 0.04, colLeft), aw = Math.min(w * 0.92, colW);
+    const A = { x: ax, y: ay, w: aw, h: h * 0.96 - ay };
     const X = (f) => A.x + A.w * f, Y = (f) => A.y + A.h * f;
     const src = [], cards = [];
     const win = tall ? { x: X(0.08), y: Y(0.35), w: A.w * 0.84, h: A.h * 0.3 } : { x: X(0.31), y: Y(0), w: A.w * 0.38, h: A.h };
