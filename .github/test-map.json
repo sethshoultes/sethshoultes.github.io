@@ -3,6 +3,7 @@
   "ignore": [
     "docs/**",
     "README.md",
+    "CLAUDE.md",
     ".great-authors/**",
     ".great-minds/**",
     "data/**",
