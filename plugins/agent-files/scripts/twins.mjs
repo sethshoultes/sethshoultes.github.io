@@ -1,10 +1,12 @@
 // agent-files (site-kit#114): a markdown twin for every built page, after the build. dist/x/index.html -> dist/x/index.md
 // (the home -> dist/index.md). The twin is the page's own <main>, under its h1, address and description: the same words
 // as the HTML, nothing added. A noindex page, or one whose canonical is another site's, gets none. With --llms-full the
-// twins are also joined into dist/llms-full.txt. Generalised from smartwebutah.com's markdown-twins.mjs (and
+// twins are also joined into dist/llms-full.txt. A page with no <main> fails the run, unless --skip-no-main, which
+// leaves that page without a twin and names it (site-kit#193: a site's standalone game pages are whole documents).
+// Generalised from smartwebutah.com's markdown-twins.mjs (and
 // memberpress.ai's markdownTwins.mjs) so no site keeps its own copy.
 //
-//   node plugins/agent-files/scripts/twins.mjs dist --origin https://example.com [--llms-full "Example: every page"]
+//   node plugins/agent-files/scripts/twins.mjs dist --origin https://example.com [--llms-full "Example: every page"] [--skip-no-main]
 //
 // The HTML-to-markdown step is turndown (+ turndown-plugin-gfm), taken from the site's own node_modules.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -19,15 +21,20 @@ const attr = (html, re) => html.match(re)?.[1] ?? null;
 const meta = (html, key, name) => html.match(new RegExp(`<meta[^>]*${key}=["']${name}["'][^>]*content=(["'])(.*?)\\1`, "i"))?.[2]
   ?? html.match(new RegExp(`<meta[^>]*content=(["'])(.*?)\\1[^>]*${key}=["']${name}["']`, "i"))?.[2] ?? null;
 
-/** The twin for one built page, or null when the page should have none. `convert(html)` turns HTML into markdown. */
-export function pageToMarkdown(html, { origin, convert }) {
+/** The twin for one built page, or null when the page should have none. `convert(html)` turns HTML into markdown. An
+ * indexable page with no <main> throws, or, given `onNoMain`, is reported to it by its canonical and gets none. */
+export function pageToMarkdown(html, { origin, convert, onNoMain = null }) {
   if (/noindex/i.test(meta(html, "name", "robots") ?? "")) return null;
   const canonical = attr(html, /<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)
     ?? attr(html, /<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
   if (!canonical || !(canonical === origin || canonical.startsWith(`${origin}/`))) return null;
   const open = html.match(/<main\b[^>]*>/i);
   const end = open ? html.indexOf("</main>", open.index) : -1;
-  if (!open || end === -1) throw new Error(`${canonical}: no <main> ... </main>`);
+  if (!open || end === -1) {
+    if (!onNoMain) throw new Error(`${canonical}: no <main> ... </main>`);
+    onNoMain(canonical);
+    return null;
+  }
   const main = html.slice(open.index + open[0].length, end).replace(/\b(href|src)=(["'])\/(?!\/)/g, `$1=$2${origin}/`);
   const title = unescape(meta(html, "property", "og:title") ?? attr(html, /<title>([^<]*)<\/title>/i) ?? "");
   const description = unescape(meta(html, "name", "description") ?? "");
@@ -45,11 +52,13 @@ function pages(dir) {
   });
 }
 
-/** Write every twin under `dist`; with `llmsFull` (a title) also dist/llms-full.txt. Returns the twins written. */
-export function writeTwins(dist, { origin, convert, llmsFull = null }) {
+/** Write every twin under `dist`; with `llmsFull` (a title) also dist/llms-full.txt. Returns the twins written. With
+ * `skipped` (an array), a page with no <main> gets no twin and its canonical is pushed there instead of throwing. */
+export function writeTwins(dist, { origin, convert, llmsFull = null, skipped = null }) {
   const twins = [];
+  const onNoMain = skipped ? (canonical) => skipped.push(canonical) : null;
   for (const file of pages(dist).sort()) {
-    const t = pageToMarkdown(readFileSync(file, "utf8"), { origin, convert });
+    const t = pageToMarkdown(readFileSync(file, "utf8"), { origin, convert, onNoMain });
     if (t === null) continue;
     writeFileSync(file.replace(/index\.html$/, "index.md"), t.markdown);
     twins.push(t);
@@ -79,10 +88,12 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   const flag = (n) => { const i = args.indexOf(n); return i === -1 ? null : args[i + 1]; };
   const dist = args[0], origin = flag("--origin");
   if (!dist || !origin || !/^https:\/\/[^/]+$/.test(origin)) {
-    console.error('usage: twins.mjs DIST --origin https://host [--llms-full "Title"]');
+    console.error('usage: twins.mjs DIST --origin https://host [--llms-full "Title"] [--skip-no-main]');
     process.exit(2);
   }
-  const twins = writeTwins(dist, { origin, convert: turndownConverter(), llmsFull: flag("--llms-full") });
+  const skipped = args.includes("--skip-no-main") ? [] : null;
+  const twins = writeTwins(dist, { origin, convert: turndownConverter(), llmsFull: flag("--llms-full"), skipped });
+  if (skipped?.length) console.log(`twins: ${skipped.length} page(s) with no <main> left without a twin: ${skipped.join(" ")}`);
   if (!twins.length) { console.error(`twins: no page under ${dist} got a twin`); process.exit(1); }
   console.log(`twins: ${twins.length} written${flag("--llms-full") ? ", joined into llms-full.txt" : ""}`);
 }

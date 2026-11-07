@@ -147,6 +147,24 @@ test("pageToMarkdown: noindex and another site's canonical get none; no <main> i
   assert.throws(() => pageToMarkdown(`<link rel="canonical" href="${ORIGIN}/">`, { origin: ORIGIN, convert }), /no <main>/);
 });
 
+test("site-kit#193: a page with no <main> fails the run, or, asked to skip, gets no twin and is named", () => {
+  const dist = mkdtempSync(path.join(tmpdir(), "twins-"));
+  try {
+    mkdirSync(path.join(dist, "game"));
+    mkdirSync(path.join(dist, "hidden"));
+    writeFileSync(path.join(dist, "index.html"), page(`${ORIGIN}/`));
+    writeFileSync(path.join(dist, "game", "index.html"), `<link rel="canonical" href="${ORIGIN}/game/"><body><canvas></canvas></body>`);
+    writeFileSync(path.join(dist, "hidden", "index.html"), `<meta name="robots" content="noindex"><link rel="canonical" href="${ORIGIN}/hidden/">`);
+    assert.throws(() => writeTwins(dist, { origin: ORIGIN, convert }), /\/game\/: no <main>/);
+    const skipped = [];
+    const twins = writeTwins(dist, { origin: ORIGIN, convert, skipped });
+    assert.deepEqual(twins.map((t) => t.canonical), [`${ORIGIN}/`]);
+    assert.deepEqual(skipped, [`${ORIGIN}/game/`]);
+    assert.ok(existsSync(path.join(dist, "index.md")));
+    assert.ok(!existsSync(path.join(dist, "game", "index.md")));
+  } finally { rmSync(dist, { recursive: true }); }
+});
+
 test("writeTwins writes index.md beside each page and, when asked, llms-full.txt", () => {
   const dist = mkdtempSync(path.join(tmpdir(), "twins-"));
   try {
