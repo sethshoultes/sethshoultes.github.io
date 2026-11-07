@@ -1,0 +1,33 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Seth Shoultes",
+  "description": "Seth Shoultes is an AI developer, product leader and WordPress pioneer who helps small businesses put AI to work: writing, free tools, arcade games and consulting from 25 years of shipping. There is no chat assistant here yet: its endpoint says so; the pages are listed at https://sethshoultes.com/llms.txt.",
+  "url": "https://sethshoultes.com/a2a",
+  "preferredTransport": "JSONRPC",
+  "provider": {
+    "organization": "Seth Shoultes",
+    "url": "https://sethshoultes.com/"
+  },
+  "version": "0.1.0",
+  "documentationUrl": "https://sethshoultes.com/how-this-site-is-built/",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "answer-from-the-site",
+      "name": "Answer a question about Seth Shoultes and his work",
+      "description": "Answers from the published pages only.",
+      "tags": [
+        "site"
+      ]
+    }
+  ]
+}

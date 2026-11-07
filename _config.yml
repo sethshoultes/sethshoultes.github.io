@@ -27,6 +27,12 @@ exclude:
   - .gitignore
   - .ruby-version
   - scripts
+  - plugins
+  - functions
+  - plugins.lock
+  - package.json
+  - package-lock.json
+  - node_modules
   - workers
   - tests
   - assets/vendor/site-kit/markup
@@ -37,6 +43,7 @@ exclude:
 # canonical agent-discovery path.
 include:
   - .well-known
+  - _headers
 
 # GitHub Pages plugins — these are the safe defaults.
 plugins:
