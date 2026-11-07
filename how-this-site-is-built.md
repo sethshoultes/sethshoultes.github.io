@@ -1,10 +1,10 @@
 ---
-layout: default
+layout: post
+permalink: /how-this-site-is-built/
+date: 2026-11-08
 title: How this site is built
 description: "sethshoultes.com is a Jekyll site in a public GitHub repo, published as static pages on Cloudflare Pages."
 ---
-# How this site is built
-
 The pages, posts and games are plain files in a public repository, [sethshoultes/sethshoultes.github.io](https://github.com/sethshoultes/sethshoultes.github.io). A Jekyll build turns them into static pages, and the result is served from Cloudflare Pages.
 
 - Every address stays: old links keep working.
