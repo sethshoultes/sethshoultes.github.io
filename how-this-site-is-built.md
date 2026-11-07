@@ -1,7 +1,8 @@
 ---
 layout: post
 permalink: /how-this-site-is-built/
-date: 2026-11-08
+date: 2026-11-07
+label: "About this site"
 title: How this site is built
 description: "sethshoultes.com is a Jekyll site in a public GitHub repo, published as static pages on Cloudflare Pages."
 ---
