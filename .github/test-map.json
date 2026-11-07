@@ -20,7 +20,11 @@
     ".ruby-version",
     "assets/vendor/site-kit/**",
     "kit.json",
-    "kit.lock"
+    "kit.lock",
+    "package.json",
+    "package-lock.json",
+    "plugins.lock",
+    "plugins/**"
   ],
   "deploy": [],
   "areas": {
@@ -116,7 +120,10 @@
         "wordpress-development-md.html",
         "wordpress-development/**",
         "wordpress-plugins/**",
-        "scripts/academy/**"
+        "scripts/academy/**",
+        "_headers",
+        "functions/**",
+        "how-this-site-is-built.md"
       ],
       "run": ".github/ci/site-check.sh"
     },
