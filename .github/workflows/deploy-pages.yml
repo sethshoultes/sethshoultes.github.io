@@ -1,14 +1,10 @@
 # Publishes sethshoultes.com on Cloudflare Pages (superintelligentfoo#256). GitHub Pages rebuilt the site on every push; Cloudflare
-# does not, so this does: on a push to main, after the Daily blog workflow finishes (a push made with GITHUB_TOKEN does not
-# trigger workflows), and by hand. Needs the repo secrets CLOUDFLARE_API_TOKEN (Pages edit) and CLOUDFLARE_ACCOUNT_ID.
-# Cost (rule 9): about 2 minutes a run; pushes to main plus 2 blog completions a week come to roughly 10 runs a day at most, 20 minutes.
+# does not, so this does: on a push to main, and by hand. Needs the repo secrets CLOUDFLARE_API_TOKEN (Pages edit) and CLOUDFLARE_ACCOUNT_ID.
+# Cost (rule 9): about 2 minutes a run; pushes to main come to roughly 10 runs a day at most, 20 minutes.
 name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [main]
-  workflow_run:
-    workflows: ["Daily blog"]
-    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,7 +13,6 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -31,6 +26,9 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020   # v4.4.0
         with:
           node-version: "22"
+      # jekyll-build-pages runs in a root container, so _site comes out root-owned and the twins step can't write it (EACCES).
+      - name: Own the built site
+        run: sudo chown -R "$(id -u):$(id -g)" _site
       - name: Markdown twins for agents
         run: |
           npm ci --ignore-scripts --no-audit --no-fund

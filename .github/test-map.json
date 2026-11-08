@@ -31,6 +31,7 @@
     "site": {
       "paths": [
         ".well-known/**",
+        "404.html",
         "CNAME",
         "_config.yml",
         "_data/**",
