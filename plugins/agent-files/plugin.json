@@ -1,0 +1,14 @@
+{
+  "name": "agent-files",
+  "version": "0.1.2",
+  "about": "What an agent reads on a Pages site (herdos public-site rules 6 and 7): a markdown twin of every page, built after the site's build and served on Accept: text/markdown; the agent card's /a2a endpoint, which refuses plainly until the site has chat; and a read-only MCP at /mcp that lists the sitemap's pages and returns one page's twin. Public pages only, no auth, no writes. The site writes its own agent-card.json and mcp.json.",
+  "hooks": {},
+  "filters": {},
+  "assets": [],
+  "edge": {
+    "module": "functions/agent-files.js"
+  },
+  "config": {
+    "fields": {}
+  }
+}
