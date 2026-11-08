@@ -3,7 +3,7 @@
 ![Seth Shoultes Profile](https://github.com/user-attachments/assets/3665e4c5-936f-4264-baa1-f8115540386a)
 
 The source of [sethshoultes.com](https://sethshoultes.com): AI consulting for small businesses, from a product
-leader with 25 years in WordPress. It is a static Jekyll site on GitHub Pages, with a few Cloudflare Workers
+leader with 25 years in WordPress. It is a static Jekyll site on Cloudflare Pages, with a few Cloudflare Workers
 for the parts that need a server, and every page is written to be read by people and by AI agents alike.
 
 ## What's on the site
@@ -35,7 +35,7 @@ for the parts that need a server, and every page is written to be read by people
 
 | Piece | Where | What it does |
 | --- | --- | --- |
-| Site | Jekyll (`github-pages` gem), `_layouts/`, `_includes/`, `assets/` | The static site, deployed by GitHub Pages from `main`. |
+| Site | Jekyll (`github-pages` gem), `_layouts/`, `_includes/`, `assets/` | The static site, built and deployed to Cloudflare Pages (project `foo-sethshoultes`) from `main` by `.github/workflows/deploy-pages.yml`. GitHub Pages still builds a copy from `main` as the fallback. |
 | Site kit | `assets/vendor/site-kit/`, `kit.json`, `kit.lock` | Shared CSS and JS, and the page-type check. |
 | Ask and Talk | `workers/ask/` (Cloudflare Pages Functions, Gemini and Workers AI) | The site's AI chat and the readiness check, with cited answers. |
 | Newsletter | `workers/news/` (D1 database, Resend) | Double opt-in sign-up, signed PDF links for the library, unsubscribe. |
@@ -75,13 +75,3 @@ Seth's Clone knowledge base.
 ## Contact
 
 [sethshoultes.com/talk](https://sethshoultes.com/talk/). Mail to `talk@mail.sethshoultes.com` gets an agent-written draft that Seth approves: see `docs/talk-inbox.md`.
-
-## Public-site standard
-
-This site is served by GitHub Pages, which cannot send custom response headers or answer `Accept: text/markdown`. So three checks of `ops/site-standard-check.sh` (herdos `docs/standards/public-site.md`) cannot apply here and are skipped by name, never silently:
-
-- `md-twin`: the home cannot return `text/markdown` for `Accept: text/markdown`.
-- `hsts`: no `Strict-Transport-Security` header can be set.
-- `csp`: no `Content-Security-Policy` header can be set.
-
-Run it as `ops/site-standard-check.sh https://sethshoultes.com --skip md-twin,hsts,csp`. The other 15 checks pass. The Foo-built version of this site, `https://foo-sethshoultes.superintelligentfoo.com`, passes all 18; the skips end when sethshoultes.com moves to it (issue #243).
