@@ -75,3 +75,13 @@ Seth's Clone knowledge base.
 ## Contact
 
 [sethshoultes.com/talk](https://sethshoultes.com/talk/). Mail to `talk@mail.sethshoultes.com` gets an agent-written draft that Seth approves: see `docs/talk-inbox.md`.
+
+## Public-site standard
+
+This site is served by GitHub Pages, which cannot send custom response headers or answer `Accept: text/markdown`. So three checks of `ops/site-standard-check.sh` (herdos `docs/standards/public-site.md`) cannot apply here and are skipped by name, never silently:
+
+- `md-twin`: the home cannot return `text/markdown` for `Accept: text/markdown`.
+- `hsts`: no `Strict-Transport-Security` header can be set.
+- `csp`: no `Content-Security-Policy` header can be set.
+
+Run it as `ops/site-standard-check.sh https://sethshoultes.com --skip md-twin,hsts,csp`. The other 15 checks pass. The Foo-built version of this site, `https://foo-sethshoultes.superintelligentfoo.com`, passes all 18; the skips end when sethshoultes.com moves to it (issue #243).
