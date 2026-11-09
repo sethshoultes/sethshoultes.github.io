@@ -12,11 +12,11 @@
 ## The look
 
 - **Colours** (`assets/brand.css`): ground `#0b0d10`, surfaces `#14171c` and `#1b1f26`, text `#f4f4f5`, muted `#a1a7b0`,
-  border `#262b33`, and one accent, orange `#ff6b2c`. The accent marks the one thing to do on a page; it is not decoration.
+  border `#262b33`, and one accent, orange `#ff6b2c`.
 - **Type:** Inter, with a metric-matched Arial fallback so the page does not jump while the font loads.
-- **Layout:** one content column; cards line up with it (#152). Motion is quiet and never needed to read the page.
+- **Layout:** one content column; cards line up with it (#152).
 
 ## The pictures
 
-Real screenshots, real places in Southern Utah and diagrams of real systems. Each image has alt text that says what is in it.
-No stock photos of people and no generated people. A blog post's featured image is made for that post.
+A blog post's featured image is made for that post (its prompt is in `images.json`). Each image has alt text that says what is
+in it. Any other rule for pictures is Seth's to set.
