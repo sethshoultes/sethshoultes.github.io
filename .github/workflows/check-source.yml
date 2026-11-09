@@ -24,13 +24,12 @@ concurrency:
 # Runner: ubuntu-latest on purpose. This repo is public, so GitHub-hosted minutes are free, and a public repo must not
 # run fork PRs on our self-hosted runner. The site build needs GitHub's image (ruby/setup-ruby with a bundler cache).
 jobs:
-  select:
+  check:
+    # One job: pick the touched areas, then run each in turn. Each area takes 7-25s, so a runner per area (about
+    # 10s to start, plus queue) cost more than it saved: #195's week of Nov 2-9 measured 98 min against 80 before.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      areas: ${{ steps.pick.outputs.areas }}
-      full: ${{ steps.pick.outputs.full }}
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,27 +51,20 @@ jobs:
           if grep -q '^full=true' "$GITHUB_OUTPUT"; then
             python3 -c 'import json; print("areas=" + json.dumps(sorted(json.load(open(".github/test-map.json"))["areas"])))' >> "$GITHUB_OUTPUT"
           fi
-
-  test:
-    # one leg per touched area; a full run (core change, nightly, on demand) is every area
-    needs: select
-    if: needs.select.outputs.areas != '[]'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        area: ${{ fromJSON(needs.select.outputs.areas) }}
-    steps:
-      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
-        if: matrix.area == 'site'
+        if: contains(fromJSON(steps.pick.outputs.areas), 'site')
         with:
           bundler-cache: true
-      - name: Run the area's tests
+      - name: Run each touched area's tests
+        if: steps.pick.outputs.areas != '[]'
         env:
-          AREA: ${{ matrix.area }}
+          AREAS: ${{ steps.pick.outputs.areas }}
         run: |
-          set -euo pipefail
-          cmd="$(python3 -c 'import json,os; print(json.load(open(".github/test-map.json"))["areas"][os.environ["AREA"]]["run"])')"
-          bash -c "$cmd"
+          set -uo pipefail
+          failed=""
+          for area in $(python3 -c 'import json,os; print(" ".join(json.loads(os.environ["AREAS"])))'); do
+            echo "::group::$area"
+            cmd="$(AREA="$area" python3 -c 'import json,os; print(json.load(open(".github/test-map.json"))["areas"][os.environ["AREA"]]["run"])')"
+            if bash -c "$cmd"; then echo "::endgroup::"; else echo "::endgroup::"; echo "::error::area $area failed"; failed="$failed $area"; fi
+          done
+          [ -z "$failed" ] || { echo "failed areas:$failed"; exit 1; }
