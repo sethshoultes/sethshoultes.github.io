@@ -10,9 +10,10 @@ permissions:
   contents: read
 concurrency:
   group: deploy-pages
-  cancel-in-progress: false
+  cancel-in-progress: false   # never cut a deploy short; a newer run queues behind it and deploys the newer main
 jobs:
   deploy:
+    # GitHub-hosted on purpose: this repo is public, and the job holds the Cloudflare deploy token, so it must not run on our runner.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
