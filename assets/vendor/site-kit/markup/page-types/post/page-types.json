@@ -1,0 +1,19 @@
+{
+  "types": {
+    "post": {
+      "reference": "/blog/",
+      "pattern": "^/blog/[a-z0-9-]+/$",
+      "parts": [
+        { "id": "type", "need": "contains", "value": "data-page-type=\"post\"", "why": "the page declares it is a post" },
+        { "id": "schema", "need": "jsonld", "value": "BlogPosting", "why": "a BlogPosting, with its author, for search and agents" },
+        { "id": "twin", "need": "twin", "why": "the markdown twin, /blog/<slug>.md, for agents" },
+        { "id": "llms", "need": "llms", "why": "llms.txt lists every published post" },
+        { "id": "sitemap", "need": "sitemap", "why": "sitemap.xml lists every published post" },
+        { "id": "index", "need": "linked_from", "value": "/blog/", "why": "the /blog/ index links every published post" },
+        { "id": "feed", "need": "feed", "value": "/blog/feed.xml", "why": "the Atom feed has an entry for every published post" },
+        { "id": "feed-link", "need": "regex", "value": "<link(?=[^>]*\\stype=\"application/atom\\+xml\")(?=[^>]*\\shref=\"/blog/feed\\.xml\")[^>]*>", "why": "the page names its feed (a <link> with both attributes, in either order), so a reader finds it" },
+        { "id": "image", "need": "post_image", "feature": "post_images", "why": "the featured image: the BlogPosting's image, the page's og:image and a picture on the page are one image (site-kit#214); a site turns featured images off with \"post_images\": false in .sitekit/features.json" }
+      ]
+    }
+  }
+}

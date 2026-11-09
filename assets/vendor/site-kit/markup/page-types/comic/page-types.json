@@ -1,0 +1,67 @@
+{
+  "types": {
+    "comic": {
+      "reference": "/comics/",
+      "pattern": "^/comics/[a-z0-9-]+/$",
+      "parts": [
+        {
+          "id": "type",
+          "need": "contains",
+          "value": "data-page-type=\"comic\"",
+          "why": "the page declares it is a comic"
+        },
+        {
+          "id": "schema",
+          "need": "jsonld",
+          "value": "ComicStory",
+          "why": "a ComicStory, its panels as parts, for search and agents"
+        },
+        {
+          "id": "panel",
+          "need": "regex",
+          "value": "<figure\\b[^>]*>(?:(?!</figure>)[\\s\\S])*<img\\b(?:(?!</figure>)[\\s\\S])*<figcaption\\b[^>]*>(?:\\s|<[^>]+>)*[^<\\s]",
+          "why": "each panel is a <figure> with its picture and a caption with words"
+        },
+        {
+          "id": "twin",
+          "need": "twin",
+          "why": "the markdown twin, /comics/<slug>.md, for agents: the captions and alt text in order"
+        },
+        {
+          "id": "llms",
+          "need": "llms",
+          "why": "llms.txt lists every published comic"
+        },
+        {
+          "id": "sitemap",
+          "need": "sitemap",
+          "why": "sitemap.xml lists every published comic"
+        },
+        {
+          "id": "index",
+          "need": "linked_from",
+          "value": "/comics/",
+          "why": "the /comics/ index links every published comic"
+        }
+      ],
+      "banned": [
+        {
+          "id": "img-without-alt",
+          "regex": "<figure\\b[^>]*>(?:(?!</figure>)[\\s\\S])*?<img\\b(?![^>]*\\salt=\"[^\"]*[^\"\\s][^\"]*\")[^>]*>"
+        },
+        {
+          "id": "figure-without-caption",
+          "regex": "<figure\\b[^>]*>(?:(?!<figcaption\\b|</figure>)[\\s\\S])*</figure>"
+        },
+        {
+          "id": "empty-caption",
+          "regex": "<figcaption\\b[^>]*>(?:\\s|<(?!/figcaption\\b)[^>]*>)*</figcaption>"
+        },
+        {
+          "id": "video-without-captions",
+          "regex": "<video\\b(?:(?!<track(?=(?:\\s+[\\w:-]+(?:\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s\"'>]+))?)*?\\s+src=\"[^\"\\s]+\")(?:\\s+[\\w:-]+(?:\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s\"'>]+))?)*?\\s+kind=\"captions\\\"|</video>)[\\s\\S])*</video>"
+        }
+      ]
+    }
+  }
+}
