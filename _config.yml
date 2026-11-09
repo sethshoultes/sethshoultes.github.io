@@ -24,6 +24,8 @@ exclude:
   - vendor
   - README.md
   - CLAUDE.md
+  - SOUL.md
+  - canon
   - .gitignore
   - .ruby-version
   - scripts
