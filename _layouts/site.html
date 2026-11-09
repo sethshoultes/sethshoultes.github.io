@@ -6,7 +6,12 @@
   {%- if page.layout == 'post' %}
   {% include post-head.html %}
   {%- else %}
-  {% seo %}
+  {%- comment -%} seo-tag writes page.url; Pages serves the clean URL (#254). {%- endcomment -%}
+  {%- include clean-url.html -%}
+  {%- capture seo_tags %}{% seo %}{% endcapture %}
+  {%- assign seo_old = page.url | absolute_url | prepend: '"' | append: '"' %}
+  {%- assign seo_new = clean_url | absolute_url | prepend: '"' | append: '"' %}
+  {{ seo_tags | replace: seo_old, seo_new }}
   {%- endif %}
   {% include agent-hints.html %}
   {%- if page.robots %}

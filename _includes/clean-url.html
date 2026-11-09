@@ -1,0 +1,8 @@
+{%- comment -%}
+  The URL Cloudflare Pages serves a page at (sethshoultes.com#254): /index.html as /, and a trailing .html dropped,
+  because Pages 308s /x.html to /x. Sets clean_url from include.url, or the page's own URL. The sitemap, canonical,
+  og:url and the post JSON-LD all use it, so they name the same URL.
+{%- endcomment -%}
+{%- assign clean_url = include.url | default: page.url | replace: '/index.html', '/' -%}
+{%- assign clean_tail = clean_url | slice: -5, 5 -%}
+{%- if clean_tail == '.html' -%}{%- assign clean_keep = clean_url.size | minus: 5 -%}{%- assign clean_url = clean_url | slice: 0, clean_keep -%}{%- endif -%}
