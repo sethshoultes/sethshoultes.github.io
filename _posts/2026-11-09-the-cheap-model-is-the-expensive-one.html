@@ -1,0 +1,46 @@
+---
+title: "The Cheap Model Turned Out to Be the Expensive One"
+subtitle: "When a model writes code for a real platform, what it costs you is the rounds of fixing it causes, not its price per word."
+date: 2026-11-09
+related:
+  - slug: the-validator-with-teeth
+    note: "The automatic check that caught every one of these bad builds, and why a check that actually runs beats a note asking someone to look."
+  - slug: content-zero-is-not-the-answer
+    note: "Another time a model swap looked like a small setting change and quietly changed what came back."
+  - slug: the-prompt-tax-you-pay-on-every-session
+    note: "A different way to count AI costs that only shows up once you add up a whole session instead of one request."
+---
+
+<picture><source srcset="/blog/images/the-cheap-model-is-the-expensive-one-featured.webp" type="image/webp"><img src="/blog/images/the-cheap-model-is-the-expensive-one-featured.png" alt="A small screwdriver with a paper price tag marked a few cents lies on a wooden workbench beside a brass receipt spike skewered with a tall, leaning stack of repair slips, each slip a little more dog-eared than the one beneath it" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>I did the math on Haiku, and it looked like an easy win.</p>
+
+<p>I run a pipeline I call <a href="https://github.com/sethshoultes/great-minds-plugin">Great Minds</a>. It's a background program that takes an idea and hands it to a series of AI agents. One group argues about the idea, another makes a plan, another writes the code and another checks the work. At the time every one of those agents ran on the same model. Haiku is Anthropic's smallest and cheapest model. The build step writes the most text, so it costs the most, and moving just that step to Haiku looked like it would cut a big chunk off the bill.</p>
+
+<p>So we tried it. We were building plugins for Emdash, a newer website platform. Every build came back with more than 100 violations.</p>
+
+<p>Here's what a violation means. The pipeline runs an automatic check on new code that looks for patterns we've banned because we know they break on this platform. On Haiku, every build tripped that check more than a hundred times. The model wasn't being sloppy, exactly. It was writing confident, neat code for parts of Emdash that don't exist. It made up the platform's tools and then used them correctly.</p>
+
+<p>That's when I realized I'd priced the wrong thing.</p>
+
+<p>A failed build doesn't stop at one failure. The checking step blocks it. A fixing step tries to repair it. Then the check runs again, finds the next layer of problems, and blocks it again. When we added it up, we estimated four to six of those rounds for each made-up build. Every round means rereading the code, rewriting it and checking it again, and every round costs tokens, which are the units these models charge by. So the cheap build step ended up as the most expensive part of the whole pipeline. The money we saved writing the code went into fixing it several times over.</p>
+
+<p>I'd already seen this from the other side. Before the Haiku test there was a plugin called EventDash: 3,600 lines of code <a href="/blog/agents-hallucinate-apis.html">written against an API that doesn't exist</a>. (An API is the set of commands a platform gives you to work with it.) It had 121 lines of <code>throw new Response()</code>, 14 references to <code>rc.user</code>, and it reached for <code>process.env</code>, none of which works the way the code assumed. We didn't fix it. We threw it out and wrote 130 lines based on the real documentation, which we checked first. Those 130 lines worked.</p>
+
+<p>The 3,600-line version wasn't cheap just because it was quick to produce. It cost us everything we spent trying to rescue it.</p>
+
+<h2>The same mistake, in the other direction</h2>
+
+<p>Around the same time I made the opposite mistake on a different project. I was thinking about upgrading to gpt-4.1-mini and estimated the cost from the token cap, which is the maximum length you let a model write in one reply. Assuming every reply hit the cap, the upgrade came out at about fifteen times what we were paying. That made me nervous.</p>
+
+<p>But the model never got close to the cap. It finished on its own at around 5,000 tokens. The scary number described a worst case that never happened.</p>
+
+<p>In one case I thought the cheap model would save money and it didn't. In the other I thought the better model would cost a fortune and it didn't. Both times the mistake was the same: I priced the wrong unit. I looked at the cost per token, or the cost at the cap, when what I actually pay for is code that passes its checks and ships. That's the unit that matters. You count how many tries it takes to get there, and the price per token only tells you what each try costs.</p>
+
+<p>So the fix wasn't "always use the expensive model." We wrote the model choice into each step of the pipeline, so every step gets the model suited to it, chosen on purpose. Right now Sonnet runs the debate, the plan, the build and the checking. We'll change that when the numbers change. But each step has to earn its model by what it actually ships, not by what it costs per word.</p>
+
+<p>If you want to know whether a model is cheap, don't look at its price list. Count how many rounds of fixing it takes before something actually works.</p>
+
+<hr>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
