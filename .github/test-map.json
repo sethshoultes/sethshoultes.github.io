@@ -91,6 +91,8 @@
         "little-valley-st-george-utah/**",
         "llms-full.txt",
         "llms.txt",
+        "meals-md.html",
+        "meals/**",
         "meetup/**",
         "murder-on-the-arizona-strip-book.md",
         "ops/**",
@@ -155,6 +157,14 @@
         "tests/README.md"
       ],
       "run": "python3 -m py_compile $(git ls-files 'scripts/*.py') && for f in scripts/*.mjs; do node --check \"$f\"; done"
+    },
+    "meals": {
+      "paths": [
+        "assets/meals.js",
+        "_data/meals.yml",
+        "tests/meals.test.mjs"
+      ],
+      "run": "node --test tests/meals.test.mjs"
     }
   }
 }
