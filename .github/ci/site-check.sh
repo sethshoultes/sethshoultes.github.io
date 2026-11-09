@@ -7,3 +7,4 @@ bundle exec jekyll build
 node scripts/check-links.mjs _site
 node scripts/check-youtube.mjs _site
 node assets/vendor/site-kit/check/kit-check.mjs _site
+node plugins/sitemap-check/scripts/sitemap-check.mjs _site --origin https://sethshoultes.com

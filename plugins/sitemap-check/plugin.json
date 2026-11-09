@@ -1,0 +1,11 @@
+{
+  "name": "sitemap-check",
+  "version": "0.1.0",
+  "about": "A build check for a site deployed to Cloudflare Pages: every URL its sitemap lists must be served as listed, with no redirect (an .html URL, the wrong trailing slash, a _redirects source), no noindex, nothing missing and no other origin. It reads the built folder after the build, with no network, and fails the build naming each URL and its reason.",
+  "hooks": {},
+  "filters": {},
+  "assets": [],
+  "config": {
+    "fields": {}
+  }
+}
