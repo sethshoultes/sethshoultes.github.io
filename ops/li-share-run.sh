@@ -5,9 +5,9 @@
 # the same ~/.config/dev-secrets/seth-linkedin/secrets.env that cast#153's sign-in script writes.
 # This script never signs Seth in and never writes that file; it only reads it.
 #
-# Runs in its own detached worktree on main so it never touches a pane's checkout. The dedup log
-# (data/li-shared.log) is copied in before the run and back out after, into $STATE outside the
-# worktree, the same way caseproofagent/memberpress-ai-cast's ops/x-schedule-run.sh keeps
+# ops/run-from-main.sh runs it from a fresh worktree of origin/main, so it never touches a pane's
+# checkout. The dedup log (data/li-shared.log) is copied in before the run and back out after, into
+# $STATE outside the worktree, the same way caseproofagent/memberpress-ai-cast's ops/x-schedule-run.sh keeps
 # data/x-posts.log — a lost or pruned worktree must not re-share everything.
 #
 # The whole body is one { ... } block so bash reads it all before running any of it (the byte-
@@ -16,13 +16,9 @@
 {
 set -u
 export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
-REPO="$HOME/projects/sethshoultes.github.io"
-WT="$REPO/.claude/worktrees/li-share-runner"
 STATE="$HOME/.local/share/seth-li-share"
 mkdir -p "$STATE"
-[ -d "$WT" ] || git -C "$REPO" worktree add -q --detach "$WT" origin/main
-cd "$WT" || exit 1
-git fetch -q origin && git checkout -q --detach -f origin/main
+cd "$(dirname "$0")/.." || exit 1
 [ -f "$STATE/li-shared.log" ] && cp -p "$STATE/li-shared.log" data/li-shared.log
 
 python3 scripts/linkedin_share.py --live 2>&1 | tee "$STATE/last-run.log"
