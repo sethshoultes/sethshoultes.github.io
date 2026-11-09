@@ -6,18 +6,15 @@
 # (OPENAI_API_KEY from ~/.config/dev-secrets/secrets.env), and RESEND_API_KEY for the failure email.
 # The idea source is the local ~/brain clone (post-warehouse), not a token.
 #
-# Runs in its own detached worktree on main so it never touches a pane's checkout, then pushes
-# the commit to main. Whole body is one { ... } block so bash reads it all before running any of it
-# (same reason as ops/li-share-run.sh).
+# ops/run-from-main.sh runs it from a fresh worktree of origin/main (it never touches a pane's checkout,
+# and no sweep can leave launchd pointing at a missing file), then this pushes the commit to main.
+# Whole body is one { ... } block so bash reads it all before running any of it (same reason as
+# ops/li-share-run.sh).
 {
 set -u
 export PATH="/Users/sethshoultes/.local/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:$PATH"
-REPO="$HOME/projects/sethshoultes.github.io"
-WT="$REPO/.claude/worktrees/daily-blog-runner"
 mkdir -p "$HOME/Library/Logs"
-[ -d "$WT" ] || git -C "$REPO" worktree add -q --detach "$WT" origin/main
-cd "$WT" || exit 1
-git fetch -q origin && git checkout -q --detach -f origin/main && git clean -fdq
+cd "$(dirname "$0")/.." || exit 1
 
 # Take only the two keys the job needs from secrets.env. The file also exports a dead
 # ANTHROPIC_API_KEY that would beat the subscription login, so nothing else is sourced and
