@@ -46,11 +46,11 @@ exclude:
 include:
   - .well-known
   - _headers
+  - _redirects
 
 # GitHub Pages plugins — these are the safe defaults.
 plugins:
   - jekyll-feed
-  - jekyll-sitemap
   - jekyll-seo-tag
   - jekyll-redirect-from
 

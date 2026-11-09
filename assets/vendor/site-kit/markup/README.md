@@ -30,7 +30,7 @@ No inline styles. Colors and fonts only through tokens/brand. Every `<img>` has 
 Real photos only. Alt, width, height, and the credit (author, license, source link) are required. The first image on a page is not lazy.
 
 ## Page types (page-types.json)
-Each site keeps a page-type spec (`_data/page-types.json`, with `docs/page-types.md` for people) listing, per page type, the required parts and one reference page. A page declares its type with `<body data-page-type="city">`. `kit-check` (kit.json `"pageTypes"`) fails any typed page missing a part, and any page whose URL matches a type's `pattern` without declaring the type. Part kinds: `contains`, `regex`, `min_count`, `jsonld`, `twin`, `llms`, `sitemap`, `linked_from`. New pages start from the spec: a brief says "a new city page per page-types: city".
+Each site keeps a page-type spec (`_data/page-types.json`, with `docs/page-types.md` for people) listing, per page type, the required parts and one reference page. A page declares its type with `<body data-page-type="city">`. `kit-check` (kit.json `"pageTypes"`) fails any typed page missing a part, and any page whose URL matches a type's `pattern` without declaring the type. Part kinds: `contains`, `regex`, `min_count`, `jsonld`, `twin`, `llms`, `sitemap`, `linked_from`. New pages start from the spec: a brief says "a new city page per page-types: city". Shared page types keep their spec and fields in the kit, in `markup/page-types/<type>/` (`page-types.json` and a README): `doc` so far.
 
 ## feature-card, hero-split, cta-band
 ```html

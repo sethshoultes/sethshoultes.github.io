@@ -1,0 +1,54 @@
+---
+layout: null
+sitemap: false
+---
+<?xml version="1.0" encoding="UTF-8"?>
+{%- comment -%}
+  The sitemap (sethshoultes/herdos#3769). It lists only the URLs Cloudflare Pages answers with a 200: a page whose
+  URL ends in .html is listed without it, because Pages 308s /x.html to /x. A page with `sitemap: false` or a
+  noindex `robots:` value is left out. plugins/sitemap-check checks the built file.
+{%- endcomment %}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- assign collections = site.collections | where_exp: 'c', 'c.output != false' %}
+{%- for collection in collections %}
+{%- for doc in collection.docs %}
+{%- unless doc.sitemap == false or doc.robots contains 'noindex' %}
+{%- assign url = doc.url | replace: '/index.html', '/' %}
+{%- assign tail = url | slice: -5, 5 %}
+{%- if tail == '.html' %}{% assign keep = url.size | minus: 5 %}{% assign url = url | slice: 0, keep %}{% endif %}
+  <url>
+    <loc>{{ url | absolute_url | xml_escape }}</loc>
+{%- if doc.last_modified_at or doc.date %}
+    <lastmod>{{ doc.last_modified_at | default: doc.date | date_to_xmlschema }}</lastmod>
+{%- endif %}
+  </url>
+{%- endunless %}
+{%- endfor %}
+{%- endfor %}
+{%- for page in site.html_pages %}
+{%- unless page.sitemap == false or page.robots contains 'noindex' or page.url == '/404.html' %}
+{%- assign url = page.url | replace: '/index.html', '/' %}
+{%- assign tail = url | slice: -5, 5 %}
+{%- if tail == '.html' %}{% assign keep = url.size | minus: 5 %}{% assign url = url | slice: 0, keep %}{% endif %}
+  <url>
+    <loc>{{ url | absolute_url | xml_escape }}</loc>
+{%- if page.last_modified_at %}
+    <lastmod>{{ page.last_modified_at | date_to_xmlschema }}</lastmod>
+{%- endif %}
+  </url>
+{%- endunless %}
+{%- endfor %}
+{%- comment -%} HTML files with no front matter (the typing games, the garage door hub), as jekyll-sitemap listed them. {%- endcomment %}
+{%- assign static_pages = site.static_files | where: 'extname', '.html' %}
+{%- for file in static_pages %}
+{%- unless file.sitemap == false or file.name == '404.html' %}
+{%- assign url = file.path | replace: '/index.html', '/' %}
+{%- assign tail = url | slice: -5, 5 %}
+{%- if tail == '.html' %}{% assign keep = url.size | minus: 5 %}{% assign url = url | slice: 0, keep %}{% endif %}
+  <url>
+    <loc>{{ url | absolute_url | xml_escape }}</loc>
+    <lastmod>{{ file.modified_time | date_to_xmlschema }}</lastmod>
+  </url>
+{%- endunless %}
+{%- endfor %}
+</urlset>

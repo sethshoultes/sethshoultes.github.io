@@ -1,0 +1,15 @@
+{
+  "types": {
+    "doc": {
+      "reference": "/docs/",
+      "pattern": "^/docs/[a-z0-9-]+/$",
+      "parts": [
+        { "id": "type", "need": "contains", "value": "data-page-type=\"doc\"", "why": "the page declares it is a doc" },
+        { "id": "twin", "need": "twin", "why": "the markdown twin, /docs/<slug>.md, for agents" },
+        { "id": "llms", "need": "llms", "why": "llms.txt lists every published doc" },
+        { "id": "sitemap", "need": "sitemap", "why": "sitemap.xml lists every published doc" },
+        { "id": "index", "need": "linked_from", "value": "/docs/", "why": "the /docs/ index links every published doc" }
+      ]
+    }
+  }
+}

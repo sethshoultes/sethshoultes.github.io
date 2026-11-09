@@ -85,7 +85,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const problems = [...checkSite(root, config)];
   if (config.pageTypes) {
     const pages = [...htmlFiles(root)].map(([file, url]) => [url.replace(/index\.html$/, ''), readFileSync(file, 'utf8')]);
-    problems.push(...checkPageTypes(root, JSON.parse(readFileSync(config.pageTypes, 'utf8')), pages));
+    // The site's own switches (site-kit#214: "post_images": false), read from the repo the check runs in.
+    const features = existsSync('.sitekit/features.json') ? JSON.parse(readFileSync('.sitekit/features.json', 'utf8')) : {};
+    problems.push(...checkPageTypes(root, JSON.parse(readFileSync(config.pageTypes, 'utf8')), pages, features));
   }
   if (config.vendor) problems.push(...checkLock(config.vendor, config.lock || 'kit.lock'));
   if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
