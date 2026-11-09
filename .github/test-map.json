@@ -88,6 +88,8 @@
         "little-valley-st-george-utah/**",
         "llms-full.txt",
         "llms.txt",
+        "meals-md.html",
+        "meals/**",
         "meetup/**",
         "murder-on-the-arizona-strip-book.md",
         "ops/**",
@@ -161,6 +163,14 @@
         ".sitekit/**"
       ],
       "run": "python3 -I .sitekit/site_check.py --brain --root ."
+    },
+    "meals": {
+      "paths": [
+        "assets/meals.js",
+        "_data/meals.yml",
+        "tests/meals.test.mjs"
+      ],
+      "run": "node --test tests/meals.test.mjs"
     }
   }
 }
