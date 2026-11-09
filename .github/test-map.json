@@ -4,9 +4,6 @@
     "docs/**",
     "README.md",
     "CLAUDE.md",
-    "SOUL.md",
-    "canon/**",
-    ".agent/**",
     ".great-authors/**",
     ".great-minds/**",
     "data/**",
@@ -155,6 +152,15 @@
         "tests/README.md"
       ],
       "run": "python3 -m py_compile $(git ls-files 'scripts/*.py') && for f in scripts/*.mjs; do node --check \"$f\"; done"
+    },
+    "brain": {
+      "paths": [
+        "SOUL.md",
+        "canon/**",
+        ".agent/**",
+        ".sitekit/**"
+      ],
+      "run": "python3 -I .sitekit/site_check.py --brain --root ."
     }
   }
 }
