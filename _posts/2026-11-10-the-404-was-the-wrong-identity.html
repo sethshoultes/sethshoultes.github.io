@@ -1,0 +1,54 @@
+---
+title: "GitHub Said the Repo Didn't Exist. It Was Talking to the Wrong Me."
+subtitle: "A secrets file swapped who I was logged in as, and GitHub hid a permissions problem behind a 'not found.'"
+date: 2026-11-10
+related:
+  - slug: the-static-asset-ate-the-function
+    note: "Another 404 that blamed the wrong layer. There the request never reached my code. Here it reached GitHub as someone else."
+  - slug: merged-is-not-live
+    note: "The same habit from a different angle. A short word like 'merged' or 'not found' hides the one check nobody ran."
+---
+
+<picture><source srcset="/blog/images/the-404-was-the-wrong-identity-featured.webp" type="image/webp"><img src="/blog/images/the-404-was-the-wrong-identity-featured.png" alt="A hotel front desk with a brass service bell and an open guest ledger, where a clerk's hand slides a small paper card reading &quot;no such room&quot; across the counter toward a visitor's calling card bearing an unfamiliar name, while behind the desk the key board shows the room's hook plainly holding its key" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>The comment wouldn't post. My publish job finishes by leaving a note on a GitHub issue to say the work went out. This time the issue was #34 in caseproof/memberintel-kb, and GitHub answered with a 404. Not found.</p>
+
+<p>My first thought was that the repo was gone. Someone renamed it, or moved it, or archived it while I wasn't looking. That's the usual story behind a 404, and I went looking for the rename.</p>
+
+<p>There wasn't one. The repo was right where it had always been. I could open it in my browser. The 404 wasn't telling me the repo didn't exist. It was telling me that whoever was asking couldn't see it. That whoever wasn't me.</p>
+
+<h2>Where the other me came from</h2>
+
+<p>The publish job is a daemon, which just means a program that runs in the background on a schedule with nobody watching it. It needs a couple of keys to do its work, one for the storage bucket where images go and one for Anthropic's API. Those live in <a href="/blog/canonical-secrets.html">a shared secrets file</a> on my machine, <code><a href="/recipes/set-up-canonical-secrets.html">~/.config/dev-secrets/secrets.env</a></code>. So at some point the job got a line that loads that file before it starts.</p>
+
+<p>That file holds more than those two keys. It also sets a <code>GITHUB_TOKEN</code>. A token is a password made for a program instead of a person, and this one had been made narrow on purpose. It can see a few repos and nothing else.</p>
+
+<p>Here's what I'd forgotten. <code>gh</code>, GitHub's command-line tool, normally uses the login I set up once and stored in my Mac's keychain. That login can see everything I can. But if <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is sitting in the environment, <code>gh</code> uses that instead. It doesn't warn you or ask. It just quietly becomes the token.</p>
+
+<p>So the line I added to get two unrelated keys also changed who every GitHub call in that job was made as. memberintel-kb wasn't on the token's short list. The job asked GitHub about a repo that, as far as that token could tell, didn't exist.</p>
+
+<h2>Why GitHub said "not found"</h2>
+
+<p>You'd expect a permissions problem to say so. There's even a code for it, 403, forbidden. GitHub doesn't use it here. When you ask about a private repo you're not allowed to see, it answers 404. That's on purpose. If it said "forbidden," anyone could poke at names and learn which private repos exist. So GitHub tells you nothing is there.</p>
+
+<p>That's good security and a terrible clue. The error names the wrong problem. I was debugging whether something exists, and the real question was who was asking.</p>
+
+<h2>Every "nothing here" has an asker</h2>
+
+<p>Once I saw it, I realized I'd been bitten by this same shape before, just less clearly. An empty search, an empty list, a 404. Each one feels like a fact about the world: there's nothing there. Really each one is a report from whoever did the looking. A search that comes back empty is only as good as the folder it searched and the words it searched for. A list that comes back empty is only as good as the account that asked for it.</p>
+
+<p>Most of the time that difference doesn't matter, because the searcher is who you think it is. This case was the cleanest one I've hit where the searcher got swapped and nothing told me. The command looked the same. The job looked the same. Only the identity under it had changed, and the answer it gave sounded like a fact about the repo.</p>
+
+<h2>What I changed</h2>
+
+<p>Two things. First, before I decide a repo is gone, I check who I am. <code>gh auth status</code> tells you which login is active, and a quick look at whether <code>GITHUB_TOKEN</code> or <code>GH_TOKEN</code> is set tells you whether something has jumped ahead of it. That takes five seconds and would have saved me the rename hunt.</p>
+
+<p>Second, the shared secrets file shouldn't hand out an identity just because you loaded it for something else. Keys that only open a service, like the storage key, are fine to share. A token that decides who you are is different. It should be something a job asks for by name, not something it picks up by accident.</p>
+
+<p>So here's what I'd tell you. When something says "not found," ask who looked before you ask where it went.</p>
+
+<hr>
+
+<p><em>References: the <a href="https://cli.github.com/manual/gh_help_environment">gh environment variables page</a>, which explains how <code>GH_TOKEN</code> and <code>GITHUB_TOKEN</code> take priority over your stored login.</em></p>
+
+<p class="post-bio"><em>Arthur Conan Doyle hung a whole case on a dog that didn't bark in the night. Holmes's point was never the silence. It was that the silence told you who had come to the door.</em></p>
