@@ -552,14 +552,18 @@ function pins(ctx, cv, c) {
     const R = { x: 372, y: 16, w: 176 };
     label(g, S.ranking_label, R.x, R.y + 14, col.muted, 12);
     const climb = seg(t, 3.6, 5.4);
+    // where each row is now: ours climbs from fifth to first, and the rows it passes slide down one place
+    const slots = [0, 1, 2, 3, 4].map((row) => (row === 4 ? lerp(4, 0, climb) : row + climb));
     [0, 1, 2, 3, 4].forEach((row, i) => {
       const us = row === 4;
-      const slot = us ? lerp(4, 0, climb) : row + climb; // the rows we pass slide down one place
+      const slot = slots[row];
+      // a row's number is its place in the current order, so no two rows ever show the same one (site-kit#290); ours wins a tie
+      const rank = 1 + slots.filter((s, r) => s < slot || (s === slot && r === 4 && !us)).length;
       const y = R.y + 38 + slot * 72;
       const pr = seg(t, 1.6 + i * 0.12, 2.2 + i * 0.12);
       g.save(); g.globalAlpha *= pr;
       roundRect(g, R.x, y, R.w, 58, 12); g.fillStyle = us ? `rgba(${A},0.16)` : col.surface; g.fill(); g.strokeStyle = us ? acc : col.border; g.lineWidth = us ? 1.5 : 1; g.stroke();
-      label(g, String(Math.round(slot) + 1), R.x + 20, y + 29, us ? acc : col.muted, 18, 700, 'center');
+      label(g, String(rank), R.x + 20, y + 29, us ? acc : col.muted, 18, 700, 'center');
       bar(g, R.x + 40, y + 18, R.w - 62, 8, us ? acc : col.border);
       bar(g, R.x + 40, y + 34, (R.w - 62) * (us ? 0.6 : 0.5), 6, col.border);
       g.restore();
