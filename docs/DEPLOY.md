@@ -204,11 +204,13 @@ What it loads and keeps:
 Build: no script changes needed, the same single-file path as the others.
 
 ```bash
-scripts/deploy-game.sh banana-sling html5/banana-sling.html
+GAME_DEPLOY_PATH=/home/bananasling/htdocs/banana-sling.adventurebuildr.com \
+  scripts/deploy-game.sh banana-sling html5/banana-sling.html
 ```
 
 This produces `build/banana-sling/index.html`. I replicated the build step, served it locally, and loaded it with
 headless Playwright (Chromium, muted): HTTP 200, a 1280×800 canvas, the title card, and zero console or page errors.
 
-Target: `/home/banana-sling/htdocs/banana-sling.adventurebuildr.com`. That matches the script's default
-`$SLUG.adventurebuildr.com` formula for the slug `banana-sling`, so no `GAME_DEPLOY_PATH` override is needed.
+Target: `/home/bananasling/htdocs/banana-sling.adventurebuildr.com`. The CloudPanel site user is `bananasling`, with no
+hyphen, so it doesn't match the script's default `/home/$SLUG/...` for the slug `banana-sling`. Hence the
+`GAME_DEPLOY_PATH` override above. Live at https://banana-sling.adventurebuildr.com (the lead's box setup, 2026-11-11).
