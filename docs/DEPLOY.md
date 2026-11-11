@@ -190,3 +190,27 @@ errors, zero page errors.
 Target: `/home/ai-typing-star/htdocs/ai-typing-star.adventurebuildr.com` —
 matches this script's default `$SLUG.adventurebuildr.com` formula exactly
 for slug `ai-typing-star`, no `GAME_DEPLOY_PATH` override needed.
+
+### Banana Sling (arcade#288)
+
+Seth's game (2026-11-11): one canvas shooting gallery. Source: `html5/banana-sling.html`, his file byte for byte (32,241
+bytes), beside `html5/`'s Joust 1980. No Jekyll front matter (it starts with `<!doctype html>`), so Jekyll copies it as is.
+
+What it loads and keeps:
+- Its only external request is the Google Fonts stylesheet (Bagel Fat One, DM Sans).
+- `localStorage` holds the best score and the chosen scene. Nothing is server-side.
+- One `window.claude.hot` call is guarded (`window.claude&&…`) and does nothing outside claude.ai.
+
+Build: no script changes needed, the same single-file path as the others.
+
+```bash
+GAME_DEPLOY_PATH=/home/bananasling/htdocs/banana-sling.adventurebuildr.com \
+  scripts/deploy-game.sh banana-sling html5/banana-sling.html
+```
+
+This produces `build/banana-sling/index.html`. I replicated the build step, served it locally, and loaded it with
+headless Playwright (Chromium, muted): HTTP 200, a 1280×800 canvas, the title card, and zero console or page errors.
+
+Target: `/home/bananasling/htdocs/banana-sling.adventurebuildr.com`. The CloudPanel site user is `bananasling`, with no
+hyphen, so it doesn't match the script's default `/home/$SLUG/...` for the slug `banana-sling`. Hence the
+`GAME_DEPLOY_PATH` override above. Live at https://banana-sling.adventurebuildr.com (the lead's box setup, 2026-11-11).
