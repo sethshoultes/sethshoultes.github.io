@@ -29,7 +29,13 @@ exclude:
   - .gitignore
   - .ruby-version
   - scripts
-  - plugins
+  # site-kit plugins (scripts/plugin-sync.sh, plugins.lock): only a browser plugin's assets/ folder is served
+  - plugins/agent-files
+  - plugins/sitemap-check
+  - plugins/*/README.md
+  - plugins/*/plugin.json
+  - plugins/*/plugin.py
+  - plugins/*/tests
   - functions
   - plugins.lock
   - package.json

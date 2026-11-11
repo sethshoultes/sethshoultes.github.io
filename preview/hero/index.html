@@ -6,6 +6,7 @@ robots: "noindex, nofollow"
 sitemap: false
 permalink: /preview/hero/
 ---
+<link rel="stylesheet" href="/plugins/hero-scenes/assets/hero-scenes.css">
 <link rel="stylesheet" href="/assets/flow.css">
 <section class="flow-hero">
   <canvas class="flow-canvas" data-anim="flow" aria-hidden="true"></canvas>
@@ -41,4 +42,4 @@ permalink: /preview/hero/
   <div>{% assign anim = parts[0] %}{% include hero-anim.html anim=anim %}<p class="hero-caption">{{ parts[1] }}</p></div>
   {%- endfor %}
 </section>
-<script type="module" src="/assets/flow.js"></script>
+{% include hero-scenes.html %}

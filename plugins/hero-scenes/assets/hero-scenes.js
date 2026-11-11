@@ -1,27 +1,28 @@
-// Hero animations for sethshoultes.com (#149, #152): one canvas 2D engine, six scenes.
+// hero-scenes (site-kit#282): one canvas 2D engine for a hero's .hero-anim slot.
 // Decoration only: every canvas is aria-hidden and the meaning lives in real HTML beside it.
 //
-//   <canvas data-anim="flow|orb|answer|blocks|pins|page" aria-hidden="true"></canvas>
-//   (use _includes/hero-anim.html, which adds the figure, the stylesheet and this script)
+//   <canvas data-anim="flow|orb|answer|blocks|pins|page" aria-hidden="true"></canvas>, or <div class="hero-anim" data-variant="...">
+//   <script type="application/json" id="hero-scenes-settings">{"scenes": [...], "assistants": [...], ...}</script>  (the build writes it)
 //
 //   flow     business info streams into a site window and out to AI answer cards (full-bleed or boxed)
 //   orb      particles assemble into an orb as the section scrolls in
-//   answer   a question flows into an AI answer card that cites the site   (AI search optimization)
-//   blocks   blocks drop in and assemble a page                              (WordPress development)
-//   pins     map pins land and our listing climbs the ranking                (SEO)
-//   page     a wireframe page builds itself and scores 100                   (web development)
-//   fleet    the agent team passes a task along, then the chat types out     (consulting)
+//   answer   a question flows into an AI answer card that cites the site
+//   blocks   blocks drop in and assemble a page
+//   pins     map pins land and the site's listing climbs the ranking
+//   page     a wireframe page builds itself and scores 100
 //
-// Rules every scene keeps: fixed-size canvas (CSS aspect-ratio, so no layout shift); runs only
-// while on screen and the tab is visible; prefers-reduced-motion gets one still frame; the
-// device pixel ratio is capped; if frames run slow the particle count halves.
+// A site adds its own story scene with register(name, make) from its own module. Colours come from
+// the site's own tokens (--accent, --surface, --surface-2, --border, --text, --muted, --bg); words, the font and which scenes may
+// run come from the settings. Rules every scene keeps: fixed-size canvas (CSS aspect-ratio, so no layout shift); runs only while on
+// screen and the tab is visible; prefers-reduced-motion gets one still frame; the device pixel ratio is capped; if frames run slow
+// the particle count halves.
 
-const TAU = Math.PI * 2;
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const ease = (t) => 1 - Math.pow(1 - t, 3);
-const lerp = (a, b, t) => a + (b - a) * t;
+export const TAU = Math.PI * 2;
+export const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+export const ease = (t) => 1 - Math.pow(1 - t, 3);
+export const lerp = (a, b, t) => a + (b - a) * t;
 
-function rng(seed) { // mulberry32: the same seed always paints the same still frame
+export function rng(seed) { // mulberry32: the same seed always paints the same still frame
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
     let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
@@ -30,14 +31,37 @@ function rng(seed) { // mulberry32: the same seed always paints the same still f
   };
 }
 
+export const DEFAULTS = {
+  scenes: ['flow', 'orb', 'answer', 'blocks', 'pins', 'page'],
+  sources: ['Services', 'Reviews', 'Pages'],
+  assistants: ['AI search', 'AI chat', 'AI answers'],
+  question: 'Who is best near me?',
+  answer_label: 'AI answer',
+  citation: '[1] yoursite.com',
+  cited: ['yourbusiness.com: cited in the answer', 'cited in the answer'],
+  ranking_label: 'Local ranking',
+  font: 'system-ui, -apple-system, sans-serif',
+};
+let S = DEFAULTS;
+
+// The settings the build wrote, over the defaults; anything unreadable keeps the defaults.
+export function settings(doc = document) {
+  const el = doc.getElementById('hero-scenes-settings');
+  let got = {};
+  try { got = el ? JSON.parse(el.textContent) : {}; } catch (e) { got = {}; }
+  const out = { ...DEFAULTS };
+  for (const k of Object.keys(DEFAULTS)) if (got && typeof got[k] === typeof DEFAULTS[k] && Array.isArray(got[k]) === Array.isArray(DEFAULTS[k])) out[k] = got[k];
+  return out;
+}
+
 function colors() {
   const css = getComputedStyle(document.documentElement);
   const v = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
   const rgb = (hex) => { const n = parseInt(hex.replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
-  return { accent: rgb(v('--accent', '#ff6b2c')), surface: v('--surface', '#14171c'), surface2: v('--surface-2', '#1b1f26'), border: v('--border', '#262b33'), text: v('--text', '#f4f4f5'), muted: v('--muted', '#a1a7b0') };
+  return { accent: rgb(v('--accent', '#888888')), surface: v('--surface', '#1c1c1c'), surface2: v('--surface-2', '#242424'), border: v('--border', '#333333'), text: v('--text', '#f2f2f2'), muted: v('--muted', '#a6a6a6'), ink: v('--bg', '#111111') };
 }
 
-function sprite(rgb, r) { // a soft glowing dot, drawn once and stamped many times
+export function sprite(rgb, r) { // a soft glowing dot, drawn once and stamped many times
   const c = document.createElement('canvas');
   c.width = c.height = r * 2;
   const g = c.getContext('2d');
@@ -50,7 +74,7 @@ function sprite(rgb, r) { // a soft glowing dot, drawn once and stamped many tim
   return c;
 }
 
-function roundRect(g, x, y, w, h, r) {
+export function roundRect(g, x, y, w, h, r) {
   g.beginPath();
   g.moveTo(x + r, y);
   g.arcTo(x + w, y, x + w, y + h, r);
@@ -61,7 +85,7 @@ function roundRect(g, x, y, w, h, r) {
 }
 
 // Owns the canvas size, the loop and every reason to stop it. `make` builds a scene.
-function run(cv, make) {
+export function run(cv, make) {
   const ctx = cv.getContext('2d');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let w = 0, h = 0, onScreen = false, raf = 0, last = 0, ema = 1 / 60, slow = 0, quality = 1;
@@ -109,8 +133,6 @@ function run(cv, make) {
 
 // ---- scene 1: business info flows into a site, then out to AI answers -------------------
 
-const SOURCES = ['Services', 'Reviews', 'Pages'];
-const ANSWERS = ['ChatGPT', 'Google AI', 'Perplexity'];
 
 function flow(ctx, cv, c, getQuality) {
   const accent = c.accent.join(',');
@@ -151,12 +173,12 @@ function flow(ctx, cv, c, getQuality) {
     for (let i = 0; i < 3; i++) {
       if (tall) {
         const cx = X(0.2 + 0.3 * i), bw = A.w * 0.27, bh = A.h * 0.16;
-        src.push({ x: cx - bw / 2, y: A.y, w: bw, h: bh, label: SOURCES[i] });
-        cards.push({ x: cx - bw / 2, y: A.y + A.h - bh * 1.2, w: bw, h: bh * 1.2, label: ANSWERS[i] });
+        src.push({ x: cx - bw / 2, y: A.y, w: bw, h: bh, label: S.sources[i] || '' });
+        cards.push({ x: cx - bw / 2, y: A.y + A.h - bh * 1.2, w: bw, h: bh * 1.2, label: S.assistants[i] || '' });
       } else {
         const cy = Y(0.17 + 0.33 * i), bh = A.h * 0.22;
-        src.push({ x: A.x, y: cy - bh / 2, w: A.w * 0.2, h: bh, label: SOURCES[i] });
-        cards.push({ x: A.x + A.w * 0.8, y: cy - bh / 2, w: A.w * 0.2, h: bh * 1.1, label: ANSWERS[i] });
+        src.push({ x: A.x, y: cy - bh / 2, w: A.w * 0.2, h: bh, label: S.sources[i] || '' });
+        cards.push({ x: A.x + A.w * 0.8, y: cy - bh / 2, w: A.w * 0.2, h: bh * 1.1, label: S.assistants[i] || '' });
       }
     }
     const routes = [];
@@ -177,7 +199,7 @@ function flow(ctx, cv, c, getQuality) {
     const g = back.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     const fs = clamp(w * 0.017, 10, 14);
-    g.font = `600 ${fs}px Inter, -apple-system, sans-serif`;
+    g.font = `600 ${fs}px ${S.font}`;
     g.textBaseline = 'middle';
     g.lineWidth = 1;
     g.strokeStyle = `rgba(${accent},0.16)`;
@@ -217,8 +239,8 @@ function flow(ctx, cv, c, getQuality) {
       g.beginPath(); g.moveTo(ix + 10, iy + ih - 10); g.lineTo(ix + iw * 0.4, iy + ih * 0.45); g.lineTo(ix + iw * 0.62, iy + ih * 0.7); g.lineTo(ix + iw - 10, iy + ih * 0.3);
       g.strokeStyle = `rgba(${accent},0.7)`; g.lineWidth = 2; g.stroke(); g.lineWidth = 1;
       const cy2 = y + wh - 34;
-      g.font = `600 ${clamp(w * 0.0095, 10, 12)}px Inter, -apple-system, sans-serif`;
-      const label = ['yourbusiness.com: cited in the answer', 'cited in the answer'].find((t) => g.measureText(t).width + 40 <= ww - 32); // the chip is measured, so it never outgrows the window
+      g.font = `600 ${clamp(w * 0.0095, 10, 12)}px ${S.font}`;
+      const label = S.cited.find((t) => g.measureText(t).width + 40 <= ww - 32); // the chip is measured, so it never outgrows the window
       if (label) {
         roundRect(g, x + 16, cy2, g.measureText(label).width + 40, 22, 11); g.fillStyle = `rgba(${accent},0.16)`; g.fill();
         g.beginPath(); g.arc(x + 30, cy2 + 11, 4, 0, TAU); g.fillStyle = `rgba(${accent},0.95)`; g.fill();
@@ -353,7 +375,7 @@ function orb(ctx, cv, c, getQuality) {
 // ---- timeline scenes: drawn in a fixed 560x420 box scaled to the canvas ------------------
 
 const VW = 560, VH = 420;
-const seg = (t, a, b) => ease(clamp((t - a) / (b - a)));          // 0..1 eased progress of t between a and b
+export const seg = (t, a, b) => ease(clamp((t - a) / (b - a)));          // 0..1 eased progress of t between a and b
 const back = (x) => { const k = 1.7; return 1 + (k + 1) * Math.pow(x - 1, 3) + k * Math.pow(x - 1, 2); }; // overshoot
 
 function timeline(period, still, draw) {
@@ -382,8 +404,8 @@ function bar(g, x, y, w, h, fill, p = 1) {
   g.fillStyle = fill; g.fill();
 }
 function dots(g, x, y, c) { g.fillStyle = c.border; for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(x + i * 13, y, 4, 0, TAU); g.fill(); } }
-function label(g, text, x, y, color, size = 13, weight = 600, align = 'left') {
-  g.font = `${weight} ${size}px Inter, -apple-system, sans-serif`;
+export function label(g, text, x, y, color, size = 13, weight = 600, align = 'left') {
+  g.font = `${weight} ${size}px ${S.font}`;
   g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
   g.fillText(text, x, y);
 }
@@ -401,11 +423,11 @@ function answer(ctx, cv, c, getQuality) {
     // the question
     const qGlow = seg(t, 0, 0.5) * (1 - seg(t, 1.6, 2.2));
     panel(g, q.x, q.y, q.w, q.h, col, 23); if (qGlow > 0.01) { roundRect(g, q.x, q.y, q.w, q.h, 23); g.strokeStyle = `rgba(${A},${qGlow * 0.8})`; g.lineWidth = 1.5; g.stroke(); }
-    label(g, 'Best plumber near me?', q.x + 20, q.y + q.h / 2, col.text, 13.5);
+    label(g, S.question, q.x + 20, q.y + q.h / 2, col.text, 13.5);
     // the AI answer card
     panel(g, card.x, card.y, card.w, card.h, col, 16, col.surface2);
     g.fillStyle = acc; g.beginPath(); g.arc(card.x + 24, card.y + 26, 7, 0, TAU); g.fill();
-    label(g, 'AI answer', card.x + 40, card.y + 26, col.muted, 12.5);
+    label(g, S.answer_label, card.x + 40, card.y + 26, col.muted, 12.5);
     const lines = [0.92, 0.78, 0.86, 0.6];
     lines.forEach((f, i) => bar(g, card.x + 20, card.y + 58 + i * 30, (card.w - 40) * f, 9, col.border, seg(t, 1.5 + i * 0.7, 2.3 + i * 0.7)));
     // the citation chip
@@ -413,7 +435,7 @@ function answer(ctx, cv, c, getQuality) {
     if (cp > 0) {
       g.save(); g.globalAlpha *= cp;
       roundRect(g, cite.x, cite.y + (1 - cp) * 8, cite.w, cite.h, 16); g.fillStyle = `rgba(${A},0.14)`; g.fill(); g.strokeStyle = `rgba(${A},0.7)`; g.stroke();
-      label(g, '[1] yoursite.com', cite.x + 14, cite.y + 16 + (1 - cp) * 8, acc, 12.5);
+      label(g, S.citation, cite.x + 14, cite.y + 16 + (1 - cp) * 8, acc, 12.5);
       g.restore();
     }
     // the site being cited
@@ -491,7 +513,7 @@ function blocks(ctx, cv, c) {
     const bp = seg(t, 0, 0.4);
     g.save(); g.globalAlpha *= bp;
     g.fillStyle = acc; g.beginPath(); g.arc(F.x - 34, F.y + 30, 17, 0, TAU); g.fill();
-    g.strokeStyle = '#0b0d10'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(F.x - 34, F.y + 22); g.lineTo(F.x - 34, F.y + 38); g.moveTo(F.x - 42, F.y + 30); g.lineTo(F.x - 26, F.y + 30); g.stroke();
+    g.strokeStyle = col.ink; g.lineWidth = 2.5; g.beginPath(); g.moveTo(F.x - 34, F.y + 22); g.lineTo(F.x - 34, F.y + 38); g.moveTo(F.x - 42, F.y + 30); g.lineTo(F.x - 26, F.y + 30); g.stroke();
     g.restore();
   };
   const paint = timeline(7.5, false, draw), paintStill = timeline(7.5, true, draw);
@@ -505,7 +527,7 @@ function pins(ctx, cv, c) {
   const M = { x: 14, y: 16, w: 336, h: 388 };
   const P = [[70, 90], [250, 70], [160, 170], [290, 220], [90, 280], [230, 330], [120, 360]];
   const home = [196, 214];
-  const pin = (g, x, y, s, fill) => { g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x - 11 * s, y - 14 * s, x - 11 * s, y - 32 * s, x, y - 32 * s); g.bezierCurveTo(x + 11 * s, y - 32 * s, x + 11 * s, y - 14 * s, x, y); g.fillStyle = fill; g.fill(); g.fillStyle = '#0b0d10'; g.beginPath(); g.arc(x, y - 21 * s, 4 * s, 0, TAU); g.fill(); };
+  const pin = (g, x, y, s, fill) => { g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x - 11 * s, y - 14 * s, x - 11 * s, y - 32 * s, x, y - 32 * s); g.bezierCurveTo(x + 11 * s, y - 32 * s, x + 11 * s, y - 14 * s, x, y); g.fillStyle = fill; g.fill(); g.fillStyle = c.ink; g.beginPath(); g.arc(x, y - 21 * s, 4 * s, 0, TAU); g.fill(); };
   const draw = (g, t, col) => {
     panel(g, M.x, M.y, M.w, M.h, col, 16, col.surface2);
     g.save(); roundRect(g, M.x, M.y, M.w, M.h, 16); g.clip();
@@ -528,16 +550,20 @@ function pins(ctx, cv, c) {
     g.restore();
     // ranking: our row starts fifth and climbs to first
     const R = { x: 372, y: 16, w: 176 };
-    label(g, 'Local ranking', R.x, R.y + 14, col.muted, 12);
+    label(g, S.ranking_label, R.x, R.y + 14, col.muted, 12);
     const climb = seg(t, 3.6, 5.4);
+    // where each row is now: ours climbs from fifth to first, and the rows it passes slide down one place
+    const slots = [0, 1, 2, 3, 4].map((row) => (row === 4 ? lerp(4, 0, climb) : row + climb));
     [0, 1, 2, 3, 4].forEach((row, i) => {
       const us = row === 4;
-      const slot = us ? lerp(4, 0, climb) : row + climb; // the rows we pass slide down one place
+      const slot = slots[row];
+      // a row's number is its place in the current order, so no two rows ever show the same one (site-kit#290); ours wins a tie
+      const rank = 1 + slots.filter((s, r) => s < slot || (s === slot && r === 4 && !us)).length;
       const y = R.y + 38 + slot * 72;
       const pr = seg(t, 1.6 + i * 0.12, 2.2 + i * 0.12);
       g.save(); g.globalAlpha *= pr;
       roundRect(g, R.x, y, R.w, 58, 12); g.fillStyle = us ? `rgba(${A},0.16)` : col.surface; g.fill(); g.strokeStyle = us ? acc : col.border; g.lineWidth = us ? 1.5 : 1; g.stroke();
-      label(g, String(Math.round(slot) + 1), R.x + 20, y + 29, us ? acc : col.muted, 18, 700, 'center');
+      label(g, String(rank), R.x + 20, y + 29, us ? acc : col.muted, 18, 700, 'center');
       bar(g, R.x + 40, y + 18, R.w - 62, 8, us ? acc : col.border);
       bar(g, R.x + 40, y + 34, (R.w - 62) * (us ? 0.6 : 0.5), 6, col.border);
       g.restore();
@@ -587,84 +613,20 @@ function pageBuild(ctx, cv, c) {
 }
 
 
-// fleet: the agent team (/consulting/). Nodes light up as the section scrolls into view, a task passes
-// from one agent to the next, then the conversation types itself out. The same lines are in the page's
-// HTML caption; the canvas is decoration. Reduced motion draws everything finished.
-const FLEET = [
-  { who: 'You', line: 'Add a page for the new service.' },
-  { who: 'Writer', line: 'Draft is ready.' },
-  { who: 'Checker', line: 'Facts and links checked.' },
-  { who: 'Publisher', line: 'Live on the site.' },
-  { who: 'Reporter', line: 'Summary sent to you.' },
-];
+export const SCENES = { flow, orb, answer, blocks, pins, page: pageBuild };
+const OWN = {};
 
-function fleet(ctx, cv, c) {
-  const A = c.accent.join(',');
-  const dot = sprite(A, 14);
-  let w = 0, h = 0;
-  const node = (i, n, cx, cy, rx, ry) => { const a = -Math.PI / 2 + (i / n) * TAU; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; };
-  return {
-    resize(nw, nh) { w = nw; h = nh; },
-    frame(dt, now, still) {
-      const vh = window.innerHeight, top = cv.getBoundingClientRect().top;
-      const p = still ? 1 : clamp((vh * 0.92 - top) / (vh * 0.8));
-      ctx.clearRect(0, 0, w, h);
-      const k = Math.min(w / 800, h / 360), fs = clamp(13 * k, 12, 15);
-      const tall = w < h * 1.1; // phones: nodes on top, the chat below at full width
-      const cx = tall ? w * 0.5 : w * 0.3, cy = tall ? h * 0.24 : h * 0.5, rx = tall ? w * 0.3 : w * 0.2, ry = tall ? h * 0.17 : h * 0.36;
-      const pos = FLEET.map((_, i) => node(i, FLEET.length, cx, cy, rx, ry));
-      // the links between agents
-      ctx.lineWidth = 1;
-      for (let i = 0; i < FLEET.length; i++) {
-        const j = (i + 1) % FLEET.length, lp = seg(p, 0.05 + i * 0.05, 0.3 + i * 0.05);
-        ctx.strokeStyle = `rgba(${A},${0.4 * lp})`;
-        ctx.beginPath(); ctx.moveTo(pos[i][0], pos[i][1]); ctx.lineTo(lerp(pos[i][0], pos[j][0], lp), lerp(pos[i][1], pos[j][1], lp)); ctx.stroke();
-      }
-      // a task passes along the links
-      const hop = clamp((p - 0.3) / 0.4) * FLEET.length; // 0..5: which link the packet is on
-      ctx.globalCompositeOperation = 'lighter';
-      if (p > 0.3 && p < 0.72) {
-        const i = Math.min(FLEET.length - 1, Math.floor(hop)), f = ease(hop - i), j = (i + 1) % FLEET.length;
-        const x = lerp(pos[i][0], pos[j][0], f), y = lerp(pos[i][1], pos[j][1], f);
-        ctx.globalAlpha = 1; ctx.drawImage(dot, x - 20, y - 20, 40, 40); ctx.drawImage(dot, x - 10, y - 10, 20, 20);
-      }
-      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
-      // the agents
-      FLEET.forEach((a, i) => {
-        const np = seg(p, i * 0.05, 0.12 + i * 0.05), lit = clamp(1 - Math.abs(hop - i - 0.1) / 1.2) * (p > 0.3 ? 1 : 0) + (p >= 0.72 ? 0.3 : 0);
-        const [x, y] = pos[i], bw = tall ? 86 : 96 * k + 24, bh = tall ? 32 : 34 * k + 8;
-        ctx.save(); ctx.globalAlpha = np;
-        roundRect(ctx, x - bw / 2, y - bh / 2, bw, bh, bh / 2);
-        ctx.fillStyle = c.surface2; ctx.fill();
-        ctx.strokeStyle = `rgba(${A},${0.25 + 0.6 * clamp(lit)})`; ctx.lineWidth = 1 + clamp(lit); ctx.stroke();
-        label(ctx, a.who, x, y, c.text, fs, 600, 'center');
-        ctx.restore();
-      });
-      // the conversation, typed out on the right
-      const tx = tall ? w * 0.05 : w * 0.58, ty = tall ? h * 0.5 : h * 0.14, lh = tall ? h * 0.1 : h * 0.16, bw = tall ? w * 0.9 : w * 0.38;
-      const typed = clamp((p - 0.7) / 0.3) * FLEET.length;
-      FLEET.forEach((a, i) => {
-        const shown = clamp(typed - i);
-        if (shown <= 0) return;
-        const y = ty + i * lh, text = a.line.slice(0, Math.ceil(a.line.length * shown));
-        roundRect(ctx, tx, y, bw, lh * 0.76, 10);
-        ctx.fillStyle = a.who === 'You' ? `rgba(${A},0.9)` : c.surface; ctx.fill();
-        if (a.who !== 'You') { ctx.strokeStyle = c.border; ctx.lineWidth = 1; ctx.stroke(); }
-        label(ctx, a.who, tx + 12, y + lh * 0.2, a.who === 'You' ? '#0b0d10' : `rgb(${A})`, fs * 0.85, 700);
-        label(ctx, text, tx + 12, y + lh * 0.5, a.who === 'You' ? '#0b0d10' : c.text, fs, 500);
-      });
-    },
-  };
-}
-
-const SCENES = { flow, orb, answer, blocks, pins, page: pageBuild, fleet };
+// A site's own scene, from the site's own module (it runs whatever the settings' scene list says).
+export function register(name, make) { OWN[name] = make; }
 
 export function mount(cv) {
-  const make = SCENES[cv.dataset.anim];
+  const name = cv.dataset.anim;
+  const make = OWN[name] || (S.scenes.includes(name) ? SCENES[name] : null);
   if (make) run(cv, make);
 }
 
 function start() {
+  S = settings();
   document.querySelectorAll('canvas[data-anim]').forEach(mount);
   // a layout slot <div class="hero-anim" data-variant="answer"> gets its canvas here
   document.querySelectorAll('.hero-anim[data-variant]').forEach((box) => {
@@ -677,7 +639,9 @@ function start() {
   });
 }
 
-// Content first: the scenes mount after the page has loaded, so LCP is unchanged.
+// Content first: the scenes mount after the page has loaded, so LCP is unchanged. The tests import the module with no page.
 const later = () => (window.requestIdleCallback ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
-if (document.readyState === 'complete') later();
-else addEventListener('load', later, { once: true });
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'complete') later();
+  else addEventListener('load', later, { once: true });
+}
