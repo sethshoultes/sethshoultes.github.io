@@ -1,0 +1,5 @@
+/* hero-scenes (site-kit#282): the slot. A scene's canvas fills its box, which keeps a fixed 4:3, so nothing shifts when it loads.
+   A full-bleed scene uses .flow-canvas or .orb-canvas inside the site's own positioned section. */
+.hero-anim { margin: 0; position: relative; width: 100%; aspect-ratio: 4 / 3; }
+.flow-canvas, .orb-canvas, .hero-anim canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.flow-canvas, .hero-anim canvas[data-anim="flow"] { touch-action: pan-y; }

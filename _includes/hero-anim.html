@@ -1,9 +1,8 @@
 {%- comment -%}
-  Hero animation (#149, #152). One engine, six scenes. Decoration only: put the real words in HTML beside it.
+  Hero animation (#149, #152): one scene of the kit's hero-scenes engine. Decoration only: put the real words in HTML beside it.
   Usage:  {% include hero-anim.html anim="answer" %}
   anim:   answer (AI search) | blocks (WordPress) | pins (SEO) | page (web development) | flow (AI services) | orb (learn AI)
-  The two-column hero puts this in its right column; the full-bleed hero uses the .flow-hero markup in preview/hero/.
+  The page loads the engine once: the hero-scenes stylesheet and assets/flow.css in its head, and {% include hero-scenes.html %}
+  (see preview/hero/). The two-column hero puts this in its right column; the full-bleed hero uses the .flow-hero markup.
 {%- endcomment -%}
-<link rel="stylesheet" href="/assets/flow.css">
 <figure class="hero-anim"><canvas data-anim="{{ include.anim }}" aria-hidden="true"></canvas></figure>
-<script type="module" src="/assets/flow.js"></script>
