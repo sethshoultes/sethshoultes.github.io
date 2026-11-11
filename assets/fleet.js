@@ -1,6 +1,6 @@
 // fleet (#165): sethshoultes.com's own hero scene, the agent team on /consulting/. It runs on the kit's hero-scenes engine
 // (site-kit#282), which it registers with; the engine owns the canvas, the loop and every reason to stop it.
-import { register, TAU, clamp, ease, lerp, seg, sprite, roundRect, label } from '/assets/vendor/site-kit/plugins/hero-scenes/assets/hero-scenes.js';
+import { register, TAU, clamp, ease, lerp, seg, sprite, roundRect, label } from '/plugins/hero-scenes/assets/hero-scenes.js';
 
 // fleet: the agent team (/consulting/). Nodes light up as the section scrolls into view, a task passes
 // from one agent to the next, then the conversation types itself out. The same lines are in the page's

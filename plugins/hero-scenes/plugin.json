@@ -1,0 +1,27 @@
+{
+  "name": "hero-scenes",
+  "version": "0.1.1",
+  "about": "Canvas hero animations for the kit's .hero-anim slot: flow (business info streams into a site and out to AI answer cards), orb, answer, blocks, pins and page. One small engine with no library. Decoration only: the canvas is aria-hidden and the words stay in the page's HTML. Each scene keeps the slot's rules: no layout shift, it runs only while on screen and the tab is visible, reduced motion gets one still frame. Colours come from the site's own tokens; the assistant names, the other words, the font and which scenes may run come from the settings. A site adds its own scene with register().",
+  "hooks": {
+    "head.styles": {
+      "priority": 56
+    }
+  },
+  "assets": [
+    "assets/hero-scenes.css",
+    "assets/hero-scenes.js"
+  ],
+  "config": {
+    "fields": {
+      "scenes": {"type": "string", "default": "flow, orb, answer, blocks, pins, page"},
+      "assistants": {"type": "string", "default": "AI search, AI chat, AI answers"},
+      "sources": {"type": "string", "default": "Services, Reviews, Pages"},
+      "question": {"type": "string", "default": "Who is best near me?"},
+      "answer_label": {"type": "string", "default": "AI answer"},
+      "citation": {"type": "string", "default": "[1] yoursite.com"},
+      "cited": {"type": "string", "default": "yourbusiness.com: cited in the answer | cited in the answer"},
+      "ranking_label": {"type": "string", "default": "Local ranking"},
+      "font": {"type": "string", "default": "system-ui, -apple-system, sans-serif"}
+    }
+  }
+}
