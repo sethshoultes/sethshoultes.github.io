@@ -109,6 +109,8 @@ test("/mcp get_page returns a twin and refuses anything else", async () => {
     // game-dev-3 on #115: a query or fragment once reached a non-twin file, and a backslash another origin.
     "/robots.txt?", "/llms.txt#", "/notes.md#x", "/about/?x", "/\\evil.example/", "/%2e%2e/", "/a\tb/", "/about/%0a"])
     assert.equal((await call({ path: p })).isError, true, p);
+  // site-kit#197: a page left without a twin (--skip-no-main) may exist, so the miss doesn't say it doesn't
+  assert.equal((await call({ path: "/missing/" })).content[0].text, "no markdown version of /missing/. The page may still exist as HTML; list_pages names the site's pages.");
   const unknown = await (await agentFiles(ctx("/mcp", rpc("tools/call", { name: "write_page" })))).json();
   assert.equal(unknown.error.code, -32602);
   const method = await (await agentFiles(ctx("/mcp", rpc("resources/list")))).json();

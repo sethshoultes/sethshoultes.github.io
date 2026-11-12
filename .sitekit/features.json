@@ -1,0 +1,20 @@
+{
+  "site": "sethshoultes-com",
+  "soul": "SOUL.md",
+  "style_guide": "canon/STYLEGUIDE.md",
+  "plugins_dir": "plugins",
+  "functions_dirs": [
+    "functions"
+  ],
+  "page_types_file": null,
+  "post_images": false,
+  "memory_lines": false,
+  "site_only": [
+    {
+      "kind": "function",
+      "name": "functions/_middleware.js",
+      "proposal": "site-kit#114",
+      "why": "agent-files' one-line middleware (markdown twins, /a2a, /mcp), the same approval trenzbarbershop and redrockmqg-site carry"
+    }
+  ]
+}
