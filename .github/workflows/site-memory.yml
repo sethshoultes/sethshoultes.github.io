@@ -1,0 +1,81 @@
+# One memory line per merged pull request (site-kit#255). Vendored into the site by scripts/site_sync.py; do not edit by hand:
+# CODEOWNERS makes the owner review every change to this file and to .sitekit/, and `verify` fails if they drift from kit.lock.
+# The site agent writes a memory line for its own edits; a change merged any other way (a fleet pull request, a person's) left
+# none. After a pull request merges into main, this adds `.agent/memory/<YYYY-MM>/<date>-<time>-<8 hex of the merge commit>.md`
+# (read_brain reads only an 8-hex id) with one line (the date, who merged it and the title) through .sitekit/memory_line.py,
+# and pushes it to main. A site turns it off with `"memory_lines": false` in .sitekit/features.json (a busy repo whose open
+# pull requests must stay up to date with main).
+# - Each merge has its own concurrency group: one shared group would cancel a waiting run when a third merge queued, and drop
+#   that pull request's line. Each file name is unique, so runs never collide; a push that loses a race rebases and retries.
+# - It runs code from main only: the checkout is main after the merge, never the pull request's branch.
+# - The title is untrusted: it reaches the script only through the environment, never this file's shell, and is cut to plain
+#   words there.
+# - A pull request that already adds a memory file (the site agent's own) gets no second line, and a site with no SOUL.md gets
+#   none (memory_line.py says why).
+# - A push main refuses (a protected branch, a ruleset) fails this job once, with an error annotation, and is never retried:
+#   only a race with another push (a non-fast-forward) rebases and retries. The merge itself is already done and stays green.
+#   Write access is granted to this one job only (the lead's conditions on #256).
+# - One deploy per merge (the fleet standard, the lead's ruling on #256): the push uses this workflow's own token, which starts
+#   no other workflow, and the commit message STARTS with [skip ci]: GitHub Actions and Netlify read it anywhere, but a
+#   Cloudflare Pages git build only as a prefix. So a memory line never redeploys the site or reruns its checks. A fork's pull request has no write token, so it is skipped.
+name: site-memory
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+permissions: {}
+concurrency:
+  group: site-memory-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  memory:
+    if: ${{ github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+        with:
+          ref: main
+      - name: Skip a pull request that already wrote its own memory
+        id: own
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename')
+          if grep -q '^\.agent/memory/' <<<"$files"; then echo "skip=true" >>"$GITHUB_OUTPUT"; else echo "skip=false" >>"$GITHUB_OUTPUT"; fi
+      - name: Write the memory line
+        if: ${{ steps.own.outputs.skip == 'false' }}
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
+          PR_MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
+          PR_MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: python3 -I .sitekit/memory_line.py
+      - name: Push it to main
+        if: ${{ steps.own.outputs.skip == 'false' }}
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          [ -n "$(git status --porcelain -- .agent/memory)" ] || { echo "nothing to push"; exit 0; }
+          git config user.name "site-memory"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- .agent/memory
+          git -c core.hooksPath=/dev/null commit -q -m "[skip ci] Memory: PR $PR_NUMBER (site-memory)"
+          # Only a race (another push landed first: a non-fast-forward) is retried. Any other refusal, such as a protected main
+          # or a ruleset, is reported once and fails this job without retrying; the merge itself is already done and green.
+          for try in 1 2 3 4 5; do
+            if out=$(git -c core.hooksPath=/dev/null push origin HEAD:main 2>&1); then echo "$out"; exit 0; fi
+            echo "$out"
+            if ! grep -qiE 'non-fast-forward|fetch first' <<<"$out"; then
+              echo "::error title=site-memory::main refused the memory line for PR $PR_NUMBER (protected branch or ruleset?); no line written. The merge itself is fine."
+              exit 1
+            fi
+            git -c core.hooksPath=/dev/null pull --rebase -q origin main
+          done
+          echo "::error title=site-memory::the memory line for PR $PR_NUMBER lost the push race 5 times; no line written."
+          exit 1

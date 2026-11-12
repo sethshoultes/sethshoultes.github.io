@@ -1,0 +1,79 @@
+# The reuse-first check (site-kit#6). Vendored into the site by scripts/site_sync.py; do not edit by hand: CODEOWNERS makes the
+# owner review every change to this file, to .sitekit/ and to the vendored check, and `verify` fails if they drift from kit.lock.
+# Paths (site-kit#213): it runs only when a path the check reads changes. `site_sync.py sync` writes that list in place of each
+# `{{site-check paths}}` line below, from the site's .sitekit/features.json (its SOUL.md, style guide, plugin and function folders
+# and page-types file) plus what the check reads in every site (.sitekit/, plugins/, functions/, data/types.json, .gitmodules,
+# any _worker.js or _routes.json, the locked skills and this file); `verify` fails when features.json no longer matches it.
+# A daily run checks the whole tree, for what no path names (a symlinked folder anywhere). So do NOT make `site-check` a
+# required status check: GitHub never reports a check that did not run, and a pull request that touches none of the paths
+# could never merge (fleet standard, rule 3). CODEOWNERS review of .sitekit/ and this file is the gate. A site that needs a
+# required check would need an always-running job that reads the changed paths itself instead (site-kit#213 says why not here).
+# Runner: GitHub-hosted unless the repo variable SITE_CHECK_RUNS_ON names another, as JSON, e.g. ["self-hosted","herd-runner"]
+# (superintelligentfoo#173), and then only for a push to main, the daily run or a pull request from this repo: a fork's pull request
+# still runs the check, on a GitHub-hosted runner, never skipped. A fork's pull request runs the fork's copy of this file,
+# so a repo that sets the variable must also hold fork workflows for approval (Settings > Actions); that is the real gate.
+# Drafts run nothing (the fleet standard): the job's one `if:` is false only on a draft pull request, and ready_for_review
+# runs it on the same head before the pull request can merge. A newer push to the same branch, or to main, cancels the older
+# run of this workflow (superintelligentfoo: 21 superseded site-check runs queued on one runner, the lead 2026-11-07).
+name: site-check
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '**/_routes.json'
+      - '**/_worker.js'
+      - '**/_worker.js/**'
+      - '.github/workflows/site-check.yml'
+      - '.gitmodules'
+      - '.sitekit'
+      - '.sitekit/**'
+      - 'SOUL.md'
+      - 'canon'
+      - 'canon/STYLEGUIDE.md'
+      - 'data'
+      - 'data/blog.json'
+      - 'data/types.json'
+      - 'functions'
+      - 'functions/**'
+      - 'plugins'
+      - 'plugins/**'
+  push:
+    branches: [main]
+    paths:
+      - '**/_routes.json'
+      - '**/_worker.js'
+      - '**/_worker.js/**'
+      - '.github/workflows/site-check.yml'
+      - '.gitmodules'
+      - '.sitekit'
+      - '.sitekit/**'
+      - 'SOUL.md'
+      - 'canon'
+      - 'canon/STYLEGUIDE.md'
+      - 'data'
+      - 'data/blog.json'
+      - 'data/types.json'
+      - 'functions'
+      - 'functions/**'
+      - 'plugins'
+      - 'plugins/**'
+  schedule:
+    - cron: '23 8 * * *'   # daily, one run per site: the whole tree, for what no path names (a symlinked folder anywhere)
+permissions:
+  contents: read
+concurrency:
+  group: site-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  site-check:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ${{ fromJSON((github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && vars.SITE_CHECK_RUNS_ON || '"ubuntu-latest"') }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+        with:
+          persist-credentials: false
+      - name: The vendored check is the one site-kit released
+        run: python3 -I .sitekit/site_sync.py verify
+      - name: Reuse first, SOUL.md and a style guide
+        run: python3 -I .sitekit/site_check.py --catalog .sitekit/catalog.json --repo "$GITHUB_REPOSITORY"

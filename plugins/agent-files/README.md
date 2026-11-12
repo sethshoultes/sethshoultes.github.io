@@ -26,7 +26,8 @@ The plugin only reads the site's own built files through `ASSETS`. It writes not
    - `--llms-full` also writes `dist/llms-full.txt` from the twins. Leave it off when the site builds its own.
    - A page marked `noindex`, or one whose canonical is another site's, gets no twin.
    - Every other page needs a `<main>`. A site with whole-document pages that have none (standalone games, say) adds
-     `--skip-no-main`: those pages get no twin, and the run names them (site-kit#193).
+     `--skip-no-main`: those pages get no twin, and the run names them (site-kit#193). The MCP's `get_page` then answers
+     "no markdown version" for them, not "no page" (0.1.3).
    - If no page at all gets a twin, the build fails.
 3. **The middleware.** A site with no `functions/_middleware.js` adds one line:
    ```js

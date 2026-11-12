@@ -175,7 +175,9 @@ async function mcp(context, origin) {
         const path = typeof args.path === "string" ? args.path : "";
         if (!path.startsWith("/")) return text("path must start with /", true);
         const body = await twin(context, path);
-        return body ? text(body) : text(`no page at ${path}`, true);
+        // site-kit#197: a page built with --skip-no-main has no twin, so a miss is "no markdown version", not "no page".
+        // The path is echoed as given, never made into a link.
+        return body ? text(body) : text(`no markdown version of ${path}. The page may still exist as HTML; list_pages names the site's pages.`, true);
       }
       return rpcError(msg.id, -32602, `unknown tool ${JSON.stringify(name)}`);
     }
