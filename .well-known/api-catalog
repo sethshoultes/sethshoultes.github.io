@@ -1,0 +1,45 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://sethshoultes.com/.well-known/api-catalog",
+      "item": [
+        {
+          "href": "https://mcp.sethshoultes.com/"
+        },
+        {
+          "href": "https://sethshoultes.com/a2a"
+        }
+      ]
+    },
+    {
+      "anchor": "https://mcp.sethshoultes.com/",
+      "service-desc": [
+        {
+          "href": "https://sethshoultes.com/.well-known/mcp/server-card.json",
+          "type": "application/mcp-server-card+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://sethshoultes.com/how-this-site-is-built/",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://sethshoultes.com/a2a",
+      "service-desc": [
+        {
+          "href": "https://sethshoultes.com/.well-known/agent-card.json",
+          "type": "application/a2a-agent-card+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://sethshoultes.com/how-this-site-is-built/",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

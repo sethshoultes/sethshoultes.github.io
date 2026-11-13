@@ -3,3 +3,12 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https: ; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' blob: https:; frame-src 'self' https:; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https:
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# Agent discovery (herdos#3873). Cloudflare Pages applies every block a path matches, so /* above still holds here; a header
+# named in two matching blocks gets both values, joined by a comma. The / Link value is what discovery.py build prints.
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog", </.well-known/agent-card.json>; rel="describedby"; type="application/json", </llms.txt>; rel="describedby"; type="text/markdown", </.well-known/ard.json>; rel="ard"; type="application/json"
+
+/.well-known/api-catalog
+  Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
+  Link: </.well-known/api-catalog>; rel="api-catalog"

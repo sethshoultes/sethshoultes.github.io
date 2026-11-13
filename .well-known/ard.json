@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "identifier": "urn:air:sethshoultes.com:mcp",
+      "displayName": "Seth Shoultes — Writing & Skills",
+      "type": "application/mcp-server-card+json",
+      "url": "https://sethshoultes.com/.well-known/mcp/server-card.json",
+      "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials."
+    },
+    {
+      "identifier": "urn:air:sethshoultes.com:agent",
+      "displayName": "Seth Shoultes",
+      "type": "application/a2a-agent-card+json",
+      "url": "https://sethshoultes.com/.well-known/agent-card.json",
+      "description": "Seth Shoultes is an AI developer, product leader and WordPress pioneer who helps small businesses put AI to work: writing, free tools, arcade games and consulting from 25 years of shipping. There is no chat assistant here yet: its endpoint says so; the pages are listed at https://sethshoultes.com/llms.txt."
+    },
+    {
+      "identifier": "urn:air:sethshoultes.com:skills",
+      "displayName": "Seth Shoultes skills",
+      "type": "application/agent-skills+json",
+      "url": "https://sethshoultes.com/.well-known/agent-skills/index.json",
+      "description": "Installable Agent Skills, each with its sha256 digest."
+    }
+  ]
+}

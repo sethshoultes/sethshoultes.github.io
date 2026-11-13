@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "add-avatar-to-site",
+      "type": "skill-md",
+      "description": "Put a real-time, lip-synced video avatar on any static or framework-based site, voiced by an ElevenLabs Conversational AI agent. Use when: (1) the user wants to add an interactive avatar of themselves (or a brand persona) to a website, (2) the user has an ElevenLabs Conversational AI agent already (or needs guidance creating one), (3) the user mentions \"talking head,\" \"live avatar,\" \"HeyGen LiveAvatar,\" \"voice clone on my site,\" or \"make my site talk back,\" (4) the goal is voice + video conversation, not text chat. Skip when the user wants only text chat (no avatar) — use add-rag-to-elevenlabs-agent and a chat UI instead.",
+      "url": "/.well-known/agent-skills/add-avatar-to-site/SKILL.md",
+      "digest": "sha256:058b62685e9cc81fbcfe5de2f752dfd9031d8187c0043a5ece663fba0977e9ea"
+    },
+    {
+      "name": "add-rag-to-elevenlabs-agent",
+      "type": "skill-md",
+      "description": "Wire URL-sourced (or file-sourced) knowledge base documents to an ElevenLabs Conversational AI agent so the agent retrieves grounded context per turn before generating its response. Use when: (1) the user wants their agent to ground answers in specific content (blog posts, docs, product specs), (2) the user asks about \"RAG,\" \"knowledge base,\" \"retrieval,\" or \"citing sources,\" (3) the agent's answers are too generic and need to be anchored in user-controlled material, (4) the user wants to keep the corpus auto-synced with a source (a blog feed, a docs repo). Skip when the agent already has well-tuned knowledge_base entries and the user just wants prompt tuning.",
+      "url": "/.well-known/agent-skills/add-rag-to-elevenlabs-agent/SKILL.md",
+      "digest": "sha256:67832508714f43cebc7ea8f2ecb95272ae35ae458ae6365d9f7c9091a322abdc"
+    },
+    {
+      "name": "register-elevenlabs-client-tool",
+      "type": "skill-md",
+      "description": "Register a browser-side client tool on an ElevenLabs Conversational AI agent so the agent can call functions that run in the user's browser — surfacing UI (cards, modals, navigations, embedded media) on the page next to the avatar. Use when: (1) the user wants the agent to \"show\" something on the page, not just say it, (2) the user mentions \"client tools,\" \"tool calling,\" \"function calling,\" \"render a card,\" \"open a link from the agent,\" (3) the user already has a working avatar/chat surface and wants to add an interactive layer. Skip when the desired side effect is server-side (sending an email, updating a CRM) — use a server-side webhook tool registration instead.",
+      "url": "/.well-known/agent-skills/register-elevenlabs-client-tool/SKILL.md",
+      "digest": "sha256:8fd7d038f0d641513283849c6a0c8fec38c5418665d02fa666583936b9f5baa3"
+    },
+    {
+      "name": "set-up-canonical-secrets",
+      "type": "skill-md",
+      "description": "Consolidate scattered API keys from many `.env` / `.env.local` / `.env.tools` files into a single canonical home at `~/.config/dev-secrets/`. Personal-everywhere keys (Anthropic, OpenAI, Gemini, ElevenLabs, GitHub) live in `secrets.env`; project-isolated keys live in `<project>/secrets.env`. Files are mode 0600, outside any git repo, excluded from Time Machine. Use when: (1) the user has multiple projects sharing the same provider keys and wants ONE source of truth, (2) the user has lost track of how many places a given key is duplicated, (3) the user is setting up a new machine and wants the right pattern from day one, (4) the user mentions \".env files,\" \"API key drift,\" \"rotated a key but the old one still shows up,\" or \"where do my secrets live.\" Skip when the user only wants project-deployment secrets (DATABASE_URL, CRON_SECRET) — those stay in `<project>/.env.local` per existing framework conventions.",
+      "url": "/.well-known/agent-skills/set-up-canonical-secrets/SKILL.md",
+      "digest": "sha256:2d226d8bb14822973fb5fc51c73e181abdabb93dd66598eb44c0bc2cfb66f293"
+    },
+    {
+      "name": "set-up-claude-code-with-brain-vault",
+      "type": "skill-md",
+      "description": "Set up a personal Obsidian knowledge vault at ~/brain wired to Claude Code as persistent memory across sessions. Use when: (1) the user wants Claude to remember things from past sessions, (2) the user mentions \"brain vault,\" \"Obsidian + Claude Code,\" \"persistent memory,\" \"knowledge base for AI,\" (3) the user is on a fresh machine and wants to set up the same flow Seth uses, (4) the user has a vault but no Claude integration. Skip when the user wants project-specific memory only — that belongs in the project's own CLAUDE.md, not a personal vault.",
+      "url": "/.well-known/agent-skills/set-up-claude-code-with-brain-vault/SKILL.md",
+      "digest": "sha256:75a6991ee8b99c2979c5b28ecba2393ff4ece1348241159cea9a7aea27870148"
+    }
+  ]
+}

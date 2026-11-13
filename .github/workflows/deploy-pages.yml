@@ -30,6 +30,10 @@ jobs:
       # jekyll-build-pages runs in a root container, so _site comes out root-owned and the twins step can't write it (EACCES).
       - name: Own the built site
         run: sudo chown -R "$(id -u):$(id -g)" _site
+      # Each SKILL.md has front matter, so Jekyll leaves them out (_config.yml); they are served as they are, so the digests in
+      # .well-known/agent-skills/index.json match (herdos#3873).
+      - name: Agent Skills, byte for byte
+        run: cp -R .well-known/agent-skills/. _site/.well-known/agent-skills/
       - name: Markdown twins for agents
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
