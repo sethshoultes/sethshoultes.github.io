@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 scripts/check-inline-styles.sh
 bundle exec jekyll build
+cp -R .well-known/agent-skills/. _site/.well-known/agent-skills/   # the SKILL.md files Jekyll leaves out (_config.yml), as they are
 node scripts/check-links.mjs _site
 node scripts/check-youtube.mjs _site
 node assets/vendor/site-kit/check/kit-check.mjs _site

@@ -46,6 +46,10 @@ exclude:
   - assets/vendor/site-kit/markup
   - assets/vendor/site-kit/check
   - assets/vendor/site-kit/scripts
+  # Agent Skills (herdos#3873): a SKILL.md has front matter, so Jekyll would render it to SKILL.html. The repo copy is
+  # discovery.py's source only; the served copy is put into _site after the build, byte for byte, so its sha256 holds.
+  - skills/*/SKILL.md
+  - .well-known/agent-skills/*/SKILL.md
 
 # Jekyll skips dotfiles and dotted directories by default; force-include
 # the .well-known directory so /.well-known/mcp.json is served at the
