@@ -173,6 +173,16 @@
         "tests/meals.test.mjs"
       ],
       "run": "node --test tests/meals.test.mjs"
+    },
+    "discovery": {
+      "paths": [
+        ".sitekit/agents.json",
+        ".well-known/**",
+        "skills/*/SKILL.md",
+        "_headers",
+        "tests/agent-discovery.test.mjs"
+      ],
+      "run": "node --test tests/agent-discovery.test.mjs"
     }
   }
 }
