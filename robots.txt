@@ -1,65 +1,82 @@
-# AI and answer-engine crawlers are welcome (#83). Each named group repeats the /admin/ rule.
+# AI and answer-engine crawlers are welcome (#83). Each named group repeats the /admin/ rule and the Content-Signal line
+# (herdos#3872: search, AI answers and training all yes on Seth's own sites; a named group never reads the * group's lines).
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: GPTBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: OAI-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: ChatGPT-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: ClaudeBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Claude-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Claude-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: anthropic-ai
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: PerplexityBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Perplexity-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Google-Extended
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Applebot-Extended
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: CCBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Bytespider
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Amazonbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
 User-agent: Meta-ExternalAgent
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Disallow: /admin/
 
