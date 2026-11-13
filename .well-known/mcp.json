@@ -1,13 +1,27 @@
 {
-  "name": "Seth Shoultes — Writing & Skills",
+  "schema_version": "1.0",
+  "name": "Seth Shoultes",
   "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials.",
-  "protocol": "mcp",
-  "version": "2025-06-18",
+  "protocol_version": "2025-06-18",
+  "transport": "streamable-http",
   "endpoints": {
     "public": "https://mcp.sethshoultes.com/"
   },
-  "auth_required": false,
-  "transport": "http",
+  "auth": {
+    "tiers": [
+      {
+        "name": "public",
+        "required": false,
+        "description": "No sign-in; public pages only."
+      }
+    ]
+  },
+  "rate_limits": {
+    "note": "Cloudflare's own limits; every call is a read of a published page."
+  },
+  "documentation": "https://sethshoultes.com/how-this-site-is-built/",
+  "contact": "https://sethshoultes.com/",
+  "license": "All rights reserved",
   "tools_summary": [
     {
       "name": "list_posts",
@@ -21,6 +35,5 @@
       "name": "list_skills",
       "description": "List installable Agent Skills from building-with-ai-skills."
     }
-  ],
-  "documentation": "https://sethshoultes.com/blog/closing-the-agent-discovery-loop.html"
+  ]
 }

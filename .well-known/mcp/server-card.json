@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "com.sethshoultes/writing",
+  "version": "1.0.0",
+  "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials.",
+  "title": "Seth Shoultes — Writing & Skills",
+  "websiteUrl": "https://sethshoultes.com/",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.sethshoultes.com/",
+      "supportedProtocolVersions": [
+        "2025-06-18"
+      ]
+    }
+  ]
+}

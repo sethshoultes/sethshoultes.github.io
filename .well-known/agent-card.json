@@ -2,6 +2,13 @@
   "protocolVersion": "0.3.0",
   "name": "Seth Shoultes",
   "description": "Seth Shoultes is an AI developer, product leader and WordPress pioneer who helps small businesses put AI to work: writing, free tools, arcade games and consulting from 25 years of shipping. There is no chat assistant here yet: its endpoint says so; the pages are listed at https://sethshoultes.com/llms.txt.",
+  "supportedInterfaces": [
+    {
+      "url": "https://sethshoultes.com/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
   "url": "https://sethshoultes.com/a2a",
   "preferredTransport": "JSONRPC",
   "provider": {
