@@ -7,7 +7,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 // Drift check (herdos#3873): the committed agent discovery files are exactly what the vendored discovery.py writes from
-// .sitekit/agents.json, and the home page's Link in _headers is the one it prints.
+// _data/agents.json, and the home page's Link in _headers is the one it prints.
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const OWNED = ['.well-known/mcp.json', '.well-known/agent-card.json', '.well-known/api-catalog', '.well-known/ard.json'];
 const OWNED_DIRS = ['.well-known/mcp', '.well-known/agent-skills'];
@@ -19,13 +19,13 @@ const files = (dir) => readdirSync(dir).flatMap((n) => {
 
 function generate() {
   const out = mkdtempSync(join(tmpdir(), 'discovery-'));
-  const run = spawnSync('python3', ['-I', 'assets/vendor/site-kit/scripts/discovery.py', 'build', '.sitekit/agents.json', out,
+  const run = spawnSync('python3', ['-I', 'assets/vendor/site-kit/scripts/discovery.py', 'build', '_data/agents.json', out,
     '--root', '.', '--offline'], { cwd: repo, encoding: 'utf8' });
   assert.equal(run.status, 0, run.stderr);
   return { out, link: run.stdout.trim().replace(/^Link: /, '') };
 }
 
-test('the committed discovery files are what discovery.py writes from .sitekit/agents.json', (t) => {
+test('the committed discovery files are what discovery.py writes from _data/agents.json', (t) => {
   const { out } = generate();
   t.after(() => rmSync(out, { recursive: true, force: true }));
   const made = files(out).map((f) => relative(out, f)).sort();

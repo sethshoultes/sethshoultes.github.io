@@ -176,7 +176,7 @@
     },
     "discovery": {
       "paths": [
-        ".sitekit/agents.json",
+        "_data/agents.json",
         ".well-known/**",
         "skills/*/SKILL.md",
         "_headers",
