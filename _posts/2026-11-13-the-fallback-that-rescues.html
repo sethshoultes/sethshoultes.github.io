@@ -1,0 +1,64 @@
+---
+title: "Someone Described Their Garage Door Perfectly and Got 'No Exact Match'"
+subtitle: "When a tool has a cheap backup that only runs on a miss, the agents calling it should switch that backup on by default."
+date: 2026-11-13
+related:
+  - slug: the-override-flag-is-the-real-test
+    note: "Another default that sat quietly in the off position until production showed what it cost."
+  - slug: the-cheap-model-is-the-expensive-one
+    note: "The flip side of this post: Haiku is the wrong pick for writing code, and the right pick for a quick classification on a miss."
+  - slug: the-catalog-is-load-bearing
+    note: "Why a matcher is only as good as its list of known phrasings, and what happens when someone's words fall outside it."
+---
+
+<picture><source srcset="/blog/images/the-fallback-that-rescues-featured.webp" type="image/webp"><img src="/blog/images/the-fallback-that-rescues-featured.png" alt="A wooden card-catalog drawer pulled open on a workbench with one index card sticking up unfiled, and resting beside it a small brass bell with a handwritten note tucked under it that reads &quot;if not found, ring,&quot; a coiled garage-door torsion spring lying nearby" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>Someone told the Virtual Technician on <a href="https://garagedoorscience.com">garagedoorscience.com</a> exactly what their door was doing. It was a clear, accurate description, the kind a technician would hear and know where to start. The card that came back said "DIAGNOSIS · NO EXACT MATCH."</p>
+
+<p>The person did their part. The tool didn't.</p>
+
+<p>To see why, it helps to know how the tool works. It looks things up before it does any thinking. There's a list of known garage door problems, and each problem has the phrasings people tend to use for it. When a description comes in, the tool checks it against those patterns and nicknames. If it finds one, you get a diagnosis right away. No AI model is involved, so it costs nothing and returns in an instant.</p>
+
+<p>When nothing matches, there's a second step. The tool can hand the description to Haiku, Anthropic's smallest and cheapest model, and ask it which known problem this sounds like. That step only runs if the caller asks for it with a flag. A flag is an on/off setting the caller passes in. Leave it out and it stays off.</p>
+
+<p>That's what happened here. In production, the callers were AI agents, and none of them set the flag. Every agent got the matcher alone. Whenever a person's wording landed a little outside the list, they got "no exact match," even when they'd described the problem perfectly.</p>
+
+<h2>What each side actually costs</h2>
+
+<p>Look at what you pay on each path.</p>
+
+<p>When the matcher hits, the fallback never runs. Leaving it on costs you nothing on those requests. It just sits there.</p>
+
+<p>When the matcher misses, the fallback costs about half a second and one Haiku call. That's a fraction of a cent and a pause most people won't notice.</p>
+
+<p>Leaving it off costs you the person. They described their door well, and the tool told them it didn't know. They won't think "the regex was too narrow." They'll think the tool doesn't work, and they'll be right.</p>
+
+<p>So one choice costs half a second on misses only. The other costs a frustrated homeowner on every miss. That isn't close. The fix was small: agent callers now set the fallback to on by default.</p>
+
+<h2>Why the caller matters</h2>
+
+<p>I'd guess the flag started out off for a reasonable reason. If you're a developer testing the matcher, you want to see raw misses so you can grow the list. The fallback would hide those misses from you.</p>
+
+<p>An agent calling the tool for a homeowner wants something else. It isn't tuning the list. It wants an answer to pass along. A default built for the person building the tool ended up applied to the person using it.</p>
+
+<p>Here's the rule I'd use:</p>
+
+<p>If the caller is an agent acting for someone, a miss lands on a real person, and the fallback is cheap, turn it on. If the caller is a person studying the tool, leave it off so the misses stay visible. In the garage door case every one of those checks pointed the same way, and we still had it off.</p>
+
+<h2>The fallback that hides</h2>
+
+<p>I don't trust fallbacks by default. I've seen the bad kind. Your main model goes down, a backup model quietly takes over, and everything looks fine. Nobody notices the main model is dead until something else breaks. That fallback is covering for a failure you needed to hear about.</p>
+
+<p>So what's different here?</p>
+
+<p>The matcher isn't broken when it misses. It's doing its job, which is to recognize the phrasings it knows. A miss is an expected event. The fallback handles a case the first step was never built to handle. It doesn't paper over a fault.</p>
+
+<p>A dead primary model is a fault. Something that should work doesn't. Covering it silently means the system keeps telling you all is well while it runs on its spare tire.</p>
+
+<p>I'd still log every fallback call here. Those logs show which phrasings the list is missing, so the matcher gets better over time. The rescue happens, and you can still see it happened.</p>
+
+<p>If you take one thing from this: a fallback that rescues catches what the first step was never meant to catch, and you can see it doing that. A fallback that hides catches what the first step was supposed to handle, and you can't see it at all.</p>
+
+<hr>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
