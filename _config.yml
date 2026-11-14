@@ -31,6 +31,7 @@ exclude:
   - scripts
   # site-kit plugins (scripts/plugin-sync.sh, plugins.lock): only a browser plugin's assets/ folder is served
   - plugins/agent-files
+  - plugins/webmcp
   - plugins/sitemap-check
   - plugins/*/README.md
   - plugins/*/plugin.json
