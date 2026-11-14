@@ -5,7 +5,7 @@ import assert from "node:assert";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { agentFiles, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths } from "../functions/agent-files.js";
+import { agentFiles, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths, discoveryHeaders, CATALOG_TYPE, HOME_LINK } from "../functions/agent-files.js";
 import { pageToMarkdown, writeTwins } from "../scripts/twins.mjs";
 
 const ORIGIN = "https://example.com";
@@ -23,7 +23,7 @@ const FILES = new Map([
 const ASSETS = { fetch: async (u) => {
   if (new URL(u).origin !== ORIGIN) return new Response("# another origin\n");   // would pass for a twin if reached
   const p = new URL(u).pathname;
-  return FILES.has(p) ? new Response(FILES.get(p)) : new Response("<!doctype html><h1>Not found</h1>", { status: 200 });
+  return FILES.has(p) ? new Response(FILES.get(p)) : new Response("<!doctype html><h1>Not found</h1>", { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
 } };
 const ctx = (pathname, init = {}, next = async () => new Response("<html>", { headers: { "Content-Type": "text/html" } })) =>
   ({ request: new Request(ORIGIN + pathname, init), env: { ASSETS }, next });
@@ -182,4 +182,41 @@ test("writeTwins writes index.md beside each page and, when asked, llms-full.txt
     writeTwins(dist, { origin: ORIGIN, convert, llmsFull: "Example: every page" });
     assert.match(readFileSync(path.join(dist, "llms-full.txt"), "utf8"), /^# Example: every page[\s\S]*<!-- https:\/\/example.com\/a\/ -->/);
   } finally { rmSync(dist, { recursive: true }); }
+});
+
+// site-kit#317: the kit is the host for a template site, so agent-files serves the api-catalog's type and the home Link.
+test("the api-catalog is served as a linkset with its own Link, and the home page names it only when it exists", async () => {
+  const cat = await onRequest(ctx("/.well-known/api-catalog", {}, async () => new Response('{"linkset":[]}', { headers: { "Content-Type": "application/octet-stream" } })));
+  assert.equal(cat.headers.get("Content-Type"), CATALOG_TYPE);
+  assert.equal(cat.headers.get("Link"), '</.well-known/api-catalog>; rel="api-catalog"');
+  // No catalog among the assets (the HTML 404 page as a 200): the home page gets no Link.
+  const bare = await onRequest(ctx("/"));
+  assert.equal(bare.headers.get("Link"), null);
+  // With one, it names the catalog, the agent card, llms.txt, and ard.json and ai-catalog.json.
+  FILES.set("/.well-known/api-catalog", '{"linkset":[]}');
+  const withAssets = { fetch: async (u, init) => {
+    const r = await ASSETS.fetch(u, init);
+    return new URL(u).pathname === "/.well-known/api-catalog" ? new Response(r.body, { headers: { "Content-Type": "application/octet-stream" } }) : r;
+  } };
+  const home = await onRequest({ ...ctx("/"), env: { ASSETS: withAssets } });
+  assert.equal(home.headers.get("Link"), HOME_LINK);
+  assert.match(HOME_LINK, /rel="api-catalog"/);
+  assert.match(HOME_LINK, /<\/\.well-known\/ai-catalog\.json>; rel="ai-catalog"; type="application\/json"/);
+  assert.match(HOME_LINK, /<\/\.well-known\/ard\.json>; rel="ard"; type="application\/json"/);
+  FILES.delete("/.well-known/api-catalog");
+  // An error answer is passed through untouched.
+  const err = await discoveryHeaders(ctx("/.well-known/api-catalog"), new Response("x", { status: 404 }));
+  assert.equal(err.headers.get("Link"), null);
+});
+
+// herdos#3873: the ARD check reads the AI Catalog, which any origin may fetch.
+test("ard.json and ai-catalog.json are each served as JSON that any origin may read, and an error answer is not", async () => {
+  for (const p of ["/.well-known/ard.json", "/.well-known/ai-catalog.json"]) {
+    const cat = await onRequest(ctx(p, {}, async () => new Response('{"specVersion":"1.0","entries":[]}', { headers: { "Content-Type": "application/octet-stream" } })));
+    assert.match(cat.headers.get("Content-Type"), /^application\/json/, p);
+    assert.equal(cat.headers.get("Access-Control-Allow-Origin"), "*", p);
+    assert.equal(await cat.text(), '{"specVersion":"1.0","entries":[]}');
+    const err = await discoveryHeaders(ctx(p), new Response("x", { status: 404 }));
+    assert.equal(err.headers.get("Access-Control-Allow-Origin"), null, p);
+  }
 });

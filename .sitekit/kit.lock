@@ -1,10 +1,10 @@
 {
-  "ref": "v0.96.4",
-  "commit": "0a990daa1462435604906f7169b4f958aea366fd",
+  "ref": "v0.96.25",
+  "commit": "c1388e1cd82070c4c75ae4368c041fb033f3948a",
   "files": {
-    ".github/workflows/site-check.yml": "8bbfc8d3b82fca89e9df5c1ad3fa173a318d3876b3554a228275f8279bf51153",
-    ".github/workflows/site-memory.yml": "07613a530392df27f8e4d19718c9f45995a1514f1f285d8a9e4678c96886ba71",
-    ".sitekit/catalog.json": "146d84b91162624148e39f31409d0c297fa0d210644314770123974584243376",
+    ".github/workflows/site-check.yml": "5fdd3067b3957615368a2ff2805769ba28a9b4a8454669a3a56a9cd1695b10d2",
+    ".github/workflows/site-memory.yml": "e02116fd8e60b11c80bc8970ebbec17c3b4531c24171032dc6016fd17b4ea680",
+    ".sitekit/catalog.json": "1826dd382d744504575767206ae690aea2396d2a8cf39835185fa25974315cdc",
     ".sitekit/memory_line.py": "aef53a971531dccc89c4a14b93764a7f99df86c999fd5669c2882f3db8f36180",
     ".sitekit/site_check.py": "266462e4b5938a6e721930b9a77a1a2beb090573c8f5b8f03b52cf65c504d3db",
     ".sitekit/site_sync.py": "cfb3cc8e668083da368abaffcb86a158860fbd9cd7da76a9a50d7d4b834b0814"

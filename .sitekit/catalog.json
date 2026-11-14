@@ -23,15 +23,15 @@
   "plugins": [
     {
       "name": "agent-files",
-      "version": "0.1.3",
-      "about": "What an agent reads on a Pages site (herdos public-site rules 6 and 7): a markdown twin of every page, built after the site's build and served on Accept: text/markdown; the agent card's /a2a endpoint, which refuses plainly until the site has chat; and a read-only MCP at /mcp that lists the sitemap's pages and returns one page's twin. Public pages only, no auth, no writes. The site writes its own agent-card.json and mcp.json.",
+      "version": "0.1.6",
+      "about": "What an agent reads on a Pages site (herdos public-site rules 6 and 7): a markdown twin of every page, built after the site's build and served on Accept: text/markdown; the agent card's /a2a endpoint, which refuses plainly until the site has chat; and a read-only MCP at /mcp that lists the sitemap's pages and returns one page's twin. Public pages only, no auth, no writes. The site writes its own agent-card.json and mcp.json, with the MCP server card, api-catalog, skills index, ard.json and ai-catalog.json, through site-templates' discovery.py (site-kit#314).",
       "hooks": [],
       "filters": [],
       "edge": true,
       "assets": [],
       "settings": {},
       "readme": "plugins/agent-files/README.md",
-      "hash": "3a23971215110e410baf09385f137d6d288208e295ac04c01a1ab2202d218463",
+      "hash": "4487bac3fd9f0321b1f57a432d8ca077d184d36d6714cb7e647cfb83fd946200",
       "used_by": {
         "fartranker": {
           "version": "0.1.0",
@@ -41,17 +41,21 @@
           "version": "0.1.1",
           "current": false
         },
+        "memberlock": {
+          "version": "0.1.3",
+          "current": false
+        },
         "redrockmqg": {
           "version": "0.1.3",
-          "current": true
+          "current": false
         },
         "sethshoultes-com": {
           "version": "0.1.3",
-          "current": true
+          "current": false
         },
         "trenzbarbershop": {
           "version": "0.1.3",
-          "current": true
+          "current": false
         }
       }
     },
@@ -325,7 +329,7 @@
     },
     {
       "name": "map",
-      "version": "0.2.1",
+      "version": "0.3.4",
       "about": "A real, zoomable map for a site's own places (site-kit#64): pan and zoom, pins that group when they crowd and split as you zoom in, a card for each pin that links to its page, and a layer filter. The page marks where it goes with <!--site-kit:map--> and the site hands the plugin its pins (each page's lat and lng) as ctx.map. Tiles are vector tiles from OpenFreeMap (free, no key, no cookies, public sites allowed), drawn by MapLibre GL JS 5.24.0 vendored in the plugin and never loaded from a CDN, and recoloured to the site's own colours. The pins are real buttons, MapLibre's keyboard pan and zoom stay on, and a plain list of every place sits under the map, so a screen reader, a search engine and a browser with no JavaScript get everything. The library loads only on a page with the map, once the map is near the screen.",
       "hooks": [],
       "filters": [
@@ -376,10 +380,14 @@
         }
       },
       "readme": "plugins/map/README.md",
-      "hash": "839a2db543c9f35cd43d91045111f3a84fec5610f9182d59d6c53ce458cb7110",
+      "hash": "54f69e3f429b40112ffe8a0e6503f10f0cd65d9456a3c0264c6a6d904aa78915",
       "used_by": {
         "smores": {
           "version": "0.2.0",
+          "current": false
+        },
+        "trenzbarbershop": {
+          "version": "0.3.0",
           "current": false
         }
       }
@@ -477,7 +485,7 @@
     },
     {
       "name": "preview-feedback",
-      "version": "0.10.5",
+      "version": "0.10.8",
       "about": "Click-to-comment pins on a site's branch preview deploys: a reviewer signs in through the site agent, each pin is kept in D1 and the agent posts it on the branch's open pull request, naming the person, with the page, the element and a screenshot link. It does nothing on production.",
       "hooks": [],
       "filters": [],
@@ -489,7 +497,7 @@
       ],
       "settings": {},
       "readme": "plugins/preview-feedback/README.md",
-      "hash": "a9af0b8fb1170e3bde78f7d83cd2d0dc2b06dfb3cacb2d62facd1ad6dbf2a975",
+      "hash": "6c62c6ed449a5e394fd2bb7b1545aef449ab3c0103f7967de21c8c4aa9367d1e",
       "used_by": {
         "fartranker": {
           "version": "0.5.4",
@@ -501,14 +509,14 @@
         },
         "redrockmqg": {
           "version": "0.10.5",
-          "current": true
+          "current": false
         },
         "smores": {
           "version": "0.5.3",
           "current": false
         },
         "trenzbarbershop": {
-          "version": "0.10.5",
+          "version": "0.10.8",
           "current": true
         }
       }
@@ -778,6 +786,69 @@
           "current": true
         }
       }
+    },
+    {
+      "name": "waitlist",
+      "version": "0.1.0",
+      "about": "A waitlist sign-up form that works with no JavaScript: a person leaves an email address and, if they like, their site's address, and the site keeps them in its own Cloudflare D1 database. Each sign-up is kept only after Cloudflare Turnstile says a person sent it from this site. A new address, an address already on the list and a bot that fills the hidden trap field all get the same thank-you page, so the form never tells anyone who is on the list. Nothing a person types is ever logged or put in a page address. Holds no key: only the name of the setting that holds the Turnstile secret.",
+      "hooks": [],
+      "filters": [],
+      "edge": true,
+      "assets": [
+        "assets/waitlist.css",
+        "assets/waitlist.js"
+      ],
+      "settings": {
+        "path": {
+          "type": "string",
+          "default": "/api/waitlist"
+        },
+        "thanks_path": {
+          "type": "string",
+          "default": "/waitlist/thanks/"
+        },
+        "error_path": {
+          "type": "string",
+          "default": "/waitlist/"
+        },
+        "d1_binding": {
+          "type": "string",
+          "default": "WAITLIST_DB"
+        },
+        "turnstile_secret_var": {
+          "type": "string",
+          "default": "TURNSTILE_SECRET"
+        },
+        "hosts": {
+          "type": "string",
+          "required": true
+        },
+        "table": {
+          "type": "string",
+          "default": "waitlist"
+        }
+      },
+      "readme": "plugins/waitlist/README.md",
+      "hash": "8178eecb1bf14dbd9df67c53a4a636888354dd81345f8460f3df6f67dadf5507",
+      "used_by": {
+        "memberlock": {
+          "version": "0.1.0",
+          "current": true
+        }
+      }
+    },
+    {
+      "name": "webmcp",
+      "version": "0.1.0",
+      "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. A tool with no endpoint, name, description or object inputSchema, or an endpoint that does not answer, stops the build.",
+      "hooks": [],
+      "filters": [],
+      "edge": false,
+      "assets": [],
+      "settings": {},
+      "readme": "plugins/webmcp/README.md",
+      "hash": "bed2dee373840ffc2925d1360c7cfd6db18ef4905e3409eb8dd4ed79f409d384",
+      "used_by": {}
     }
   ],
   "skills": [
@@ -1016,6 +1087,7 @@
       "sites": [
         "fartranker",
         "foo",
+        "memberlock",
         "smores"
       ],
       "scope": "shared"
@@ -1101,6 +1173,25 @@
       ],
       "plugins": {
         "agent-files": "0.1.1"
+      },
+      "baseline": {
+        "plugins": [],
+        "functions": [],
+        "page_types": []
+      },
+      "approved": [
+        {
+          "ref": "site-kit#114",
+          "kind": "function",
+          "name": "functions/_middleware.js"
+        }
+      ]
+    },
+    "memberlock": {
+      "repo": "sethshoultes/memberlock-site",
+      "plugins": {
+        "agent-files": "0.1.3",
+        "waitlist": "0.1.0"
       },
       "baseline": {
         "plugins": [],
@@ -1202,7 +1293,8 @@
       "repo": "sethshoultes/trenzbarbershop",
       "plugins": {
         "agent-files": "0.1.3",
-        "preview-feedback": "0.10.5"
+        "map": "0.3.0",
+        "preview-feedback": "0.10.8"
       },
       "baseline": {
         "plugins": [],

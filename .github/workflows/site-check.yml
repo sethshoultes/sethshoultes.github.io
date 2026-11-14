@@ -8,11 +8,11 @@
 # required status check: GitHub never reports a check that did not run, and a pull request that touches none of the paths
 # could never merge (fleet standard, rule 3). CODEOWNERS review of .sitekit/ and this file is the gate. A site that needs a
 # required check would need an always-running job that reads the changed paths itself instead (site-kit#213 says why not here).
-# Runner: GitHub-hosted unless the repo variable SITE_CHECK_RUNS_ON names another, as JSON, e.g. ["self-hosted","herd-runner"]
-# (superintelligentfoo#173), and then only for a push to main, the daily run or a pull request from this repo: a fork's pull request
-# still runs the check, on a GitHub-hosted runner, never skipped. A fork's pull request runs the fork's copy of this file,
-# so a repo that sets the variable must also hold fork workflows for approval (Settings > Actions); that is the real gate.
-# Drafts run nothing (the fleet standard): the job's one `if:` is false only on a draft pull request, and ready_for_review
+# Runner: never GitHub-hosted (herdos#3868, Seth: "no tests on github"). The site's own runner, `["self-hosted","herdcloud"]`,
+# unless the repo variable SITE_CHECK_RUNS_ON names another, as JSON, e.g. ["self-hosted","herd-runner"] (superintelligentfoo#173).
+# A fork's pull request is skipped, never sent to our runner or to a hosted one: it runs the fork's copy of this file, so a repo
+# should also hold fork workflows for approval (Settings > Actions). The daily run and every push to main still check the tree.
+# Drafts run nothing (the fleet standard): the job's one `if:` is false on a draft or a fork's pull request, and ready_for_review
 # runs it on the same head before the pull request can merge. A newer push to the same branch, or to main, cancels the older
 # run of this workflow (superintelligentfoo: 21 superseded site-check runs queued on one runner, the lead 2026-11-07).
 name: site-check
@@ -66,8 +66,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   site-check:
-    if: ${{ !github.event.pull_request.draft }}
-    runs-on: ${{ fromJSON((github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && vars.SITE_CHECK_RUNS_ON || '"ubuntu-latest"') }}
+    if: ${{ !github.event.pull_request.draft && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ${{ fromJSON(vars.SITE_CHECK_RUNS_ON || '["self-hosted","herdcloud"]') }}
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
