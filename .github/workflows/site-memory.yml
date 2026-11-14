@@ -5,9 +5,12 @@
 # (read_brain reads only an 8-hex id) with one line (the date, who merged it and the title) through .sitekit/memory_line.py,
 # and pushes it to main. A site turns it off with `"memory_lines": false` in .sitekit/features.json (a busy repo whose open
 # pull requests must stay up to date with main).
+# - It runs on the push a merge makes to main, never on the pull request's own event (sethshoultes/herdos#3870): a deploy
+#   runner's gate passes only a push, schedule or dispatch on the default branch, and this job runs only main's code there.
+#   It finds its pull request through the merge commit (commits/<sha>/pulls); a direct push with no pull request, or a merge
+#   GitHub links to none, logs that and writes nothing.
 # - Each merge has its own concurrency group: one shared group would cancel a waiting run when a third merge queued, and drop
 #   that pull request's line. Each file name is unique, so runs never collide; a push that loses a race rebases and retries.
-# - It runs code from main only: the checkout is main after the merge, never the pull request's branch.
 # - The title is untrusted: it reaches the script only through the environment, never this file's shell, and is cut to plain
 #   words there.
 # - A pull request that already adds a memory file (the site agent's own) gets no second line, and a site with no SOUL.md gets
@@ -15,52 +18,82 @@
 # - A push main refuses (a protected branch, a ruleset) fails this job once, with an error annotation, and is never retried:
 #   only a race with another push (a non-fast-forward) rebases and retries. The merge itself is already done and stays green.
 #   Write access is granted to this one job only (the lead's conditions on #256).
-# - One deploy per merge (the fleet standard, the lead's ruling on #256): the push uses this workflow's own token, which starts
-#   no other workflow, and the commit message STARTS with [skip ci]: GitHub Actions and Netlify read it anywhere, but a
-#   Cloudflare Pages git build only as a prefix. So a memory line never redeploys the site or reruns its checks. A fork's pull request has no write token, so it is skipped.
+# - It can't loop, and there is one deploy per merge (the fleet standard, the lead's ruling on #256): the memory line is pushed
+#   with this workflow's own GITHUB_TOKEN, and a push made with that token starts no workflow, this one included. Its commit
+#   message also STARTS with [skip ci]: GitHub Actions and Netlify read it anywhere, but a Cloudflare Pages git build only as a
+#   prefix. Keep both: the memory line never reruns this workflow, the site's checks or its deploy.
 name: site-memory
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
 permissions: {}
 concurrency:
-  group: site-memory-${{ github.event.pull_request.number }}
+  group: site-memory-${{ github.sha }}
   cancel-in-progress: false
 jobs:
   memory:
-    if: ${{ github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-latest
+    # Never GitHub-hosted (sethshoultes/herdos#3868), and never a runner that also runs branch code: the repo variable
+    # SITE_MEMORY_RUNS_ON (JSON) names the repo's deploy runner, which runs nothing but main. Unset, the job is skipped:
+    # there is no fallback (eventpresser-dev-2 on site-kit#312).
+    if: ${{ vars.SITE_MEMORY_RUNS_ON != '' }}
+    runs-on: ${{ fromJSON(vars.SITE_MEMORY_RUNS_ON) }}
     timeout-minutes: 5
     permissions:
       contents: write
       pull-requests: read
     steps:
+      # On our own runner the workspace stays on disk between jobs, and that runner also runs pull requests' code: start empty,
+      # .git included, so no hook or .git/config an earlier job left there runs next to the write token (sethshoultes/herdos#3868).
+      - name: Start from an empty workspace
+        run: find "$GITHUB_WORKSPACE" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
         with:
           ref: main
-      - name: Skip a pull request that already wrote its own memory
-        id: own
+          # The write token is never saved in .git/config: on our own runner the workspace stays on disk between jobs
+          # (sethshoultes/herdos#3868). Only the push step below hands it to git, through its environment.
+          persist-credentials: false
+      - name: Find the merged pull request
+        id: pr
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          MERGE_SHA: ${{ github.sha }}
         run: |
-          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename')
-          if grep -q '^\.agent/memory/' <<<"$files"; then echo "skip=true" >>"$GITHUB_OUTPUT"; else echo "skip=false" >>"$GITHUB_OUTPUT"; fi
+          # The pull request merged into main whose merge (or squash, or last rebased) commit is this push's head.
+          n=$(gh api "repos/$GITHUB_REPOSITORY/commits/$MERGE_SHA/pulls" \
+            --jq '[.[] | select(.merged_at != null and .base.ref == "main" and .merge_commit_sha == env.MERGE_SHA)][0].number // empty')
+          if ! [[ "$n" =~ ^[0-9]+$ ]]; then
+            echo "site-memory: no merged pull request for $MERGE_SHA (a direct push, or a merge GitHub links to none); nothing written."
+            echo "number=" >>"$GITHUB_OUTPUT"; exit 0
+          fi
+          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$n/files" --paginate --jq '.[].filename')
+          if grep -q '^\.agent/memory/' <<<"$files"; then
+            echo "site-memory: PR $n wrote its own memory; nothing more written."
+            echo "number=" >>"$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "number=$n" >>"$GITHUB_OUTPUT"
       - name: Write the memory line
-        if: ${{ steps.own.outputs.skip == 'false' }}
+        if: ${{ steps.pr.outputs.number != '' }}
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
-          PR_MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
-          PR_MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
-        run: python3 -I .sitekit/memory_line.py
-      - name: Push it to main
-        if: ${{ steps.own.outputs.skip == 'false' }}
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
+          # Each value lands in a variable, never in a command line; memory_line.py checks every shape and cuts the title.
+          read -r PR_MERGED_AT PR_MERGED_BY PR_MERGE_SHA < <(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" \
+            --jq '"\(.merged_at) \(.merged_by.login) \(.merge_commit_sha)"')
+          PR_TITLE=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq .title)
+          export PR_TITLE PR_MERGED_AT PR_MERGED_BY PR_MERGE_SHA
+          python3 -I .sitekit/memory_line.py
+      - name: Push it to main
+        if: ${{ steps.pr.outputs.number != '' }}
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # From the environment, which git ranks with -c above .git/config: the token header (github.com only, never argv or a file
+          # left on the runner), and no hook or fsmonitor for any git call in this step, `git status` included.
+          export GIT_CONFIG_COUNT=3 GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_KEY_1=core.hooksPath GIT_CONFIG_VALUE_1=/dev/null GIT_CONFIG_KEY_2=core.fsmonitor GIT_CONFIG_VALUE_2=false
+          GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${GH_TOKEN:-}" | base64 | tr -d '\n')"; export GIT_CONFIG_VALUE_0
           [ -n "$(git status --porcelain -- .agent/memory)" ] || { echo "nothing to push"; exit 0; }
           git config user.name "site-memory"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

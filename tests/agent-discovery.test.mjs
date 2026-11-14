@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 // Drift check (herdos#3873): the committed agent discovery files are exactly what the vendored discovery.py writes from
 // _data/agents.json, and the home page's Link in _headers is the one it prints.
 const repo = fileURLToPath(new URL('..', import.meta.url));
-const OWNED = ['.well-known/mcp.json', '.well-known/agent-card.json', '.well-known/api-catalog', '.well-known/ard.json'];
+const OWNED = ['.well-known/mcp.json', '.well-known/agent-card.json', '.well-known/api-catalog', '.well-known/ard.json',
+  '.well-known/ai-catalog.json'];
 const OWNED_DIRS = ['.well-known/mcp', '.well-known/agent-skills'];
 
 const files = (dir) => readdirSync(dir).flatMap((n) => {

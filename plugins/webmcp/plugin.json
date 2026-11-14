@@ -1,0 +1,11 @@
+{
+  "name": "webmcp",
+  "version": "0.1.0",
+  "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. A tool with no endpoint, name, description or object inputSchema, or an endpoint that does not answer, stops the build.",
+  "hooks": {},
+  "filters": {},
+  "assets": [],
+  "config": {
+    "fields": {}
+  }
+}

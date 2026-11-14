@@ -7,8 +7,16 @@
 # Agent discovery (herdos#3873). Cloudflare Pages applies every block a path matches, so /* above still holds here; a header
 # named in two matching blocks gets both values, joined by a comma. The / Link value is what discovery.py build prints.
 /
-  Link: </.well-known/api-catalog>; rel="api-catalog", </.well-known/agent-card.json>; rel="describedby"; type="application/json", </llms.txt>; rel="describedby"; type="text/markdown", </.well-known/ard.json>; rel="ard"; type="application/json"
+  Link: </.well-known/api-catalog>; rel="api-catalog", </.well-known/agent-card.json>; rel="describedby"; type="application/json", </llms.txt>; rel="describedby"; type="text/markdown", </.well-known/ard.json>; rel="ard"; type="application/json", </.well-known/ai-catalog.json>; rel="ai-catalog"; type="application/json"
 
 /.well-known/api-catalog
   Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
   Link: </.well-known/api-catalog>; rel="api-catalog"
+
+/.well-known/ard.json
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+
+/.well-known/ai-catalog.json
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *

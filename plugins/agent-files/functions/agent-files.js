@@ -6,15 +6,26 @@
 //   /mcp                    a read-only MCP (streamable HTTP, JSON answers, no auth): list_pages from the sitemap,
 //                           get_page for one twin. Public pages only, fetched from the site's own assets.
 //
+//   /.well-known/api-catalog  served as application/linkset+json with its Link (RFC 9727), and the home page carries the
+//                           discovery Link header when the site has that catalog (site-kit#317: the kit is the host)
+//   /.well-known/ard.json, /.well-known/ai-catalog.json  one catalog at ARD's name and its predecessor's, each served as
+//                           application/json with Access-Control-Allow-Origin: * (herdos#3873)
+//
 // A site with no _middleware.js of its own re-exports onRequest. One that has one calls agentFiles(context) first and
-// returns its answer when it gives one, then passes its own response through vary(). The site writes its own
-// /.well-known/agent-card.json and mcp.json, because its why lives there (rule 8).
+// returns its answer when it gives one, then passes its own response through discoveryHeaders() and vary(). The site
+// writes its own .well-known files through site-templates' discovery.py, because its why lives there (rule 8).
 
 export const VERSION = "0.1.1";
 export const MCP_PROTOCOL = "2025-06-18";
 const MAX_PAGES = 2000;
 const MAX_BODY = 64 * 1024;
 const JSON_TYPE = "application/json; charset=utf-8";
+export const CATALOG_TYPE = 'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"';
+// The same value discovery.py's link_header() gives a site with an MCP server and an agent card (every template site).
+export const HOME_LINK = '</.well-known/api-catalog>; rel="api-catalog", </.well-known/agent-card.json>; rel="describedby"; ' +
+  'type="application/json", </llms.txt>; rel="describedby"; type="text/markdown", </.well-known/ard.json>; rel="ard"; ' +
+  'type="application/json", </.well-known/ai-catalog.json>; rel="ai-catalog"; type="application/json"';
+const CATALOG_PATHS = ["/.well-known/ard.json", "/.well-known/ai-catalog.json"];
 
 // q of the first range in Accept that matches `type` (exact, type/*, or */*), the most specific winning; 0 if none.
 function quality(accept, type) {
@@ -202,7 +213,35 @@ export async function agentFiles(context) {
   return null;
 }
 
+/** `res` with the discovery headers: the api-catalog's own type and Link, the AI Catalog's type and CORS, and the home
+ *  page's Link, only when the site publishes its catalog (a site lists only what it has). */
+export async function discoveryHeaders(context, res) {
+  const url = new URL(context.request.url);
+  if (!res.ok) return res;
+  if (url.pathname === "/.well-known/api-catalog") {
+    const out = new Response(res.body, res);
+    out.headers.set("Content-Type", CATALOG_TYPE);
+    out.headers.set("Link", '</.well-known/api-catalog>; rel="api-catalog"');
+    return out;
+  }
+  if (CATALOG_PATHS.includes(url.pathname)) {
+    const out = new Response(res.body, res);
+    out.headers.set("Content-Type", JSON_TYPE);
+    out.headers.set("Access-Control-Allow-Origin", "*");
+    return out;
+  }
+  if (url.pathname === "/" && /^text\/html/i.test(res.headers.get("Content-Type") || "")) {
+    // Pages answers a missing file with its HTML 404 page, sometimes as a 200: only a non-HTML 200 is the catalog.
+    const cat = await context.env.ASSETS.fetch(url.origin + "/.well-known/api-catalog", { method: "HEAD" });
+    if (!cat.ok || /^text\/html/i.test(cat.headers.get("Content-Type") || "")) return res;
+    const out = new Response(res.body, res);
+    out.headers.append("Link", HOME_LINK);
+    return out;
+  }
+  return res;
+}
+
 /** functions/_middleware.js for a site with none of its own: `export { onRequest } from "<this file>"`. */
 export async function onRequest(context) {
-  return (await agentFiles(context)) ?? vary(await context.next());
+  return (await agentFiles(context)) ?? vary(await discoveryHeaders(context, await context.next()));
 }
