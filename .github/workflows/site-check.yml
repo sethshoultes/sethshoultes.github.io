@@ -13,7 +13,9 @@
 # A fork's pull request is skipped, never sent to our runner or to a hosted one: it runs the fork's copy of this file, so a repo
 # should also hold fork workflows for approval (Settings > Actions). The daily run and every push to main still check the tree.
 # Drafts run nothing (the fleet standard): the job's one `if:` is false on a draft or a fork's pull request, and ready_for_review
-# runs it on the same head before the pull request can merge. A newer push to the same branch, or to main, cancels the older
+# runs it on the same head before the pull request can merge. A repo with no runner of ours sets the repo variable
+# SITE_CHECK_OFF to true and the job is skipped, never left queued: a public repo, which no self-hosted runner may take
+# (a fork's run uses its own copy of this file), runs site_check locally before each pull request (the lead, herdos#3873). A newer push to the same branch, or to main, cancels the older
 # run of this workflow (superintelligentfoo: 21 superseded site-check runs queued on one runner, the lead 2026-11-07).
 name: site-check
 on:
@@ -66,7 +68,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   site-check:
-    if: ${{ !github.event.pull_request.draft && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+    if: ${{ vars.SITE_CHECK_OFF != 'true' && !github.event.pull_request.draft && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ${{ fromJSON(vars.SITE_CHECK_RUNS_ON || '["self-hosted","herdcloud"]') }}
     timeout-minutes: 5
     steps:
