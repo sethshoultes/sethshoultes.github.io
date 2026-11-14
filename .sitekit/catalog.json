@@ -50,8 +50,8 @@
           "current": false
         },
         "sethshoultes-com": {
-          "version": "0.1.3",
-          "current": false
+          "version": "0.1.6",
+          "current": true
         },
         "trenzbarbershop": {
           "version": "0.1.3",
@@ -848,7 +848,12 @@
       "settings": {},
       "readme": "plugins/webmcp/README.md",
       "hash": "bed2dee373840ffc2925d1360c7cfd6db18ef4905e3409eb8dd4ed79f409d384",
-      "used_by": {}
+      "used_by": {
+        "sethshoultes-com": {
+          "version": "0.1.0",
+          "current": true
+        }
+      }
     }
   ],
   "skills": [
@@ -1229,9 +1234,10 @@
     "sethshoultes-com": {
       "repo": "sethshoultes/sethshoultes.github.io",
       "plugins": {
-        "agent-files": "0.1.3",
+        "agent-files": "0.1.6",
         "hero-scenes": "0.1.1",
-        "sitemap-check": "0.1.0"
+        "sitemap-check": "0.1.0",
+        "webmcp": "0.1.0"
       },
       "baseline": {
         "plugins": [],
