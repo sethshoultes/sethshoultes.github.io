@@ -28,7 +28,8 @@ jobs:
     # One job: pick the touched areas, then run each in turn. Each area takes 7-25s, so a runner per area (about
     # 10s to start, plus queue) cost more than it saved: #195's week of Nov 2-9 measured 98 min against 80 before.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    # Pinned (2026-11-14): ubuntu-latest moved to 26.04, which has no prebuilt Ruby 3.1.3 (.ruby-version) for setup-ruby.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
