@@ -67,5 +67,123 @@
       "description": "Set up a personal Obsidian knowledge vault at ~/brain wired to Claude Code as persistent memory across sessions. Use when: (1) the user wants Claude to remember things from past sessions, (2) the user mentions \"brain vault,\" \"Obsidian + Claude Code,\" \"persistent memory,\" \"knowledge base for AI,\" (3) the user is on a fresh machine and wants to set up the same flow Seth uses, (4) the user has a vault but no Claude integration. Skip when the user wants project-specific memory only — that belongs in the project's own CLAUDE.md, not a personal vault.",
       "path": "skills/set-up-claude-code-with-brain-vault/SKILL.md"
     }
-  ]
+  ],
+  "webmcp": {
+    "pages": [
+      "/",
+      "/tools/",
+      "/tools/ai-crawler-access-check/",
+      "/tools/llms-txt-generator/",
+      "/tools/does-ai-know-your-business/",
+      "/tools/local-seo-quick-audit/",
+      "/tools/neighborhood-page-planner/"
+    ],
+    "tools": [
+      {
+        "name": "crawler-check",
+        "description": "Check whether a website lets the crawlers behind ChatGPT, Claude, Perplexity and Google's AI read it: its robots.txt rules for each, and whether it has llms.txt, a markdown version and JSON-LD.",
+        "endpoint": "https://tools-api.sethshoultes.com/crawler-check",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The website's address, like https://example.com"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      },
+      {
+        "name": "llms-txt",
+        "description": "Write a ready-to-upload llms.txt for a website from its sitemap and the titles and descriptions of its main pages.",
+        "endpoint": "https://tools-api.sethshoultes.com/llms-txt",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The website's address, like https://example.com"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      },
+      {
+        "name": "ai-knows-you",
+        "description": "Ask ChatGPT, Perplexity and Google AI who to hire for a service in a city, and report whether a business is named and who is named instead.",
+        "endpoint": "https://tools-api.sethshoultes.com/ai-knows-you",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "business": {
+              "type": "string",
+              "description": "The business's name, as customers know it"
+            },
+            "service": {
+              "type": "string",
+              "description": "The service it offers, like plumber or dentist"
+            },
+            "city": {
+              "type": "string",
+              "description": "The city it serves, with the state, like St. George, Utah"
+            }
+          },
+          "required": [
+            "business",
+            "service",
+            "city"
+          ]
+        }
+      },
+      {
+        "name": "local-seo-audit",
+        "description": "Read a business's Google Maps listing (rating, reviews, address, phone, website, hours shown) and the review counts of nearby competitors.",
+        "endpoint": "https://tools-api.sethshoultes.com/local-seo-audit",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "business": {
+              "type": "string",
+              "description": "The business's name, as customers know it"
+            },
+            "service": {
+              "type": "string",
+              "description": "The service it offers, like plumber or dentist"
+            },
+            "city": {
+              "type": "string",
+              "description": "The city it serves, with the state, like St. George, Utah"
+            }
+          },
+          "required": [
+            "business",
+            "service",
+            "city"
+          ]
+        }
+      },
+      {
+        "name": "neighborhood-planner",
+        "description": "Find a city on OpenStreetMap and return its name and OpenStreetMap id, the first step of planning neighborhood pages.",
+        "endpoint": "https://tools-api.sethshoultes.com/neighborhood-planner",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "The city and state, like St. George, Utah"
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    ]
+  }
 }
