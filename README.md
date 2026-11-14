@@ -51,14 +51,21 @@ bundle exec jekyll serve      # http://localhost:4000
 node --test tests/*.test.mjs  # Workers and checks (Node 20+, no install)
 ```
 
-## Checks (CI)
+## Checks (run locally)
 
-`.github/workflows/check-source.yml` runs on every push and pull request:
+This repo is public, so it has no test job on any runner: a GitHub-hosted one breaks the fleet rule, and a fork's
+pull request could run code on a self-hosted one (herdos#3873, the lead's ruling). Before each pull request, run
+the areas `.github/test-map.json` names for the paths you touched, and `site_check`, and paste the output into the
+pull request's body:
 
-- no inline styles (`scripts/check-inline-styles.sh`);
-- a full Jekyll build;
-- every link on the built site resolves (`scripts/check-links.mjs`);
-- every YouTube embed is public and live (`scripts/check-youtube.mjs`).
+```sh
+node --test tests/*.test.mjs        # every area's tests (a minute, no install)
+scripts/check-inline-styles.sh      # no inline styles
+python3 -I .sitekit/site_check.py --catalog .sitekit/catalog.json --repo sethshoultes/sethshoultes.github.io
+```
+
+A change to the site itself also runs `.github/ci/site-check.sh` (a full Jekyll build, then every link on it
+resolves and every YouTube embed is live).
 
 Two other workflows run on their own: `meetup.yml` refreshes events daily, and `sync-rag.yml` adds new posts to
 Seth's Clone knowledge base.
