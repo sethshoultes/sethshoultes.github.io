@@ -1,0 +1,48 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Seth Shoultes",
+    "identifier": "sethshoultes.com",
+    "documentationUrl": "https://sethshoultes.com/how-this-site-is-built/"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:sethshoultes.com:mcp:writing",
+      "displayName": "Seth Shoultes — Writing & Skills",
+      "type": "application/mcp-server-card+json",
+      "url": "https://sethshoultes.com/.well-known/mcp/server-card.json",
+      "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials.",
+      "representativeQueries": [
+        "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com",
+        "List all blog posts with metadata",
+        "Fetch the full HTML body of a blog post by slug",
+        "List installable Agent Skills from building-with-ai-skills"
+      ]
+    },
+    {
+      "identifier": "urn:air:sethshoultes.com:a2a:agent",
+      "displayName": "Seth Shoultes",
+      "type": "application/a2a-agent-card+json",
+      "url": "https://sethshoultes.com/.well-known/agent-card.json",
+      "description": "Seth Shoultes is an AI developer, product leader and WordPress pioneer who helps small businesses put AI to work: writing, free tools, arcade games and consulting from 25 years of shipping. There is no chat assistant here yet: its endpoint says so; the pages are listed at https://sethshoultes.com/llms.txt.",
+      "representativeQueries": [
+        "Answer a question about Seth Shoultes and his work",
+        "Seth Shoultes is an AI developer, product leader and WordPress pioneer who helps small businesses put AI to work: writing, free tools, arcade games and consulting from 25 years of shipping"
+      ]
+    },
+    {
+      "identifier": "urn:air:sethshoultes.com:skills:index",
+      "displayName": "Seth Shoultes skills",
+      "type": "application/agent-skills+json",
+      "url": "https://sethshoultes.com/.well-known/agent-skills/index.json",
+      "description": "Installable Agent Skills, each with its sha256 digest.",
+      "representativeQueries": [
+        "Put a real-time, lip-synced video avatar on any static or framework-based site, voiced by an ElevenLabs Conversational AI agent",
+        "Wire URL-sourced knowledge base documents to an ElevenLabs Conversational AI agent so the agent retrieves grounded context per turn before generating its response",
+        "Register a browser-side client tool on an ElevenLabs Conversational AI agent so the agent can call functions that run in the user's browser — surfacing UI on the page next to the avatar",
+        "Consolidate scattered API keys from many `.env` / `.env.local` / `.env.tools` files into a single canonical home at `~/.config/dev-secrets/`",
+        "Set up a personal Obsidian knowledge vault at ~/brain wired to Claude Code as persistent memory across sessions"
+      ]
+    }
+  ]
+}
