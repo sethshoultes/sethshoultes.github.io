@@ -5,10 +5,15 @@ A site lists only what it really has. Each block of the config is optional, and 
   {"origin": "https://example.com", "name": "...", "description": "...", "docs": "/how-this-site-is-built/",
    "mcp":    {"name": "com.example/site", "title": "...", "description": "...", "version": "1.0.0",
               "url": "https://example.com/mcp", "protocol_versions": ["2025-06-18"],
-              "tools": [{"name": "...", "description": "..."}]},
+              "tools": [{"name": "...", "description": "..."}], "queries": ["...", "..."]},
    "a2a":    {"url": "https://example.com/a2a", "protocol_version": "0.3",
-              "skills": [{"id": "...", "name": "...", "description": "...", "tags": ["..."]}]},
-   "skills": [{"name": "my-skill", "description": "...", "path": "skills/my-skill/SKILL.md"}]}
+              "skills": [{"id": "...", "name": "...", "description": "...", "tags": ["..."]}], "queries": ["...", "..."]},
+   "skills": [{"name": "my-skill", "description": "...", "path": "skills/my-skill/SKILL.md", "queries": ["..."]}]}
+
+  "queries" is optional everywhere: 2 to 5 questions an agent's user might ask that the block answers (1 to 5 on a skill).
+  Left out, the ai-catalog entry's representativeQueries are made from the block's own words: the MCP's description and
+  its tools' descriptions, the A2A skills' names and the site's description, each skill's description. Each is a first
+  sentence with no parenthetical, so nothing is made up; a block that gives fewer than 2 needs its own "queries".
 
   .well-known/mcp/server-card.json   the MCP Server Card (SEP-2127, schema v1)            from "mcp"
   .well-known/mcp.json               the older summary agents already read                from "mcp"
@@ -16,11 +21,18 @@ A site lists only what it really has. Each block of the config is optional, and 
   .well-known/agent-skills/index.json  the skills index (discovery 0.2.0), with each skill's
                                      SKILL.md beside it and its sha256 digest              from "skills"
   .well-known/api-catalog            RFC 9727 linkset of every endpoint above
-  .well-known/ard.json               ARD (v0.91) entries for each card and the index
-  link_header()                      the home page's Link header: the catalog, the agent card, llms.txt
+  .well-known/ard.json               one AI Catalog 1.0 document, written at both paths: ard.json is ARD's current name
+  .well-known/ai-catalog.json        (spec/ard.md 5.1), ai-catalog.json its predecessor, which the isitagentready scanner
+                                     reads. The host and an entry for each card and the index, each a valid ARD entry
+                                     with 2 to 5 representativeQueries
+  link_header()                      the home page's Link header: the api-catalog, the agent card, llms.txt, ard, ai-catalog
+  HEAD_LINKS                         the page head's <link rel="ard"> and <link rel="ai-catalog">, for a site whose build
+                                     wrote the catalog
 
 site-templates' agents.py writes its agent card and mcp.json through agent_card() and mcp_json() here: one writer.
 Standard library only.
+
+  The config lives outside .sitekit/, which site_sync verify keeps to the kit's locked files (a Jekyll site: _data/agents.json).
 
   python3 discovery.py build <agents.json> <out dir> [--root DIR] [--offline]
     writes the files under <out dir> and prints the Link header line; --root is where "skills" paths are read from
@@ -40,7 +52,16 @@ SKILLS_SCHEMA = "https://schemas.agentskills.io/discovery/0.2.0/schema.json"
 SKILL_NAME = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 # The server card's name is a reverse-DNS namespace and a name, as the MCP registry's server.json has it: com.example/site.
 CARD_NAME = re.compile(r"^[a-zA-Z0-9.-]+/[a-zA-Z0-9._-]+$")
-TOP = {"origin", "name", "description", "docs", "mcp", "a2a", "skills"}
+# "webmcp" belongs to site-kit's webmcp plugin (site-kit#330), which reads it from the same config; nothing here reads it.
+TOP = {"origin", "name", "description", "docs", "mcp", "a2a", "skills", "webmcp"}
+# One document at both names, each with its own link relation (herdos#3873).
+CATALOGS = {".well-known/ard.json": "ard", ".well-known/ai-catalog.json": "ai-catalog"}
+CATALOG_SPEC = "1.0"
+HEAD_LINKS = tuple(f'<link rel="{rel}" href="/{path}">' for path, rel in CATALOGS.items())
+
+
+def _texts(v, least, most):
+    return isinstance(v, list) and least <= len(v) <= most and all(isinstance(q, str) and q.strip() for q in v)
 
 
 def problems(cfg):
@@ -71,12 +92,16 @@ def problems(cfg):
             out.append("mcp.url must be https")
         if not (isinstance(m.get("protocol_versions"), list) and m["protocol_versions"]):
             out.append("mcp.protocol_versions must list at least one MCP protocol version")
+        if "queries" in m and not _texts(m["queries"], 2, 5):
+            out.append("mcp.queries lists 2 to 5 questions")
     a = cfg.get("a2a") if isinstance(cfg.get("a2a"), dict) else None
     if a is not None:
         if not (isinstance(a.get("url"), str) and a["url"].startswith("https://")):
             out.append("a2a.url must be https")
         if not isinstance(a.get("skills"), list) or not a["skills"]:
             out.append("a2a.skills must list at least one skill")
+        if "queries" in a and not _texts(a["queries"], 2, 5):
+            out.append("a2a.queries lists 2 to 5 questions")
     seen = set()
     for i, s in enumerate(cfg.get("skills") if isinstance(cfg.get("skills"), list) else []):
         w = f"skills[{i}]"
@@ -91,6 +116,13 @@ def problems(cfg):
             out.append(f"{w}: description is text, at most 1024 characters")
         if not isinstance(s.get("path"), str) or ".." in pathlib.PurePosixPath(s["path"]).parts or s["path"].startswith("/"):
             out.append(f"{w}: path is the SKILL.md's path inside the repo")
+        if "queries" in s and not _texts(s["queries"], 1, 5):
+            out.append(f"{w}: queries lists 1 to 5 questions")
+    if not out:
+        for e in catalog_entries(cfg):
+            if len(e["representativeQueries"]) < 2:
+                out.append(f"{e['identifier']}: fewer than 2 representativeQueries can be made from its own words; "
+                           "give its block a queries list")
     return out
 
 
@@ -179,22 +211,55 @@ def api_catalog(cfg, has):
     return {"linkset": [{"anchor": anchor, "item": items}] + meta}
 
 
-def ard(cfg, has):
+def _phrase(text):
+    """A description's first sentence as a short query: no parenthetical, no closing stop."""
+    first = re.split(r"(?<=[.!?])\s", text.strip(), maxsplit=1)[0]
+    return re.sub(r"\s*\([^)]*\)", "", first).rstrip(" .!?:")
+
+
+def _first_five(queries):
+    out = []
+    for q in queries:
+        if q and q not in out:
+            out.append(q)
+    return out[:5]
+
+
+def _made(texts):
+    """representativeQueries made from a block's real words: each text's first sentence, the first five, no repeats."""
+    return _first_five(_phrase(t) for t in texts if isinstance(t, str))
+
+
+def catalog_entries(cfg):
+    """One AI Catalog entry per card the site publishes, each identified as urn:air:<domain>:<namespace>:<name>."""
     host = cfg["origin"].removeprefix("https://")
     o, entries = cfg["origin"], []
-    if "mcp" in has:
-        entries.append({"identifier": f"urn:air:{host}:mcp", "displayName": cfg["mcp"].get("title") or cfg["name"],
+    m, a, skills = cfg.get("mcp"), cfg.get("a2a"), cfg.get("skills") or []
+    if m:
+        entries.append({"identifier": f"urn:air:{host}:mcp:{m['name'].split('/')[-1]}", "displayName": m.get("title") or cfg["name"],
                         "type": "application/mcp-server-card+json", "url": o + "/.well-known/mcp/server-card.json",
-                        "description": cfg["mcp"]["description"]})
-    if "a2a" in has:
-        entries.append({"identifier": f"urn:air:{host}:agent", "displayName": cfg["name"],
+                        "description": m["description"],
+                        "representativeQueries": m.get("queries") or _made(
+                            [m["description"]] + [t.get("description") for t in m.get("tools", []) if isinstance(t, dict)])})
+    if a:
+        entries.append({"identifier": f"urn:air:{host}:a2a:agent", "displayName": cfg["name"],
                         "type": "application/a2a-agent-card+json", "url": o + "/.well-known/agent-card.json",
-                        "description": cfg["description"]})
-    if "skills" in has:
-        entries.append({"identifier": f"urn:air:{host}:skills", "displayName": f"{cfg['name']} skills",
+                        "description": cfg["description"],
+                        "representativeQueries": a.get("queries") or _made(
+                            [s.get("name") for s in a["skills"] if isinstance(s, dict)] + [cfg["description"]])})
+    if skills:
+        entries.append({"identifier": f"urn:air:{host}:skills:index", "displayName": f"{cfg['name']} skills",
                         "type": "application/agent-skills+json", "url": o + "/.well-known/agent-skills/index.json",
-                        "description": "Installable Agent Skills, each with its sha256 digest."})
-    return {"entries": entries}
+                        "description": "Installable Agent Skills, each with its sha256 digest.",
+                        "representativeQueries": _first_five(q for s in skills for q in s.get("queries") or [_phrase(s["description"])])})
+    return entries
+
+
+def ai_catalog(cfg):
+    """AI Catalog 1.0 (github.com/Agent-Card/ai-catalog): the site as its host, and its entries."""
+    return {"specVersion": CATALOG_SPEC,
+            "host": {"displayName": cfg["name"], "identifier": cfg["origin"].removeprefix("https://"), "documentationUrl": _docs(cfg)},
+            "entries": catalog_entries(cfg)}
 
 
 def link_header(has):
@@ -206,7 +271,7 @@ def link_header(has):
         links.append('</.well-known/agent-card.json>; rel="describedby"; type="application/json"')
     links.append('</llms.txt>; rel="describedby"; type="text/markdown"')
     if has & {"mcp", "a2a", "skills"}:
-        links.append('</.well-known/ard.json>; rel="ard"; type="application/json"')
+        links += [f'</{path}>; rel="{rel}"; type="application/json"' for path, rel in CATALOGS.items()]
     return ", ".join(links)
 
 
@@ -227,7 +292,8 @@ def build(cfg, root, contact=None):
     if has & {"mcp", "a2a"}:
         out[".well-known/api-catalog"] = _json(api_catalog(cfg, has))
     if has:
-        out[".well-known/ard.json"] = _json(ard(cfg, has))
+        doc = _json(ai_catalog(cfg))
+        out.update(dict.fromkeys(CATALOGS, doc))
     return out, link_header(has)
 
 
