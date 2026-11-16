@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { overflow: hidden; }
+        /* sethshoultes.github.io#270: on a touch screen the star follows a finger, so the canvas must not scroll or
+           zoom, and the word box sits near the top, above the on-screen keyboard. A mouse never matches. */
+        @media (hover: none) and (pointer: coarse) {
+            #gameCanvas { touch-action: none; }
+            #wordInput { top: 96px; }
+        }
         .star {
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
         }
@@ -115,6 +121,26 @@
             }
         });
 
+        // sethshoultes.github.io#270: a finger on the canvas steers the star toward it. Lifting it is a user gesture, so
+        // focusing the word box there opens the phone's keyboard (the focus from the game loop does not). A mouse is
+        // ignored, so desktop plays with WASD as before.
+        let touchTarget = null, touchPlay = false;
+        const steer = (e) => {
+            if (e.pointerType === 'mouse') return;
+            e.preventDefault();
+            touchPlay = true;
+            touchTarget = { x: e.clientX, y: e.clientY };
+        };
+        const release = (e) => {
+            if (e.pointerType === 'mouse') return;
+            touchTarget = null;
+            if (currentWord) input.focus();
+        };
+        canvas.addEventListener('pointerdown', steer);
+        canvas.addEventListener('pointermove', (e) => { if (touchTarget) steer(e); });
+        canvas.addEventListener('pointerup', release);
+        canvas.addEventListener('pointercancel', release);
+
         // Word typing
         input.addEventListener('input', () => {
             if (currentWord && input.value.toLowerCase() === currentWord.text.toLowerCase()) {
@@ -168,6 +194,15 @@
                 if (player.moving.s) player.y += player.speed;
                 if (player.moving.a) player.x -= player.speed;
                 if (player.moving.d) player.x += player.speed;
+                if (touchTarget) {
+                    const dx = touchTarget.x - player.x;
+                    const dy = touchTarget.y - player.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > player.speed) {
+                        player.x += (dx / dist) * player.speed;
+                        player.y += (dy / dist) * player.speed;
+                    }
+                }
 
                 // Keep player in bounds
                 player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
@@ -182,6 +217,7 @@
                 if (!currentWord && checkCollision(word)) {
                     currentWord = word;
                     wordInput.style.display = 'block';
+                    if (touchPlay) input.placeholder = currentWord.text; // the word itself may be under the keyboard
                     input.focus();
                     typingStartTime = Date.now();
                 }
