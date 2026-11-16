@@ -588,6 +588,10 @@
             restart() {
                 document.getElementById('gameOverModal').style.display = 'none';
                 this.reset();
+                // sethshoultes.github.io#275: game over returns from gameLoop without another frame, so the loop is
+                // stopped here; start it again. The modal's buttons are the only callers, shown only once it stopped.
+                this.lastTime = performance.now();
+                requestAnimationFrame(this.gameLoop.bind(this));
             }
 
             showMainMenu() {
@@ -597,7 +601,8 @@
         }
 
         // Start game when page loads
-        window.onload = () => new Game();
+        // sethshoultes.github.io#275: the game-over buttons' inline onclick calls game.restart(), so keep the instance.
+        window.onload = () => { window.game = new Game(); };
     </script>
 </body>
 </html>
