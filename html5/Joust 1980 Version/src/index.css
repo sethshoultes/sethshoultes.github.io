@@ -16,3 +16,19 @@
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
+/* sethshoultes.github.io#271: the on-screen controls show on a touch screen only, in place of the keyboard hint.
+   A mouse and a desktop window never match. */
+.touch-controls {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .touch-controls {
+    display: flex;
+    touch-action: none;
+  }
+
+  .keys-hint {
+    display: none;
+  }
+}
