@@ -83,6 +83,10 @@
             display: none !important;
         }
 
+        .touch-only {
+            display: none;
+        }
+
         .game-menu {
             position: fixed;
             top: 0;
@@ -449,6 +453,66 @@
             margin-bottom: 20px;
         }
         
+        /* sethshoultes.github.io#268: on a touch screen the player follows a finger, so the canvas must not scroll or
+           zoom, and the word input sits under the header, above the on-screen keyboard. A mouse never matches. */
+        @media (hover: none) and (pointer: coarse) {
+            #gameCanvas {
+                touch-action: none;
+            }
+            .word-input {
+                top: 80px;
+                transform: translateX(-50%);
+            }
+            .touch-only {
+                display: block;
+                padding: 0 16px;
+                text-align: center;
+            }
+            .keys-only {
+                display: none;
+            }
+        }
+
+        /* sethshoultes.github.io#268: the header fits a phone, so the score, time, stage and the pause menu are on
+           screen. The player's name shortens with an ellipsis instead of pushing them off the right edge. */
+        @media (max-width: 479px) {
+            .game-header {
+                grid-template-columns: minmax(0, 1fr) auto auto;
+                gap: 8px;
+                padding: 0 8px;
+            }
+            .game-header > div {
+                padding: 0;
+            }
+            .header-left {
+                min-width: 0;
+                gap: 6px;
+            }
+            .game-logo {
+                flex: none;
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+            .game-title {
+                min-width: 0;
+                font-size: 15px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .header-center {
+                gap: 8px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+            /* The page-wide button rule gives every button min-width: 200px; the menu button only needs a tap target. */
+            .menu-button {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 0 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -482,8 +546,9 @@
         <!-- Game Menu -->
         <div id="game-menu" class="game-menu">
             <h1>TypeRunner</h1>
-            <p>Use WASD keys to move. Type the words to get points.</p>
-            <p>Press 'ESC' to pause the game.</p>
+            <p class="keys-only">Use WASD keys to move. Type the words to get points.</p>
+            <p class="keys-only">Press 'ESC' to pause the game.</p>
+            <p class="touch-only">Drag to move. Run into a word, lift your finger, and type it to get points.</p>
             <div class="menu-buttons">
                 <button id="start-game">Start Game</button>
                 <button id="high-scores">High Scores</button>
@@ -1051,6 +1116,25 @@
                             wordInput.addEventListener('input', () => this.checkWord());
                         }
 
+                        // sethshoultes.github.io#268: a finger on the canvas steers the player toward it. Lifting it is a
+                        // user gesture, so focusing the word input there opens the phone's keyboard (a focus from the
+                        // game loop does not). A mouse is ignored, so desktop plays with WASD as before.
+                        this.touchTarget = null;
+                        const steer = (e) => {
+                            if (e.pointerType === 'mouse') return;
+                            e.preventDefault();
+                            this.touchTarget = { x: e.clientX, y: e.clientY };
+                        };
+                        const release = (e) => {
+                            if (e.pointerType === 'mouse') return;
+                            this.touchTarget = null;
+                            if (this.currentWord && wordInput) wordInput.focus();
+                        };
+                        this.canvas.addEventListener('pointerdown', steer);
+                        this.canvas.addEventListener('pointermove', (e) => { if (this.touchTarget) steer(e); });
+                        this.canvas.addEventListener('pointerup', release);
+                        this.canvas.addEventListener('pointercancel', release);
+
                         console.log('Event listeners initialized successfully');
                     } catch (error) {
                         console.error('Error initializing event listeners:', error);
@@ -1193,6 +1277,15 @@
                     if (this.movement.s) this.playerY += moveSpeed;
                     if (this.movement.a) this.playerX -= moveSpeed;
                     if (this.movement.d) this.playerX += moveSpeed;
+                    if (this.touchTarget) {
+                        const dx = this.touchTarget.x - this.playerX;
+                        const dy = this.touchTarget.y - this.playerY;
+                        const dist = Math.hypot(dx, dy);
+                        if (dist > moveSpeed) {
+                            this.playerX += (dx / dist) * moveSpeed;
+                            this.playerY += (dy / dist) * moveSpeed;
+                        }
+                    }
 
                     // Keep player in bounds and below header
                     this.playerX = Math.max(this.padding, Math.min(this.canvas.width - this.padding, this.playerX));
@@ -1314,6 +1407,7 @@
                             this.currentWord = word;
                             document.getElementById('word-input').classList.remove('hidden');
                             document.getElementById('word-input-field').value = '';
+                            if (this.touchTarget) document.getElementById('word-input-field').placeholder = word.text;
                             document.getElementById('word-input-field').focus();
                         }
                     }
