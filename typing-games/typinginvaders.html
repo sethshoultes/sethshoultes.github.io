@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Word Invaders</title>
     <style>
         @keyframes fadeIn {
@@ -31,6 +32,43 @@
         #gameCanvas {
             border: 2px solid #333;
             background: #000;
+        }
+        .touch-only {
+            display: none;
+        }
+        /* sethshoultes.github.io#269: on a phone the 800x600 board scales to the screen's width, and a word box under
+           it opens the on-screen keyboard (the game itself listens for key presses, which a phone never sends without
+           a focused field). A mouse and a desktop window never match these. */
+        @media (max-width: 820px) {
+            body {
+                align-items: flex-start;
+                justify-content: flex-start;
+                flex-direction: column;
+            }
+            #gameContainer {
+                width: 100%;
+                height: auto;
+            }
+            #gameCanvas {
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                height: auto;
+            }
+            #gameHUD {
+                font-size: 14px;
+            }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .touch-only {
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                margin: 8px 0 0;
+                padding: 12px;
+                font-size: 18px;
+                text-align: center;
+            }
         }
         #gameHUD {
             position: absolute;
@@ -122,6 +160,8 @@
         </div>
         <div id="currentWord"></div>
     </div>
+    <input type="text" id="touchType" class="touch-only" aria-label="Type the falling words" placeholder="Tap here to type"
+        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
     
     <div id="gameOverModal">
         <h2>Game Over!</h2>
@@ -271,7 +311,15 @@
                 };
 
                 // Bind event listeners
-                document.addEventListener('keydown', this.handleKeyPress.bind(this));
+                // sethshoultes.github.io#269: a phone types into #touchType, whose letters reach the same handler; its
+                // own key presses are skipped here, so a phone with a keyboard attached does not count each letter twice.
+                const touchType = document.getElementById('touchType');
+                document.addEventListener('keydown', (e) => { if (e.target !== touchType) this.handleKeyPress(e); });
+                touchType.addEventListener('input', () => {
+                    for (const key of touchType.value.toLowerCase()) this.handleKeyPress({ key });
+                    touchType.value = '';
+                });
+                this.canvas.addEventListener('click', (e) => { if (e.pointerType !== 'mouse') touchType.focus(); });
 
                 // Initialize HUD
                 this.updateHUD();
