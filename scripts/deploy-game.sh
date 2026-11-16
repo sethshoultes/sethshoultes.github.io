@@ -7,8 +7,8 @@
 #
 # Usage: scripts/deploy-game.sh <slug> <source-path>
 #   slug          short name. Becomes build/<slug>/ and, by default, the
-#                 CloudPanel site-user + domain:
-#                 /home/<slug>/htdocs/<slug>.adventurebuildr.com
+#                 CloudPanel domain, the site user being the slug without
+#                 its hyphens: /home/<slug minus hyphens>/htdocs/<slug>.adventurebuildr.com
 #   source-path   path (relative to repo root) to the game's file or
 #                 directory
 #
