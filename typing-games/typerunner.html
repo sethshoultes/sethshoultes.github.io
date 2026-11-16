@@ -1025,7 +1025,7 @@
                         this.resizeCanvas();
                         
                         // Set initial player position
-                        this.playerX = this.canvas.width / 2;
+                        this.playerX = this.viewW / 2;
                         this.playerY = this.headerHeight + 60;
 
                         // Initialize managers
@@ -1158,7 +1158,7 @@
                 window.addEventListener('resize', () => this.resizeCanvas());
 
                 // Initialize player position below header
-                this.playerX = this.canvas.width / 2;
+                this.playerX = this.viewW / 2;
                 this.playerY = this.headerHeight + 60;
 
                 // Set up event listeners
@@ -1174,9 +1174,18 @@
                 document.getElementById('word-input-field').addEventListener('input', () => this.checkWord());
             }
 
+            // sethshoultes.github.io#279: the backing store is the window times devicePixelRatio, so a phone's 3x screen
+            // draws sharp text; the game itself draws, moves and reads touches in CSS pixels (viewW x viewH) through the
+            // transform. At 1x nothing changes. Resizing a canvas resets its context, so the transform is set every time.
             resizeCanvas() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
+                const dpr = window.devicePixelRatio || 1;
+                this.viewW = window.innerWidth;
+                this.viewH = window.innerHeight;
+                this.canvas.width = Math.round(this.viewW * dpr);
+                this.canvas.height = Math.round(this.viewH * dpr);
+                this.canvas.style.width = this.viewW + 'px';
+                this.canvas.style.height = this.viewH + 'px';
+                this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
 
             start() {
@@ -1191,7 +1200,7 @@
                 this.updatePlayerNameDisplay();
                 
                 // Reset player position
-                this.playerX = this.canvas.width / 2;
+                this.playerX = this.viewW / 2;
                 this.playerY = this.headerHeight + 60;
                 
                 // Hide menus
@@ -1220,8 +1229,8 @@
                 
                 const word = {
                     text: this.difficultyManager.getWordForStage(this.currentStage),
-                    x: this.canvas.width / 2,
-                    y: this.canvas.height / 2,
+                    x: this.viewW / 2,
+                    y: this.viewH / 2,
                     vx: Math.cos(angle) * baseSpeed,
                     vy: Math.sin(angle) * baseSpeed,
                     spawnTime: Date.now()
@@ -1264,11 +1273,11 @@
                     height: 50
                 });
                 // Clear canvas with gradient background
-                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.viewH);
                 gradient.addColorStop(0, '#1e3a8a');
                 gradient.addColorStop(1, '#2563eb');
                 this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillRect(0, 0, this.viewW, this.viewH);
 
                 // Update player position
                 if (!this.currentWord) {
@@ -1288,8 +1297,8 @@
                     }
 
                     // Keep player in bounds and below header
-                    this.playerX = Math.max(this.padding, Math.min(this.canvas.width - this.padding, this.playerX));
-                    this.playerY = Math.max(this.headerHeight + this.padding, Math.min(this.canvas.height - this.padding, this.playerY));
+                    this.playerX = Math.max(this.padding, Math.min(this.viewW - this.padding, this.playerX));
+                    this.playerY = Math.max(this.headerHeight + this.padding, Math.min(this.viewH - this.padding, this.playerY));
                 }
 
                 // Draw player
@@ -1328,8 +1337,8 @@
                                 word.x = effectivePadding;
                                 word.vx = Math.abs(word.vx); // Ensure positive velocity
                             }
-                            if (word.x + wordWidth >= this.canvas.width - effectivePadding) {
-                                word.x = this.canvas.width - wordWidth - effectivePadding;
+                            if (word.x + wordWidth >= this.viewW - effectivePadding) {
+                                word.x = this.viewW - wordWidth - effectivePadding;
                                 word.vx = -Math.abs(word.vx); // Ensure negative velocity
                             }
                             
@@ -1337,8 +1346,8 @@
                                 word.y = this.headerHeight + effectivePadding;
                                 word.vy = Math.abs(word.vy); // Ensure positive velocity
                             }
-                            if (word.y >= this.canvas.height - effectivePadding) {
-                                word.y = this.canvas.height - effectivePadding;
+                            if (word.y >= this.viewH - effectivePadding) {
+                                word.y = this.viewH - effectivePadding;
                                 word.vy = -Math.abs(word.vy); // Ensure negative velocity
                             }
                     }
@@ -1358,8 +1367,8 @@
                         word.y += word.vy;
                         
                         // Bounce off walls
-                        if (word.x <= this.padding || word.x >= this.canvas.width - this.padding) word.vx *= -1;
-                        if (word.y <= this.headerHeight + this.padding || word.y >= this.canvas.height - this.padding) word.vy *= -1;
+                        if (word.x <= this.padding || word.x >= this.viewW - this.padding) word.vx *= -1;
+                        if (word.y <= this.headerHeight + this.padding || word.y >= this.viewH - this.padding) word.vy *= -1;
                     }
 
                     // Draw word with different style if it's being typed
@@ -1368,8 +1377,8 @@
                     this.ctx.fillText(word.text, word.x, word.y);
                     
                     // Bounce off walls
-                    if (word.x <= this.padding || word.x >= this.canvas.width - this.padding) word.vx *= -1;
-                    if (word.y <= this.headerHeight + this.padding || word.y >= this.canvas.height - this.padding) word.vy *= -1;
+                    if (word.x <= this.padding || word.x >= this.viewW - this.padding) word.vx *= -1;
+                    if (word.y <= this.headerHeight + this.padding || word.y >= this.viewH - this.padding) word.vy *= -1;
 
                     // Only draw debug visualization if debug is enabled
                     if (this.debug) {
