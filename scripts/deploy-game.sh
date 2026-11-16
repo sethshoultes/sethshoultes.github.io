@@ -7,8 +7,8 @@
 #
 # Usage: scripts/deploy-game.sh <slug> <source-path>
 #   slug          short name. Becomes build/<slug>/ and, by default, the
-#                 CloudPanel site-user + domain:
-#                 /home/<slug>/htdocs/<slug>.adventurebuildr.com
+#                 CloudPanel domain, the site user being the slug without
+#                 its hyphens: /home/<slug minus hyphens>/htdocs/<slug>.adventurebuildr.com
 #   source-path   path (relative to repo root) to the game's file or
 #                 directory
 #
@@ -50,10 +50,11 @@ fi
 
 # hetzner-sites is the box every other arcade game deploys to. It's a
 # CloudPanel box, so the webroot is /home/<site-user>/htdocs/<domain>, not
-# /var/www/<domain>. Override either var for a game whose slug doesn't
-# match its site-user/domain 1:1.
+# /var/www/<domain>. CloudPanel's site user is the slug without its hyphens
+# (ai-typing-star -> aitypingstar, banana-sling -> bananasling; every vhost
+# on the box, 2026-11-16). Override either var for a game that differs.
 REMOTE_HOST="${GAME_DEPLOY_HOST:-hetzner-sites}"
-REMOTE_PATH="${GAME_DEPLOY_PATH:-/home/$SLUG/htdocs/$SLUG.adventurebuildr.com}"
+REMOTE_PATH="${GAME_DEPLOY_PATH:-/home/${SLUG//-/}/htdocs/$SLUG.adventurebuildr.com}"
 
 BUILD_DIR="build/$SLUG"
 rm -rf "$BUILD_DIR"
@@ -84,3 +85,6 @@ if [ ! -f "$BUILD_DIR/index.html" ]; then
 fi
 
 rsync -avz --delete "$BUILD_DIR/" "$REMOTE_HOST:$REMOTE_PATH/"
+# rsync -a over a root login keeps the Mac's uid (501) on every file; the site
+# user owns its webroot, so hand the tree back to whoever owns htdocs/.
+ssh "$REMOTE_HOST" "chown -R --reference='$(dirname "$REMOTE_PATH")' '$REMOTE_PATH'"
