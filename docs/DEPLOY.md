@@ -21,9 +21,11 @@ scripts/deploy-game.sh typerunner typing-games/typerunner.html
 ```
 
 - `slug` — short name. Becomes `build/<slug>/` locally and, by default, the
-  CloudPanel site-user + domain: `/home/<slug>/htdocs/<slug>.adventurebuildr.com`.
-  Override with `GAME_DEPLOY_PATH` if a game's slug doesn't match its
-  site-user/domain 1:1.
+  CloudPanel domain, with the site user being the slug without its hyphens:
+  `/home/<slug minus hyphens>/htdocs/<slug>.adventurebuildr.com` (e.g.
+  `/home/aitypingstar/htdocs/ai-typing-star.adventurebuildr.com`). Override with
+  `GAME_DEPLOY_PATH` for a game that differs. After the upload the script hands
+  the webroot back to the owner of its `htdocs/` (the site user).
 - `source-path` — path (relative to repo root) to the game's file or
   directory.
 
@@ -99,9 +101,9 @@ fix above; re-checked post-fix and confirmed clean).
 
 Target: `/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com`.
 Site-user `typinginvaders` has no hyphen but the domain
-`typing-invaders.adventurebuildr.com` does, so the script's default
-`$SLUG.adventurebuildr.com` formula can't produce both from one slug —
-needs the `GAME_DEPLOY_PATH` override, same as Speed Typing Adventure:
+`typing-invaders.adventurebuildr.com` does. The script's default now drops the
+hyphens for the site user, so the slug `typing-invaders` reaches it; the
+explicit override below works too:
 
 ```bash
 GAME_DEPLOY_PATH=/home/typinginvaders/htdocs/typing-invaders.adventurebuildr.com \
@@ -169,9 +171,9 @@ Local verification: served `build/word-runner/` from a local static server
 and loaded it with headless Playwright (chromium) — zero console errors,
 zero page errors.
 
-Target: `/home/word-runner/htdocs/word-runner.adventurebuildr.com` — matches
-this script's default `$SLUG.adventurebuildr.com` formula exactly for slug
-`word-runner`, no `GAME_DEPLOY_PATH` override needed.
+Target: `/home/wordrunner/htdocs/word-runner.adventurebuildr.com` (the
+nginx root; the site user has no hyphen), which the script's default gives
+for slug `word-runner`.
 
 Build — no script changes needed, same single-file path as the others:
 
@@ -187,9 +189,9 @@ Local verification: served `build/ai-typing-star/` from a local static
 server and loaded it with headless Playwright (chromium) — zero console
 errors, zero page errors.
 
-Target: `/home/ai-typing-star/htdocs/ai-typing-star.adventurebuildr.com` —
-matches this script's default `$SLUG.adventurebuildr.com` formula exactly
-for slug `ai-typing-star`, no `GAME_DEPLOY_PATH` override needed.
+Target: `/home/aitypingstar/htdocs/ai-typing-star.adventurebuildr.com` (the
+nginx root; the site user has no hyphen), which the script's default gives
+for slug `ai-typing-star`.
 
 ### Banana Sling (arcade#288)
 
@@ -212,5 +214,4 @@ This produces `build/banana-sling/index.html`. I replicated the build step, serv
 headless Playwright (Chromium, muted): HTTP 200, a 1280×800 canvas, the title card, and zero console or page errors.
 
 Target: `/home/bananasling/htdocs/banana-sling.adventurebuildr.com`. The CloudPanel site user is `bananasling`, with no
-hyphen, so it doesn't match the script's default `/home/$SLUG/...` for the slug `banana-sling`. Hence the
-`GAME_DEPLOY_PATH` override above. Live at https://banana-sling.adventurebuildr.com (the lead's box setup, 2026-11-11).
+hyphen; the script's default now gives that for the slug `banana-sling`, and the override above is the same path. Live at https://banana-sling.adventurebuildr.com (the lead's box setup, 2026-11-11).
