@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 // _data/agents.json, and the home page's Link in _headers is the one it prints.
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const OWNED = ['.well-known/mcp.json', '.well-known/agent-card.json', '.well-known/api-catalog', '.well-known/ard.json',
-  '.well-known/ai-catalog.json'];
+  '.well-known/ai-catalog.json', '.well-known/poppy.json'];
 const OWNED_DIRS = ['.well-known/mcp', '.well-known/agent-skills'];
 
 const files = (dir) => readdirSync(dir).flatMap((n) => {

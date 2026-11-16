@@ -1,0 +1,14 @@
+{
+  "protocol_version": "1.0",
+  "organization": {
+    "name": "Seth Shoultes",
+    "domain": "sethshoultes.com"
+  },
+  "apis": [
+    {
+      "type": "mcp",
+      "url": "https://mcp.sethshoultes.com/",
+      "description": "Blog posts, brain learnings, and installable Agent Skills from sethshoultes.com. Surfaces a public catalog any AI agent can enumerate without credentials."
+    }
+  ]
+}
