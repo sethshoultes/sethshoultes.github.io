@@ -129,6 +129,31 @@ test("/mcp get_page returns a twin and refuses anything else", async () => {
   assert.equal(lied.error.code, -32600);
 });
 
+test("site-kit#418: with a members gate, a missing matcher refuses /mcp and every twin (503); a present one gates as usual", async () => {
+  const md = { headers: { Accept: "text/markdown" } };
+  const withData = (c, data) => Object.assign(c, { data });
+  const noGate = [withData(ctx("/about/", md), {}), withData(ctx("/about/", md), { members: {} }), ctx("/about/", md),
+    withData(ctx("/about/", md), { members: { gated: true } })];
+  for (const c of noGate) {
+    const res = await agentFiles(c, { members: true });
+    assert.equal(res.status, 503);
+    assert.equal(res.headers.get("Cache-Control"), "no-store");
+    assert.doesNotMatch(await res.text(), /About/);
+  }
+  const head = await agentFiles(withData(ctx("/about/", { method: "HEAD", headers: { Accept: "text/markdown" } }), {}), { members: true });
+  assert.equal(head.status, 503);
+  const list = await agentFiles(withData(ctx("/mcp", rpc("tools/call", { name: "list_pages", arguments: {} })), {}), { members: true });
+  assert.equal(list.status, 503);
+  // A browser's request isn't an agent read: the site serves it, and the gate (when it runs) decides.
+  assert.equal(await agentFiles(withData(ctx("/about/"), {}), { members: true }), null);
+  // The matcher present: an ungated page's twin is served, a gated one's is not.
+  const gate = { members: { gated: (p) => p.startsWith("/about/") } };
+  assert.equal(await agentFiles(withData(ctx("/about/", md), gate), { members: true }), null);
+  assert.equal(await (await agentFiles(withData(ctx("/", md), gate), { members: true })).text(), "# Home\n\nhello\n");
+  // No members gate on the site: unchanged.
+  assert.equal(await (await agentFiles(ctx("/about/", md))).text(), "# About\n\nus\n");
+});
+
 // The twin builder, with a stand-in converter: the kit's CI installs no turndown, and the sites run the real one.
 const convert = (h) => h.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
 const page = (canonical, extra = "") => `<html><head><title>T</title><meta name="description" content="A &amp; B's">

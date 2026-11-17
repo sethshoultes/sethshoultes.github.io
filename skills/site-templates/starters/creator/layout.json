@@ -1,0 +1,224 @@
+{
+  "template": "creator",
+  "why": "{{placeholder:Who you make work for and why they come to you, in one or two warm sentences: what you make, who it is for, and what they can expect}}",
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "title": "{{placeholder:Your name}}, {{placeholder:what you make}}",
+      "description": "{{placeholder:One line: what you make, for whom, and why people hire you}}",
+      "sections": [
+        {
+          "id": "hero",
+          "block": "hero@1",
+          "props": {
+            "heading": "{{placeholder:What you make, in a few words}}",
+            "lead": "{{placeholder:One line on who it is for}}",
+            "cta": {
+              "text": "See the work",
+              "href": "/work/"
+            }
+          }
+        },
+        {
+          "id": "selected",
+          "block": "work@1",
+          "props": {
+            "heading": "Selected work",
+            "items": [
+              {
+                "image": {
+                  "src": "/images/work-1.png",
+                  "alt": "{{placeholder:What piece 1 shows}}"
+                },
+                "title": "{{placeholder:Piece 1}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-2.png",
+                  "alt": "{{placeholder:What piece 2 shows}}"
+                },
+                "title": "{{placeholder:Piece 2}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-3.png",
+                  "alt": "{{placeholder:What piece 3 shows}}"
+                },
+                "title": "{{placeholder:Piece 3}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              }
+            ],
+            "more": {
+              "text": "All the work",
+              "href": "/work/"
+            }
+          }
+        },
+        {
+          "id": "words",
+          "block": "proof@1",
+          "props": {
+            "heading": "What clients say",
+            "reviews": [
+              {
+                "quote": "{{placeholder:A real client's words}}",
+                "name": "{{placeholder:Their name, and what you made for them}}"
+              },
+              {
+                "quote": "{{placeholder:A real client's words}}",
+                "name": "{{placeholder:Their name, and what you made for them}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Have something in mind?",
+            "button": {
+              "text": "Get in touch",
+              "href": "/contact/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/work/",
+      "type": "work",
+      "title": "Work",
+      "description": "{{placeholder:One line on the work you show here}}",
+      "sections": [
+        {
+          "id": "all-work",
+          "block": "work@1",
+          "props": {
+            "heading": "{{placeholder:What this body of work is, e.g. Tableware, 2024 to now}}",
+            "intro": "{{placeholder:One line on what you make and how}}",
+            "items": [
+              {
+                "image": {
+                  "src": "/images/work-1.png",
+                  "alt": "{{placeholder:What piece 1 shows}}"
+                },
+                "title": "{{placeholder:Piece 1}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-2.png",
+                  "alt": "{{placeholder:What piece 2 shows}}"
+                },
+                "title": "{{placeholder:Piece 2}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-3.png",
+                  "alt": "{{placeholder:What piece 3 shows}}"
+                },
+                "title": "{{placeholder:Piece 3}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-4.png",
+                  "alt": "{{placeholder:What piece 4 shows}}"
+                },
+                "title": "{{placeholder:Piece 4}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-5.png",
+                  "alt": "{{placeholder:What piece 5 shows}}"
+                },
+                "title": "{{placeholder:Piece 5}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              },
+              {
+                "image": {
+                  "src": "/images/work-6.png",
+                  "alt": "{{placeholder:What piece 6 shows}}"
+                },
+                "title": "{{placeholder:Piece 6}}",
+                "text": "{{placeholder:A line on it: what it was for, and what you did}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "work-call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Like what you see?",
+            "button": {
+              "text": "Get in touch",
+              "href": "/contact/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about/",
+      "type": "about",
+      "title": "About",
+      "description": "{{placeholder:One line on who you are}}",
+      "sections": [
+        {
+          "id": "about-me",
+          "block": "about@1",
+          "props": {
+            "heading": "Who I am",
+            "text": "{{placeholder:Who you are, how long you have made this, and what you care about}}",
+            "image": {
+              "src": "/images/about.png",
+              "alt": "{{placeholder:You, or your studio}}"
+            }
+          }
+        },
+        {
+          "id": "about-call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Let's make something",
+            "button": {
+              "text": "Get in touch",
+              "href": "/contact/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact/",
+      "type": "contact",
+      "title": "Contact",
+      "description": "{{placeholder:How to reach you, and when}}",
+      "sections": [
+        {
+          "id": "reach",
+          "block": "contact@1",
+          "props": {
+            "heading": "Get in touch",
+            "address": "{{placeholder:Where you work from, or 'Online, anywhere'}}",
+            "hours": "{{placeholder:When you reply, as a sentence: I reply within two days.}}",
+            "reach": [
+              {
+                "button": {
+                  "text": "Email me",
+                  "href": "{{placeholder:mailto:you@yourdomain.com}}"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

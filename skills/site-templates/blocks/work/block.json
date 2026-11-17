@@ -1,0 +1,105 @@
+{
+  "name": "work",
+  "version": "1.1",
+  "title": "Work: pieces you've made, each a picture, a title, a line and an optional link",
+  "props": {
+    "heading": {
+      "type": "text",
+      "required": true,
+      "max": 90
+    },
+    "intro": {
+      "type": "text",
+      "max": 240
+    },
+    "items": {
+      "type": "items",
+      "required": true, "max": 24,
+      "fields": {
+        "image": {
+          "type": "image",
+          "required": true
+        },
+        "title": {
+          "type": "text",
+          "required": true,
+          "max": 60
+        },
+        "text": {
+          "type": "text",
+          "max": 200
+        },
+        "link": {
+          "type": "link"
+        },
+        "size": {
+          "type": "choice",
+          "values": ["small", "medium"]
+        }
+      }
+    },
+    "more": {
+      "type": "link"
+    }
+  },
+  "tree": {
+    "part": "group",
+    "tag": "section",
+    "children": [
+      {
+        "part": "heading",
+        "level": 2,
+        "text": "{heading}"
+      },
+      {
+        "part": "paragraph",
+        "text": "{intro}"
+      },
+      {
+        "part": "columns",
+        "children": [
+          {
+            "part": "column",
+            "each": "items",
+            "children": [
+              {
+                "part": "image",
+                "src": "{item.image.src}",
+                "alt": "{item.image.alt}"
+              },
+              {
+                "part": "heading",
+                "level": 3,
+                "text": "{item.title}"
+              },
+              {
+                "part": "paragraph",
+                "text": "{item.text}"
+              },
+              {
+                "part": "buttons",
+                "children": [
+                  {
+                    "part": "button",
+                    "text": "{item.link.text}",
+                    "href": "{item.link.href}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "part": "buttons",
+        "children": [
+          {
+            "part": "button",
+            "text": "{more.text}",
+            "href": "{more.href}"
+          }
+        ]
+      }
+    ]
+  }
+}

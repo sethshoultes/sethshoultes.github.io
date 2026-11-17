@@ -1,0 +1,264 @@
+{
+  "template": "small-shop",
+  "why": "{{placeholder:Who you serve and why they come back, in one or two warm sentences: what you sell, where you are, and what makes a visit worth it}}",
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "title": "{{placeholder:Shop name}} in {{placeholder:your town}}",
+      "description": "{{placeholder:One line: what you sell, where, and why people come in}}",
+      "sections": [
+        {
+          "id": "hero",
+          "block": "hero@1",
+          "props": {
+            "heading": "{{placeholder:What you sell, in a few words}}",
+            "lead": "{{placeholder:Where you are and when you're open, e.g. On Market Street, 7 to 3, every day but Sunday}}",
+            "cta": {
+              "text": "See the menu",
+              "href": "/menu/"
+            }
+          }
+        },
+        {
+          "id": "favourites",
+          "block": "menu@1",
+          "props": {
+            "heading": "Favourites",
+            "items": [
+              {
+                "name": "{{placeholder:Item 1}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 2}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 3}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              }
+            ],
+            "note": "{{placeholder:A line on the full menu, or what changes with the season}}"
+          }
+        },
+        {
+          "id": "words",
+          "block": "proof@1",
+          "props": {
+            "heading": "What people say",
+            "reviews": [
+              {
+                "quote": "{{placeholder:A real customer's words}}",
+                "name": "{{placeholder:Their name}}"
+              },
+              {
+                "quote": "{{placeholder:A real customer's words}}",
+                "name": "{{placeholder:Their name}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "questions",
+          "block": "faq@1",
+          "props": {
+            "heading": "Questions people ask",
+            "questions": [
+              {
+                "q": "{{placeholder:Do you take card?}}",
+                "a": "{{placeholder:Your answer}}"
+              },
+              {
+                "q": "{{placeholder:Can I order ahead?}}",
+                "a": "{{placeholder:Your answer}}"
+              },
+              {
+                "q": "{{placeholder:Is there parking?}}",
+                "a": "{{placeholder:Your answer}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Come and see us",
+            "button": {
+              "text": "Hours and directions",
+              "href": "/visit/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/menu/",
+      "type": "menu",
+      "title": "Menu",
+      "description": "{{placeholder:One line on what you sell}}",
+      "sections": [
+        {
+          "id": "menu-one",
+          "block": "menu@1",
+          "props": {
+            "heading": "{{placeholder:First section, e.g. Coffee}}",
+            "items": [
+              {
+                "name": "{{placeholder:Item 1}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 2}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 3}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 4}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "menu-two",
+          "block": "menu@1",
+          "props": {
+            "heading": "{{placeholder:Second section, e.g. Food}}",
+            "items": [
+              {
+                "name": "{{placeholder:Item 1}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 2}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 3}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 4}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "menu-three",
+          "block": "menu@1",
+          "props": {
+            "heading": "{{placeholder:Third section, e.g. To take home}}",
+            "items": [
+              {
+                "name": "{{placeholder:Item 1}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 2}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              },
+              {
+                "name": "{{placeholder:Item 3}}",
+                "price": "{{placeholder:$4}}",
+                "text": "{{placeholder:A line on it}}"
+              }
+            ],
+            "note": "{{placeholder:A line on allergens, or what you can swap}}"
+          }
+        },
+        {
+          "id": "menu-call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Hungry yet?",
+            "button": {
+              "text": "Hours and directions",
+              "href": "/visit/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/visit/",
+      "type": "contact",
+      "title": "Visit",
+      "description": "{{placeholder:Where you are and when you're open}}",
+      "sections": [
+        {
+          "id": "reach",
+          "block": "contact@1",
+          "props": {
+            "heading": "{{placeholder:How to find you, e.g. Opposite the library}}",
+            "address": "{{placeholder:Your address}}",
+            "hours": "{{placeholder:Your hours}}",
+            "reach": [
+              {
+                "button": {
+                  "text": "Call {{placeholder:your phone}}",
+                  "href": "{{placeholder:tel:+1...}}"
+                }
+              },
+              {
+                "button": {
+                  "text": "Email us",
+                  "href": "{{placeholder:mailto:you@yourshop.com}}"
+                }
+              }
+            ],
+            "directions": {
+              "text": "Get directions",
+              "href": "{{placeholder:https://maps.example.com/your-shop}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about/",
+      "type": "about",
+      "title": "About",
+      "description": "{{placeholder:One line on who you are}}",
+      "sections": [
+        {
+          "id": "about-us",
+          "block": "about@1",
+          "props": {
+            "heading": "Who we are",
+            "text": "{{placeholder:Who you are, how long you have been open, and what you care about}}"
+          }
+        },
+        {
+          "id": "about-call",
+          "block": "cta@1",
+          "props": {
+            "heading": "Drop in",
+            "button": {
+              "text": "Hours and directions",
+              "href": "/visit/"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

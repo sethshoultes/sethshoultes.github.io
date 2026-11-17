@@ -1,0 +1,7 @@
+{
+  "config": {
+    "key_var": "RADAR_SITE_KEY",
+    "ingest_key_var": "RADAR_INGEST_KEY",
+    "ingest_url": "https://radar-api.seth-c28.workers.dev/v1/ingest"
+  }
+}

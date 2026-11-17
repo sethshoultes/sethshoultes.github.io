@@ -1,0 +1,27 @@
+{
+  "name": "Your Shop",
+  "wordmark": {
+    "lead": "Your ",
+    "emphasis": "Shop"
+  },
+  "icons": {
+    "16": "skills/site-templates/starters/small-shop/sample-brand/icon-16.png",
+    "32": "skills/site-templates/starters/small-shop/sample-brand/icon-32.png",
+    "180": "skills/site-templates/starters/small-shop/sample-brand/icon-180.png",
+    "192": "skills/site-templates/starters/small-shop/sample-brand/icon-192.png",
+    "512": "skills/site-templates/starters/small-shop/sample-brand/icon-512.png",
+    "ico": "skills/site-templates/starters/small-shop/sample-brand/favicon.ico"
+  },
+  "share_image": "skills/site-templates/starters/small-shop/sample-brand/share.png",
+  "colours": {
+    "ink": "#1f2430",
+    "ground": "#faf7f1",
+    "accent": "#2e4a6e",
+    "on-accent": "#ffffff",
+    "muted": "#5d6472"
+  },
+  "support": {
+    "email": "you@example.com",
+    "url": "https://example.com/"
+  }
+}

@@ -110,6 +110,8 @@ def _features(root):
         bad.append('.sitekit/features.json "functions_dirs" must be a non-empty list of directories')
     if "post_images" in f and not isinstance(f["post_images"], bool):
         bad.append('.sitekit/features.json "post_images" must be true or false (false turns featured images off for this site)')
+    if "family" in f and not isinstance(f["family"], bool):
+        bad.append('.sitekit/features.json "family" must be true or false (true: a family site with its own builder, site-kit#428)')
     if "memory_lines" in f and not isinstance(f["memory_lines"], bool):
         bad.append('.sitekit/features.json "memory_lines" must be true or false (false turns merged-PR memory lines off for this site)')
     if "page_types_file" in f and not (f["page_types_file"] is None or (isinstance(f["page_types_file"], str) and f["page_types_file"])):
@@ -219,6 +221,266 @@ def _routes(base, root, verified_plugins, plugins_root):
 # matches a-z, 0-9 and -. A short prefix ("o/f*") would take most of an owner's repositories. "repo_exclude" names, exactly,
 # the repositories the pattern would match that are not of the family (maint-review-2 on #168: foo-agent is not a customer).
 REPO_PATTERN = re.compile(r"[A-Za-z0-9-]+/[a-z0-9-]{4,}\*")
+
+
+# What a site's middleware may not do before its required plugins run (site-kit#376): serve a twin, run the rest of the chain,
+# serve an asset itself or hand the request on.
+BEFORE_REQUIRED = ("agentFiles(", "runEdge(", "ASSETS.fetch(", "next(")
+# A "/" starts a regex literal after one of these, or at the start, or after one of the keywords; else it divides.
+REGEX_AFTER = set("(,=:[!&|?{};+-*%<>~^")
+REGEX_KEYWORDS = {"return", "typeof", "case", "do", "else", "in", "of", "new", "delete", "void", "throw", "yield", "await"}
+
+
+def _js_code(text):
+    """The middleware's code with comments dropped and the insides of string, template and regex literals blanked, so a "//" or
+    "/*" in a literal can't hide code, and a call written inside a literal doesn't count (site-kit#393). A template's ${...}
+    stays code. None when a literal or comment never ends: the order can't be read, so the check fails closed. A "/" after ")"
+    is read as a division, as it nearly always is; a regex literal straight after if (...) on one line is the one shape misread."""
+    # stack: one open-brace count per ${ we are inside. prev: the last token (a word, or one punctuation character); before:
+    # the character before that word (a "." makes it a property, never a keyword); last2: the last two code characters.
+    out, i, n, stack, prev, before, last2 = [], 0, len(text), [], "", "", ""
+    while i < n:
+        c = text[i]
+        if c == "/" and text.startswith("//", i):
+            j = text.find("\n", i)
+            i = n if j < 0 else j
+            continue
+        if c == "/" and text.startswith("/*", i):
+            j = text.find("*/", i + 2)
+            if j < 0:
+                return None
+            i = j + 2
+            out.append(" ")
+            continue
+        regex_here = c == "/" and last2 not in ("++", "--") and (   # after x++ or x-- a "/" divides (maint-review on #395)
+            not prev or prev[-1] in REGEX_AFTER or (prev in REGEX_KEYWORDS and before != "."))
+        if c in "'\"`" or regex_here:
+            j, klass = i + 1, False
+            while j < n:
+                d = text[j]
+                if d == "\\":
+                    j += 2
+                    continue
+                if c == "`" and text.startswith("${", j):   # back to code until the matching brace
+                    break
+                if c == "/" and d == "[":
+                    klass = True
+                elif c == "/" and d == "]":
+                    klass = False
+                elif d == c and not (c == "/" and klass):
+                    break
+                elif d == "\n" and c in "'\"/":
+                    return None
+                j += 1
+            if j >= n:
+                return None
+            out.append(c + " " + c)
+            last2 = ")"
+            if c == "`" and text.startswith("${", j):
+                stack.append(0)
+                out.append("${")
+                i, prev, last2 = j + 2, "{", "{"
+                continue
+            i = j + 1
+            while c == "/" and i < n and text[i].isalpha():   # the regex's flags
+                i += 1
+            prev = ")"
+            continue
+        if stack and c == "{":
+            stack[-1] += 1
+        elif stack and c == "}":
+            if stack[-1] == 0:   # the end of a ${...}: the template goes on
+                stack.pop()
+                out.append("}")
+                j = i + 1
+                while j < n and text[j] != "`":
+                    if text[j] == "\\":
+                        j += 1
+                    elif text.startswith("${", j):
+                        break
+                    j += 1
+                if j >= n:
+                    return None
+                if text[j] == "`":
+                    out.append(" `")
+                    i, prev, last2 = j + 1, ")", ")"
+                else:
+                    stack.append(0)
+                    out.append(" ${")
+                    i, prev, last2 = j + 2, "{", "{"
+                continue
+            stack[-1] -= 1
+        out.append(c)
+        if not c.isspace():
+            if c.isalnum() or c in "_$":
+                if prev and (prev[-1].isalnum() or prev[-1] in "_$") and last2[-1:] == prev[-1:]:
+                    prev += c
+                else:
+                    before, prev = (prev[-1:] if prev else ""), c
+            else:
+                prev = c
+            last2 = (last2 + c)[-2:]
+        i += 1
+    return None if stack else "".join(out)
+
+
+def _required(root, verified):
+    """The site's verified plugins whose plugin.json says "edge": {"required": true} (a members gate), by name."""
+    required = []
+    for name in sorted(verified):
+        try:
+            edge = json.loads((root / "plugins" / name / "plugin.json").read_text()).get("edge")
+        except (OSError, ValueError):
+            continue
+        if isinstance(edge, dict) and edge.get("required") is True:
+            required.append(name)
+    return required
+
+
+def _required_built(root, verified):
+    """Each required plugin is in the generated functions/_plugins.js, marked required (Fable on site-kit#298): a plugin.py
+    edge_on() that says no, or a hand-edited list, would leave the gate's pages public with every other check green. The file is
+    the build's own (theme.py function_files), so only its generated shape counts: an import line and one entry line inside
+    `export const edge = [`, with no block comment or template literal anywhere that could hide or fake one."""
+    required = _required(root, verified)
+    if not required:
+        return []
+    text, err = _text(root / "functions" / "_plugins.js")
+    if err or text is None:
+        return [f"functions/_plugins.js is missing: required plugin {', '.join(required)} is never built, so its pages would be public (site-kit#298)"]
+    lines = text.splitlines()
+    code = "\n".join(line for line in lines if not line.startswith("//"))   # the header names plugins/*/plugin.json
+    if "/*" in code or "`" in code:
+        return ["functions/_plugins.js has a block comment or template literal, which the build never writes: rebuild it (site-kit#298)"]
+    starts = [i for i, line in enumerate(lines) if line in ("export const edge = [", "export const edge = [];")]
+    end = starts[0] if starts and lines[starts[0]].endswith(";") else \
+        next((i for i, line in enumerate(lines) if starts and i > starts[0] and line == "];"), None)
+    if len(starts) != 1 or end is None or text.count("export const edge") != 1:
+        return ["functions/_plugins.js isn't the build's own list (one `export const edge = [` ... `];`): rebuild it (site-kit#298)"]
+    out = []
+    for name in required:
+        entry = re.compile(r'  \{ name: "' + re.escape(name) + r'", handle: (h\d+)(?:, data: d\d+(?:\.[A-Za-z_]\w*)?)?, required: true \},?')
+        hits = [m for line in lines[starts[0] + 1:end] if (m := entry.fullmatch(line))]
+        imported = hits and any(re.fullmatch(r'import \{ handle as ' + hits[0].group(1) + r' \} from "\./plugins/' + re.escape(name) + r'/[^"]+";', line)
+                                for line in lines[:starts[0]])
+        if len(hits) != 1 or not imported:
+            out.append(f"functions/_plugins.js: required plugin {name} isn't in the built list with required: true, so its pages would "
+                       "be public: rebuild (python3 scripts/build.py), and check its settings (site-kit#298)")
+    return out
+
+
+MEMBERS_PREFIX = re.compile(r"/(?:[a-z0-9_~-][a-z0-9._~-]*/)+")
+MEMBERS_SLUG = re.compile(r"[a-z0-9][a-z0-9_-]{0,63}")
+MEMBERS_ORIGIN = re.compile(r"https://([a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+)")
+
+
+def _route_hit(patterns, path):
+    """Whether a Pages _routes.json pattern list matches `path` (* matches anything, including /)."""
+    return any(isinstance(p, str) and re.fullmatch(".*".join(map(re.escape, p.split("*"))), path) for p in patterns)
+
+
+def _members(root, verified, routes):
+    """A members site (site-kit#298): its built config has one canonical origin and directory rules only, and no _routes.json keeps
+    a gated directory or /_doorman/ away from the Functions, where the gate runs. The gate itself sends another host to the
+    origin (its 308); a _redirects line can't, since Pages doesn't apply _redirects to requests a Function serves (Fable on #398)."""
+    if "members" not in verified:
+        return []
+    rel = "functions/plugins/members/members-data.json"
+    try:
+        cfg = json.loads((root / rel).read_text()).get("config")
+    except (OSError, ValueError, AttributeError):
+        cfg = None
+    if not isinstance(cfg, dict):
+        return [f"{rel} is missing or not the build's: rebuild the site (site-kit#298)"]
+    out = []
+    origin = cfg.get("origin")
+    if not (isinstance(origin, str) and MEMBERS_ORIGIN.fullmatch(origin)):
+        out.append(f'{rel}: origin "{origin}" must be the site\'s one https origin, e.g. https://example.com (site-kit#298)')
+    rules = cfg.get("rules")
+    if not isinstance(rules, list) or not rules:
+        out.append(f"{rel}: rules must list at least one gated directory (site-kit#298)")
+        rules = []
+    for r in rules:
+        prefix = r.get("prefix") if isinstance(r, dict) else None
+        plans = r.get("plans") if isinstance(r, dict) else None
+        ok_plans = plans is None or (isinstance(plans, list) and plans and all(isinstance(p, str) and MEMBERS_SLUG.fullmatch(p) for p in plans))
+        if not (isinstance(prefix, str) and MEMBERS_PREFIX.fullmatch(prefix) and not prefix.startswith("/_doorman/")) or not ok_plans \
+                or set(r) != {"prefix", "plans"}:
+            out.append(f"{rel}: rule {json.dumps(r)} must be a lowercase directory ending in / with signed-in or plan slugs (site-kit#298)")
+    must = [r["prefix"] for r in rules if isinstance(r, dict) and isinstance(r.get("prefix"), str)] + ["/_doorman/"]
+    for f in routes:
+        text, err = _text(f)
+        try:
+            spec = json.loads(text) if not err else None
+        except ValueError:
+            spec = None
+        where = f.relative_to(root).as_posix()
+        if not isinstance(spec, dict):
+            out.append(f"{where} can't be read, so the members routes can't be checked (site-kit#298)")
+            continue
+        inc, exc = spec.get("include") or [], spec.get("exclude") or []
+        for p in must:
+            if any(not _route_hit(inc, x) or _route_hit(exc, x) for x in (p, p + "index.html", p + "x/")):
+                out.append(f"{where} keeps {p} away from the Functions, so the members gate never runs there (site-kit#298)")
+        # A partial exclude (/dues/admin/*.png, /*.pdf) lets Pages serve some files under a gated directory with no gate, so
+        # any exclude that starts inside one, or whose text before its first * could reach one, fails (Fable on #399).
+        for x in (e for e in exc if isinstance(e, str)):
+            lit = x.split("*")[0].lower()
+            if any(x.lower().startswith(p) or p.startswith(lit) for p in must):
+                out.append(f"{where} excludes {x}, which can reach a gated directory or /_doorman/: Pages would serve what it "
+                           "matches there with no gate (site-kit#298)")
+    return out
+
+
+def _required_first(root, verified):
+    """A site with a required edge plugin (a members gate) must run runRequired in functions/_middleware.js before anything that
+    could serve what the gate guards. Read from the code with comments dropped and literals blanked (_js_code): it is a check on the
+    order the kit's recipe gives, not a parser, so a middleware that hides a call in a helper defined above onRequest must put runRequired first anyway."""
+    required = _required(root, verified)
+    if not required:
+        return []
+    who = ", ".join(required)
+    text, err = _text(root / "functions" / "_middleware.js")
+    if err or text is None:
+        return [f"functions/_middleware.js: required plugin {who} needs a middleware that calls runRequired first (site-kit#376)"]
+    code = _js_code(text)
+    if code is None:
+        return [f"functions/_middleware.js: a string, template, regex or comment never ends, so the order before runRequired can't be read (site-kit#393)"]
+    # The real gate only (the lead on #395): runRequired as the file imports it from "./_chain.js" (the kit's chain, beside the
+    # middleware), by its name or an alias (import { runRequired as gate }), or <ns>.runRequired( for import * as <ns> from it.
+    # A runRequired from any other module never counts, and a file that declares its own is refused (maint-review on #395).
+    chain = r"""\s+from\s*(?P<q>["'])\./_chain\.js(?P=q)"""
+    names = [n for n, _ in re.findall(r"^[ \t]*import\s*\*\s*as\s+([A-Za-z_$][\w$]*)" + chain, text, re.M)
+             if re.search(r"(?<![\w$.])import\s*\*\s*as\s+" + re.escape(n) + r"\s+from\b", code)]   # a real import, not one in a comment
+    bare = []
+    for body, _ in re.findall(r"^[ \t]*import\s*\{([^{}]*)\}" + chain, text, re.M):
+        if not re.search(r"(?<![\w$.])import\s*\{" + re.escape(body) + r"\}\s*from\b", code):
+            continue   # only in a comment
+        for spec in body.split(","):
+            one = re.fullmatch(r"\s*runRequired(?:\s+as\s+([A-Za-z_$][\w$]*))?\s*", spec)
+            if one:
+                bare.append(one.group(1) or "runRequired")
+    own = [b for b in bare + ["runRequired"]
+           if re.search(r"(?<![\w$.])(?:function\s*\*?\s*|(?:const|let|var|class)\s+)" + re.escape(b) + r"(?![\w$])", code)]
+    if own:
+        return [f"functions/_middleware.js: it declares its own {own[0]}, so its call isn't the chain's gate; import runRequired from ./_chain.js (site-kit#393)"]
+    calls = [re.escape(b) for b in bare] + [re.escape(n) + r"\s*\.\s*runRequired" for n in names]
+    if not calls:
+        return [f"functions/_middleware.js: required plugin {who} never runs: import runRequired from ./_chain.js and call it before anything else (site-kit#376)"]
+    m = re.search(r"(?<![\w$.])(?:" + "|".join(calls) + r")\s*\(", code)
+    at = m.start() if m else -1
+    if at < 0:
+        return [f"functions/_middleware.js: required plugin {who} never runs: call runRequired(context, edge) before anything else (site-kit#376)"]
+    def first(token):   # the token's first call, with any spacing before its "(" or around a "." (next (, ASSETS . fetch()
+        pat = r"\s*\.\s*".join(map(re.escape, token[:-1].split("."))) + r"\s*\("
+        hit = re.search(r"(?<![\w$])" + pat, code)
+        return hit.start() if hit else -1
+    if re.search(r"""\[\s*(["'`])\s*\1\s*\]\s*\(""", code[:at]):   # context["next"](): what it calls can't be read, so fail closed
+        return [f"functions/_middleware.js: a call by a computed name (x[\"name\"]()) comes before runRequired, so the order can't be read (site-kit#393)"]
+    early = sorted(t for t in BEFORE_REQUIRED if 0 <= first(t) < at)
+    if early:
+        return [f"functions/_middleware.js: {', '.join(early)} comes before runRequired, so a page required plugin {who} guards could be served first (site-kit#376)"]
+    return []
 
 
 def pattern_matches(pattern, repo):
@@ -340,6 +602,9 @@ def check(root, catalog, site=None):
                 if d.parent == root / "plugins":
                     verified.add(d.name)
 
+    problems += _required_first(root, verified)
+    problems += _required_built(root, verified)
+
     # functions: scanned always from functions/, and from any other declared directory
     fdirs = {root / "functions"} | {root / d for d in f["functions_dirs"]}
     for d in f["functions_dirs"]:
@@ -351,7 +616,7 @@ def check(root, catalog, site=None):
 
     # Cloudflare Pages "advanced mode": a _worker.js (a file or a folder) or a _routes.json anywhere in the repository serves requests
     # without a functions/ file, so each is a function the site has to account for (a build output folder is where they live).
-    walk_errors = []
+    walk_errors, routes = [], []
     for dirpath, dirnames, filenames in os.walk(root, onerror=walk_errors.append):
         if pathlib.Path(dirpath) == root:    # only the top-level .git is skipped; node_modules is scanned (CI checks out a clean tree, and
             dirnames[:] = [d for d in dirnames if d != ".git"]    # wrangler.toml could point the Pages output folder inside it)
@@ -361,6 +626,8 @@ def check(root, catalog, site=None):
         for name in sorted(dirnames + filenames):
             if name in ("_worker.js", "_routes.json"):
                 verdict("function", (pathlib.Path(dirpath) / name).relative_to(root).as_posix(), False)
+        routes += [pathlib.Path(dirpath) / n for n in sorted(filenames) if n == "_routes.json"]
+    problems += _members(root, verified, routes)
 
     if (root / ".gitmodules").exists():
         problems.append(".gitmodules: CI does not fetch submodules, so the check cannot see the code inside them (a submodule can hold functions/ or a worker)")

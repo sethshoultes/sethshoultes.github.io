@@ -1,0 +1,30 @@
+{
+  "name": "radar",
+  "version": "0.3.0",
+  "about": "Cookieless page views for Foo's Radar. Each page view sends the page address without its query string and only the referring site's name (its origin) to the site's own /api/radar. The edge passes that on to the site's Radar collector together with the visitor's IP address and browser user agent, which the collector uses only in memory, to count unique visitors per day and to work out a device type, and never stores. The collector keeps the page address without its query string, the referring site's name only, and the device type. No cookies, no browser storage, no IP address stored, nothing stored that identifies a visitor. Sends nothing when the browser asks not to be tracked (Global Privacy Control or Do Not Track). Holds no key: only the name of the setting that holds it. With ingest_url and its ingest key set (0.2), the edge also counts requests from known AI crawlers, and page visits referred by known AI assistants from browsers that have not asked not to be tracked, sending the Radar service only the kind, the bot or source name, the page (or \"(other)\") and a time: no IP address, user agent, cookie or visitor id. Since 0.3 it also counts page visits a campaign link brought (utm_source, utm_medium and utm_campaign only, cleaned, and a person-shaped value sent as \"(other)\"). A config needs collect_url, ingest_url or both.",
+  "assets": [
+    "assets/radar.js"
+  ],
+  "edge": {
+    "module": "edge.js",
+    "data": "radar-data.json"
+  },
+  "config": {
+    "fields": {
+      "collect_url": {
+        "type": "string"
+      },
+      "key_var": {
+        "type": "string",
+        "default": "RADAR_SITE_KEY"
+      },
+      "ingest_url": {
+        "type": "string"
+      },
+      "ingest_key_var": {
+        "type": "string",
+        "default": "RADAR_INGEST_KEY"
+      }
+    }
+  }
+}

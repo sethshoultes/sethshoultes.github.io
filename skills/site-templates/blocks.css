@@ -1,0 +1,128 @@
+/* site-templates: our own small stylesheet for the core-block classes the serializer writes (Seth, 2026-11-06, on
+   superintelligentfoo#175: "2", so no WordPress block-library code is vendored). Colours come from the brand record as
+   theme.json's own variables (--wp--preset--color--<role>), so one stylesheet serves the static site and the block
+   theme. The step-3 pixel diff against a real WordPress install decides whether it is close enough. */
+:root {
+  --st-ink: var(--wp--preset--color--ink, #1d1d1f);
+  --st-ground: var(--wp--preset--color--ground, #ffffff);
+  --st-accent: var(--wp--preset--color--accent, #0b57d0);
+  --st-on-accent: var(--wp--preset--color--on-accent, #ffffff);
+  --st-muted: var(--wp--preset--color--muted, #5f6368);
+  --st-width: 68rem;
+  --st-gap: 1.5rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--st-ground); color: var(--st-ink); font: 1.0625rem/1.6 system-ui, sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; display: flex; flex-direction: column; }   /* the footer stays at the bottom of a short page */
+/* WordPress: the page sits in .wp-site-blocks, and its main is a group (the theme's templates), which is a frame, not a section */
+.wp-site-blocks { min-height: 100vh; display: flex; flex-direction: column; }
+main.wp-block-group { padding: 0; }
+main > .cta:last-child { margin-top: auto; }   /* and a closing CTA band sits on the footer, not mid-screen */
+img { max-width: 100%; height: auto; }
+a { color: var(--st-accent); }
+a:focus-visible { outline: 3px solid var(--st-accent); outline-offset: 3px; }
+
+/* group: a section of the page, kept to a readable width with a side gutter at phone width */
+.wp-block-group { padding: 2.5rem max(1rem, calc((100% - var(--st-width)) / 2)); }
+.wp-block-group:not(main) .wp-block-group { padding: 0; }
+header.wp-block-group, footer.wp-block-group { padding-block: 1rem; }
+footer.wp-block-group { border-top: 1px solid color-mix(in srgb, var(--st-ink) 15%, transparent); color: var(--st-muted); }
+
+/* columns: side by side on wide screens, stacked on narrow ones; top-aligned, so cards with uneven text still line up */
+.wp-block-columns { display: flex; flex-wrap: wrap !important; gap: var(--st-gap); align-items: flex-start; margin: 0; }
+/* margin: WordPress's own is 1.75em below; !important: its core sets flex-wrap: nowrap !important from 782px, which put six
+   pieces of work in one row where the static page wraps them (step 4's parity run) */
+header .wp-block-columns { align-items: center; }
+.wp-block-column { flex: 1 1 18rem; flex-basis: 18rem !important; min-width: 0; }   /* !important: WordPress's core sets a 0 basis
+   from 782px (with a 0,3,0 selector), which crams every column into one row where the static page wraps them */
+
+.wp-block-heading { line-height: 1.15; margin: 0 0 0.6em; text-wrap: balance; }
+h1.wp-block-heading, .wp-block-post-title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+.wp-block-post-title { padding: 2.5rem max(1rem, calc((100% - var(--st-width)) / 2)) 0; }
+h1.wp-block-heading { margin-bottom: 0.5em; }   /* a heading h1 (the hero's, the 404's) keeps its gap to the line below */
+h2.wp-block-heading { font-size: clamp(1.6rem, 3vw, 1.9rem); }
+h3.wp-block-heading { font-size: 1.25rem; }
+p { margin: 0 0 1em; }
+
+.wp-block-image { margin: 0; }
+.wp-block-image img { display: block; border-radius: 0.5rem; }
+.wp-block-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem; margin: 0; }
+
+/* buttons: at least 44px tall, so they are easy to tap */
+.wp-block-buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+.wp-block-button__link, .slot button[type="submit"] { display: inline-flex; align-items: center; min-height: 44px; padding: 0.6rem 1.25rem; border-radius: 0.4rem;
+  background: var(--st-accent); color: var(--st-on-accent); font-weight: 700; text-decoration: none; }
+.wp-block-button__link:hover, .slot button[type="submit"]:hover { filter: brightness(1.08); }
+
+.wp-block-list { padding-left: 1.25rem; margin: 0 0 1em; }
+.wp-block-details { border-top: 1px solid color-mix(in srgb, var(--st-ink) 15%, transparent); padding: 0.75rem 0; }
+.wp-block-details:last-of-type { border-bottom: 1px solid color-mix(in srgb, var(--st-ink) 15%, transparent); }
+.wp-block-details summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem; list-style: none; }
+.wp-block-details summary::-webkit-details-marker { display: none; }
+.wp-block-details summary::after { content: "+"; font-size: 1.5rem; line-height: 1; color: var(--st-accent); }   /* it opens */
+.wp-block-details[open] summary::after { content: "\2212"; }
+.wp-block-quote { margin: 0; padding-left: 1rem; border-left: 4px solid var(--st-accent); }
+.wp-block-quote cite { display: block; color: var(--st-muted); font-style: normal; margin-top: 0.5rem; }
+
+/* the dynamic parts: logo, site name and the menu of pages */
+.wp-block-site-logo img { display: block; }
+.wp-block-site-logo { width: fit-content; }   /* its link, and so its focus ring, is the logo's size, not the column's */
+.wp-block-site-title { margin: 0; font-weight: 800; font-size: 1.25rem; }
+.wp-block-site-title a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+.wp-block-navigation__container { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; list-style: none; margin: 0; padding: 0; }
+.wp-block-navigation a.wp-block-navigation-item__content { display: inline-flex; align-items: center; min-height: 44px; color: inherit; font-weight: 600; text-decoration: none; }
+/* The current page and a hovered item keep the text's own colour and take the accent as a thick underline: accent-coloured
+   text fails contrast on a light ground when the accent is light (site-kit#370, 1.96:1 on key-site's gold). */
+.wp-block-navigation a.wp-block-navigation-item__content[aria-current="page"], .wp-block-navigation a.wp-block-navigation-item__content:hover {
+  color: inherit; text-decoration: underline; text-decoration-color: var(--st-accent); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+@media (min-width: 48rem) {   /* the header's menu ends where the content ends */
+  header .wp-block-column:last-child { display: flex; justify-content: flex-end; }
+  header .wp-block-navigation__container { justify-content: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* the sections, by their block's name (the section's class) */
+.hero p { font-size: 1.2rem; max-width: 40ch; }
+.services .wp-block-column { background: color-mix(in srgb, var(--st-ink) 4%, var(--st-ground)); border: 1px solid
+  color-mix(in srgb, var(--st-ink) 10%, transparent); border-radius: 0.5rem; padding: 1.25rem; align-self: stretch; }
+.services .wp-block-column .wp-block-heading { margin-bottom: 0.4em; }
+.services > .wp-block-buttons .wp-block-button__link { background: transparent; color: var(--st-accent);
+  box-shadow: inset 0 0 0 2px var(--st-accent); }   /* "All services" is the quieter step after the hero's call */
+.cta { background: var(--st-accent); color: var(--st-on-accent); }   /* the closing call stands apart from the page */
+.cta .wp-block-button__link { background: var(--st-on-accent); color: var(--st-accent); }
+.contact .wp-block-button + .wp-block-button .wp-block-button__link { background: transparent; color: var(--st-accent);
+  box-shadow: inset 0 0 0 2px var(--st-accent); }   /* call first; email and directions are outline */
+.services .wp-block-column > :last-child { margin-bottom: 0; }
+/* WordPress's skip link (the static page has none): in the theme's colours, shown only on keyboard focus */
+a.skip-link.screen-reader-text:focus { background: var(--st-accent); color: var(--st-on-accent); font-weight: 600; border-radius: 0.375rem; box-shadow: none; }
+/* work (the creator starter): the picture leads each piece, at one shape so the grid reads as a set */
+.work .wp-block-column { flex-basis: 16rem !important; }
+.work .wp-block-image img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.5rem; }
+.work .wp-block-column .wp-block-heading { margin: 0.75rem 0 0.25rem; }
+.work .wp-block-column > :last-child { margin-bottom: 0; }
+.work > .wp-block-buttons .wp-block-button__link { background: transparent; color: var(--st-accent);
+  box-shadow: inset 0 0 0 2px var(--st-accent); }   /* "All the work" is the quieter step, as "All services" is */
+.work > .wp-block-columns { row-gap: 2rem; }
+/* menu (the small-shop starter): each item a name with its price beside it and a line under, like a printed menu */
+.menu .wp-block-column { flex-basis: 20rem !important; display: grid; grid-template-columns: 1fr auto; column-gap: 1rem;
+  align-content: start; align-items: baseline; padding-bottom: 1rem; border-bottom: 1px solid color-mix(in srgb, var(--st-ink) 12%, transparent); }
+.menu .wp-block-column .wp-block-heading { margin: 0; font-size: 1.125rem; }
+.menu .wp-block-column > p:first-of-type { margin: 0; font-weight: 700; color: var(--st-accent); }   /* the price */
+.menu .wp-block-column > p:nth-of-type(2) { grid-column: 1 / -1; margin: 0.25rem 0 0; color: var(--st-muted); }
+.menu > .wp-block-columns { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 1.25rem 2.5rem; }
+/* a grid, not the columns' flex wrap: a last item stays one item wide instead of stretching across the row */
+.menu > p:last-child { margin: 1.5rem 0 0; color: var(--st-muted); font-style: italic; }   /* the section's note */
+.menu + .menu { padding-top: 0; }   /* sections of one menu read as one list */
+/* text@1 and list@1 (site-kit#223): running words keep the line breaks they were written with (an address on its own
+   lines), the same in WordPress, which shows a paragraph's saved text as is */
+.text p { white-space: pre-line; }
+.text > .wp-block-group + .wp-block-group { margin-top: 1.25rem; }
+.text img { max-width: 100%; height: auto; }
+.list .wp-block-list li + li { margin-top: 0.35rem; }
+.text + .text, .text + .list, .list + .text, .list + .list { padding-top: 0; }   /* running words read as one piece, as .menu + .menu */
+/* slot@1 (site-kit#223): a plugin's submit button in a slot (a PayPal button) looks like the site's own buttons */
+.slot button[type="submit"] { border: 0; font: inherit; font-weight: 700; cursor: pointer; }

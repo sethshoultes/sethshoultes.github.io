@@ -1,0 +1,16 @@
+{
+  "name": "faq",
+  "version": "1.0",
+  "title": "FAQ: the questions people ask, each opening to its answer",
+  "props": {
+    "heading": {"type": "text", "required": true, "max": 90},
+    "questions": {"type": "items", "required": true, "max": 20, "fields": {
+      "q": {"type": "text", "required": true},
+      "a": {"type": "text", "required": true}
+    }}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "heading", "level": 2, "text": "{heading}"},
+    {"part": "details", "each": "questions", "summary": "{item.q}", "children": [{"part": "paragraph", "text": "{item.a}"}]}
+  ]}
+}

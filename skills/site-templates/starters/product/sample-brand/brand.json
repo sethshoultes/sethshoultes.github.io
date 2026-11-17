@@ -1,0 +1,13 @@
+{
+  "name": "Your Product",
+  "wordmark": {"lead": "Your ", "emphasis": "Product"},
+  "icons": {"16": "skills/site-templates/starters/product/sample-brand/icon-16.png",
+            "32": "skills/site-templates/starters/product/sample-brand/icon-32.png",
+            "180": "skills/site-templates/starters/product/sample-brand/icon-180.png",
+            "192": "skills/site-templates/starters/product/sample-brand/icon-192.png",
+            "512": "skills/site-templates/starters/product/sample-brand/icon-512.png",
+            "ico": "skills/site-templates/starters/product/sample-brand/favicon.ico"},
+  "share_image": "skills/site-templates/starters/product/sample-brand/share.png",
+  "colours": {"ink": "#1d2433", "ground": "#f8f9fb", "accent": "#3b4cca", "on-accent": "#ffffff", "muted": "#5a6273"},
+  "support": {"email": "you@example.com", "url": "https://example.com/"}
+}

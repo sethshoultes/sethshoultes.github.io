@@ -1,0 +1,10 @@
+{
+  "home": {"required": ["hero"]},
+  "service": {"required": ["hero", "cta"]},
+  "about": {"required": []},
+  "contact": {"required": ["contact"]},
+  "work": {"required": ["work"]},
+  "menu": {"required": ["menu"]},
+  "post": {"required": []},
+  "page": {"required": []}
+}
