@@ -47,6 +47,13 @@
             font-size: 24px;
             color: #fff;
         }
+        /* arcade#322: the start card, so a round waits for the player instead of starting on page load. */
+        #startCard { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, 0.6); z-index: 20; }
+        #startCard[hidden] { display: none; }
+        #startCard .panel { background: #111; color: #fff; border: 2px solid #44ff44; border-radius: 12px; padding: 20px; max-width: 360px; text-align: center; font-family: inherit; }
+        #startCard h1 { margin: 0 0 8px; font-size: 24px; }
+        #startCard p { margin: 0 0 10px; line-height: 1.45; }
+        #startCard button { margin-top: 6px; padding: 10px 26px; font-size: 18px; border: 0; border-radius: 999px; background: #44ff44; color: #111; font-weight: bold; cursor: pointer; }
         #gameOverModal {
             display: none;
             position: fixed;
@@ -163,6 +170,16 @@
     <input type="text" id="touchType" class="touch-only" aria-label="Type the falling words" placeholder="Tap here to type"
         autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
     
+    <div id="startCard">
+        <div class="panel">
+            <h1>Word Invaders</h1>
+            <p>Words fall from the sky. Type each one before it lands. You have three lives.</p>
+            <p>Every 1,000 points is a new level, and the words come faster.</p>
+            <p class="how">On a keyboard, just type. On a phone, Start opens the keyboard; type in the box under the game.</p>
+            <button id="startButton">Start</button>
+        </div>
+    </div>
+
     <div id="gameOverModal">
         <h2>Game Over!</h2>
         <div class="stats"></div>
@@ -594,15 +611,20 @@
                 requestAnimationFrame(this.gameLoop.bind(this));
             }
 
+            // arcade#322: Main Menu goes back to the start card; its Start begins the next round.
             showMainMenu() {
-                // For now, just restart the game
-                this.restart();
+                document.getElementById('gameOverModal').style.display = 'none';
+                document.getElementById('startCard').hidden = false;
             }
         }
 
-        // Start game when page loads
-        // sethshoultes.github.io#275: the game-over buttons' inline onclick calls game.restart(), so keep the instance.
-        window.onload = () => { window.game = new Game(); };
+        // arcade#322: the round starts from the start card's Start, never on page load. The first Start makes the game; a
+        // later one (after Main Menu) restarts it. sethshoultes.github.io#275: the game-over buttons call game.restart().
+        document.getElementById('startButton').addEventListener('click', () => {
+            document.getElementById('startCard').hidden = true;
+            if (window.game) window.game.restart(); else window.game = new Game();
+            if (matchMedia('(pointer: coarse)').matches) document.getElementById('touchType').focus(); // the tap opens the phone's keyboard
+        });
     </script>
 </body>
 </html>
