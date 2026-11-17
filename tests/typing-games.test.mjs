@@ -55,14 +55,20 @@ test('Typing Invaders: on load the start card shows, Start has focus, and no gam
   assert.equal(doc.activeElement, element('startButton')); // a keyboard starts it with Enter or Space, no Tab first
 });
 
-test('Typing Invaders: Start makes the game, hides the card and starts the loop; Main Menu brings the card back with Start focused', () => {
+test('Typing Invaders: Start makes the game, hides the card and starts the loop; Main Menu brings the card back over a cleared board with Start focused', () => {
   const { ctx, doc, element, frames } = invaders();
   element('startButton').click();
   assert.equal(typeof ctx.game, 'object');
   assert.equal(element('startCard').hidden, true);
   assert.equal(frames.length, 1);
   doc.activeElement = null; // a browser takes focus off a button whose card is hidden; Main Menu must give it back
+  Object.assign(ctx.game, { score: 120, lives: 1 });
+  ctx.game.updateHUD();
+  element('currentWord').textContent = 'gal';
   ctx.game.showMainMenu();
+  assert.equal(String(element('score').textContent), '0'); // the card shows over an empty board, not the last round's HUD
+  assert.equal(element('lives').textContent, '♥♥♥');
+  assert.equal(element('currentWord').textContent, '');
   assert.equal(element('startCard').hidden, false);
   assert.equal(doc.activeElement, element('startButton'));
   const game = ctx.game;

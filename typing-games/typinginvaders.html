@@ -51,7 +51,8 @@
         #startCard { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, 0.6); z-index: 20; }
         #startCard[hidden] { display: none; }
         #startCard .panel { background: #111; color: #fff; border: 2px solid #44ff44; border-radius: 12px; padding: 20px; max-width: 360px; text-align: center; font-family: inherit; }
-        #startCard h1 { margin: 0 0 8px; font-size: 24px; }
+        #startCard h1 { margin: 0 0 12px; font-size: 24px; }
+        #startCard .phone-line { display: none; }
         #startCard p { margin: 0 0 10px; line-height: 1.45; }
         #startCard button { margin-top: 6px; padding: 10px 26px; font-size: 18px; border: 0; border-radius: 999px; background: #44ff44; color: #111; font-weight: bold; cursor: pointer; }
         #gameOverModal {
@@ -145,6 +146,8 @@
             }
         }
         @media (hover: none) and (pointer: coarse) {
+            #startCard .keys-line { display: none; }
+            #startCard .phone-line { display: inline; }
             .touch-only {
                 display: block;
                 box-sizing: border-box;
@@ -175,7 +178,7 @@
             <h1>Word Invaders</h1>
             <p>Words fall from the sky. Type each one before it lands. You have three lives.</p>
             <p>Every 1,000 points is a new level, and the words come faster.</p>
-            <p class="how">On a keyboard, just type. On a phone, Start opens the keyboard; type in the box under the game.</p>
+            <p class="how"><span class="keys-line">Just type the words.</span><span class="phone-line">Start opens the keyboard; type in the box under the game.</span></p>
             <button id="startButton">Start</button>
         </div>
     </div>
@@ -614,6 +617,8 @@
             // arcade#322: Main Menu goes back to the start card; its Start begins the next round.
             showMainMenu() {
                 document.getElementById('gameOverModal').style.display = 'none';
+                this.reset(); // the card shows over an empty board: no old score, lives or half-typed word behind it
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 document.getElementById('startCard').hidden = false;
                 document.getElementById('startButton').focus(); // Enter or Space starts the next round, no Tab first
             }
