@@ -1,0 +1,50 @@
+---
+title: "The AI Put the Garage Door Springs on the Outside of the House"
+subtitle: "Image models draw what a scene usually looks like, not how the machine works, so on a site that teaches how something works, a realistic AI picture can be a factual error that readers believe because it's a picture."
+date: 2026-11-17
+related:
+  - slug: alt-text-must-come-from-the-artifact
+    note: "The same gap from the words side: the model that asked for the picture and the model that drew it don't agree, so you have to check what actually got drawn."
+  - slug: the-cheap-model-is-the-expensive-one
+    note: "Another time the obvious way to rank models was the wrong one. There it was price per word. Here it was how polished the picture looked."
+  - slug: the-fallback-that-rescues
+    note: "More from Garage Door Science, where the whole point is to explain the door correctly to the person standing in front of it."
+---
+
+<picture><source srcset="/blog/images/the-springs-were-on-the-outside-of-the-house-featured.webp" type="image/webp"><img src="/blog/images/the-springs-were-on-the-outside-of-the-house-featured.png" alt="A framed picture of a tidy house propped on a writing desk, a large coiled spring drawn on the outside wall above its garage door, while beside it lies an open technical manual whose page shows the same spring correctly mounted inside, with a magnifying glass resting across the framed picture" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>The picture looked great. A tidy suburban house in warm afternoon light, a two-car garage door, and mounted across the front of the house, above the door and out in the weather, was a fat coiled spring with cables running down the siding.</p>
+
+<p>That spring doesn't go there. On a normal garage door, the torsion spring sits inside the garage, wound around a steel shaft that runs along the wall just above the door. There's a drum at each end of the shaft, and a cable runs from each drum down to the bottom corners of the door. The opener hangs from the ceiling, also inside. From the driveway you can't see any of it.</p>
+
+<p>I was making featured images for articles on <a href="https://garagedoorscience.com">Garage Door Science</a> and A+ Garage Doors. Those articles are there to teach homeowners how these parts work, and the picture at the top of one was showing the reader something the text below it says is wrong.</p>
+
+<p>Here's what bothers me most. If a sentence in that article put the spring outside, someone would catch it. I'd catch it. A technician reading it would wince. Prose gets checked. A picture mostly doesn't, because people trust what they see more than what they read. It looks like a photo, so it reads like evidence.</p>
+
+<h2>So I ran a test</h2>
+
+<p>I wanted to know if this was one unlucky render or a pattern. I tried four illustration styles, infographic, isometric technical drawing, technical cutaway and watercolor, plus realistic photos, all on the same articles.</p>
+
+<p>The realistic photos got it wrong again and again. Springs, cables and opener parts kept ending up on the outside of the house. Rewording the prompt helped less than you'd hope.</p>
+
+<p>Once I stopped being annoyed, the reason made sense. An image model learns from millions of pictures, and it draws what a scene usually looks like. Most photos of garages are taken from the street. The model knows a garage picture has a house and a door in it, and it knows a spring is part of the story because I asked for one. It doesn't know how the door works, so it puts the spring wherever there's room in the shot it already pictured. The result looks right and is mechanically wrong.</p>
+
+<p>The styles that held up were the ones where the layout itself put you inside the garage. A cutaway is basically an instruction to show the inside, so the spring has an honest place to sit. Same with a diagram. I wasn't arguing with the model anymore. The picture I was asking for already had the right answer built into it.</p>
+
+<p>That's <a href="/blog/switch-channels-dont-dig.html">a lesson I keep learning</a>. When the model fights the composition, change the composition. Don't keep tightening the prompt. If every street-view render sticks the hardware on the siding, quit asking for the street view.</p>
+
+<p>Something similar came up when I compared image engines. Imagen 4 Ultra and Leonardo Phoenix are better than gpt-image-1 at drawing text, and their images often look more finished. But gpt-image-1 did a better job following a strict brief. When the brief says "the spring is on the shaft above the door, inside," I need the engine that actually does that. For a site like this, a pretty picture with the part in the wrong place loses to a plainer one that's correct.</p>
+
+<h2>What I do now</h2>
+
+<p>I read every image the way I'd read a paragraph. Where's the spring? Where do the cables go? Is the opener on the ceiling? If the picture makes a claim about how the machine works, that claim gets checked like any other.</p>
+
+<p>And when the subject is a mechanism, I reach for illustration first. A cutaway can't pass itself off as a photo, so nobody takes it for one. It also tends to be the more truthful picture, because it was made to show how the thing works.</p>
+
+<p>If your site teaches people how something works, a realistic AI picture isn't just decoration. It makes a claim, and it's the claim your readers are least likely to question.</p>
+
+<hr>
+
+<p><em>References: the articles these images were made for live at <a href="https://garagedoorscience.com">garagedoorscience.com</a>.</em></p>
+
+<p class="post-bio"><em>René Magritte painted a pipe and wrote underneath it that this is not a pipe. A realistic AI garage door makes the same point, except nobody wrote the caption.</em></p>
