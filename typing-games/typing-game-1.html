@@ -11,7 +11,7 @@
            zoom, and the word box sits near the top, above the on-screen keyboard. A mouse never matches. */
         @media (hover: none) and (pointer: coarse) {
             #gameCanvas { touch-action: none; }
-            #wordInput { top: 96px; }
+            #wordInput { top: 124px; } /* below the scoreboard's pill, which reaches y 80 (designer on #283) */
         }
         .star {
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
@@ -91,7 +91,7 @@
         // Player state
         const player = {
             x: canvas.width / 2,
-            y: canvas.height / 2,
+            y: canvas.height * 0.75, // below the centred start card, so a new player sees the star the card talks about
             size: 30,
             speed: 5,
             moving: {
