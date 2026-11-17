@@ -180,6 +180,41 @@
       }
     },
     {
+      "name": "forms",
+      "version": "0.1.0",
+      "about": "A form the site's owner defines once on Key, shown on any page under the members gate and saved for the signed-in member (sethshoultes/doorman#130). It runs behind the members gate, so only a member the gate lets in ever reaches it, and it refuses to serve (a 503) on a path the gate doesn't cover. It keeps nothing itself: Key holds the form and each member's answer, sealed, and checks the member's token again on every read and save. A plain HTML form that works with no JavaScript. Never cached, never indexed, never a twin, sitemap entry or llms line. Holds no key: only the name of the Pages secret that holds the app's secret key.",
+      "hooks": [],
+      "filters": [],
+      "edge": true,
+      "assets": [],
+      "settings": {
+        "forms": {
+          "type": "string",
+          "required": true
+        },
+        "app": {
+          "type": "string",
+          "required": true
+        },
+        "api": {
+          "type": "string",
+          "default": "https://api.superintelligentkey.com"
+        },
+        "key_var": {
+          "type": "string",
+          "default": "DOORMAN_SECRET"
+        }
+      },
+      "readme": "plugins/forms/README.md",
+      "hash": "0c8f5531a1445847afcf88b19766f783d355506778515756d102e9c5069b1f26",
+      "used_by": {
+        "redrockmqg": {
+          "version": "0.1.0",
+          "current": true
+        }
+      }
+    },
+    {
       "name": "hero-character",
       "version": "0.4.0",
       "about": "A character standing in a page's hero, with a speech bubble of real text. Both sit in front of the hero's own background (time-of-day's skyline, when a site uses it) and never behind its copy. The line is in the built page, so it reads with no script, and the bubble's fill makes it readable over any background. On phones the character and the bubble follow the hero's copy.",
@@ -485,7 +520,7 @@
     },
     {
       "name": "members",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "about": "A members gate for a static site, signing in with OpenID Connect against the issuer the site names (Key by default). Pages under a rule's directory are served only to a signed-in member, or only to one holding a named plan; anyone else is sent to sign in, or gets a 401, a 403 or, when the issuer can't be reached, a 503. It never serves a gated page on a failure. The session is the issuer's short access token in a __Host- cookie, checked on every gated request with @doorman/verify and its revocation marker. It runs first in the middleware (runRequired), so agent-files and the other plugins never see a gated page, and agent-files refuses gated paths in its twins, /mcp and sitemap list. Holds no key: only the name of the Pages secret that holds the app's secret key.",
       "hooks": [],
       "filters": [],
@@ -518,10 +553,10 @@
         }
       },
       "readme": "plugins/members/README.md",
-      "hash": "25fe89723ad810460cd004ec811d9b04c6ae0045c5a76e62c0fd2d99b85624ab",
+      "hash": "321f92535a7915e89298c0658f41bd9a3623ae60c0ceb1b9d9df0b767bd43bd4",
       "used_by": {
         "redrockmqg": {
-          "version": "0.1.1",
+          "version": "0.1.2",
           "current": true
         }
       }
@@ -1486,7 +1521,8 @@
       "plugins": {
         "radar": "0.3.0",
         "agent-files": "0.1.8",
-        "members": "0.1.1",
+        "members": "0.1.2",
+        "forms": "0.1.0",
         "dues-admin": "0.1.1",
         "preview-feedback": "0.10.5",
         "paypal-button": "0.4.0",

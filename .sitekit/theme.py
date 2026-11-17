@@ -355,7 +355,7 @@ class Theme:
                     out[f"plugins/{p.name}/{rel}"] = text
                 if f"plugins/{p.name}/{data}" not in out:
                     raise ThemeError(f'plugin "{p.name}": its edge data file "{data}" is not among the files plugin.py generates')
-                imports.append(f'import d{i} from "./plugins/{p.name}/{data}" with {{ type: "json" }};')
+                imports.append(f"const d{i} = {inline_json(p.name, out[f'plugins/{p.name}/{data}'])};")
                 entry += f", data: d{i}" + (f".{key}" if key else "")
             if p.edge["required"]:
                 entry += ", required: true"
@@ -365,6 +365,20 @@ class Theme:
         body = ("export const edge = [\n  " + ",\n  ".join(items) + ",\n];\n") if items else "export const edge = [];\n"
         out["_plugins.js"] = PLUGINS_JS_HEADER + "".join(i + "\n" for i in imports) + body
         return out
+
+
+def inline_json(name, text):
+    """A plugin's edge data as JS for _plugins.js: JSON.parse of the data as one string literal. Never an import with `with
+    { type: "json" }`: Cloudflare Pages' own build bundles with an esbuild that can't parse import attributes, so a site it
+    builds fails (key-site#17). Never an object literal either: there a "__proto__" key sets the prototype and the key is lost
+    (maint-review-2 on site-kit#450); JSON.parse keeps it as a key. ASCII-only, and a backtick or "*" is a \\u escape, so the
+    list never holds what site_check reads as a template literal or a block comment."""
+    try:
+        value = json.loads(text)
+    except ValueError as e:
+        raise ThemeError(f'plugin "{name}": its edge data file is not JSON: {e}') from None
+    literal = json.dumps(json.dumps(value, separators=(",", ":"), ensure_ascii=True), ensure_ascii=True)
+    return "JSON.parse(" + literal.replace("`", "\\u0060").replace("*", "\\u002a") + ")"
 
 
 def load(plugins_dir, config=None, only=None):

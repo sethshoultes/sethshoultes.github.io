@@ -62,7 +62,7 @@ def files(root, functions):
     except theme.ThemeError as e:
         raise EdgeError(str(e)) from None
     has_agent_files = (root / "plugins" / "agent-files" / "functions" / "agent-files.js").is_file()
-    unguarded = dues_admin_unguarded(out)
+    unguarded = dues_admin_unguarded(out) or forms_unguarded(out)
     if unguarded:
         raise EdgeError(unguarded)
     out["_chain.js"] = chain
@@ -99,6 +99,20 @@ def dues_admin_unguarded(out):
     if not any(path.startswith(r["prefix"]) and r["plans"] for r in rules):
         return (f'dues-admin: its path {path} must sit under a members rule with plans, e.g. "{path} plans:officers", '
                 "so only the club's officers reach it")
+    return ""
+
+
+def forms_unguarded(out):
+    """Why a form's page isn't gated, or "" (site-kit#445): each forms path must sit under a members rule, so only a signed-in
+    member reaches it. The edge refuses an ungated path too; this stops the build first."""
+    data = out.get("plugins/forms/forms-data.json")
+    if data is None:
+        return ""
+    members = out.get("plugins/members/members-data.json")
+    rules = json.loads(members)["config"]["rules"] if members else []
+    for f in json.loads(data)["config"]["forms"]:
+        if not any(f["path"].startswith(r["prefix"]) for r in rules):
+            return f'forms: its path {f["path"]} must sit under a members rule, e.g. "{f["path"]} signed-in"'
     return ""
 
 
