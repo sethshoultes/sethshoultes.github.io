@@ -425,10 +425,10 @@
                     const hud = document.getElementById('gameHUD');
                     const span = document.createElement('span');
                     span.id = 'powerUpStatus';
-                    hud.appendChild(document.createTextNode(' | Active: '));
                     hud.appendChild(span);
                 }
-                document.getElementById('powerUpStatus').textContent = status;
+                // the label only while a power-up is on, so a fresh round's HUD reads as the first one did
+                document.getElementById('powerUpStatus').textContent = status ? ` | Active: ${status}` : '';
             }
             gameLoop(timestamp) {
                 const deltaTime = timestamp - this.lastTime;

@@ -100,3 +100,15 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
   const desktop = typingStar({ rects: { scoreboard: { left: 979, width: 285, top: 16, bottom: 80 } } });
   assert.equal(starTopAfterAFrame(desktop), 30);
 });
+
+// The HUD's power-up label shows only while one is on, so a round after Main Menu reads like the first one.
+test('Typing Invaders: the HUD says "Active:" only while a power-up is on', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  ctx.game.activePowerUps.add('timeFreeze');
+  ctx.game.updateActivePowerUps();
+  assert.equal(element('powerUpStatus').textContent, ' | Active: ⏸️ ');
+  ctx.game.activePowerUps.clear();
+  ctx.game.updateActivePowerUps();
+  assert.equal(element('powerUpStatus').textContent, '');
+});
