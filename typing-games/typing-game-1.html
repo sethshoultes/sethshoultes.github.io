@@ -19,23 +19,23 @@
     </style>
 </head>
 <body class="bg-blue-900">
-    <div class="fixed top-4 right-4 text-white font-bold text-xl z-10">
-        Score: <span id="score">0</span> · Words: <span id="caught">0</span>/10
+    <div class="fixed top-4 right-4 text-white font-bold text-xl z-10 bg-blue-950/80 rounded-lg px-3 py-1">
+        Score: <span id="score">0</span> · Words: <span id="caught">0</span> <span class="opacity-75 font-normal">(goal 20)</span>
         <br>
         Time left: <span id="timer">60</span>s
     </div>
     
     <div id="wordInput" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden">
-        <input type="text" class="bg-white/80 rounded px-4 py-2 text-blue-900 text-center" autocomplete="off">
+        <input type="text" class="bg-white rounded px-4 py-2 text-blue-900 text-center" autocomplete="off">
     </div>
 
     <canvas id="gameCanvas"></canvas>
 
-    <!-- arcade#320: a round with a goal and an end: 60 s to type 10 words. -->
-    <div id="card" class="fixed inset-0 flex items-center justify-center z-20 p-4">
-        <div class="bg-white/95 text-blue-900 rounded-2xl p-6 max-w-sm w-full text-center shadow-xl">
+    <!-- arcade#320: a round with a goal and an end: 60 s to type 20 words. -->
+    <div id="card" class="fixed inset-0 flex items-center justify-center z-20 p-4 bg-blue-950/60">
+        <div class="bg-white text-blue-900 rounded-2xl p-6 max-w-sm w-full text-center shadow-xl">
             <h1 id="cardTitle" class="text-2xl font-bold mb-2">AI Typing Star</h1>
-            <p id="cardText" class="mb-4">Fly the star into a word, then type it. Type 10 words in 60 seconds. The faster you type each one, the more points it's worth.</p>
+            <p id="cardText" class="mb-4">Fly the star into a word, then type it. Type 20 words in 60 seconds. The faster you type each one, the more points it's worth.</p>
             <p id="cardHow" class="text-sm mb-4 opacity-80">Move: W A S D on a keyboard, or drag your finger on a phone.</p>
             <button id="cardButton" class="bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-full px-6 py-3">Start</button>
         </div>
@@ -65,7 +65,8 @@
         let currentWord = null;
         let typingStartTime = 0;
         // The round (arcade#320): ready until Start, then 60 s, then over with the score and Play again.
-        const ROUND = { seconds: 60, goal: 10 };
+        // goal 20: the designer's bot, at a human pace, typed 34 to 43 in 60 s, so 10 was passed in about 15 s (#283).
+        const ROUND = { seconds: 60, goal: 20 };
         let state = 'ready', roundStart = 0, caught = 0, best = 0;
         try { best = Number(localStorage.getItem('ai-typing-star-best')) || 0; } catch { /* no storage: this visit only */ }
         function startRound() {
@@ -78,12 +79,14 @@
             const newBest = score > best;
             if (newBest) { best = score; try { localStorage.setItem('ai-typing-star-best', String(best)); } catch { /* not kept */ } }
             cardTitle.textContent = caught >= ROUND.goal ? 'You made it!' : 'Time!';
-            cardText.textContent = `${caught} of ${ROUND.goal} words, ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to go next time.`}`;
+            cardText.textContent = `${caught} words (goal: ${ROUND.goal}), ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to reach it next time.`}`;
             cardHow.textContent = newBest ? 'A new best!' : `Your best: ${best} points.`;
             cardButton.textContent = 'Play again';
             card.style.display = 'flex';
+            cardButton.focus(); // Enter or Space plays again, no mouse needed
         }
         cardButton.addEventListener('click', startRound);
+        cardButton.focus(); // on a keyboard, Enter or Space starts the round
         
         // Player state
         const player = {
@@ -157,11 +160,10 @@
         // sethshoultes.github.io#270: a finger on the canvas steers the star toward it. Lifting it is a user gesture, so
         // focusing the word box there opens the phone's keyboard (the focus from the game loop does not). A mouse is
         // ignored, so desktop plays with WASD as before.
-        let touchTarget = null, touchPlay = false;
+        let touchTarget = null;
         const steer = (e) => {
             if (e.pointerType === 'mouse') return;
             e.preventDefault();
-            touchPlay = true;
             touchTarget = { x: e.clientX, y: e.clientY };
         };
         const release = (e) => {
@@ -259,7 +261,7 @@
                 if (state === 'playing' && !currentWord && checkCollision(word)) {
                     currentWord = word;
                     wordInput.style.display = 'block';
-                    if (touchPlay) input.placeholder = currentWord.text; // the word itself may be under the keyboard
+                    input.placeholder = currentWord.text; // the word, in the box: under a phone's keyboard, or far from the box on a desktop
                     input.focus();
                     typingStartTime = Date.now();
                 }
