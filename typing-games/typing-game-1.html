@@ -249,9 +249,15 @@
                     }
                 }
 
-                // Keep player in bounds. On a phone the scoreboard spans the top, so the star stays below it (#286).
+                // Keep player in bounds and in sight (#286): below the scoreboard when it spans the top, and on a phone
+                // below the word box near the top too, so a word caught up there never covers the star.
                 const board = scoreboard.getBoundingClientRect();
-                const top = board.width > canvas.width / 2 ? board.bottom : 0;
+                let top = board.width > canvas.width / 2 ? board.bottom : 0;
+                if (matchMedia('(pointer: coarse)').matches) {
+                    wordInput.style.visibility = 'hidden'; wordInput.style.display = 'block'; // measured where the CSS puts it, unseen
+                    top = Math.max(top, wordInput.getBoundingClientRect().bottom);
+                    wordInput.style.display = 'none'; wordInput.style.visibility = '';
+                }
                 player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
                 player.y = Math.max(top + player.size, Math.min(canvas.height - player.size, player.y));
             }
