@@ -20,9 +20,9 @@
 </head>
 <body class="bg-blue-900">
     <div class="fixed top-4 right-4 text-white font-bold text-xl z-10">
-        Score: <span id="score">0</span>
+        Score: <span id="score">0</span> · Words: <span id="caught">0</span>/10
         <br>
-        Time: <span id="timer">0.00</span>s
+        Time left: <span id="timer">60</span>s
     </div>
     
     <div id="wordInput" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden">
@@ -31,11 +31,24 @@
 
     <canvas id="gameCanvas"></canvas>
 
+    <!-- arcade#320: a round with a goal and an end: 60 s to type 10 words. -->
+    <div id="card" class="fixed inset-0 flex items-center justify-center z-20 p-4">
+        <div class="bg-white/95 text-blue-900 rounded-2xl p-6 max-w-sm w-full text-center shadow-xl">
+            <h1 id="cardTitle" class="text-2xl font-bold mb-2">AI Typing Star</h1>
+            <p id="cardText" class="mb-4">Fly the star into a word, then type it. Type 10 words in 60 seconds. The faster you type each one, the more points it's worth.</p>
+            <p id="cardHow" class="text-sm mb-4 opacity-80">Move: W A S D on a keyboard, or drag your finger on a phone.</p>
+            <button id="cardButton" class="bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-full px-6 py-3">Start</button>
+        </div>
+    </div>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
         const timerElement = document.getElementById('timer');
+        const caughtElement = document.getElementById('caught');
+        const card = document.getElementById('card'), cardTitle = document.getElementById('cardTitle'), cardText = document.getElementById('cardText');
+        const cardHow = document.getElementById('cardHow'), cardButton = document.getElementById('cardButton');
         const wordInput = document.getElementById('wordInput');
         const input = wordInput.querySelector('input');
 
@@ -51,6 +64,26 @@
         let score = 0;
         let currentWord = null;
         let typingStartTime = 0;
+        // The round (arcade#320): ready until Start, then 60 s, then over with the score and Play again.
+        const ROUND = { seconds: 60, goal: 10 };
+        let state = 'ready', roundStart = 0, caught = 0, best = 0;
+        try { best = Number(localStorage.getItem('ai-typing-star-best')) || 0; } catch { /* no storage: this visit only */ }
+        function startRound() {
+            score = 0; caught = 0; currentWord = null; input.value = ''; wordInput.style.display = 'none';
+            scoreElement.textContent = '0'; caughtElement.textContent = '0'; timerElement.textContent = String(ROUND.seconds);
+            card.style.display = 'none'; state = 'playing'; roundStart = Date.now();
+        }
+        function endRound() {
+            state = 'over'; currentWord = null; wordInput.style.display = 'none'; input.blur();
+            const newBest = score > best;
+            if (newBest) { best = score; try { localStorage.setItem('ai-typing-star-best', String(best)); } catch { /* not kept */ } }
+            cardTitle.textContent = caught >= ROUND.goal ? 'You made it!' : 'Time!';
+            cardText.textContent = `${caught} of ${ROUND.goal} words, ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to go next time.`}`;
+            cardHow.textContent = newBest ? 'A new best!' : `Your best: ${best} points.`;
+            cardButton.textContent = 'Play again';
+            card.style.display = 'flex';
+        }
+        cardButton.addEventListener('click', startRound);
         
         // Player state
         const player = {
@@ -65,9 +98,9 @@
 
         // Words data
         const aiWords = {
-            models: ['GPT', 'BERT', 'DALL-E', 'LLM', 'RNN', 'CNN'],
+            models: ['GPT', 'BERT', 'GAN', 'LLM', 'RNN', 'CNN'],
             concepts: ['Neural', 'Data', 'Learn', 'AI', 'ML', 'AGI'],
-            companies: ['OpenAI', 'Google', 'Meta', 'IBM'],
+            space: ['Orbit', 'Comet', 'Nova', 'Rocket'], // arcade#320: our own words, never a real company's name
             programming: ['Python', 'Model', 'Train', 'Code']
         };
 
@@ -108,7 +141,7 @@
 
         // Movement controls
         document.addEventListener('keydown', (e) => {
-            if (!currentWord) {
+            if (state === 'playing' && !currentWord) {
                 if (e.key.toLowerCase() in player.moving) {
                     player.moving[e.key.toLowerCase()] = true;
                 }
@@ -148,6 +181,8 @@
                 const pointsEarned = Math.max(1, Math.floor(10 / timeElapsed));
                 score += pointsEarned;
                 scoreElement.textContent = score;
+                caught++;
+                caughtElement.textContent = caught;
                 
                 words.splice(words.indexOf(currentWord), 1);
                 words.push(new FloatingWord());
@@ -188,8 +223,15 @@
             ctx.fillStyle = '#1e3a8a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // The round's clock
+            if (state === 'playing') {
+                const left = Math.max(0, ROUND.seconds - (Date.now() - roundStart) / 1000);
+                timerElement.textContent = String(Math.ceil(left));
+                if (left === 0) endRound();
+            }
+
             // Move player
-            if (!currentWord) {
+            if (state === 'playing' && !currentWord) {
                 if (player.moving.w) player.y -= player.speed;
                 if (player.moving.s) player.y += player.speed;
                 if (player.moving.a) player.x -= player.speed;
@@ -214,7 +256,7 @@
                 word.move();
                 word.draw();
 
-                if (!currentWord && checkCollision(word)) {
+                if (state === 'playing' && !currentWord && checkCollision(word)) {
                     currentWord = word;
                     wordInput.style.display = 'block';
                     if (touchPlay) input.placeholder = currentWord.text; // the word itself may be under the keyboard
@@ -225,11 +267,6 @@
 
             // Draw player
             drawStar(player.x, player.y, player.size);
-
-            // Update timer if typing
-            if (currentWord) {
-                timerElement.textContent = ((Date.now() - typingStartTime) / 1000).toFixed(2);
-            }
 
             requestAnimationFrame(gameLoop);
         }
