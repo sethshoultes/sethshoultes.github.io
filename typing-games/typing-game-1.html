@@ -19,7 +19,7 @@
     </style>
 </head>
 <body class="bg-blue-900">
-    <div class="fixed top-4 right-4 text-white font-bold text-xl z-10 bg-blue-950/80 rounded-lg px-3 py-1">
+    <div id="scoreboard" class="fixed top-4 right-4 text-white font-bold text-xl z-10 bg-blue-950 tabular-nums rounded-lg px-3 py-1">
         Score: <span id="score">0</span> · Words: <span id="caught">0</span> <span class="opacity-75 font-normal">(goal 20)</span>
         <br>
         Time left: <span id="timer">60</span>s
@@ -47,6 +47,7 @@
         const scoreElement = document.getElementById('score');
         const timerElement = document.getElementById('timer');
         const caughtElement = document.getElementById('caught');
+        const scoreboard = document.getElementById('scoreboard');
         const card = document.getElementById('card'), cardTitle = document.getElementById('cardTitle'), cardText = document.getElementById('cardText');
         const cardHow = document.getElementById('cardHow'), cardButton = document.getElementById('cardButton');
         const wordInput = document.getElementById('wordInput');
@@ -248,9 +249,17 @@
                     }
                 }
 
-                // Keep player in bounds
+                // Keep player in bounds and in sight (#286): below the scoreboard when it spans the top, and on a phone
+                // below the word box near the top too, so a word caught up there never covers the star.
+                const board = scoreboard.getBoundingClientRect();
+                let top = board.width > canvas.width / 2 ? board.bottom : 0;
+                if (matchMedia('(pointer: coarse)').matches) {
+                    wordInput.style.visibility = 'hidden'; wordInput.style.display = 'block'; // measured where the CSS puts it, unseen
+                    top = Math.max(top, wordInput.getBoundingClientRect().bottom);
+                    wordInput.style.display = 'none'; wordInput.style.visibility = '';
+                }
                 player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
-                player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
+                player.y = Math.max(top + player.size, Math.min(canvas.height - player.size, player.y));
             }
 
             // Draw and move words
