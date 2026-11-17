@@ -615,6 +615,7 @@
             showMainMenu() {
                 document.getElementById('gameOverModal').style.display = 'none';
                 document.getElementById('startCard').hidden = false;
+                document.getElementById('startButton').focus(); // Enter or Space starts the next round, no Tab first
             }
         }
 
@@ -625,6 +626,7 @@
             if (window.game) window.game.restart(); else window.game = new Game();
             if (matchMedia('(pointer: coarse)').matches) document.getElementById('touchType').focus(); // the tap opens the phone's keyboard
         });
+        document.getElementById('startButton').focus(); // on a keyboard, Enter or Space starts the round
     </script>
 </body>
 </html>
