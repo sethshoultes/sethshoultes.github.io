@@ -1,0 +1,22 @@
+{
+  "name": "text",
+  "version": "1.1",
+  "title": "Text: running words, in parts that each may have a subheading, a paragraph and a picture",
+  "props": {
+    "heading": {"type": "text", "max": 90},
+    "body": {"type": "items", "required": true, "max": 60, "fields": {
+      "subheading": {"type": "text", "max": 120},
+      "paragraph": {"type": "text", "max": 2000},
+      "image": {"type": "image"},
+      "size": {"type": "choice", "values": ["small", "medium"]}
+    }}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "heading", "level": 2, "text": "{heading}"},
+    {"part": "group", "each": "body", "children": [
+      {"part": "heading", "level": 3, "text": "{item.subheading}"},
+      {"part": "paragraph", "text": "{item.paragraph}"},
+      {"part": "image", "src": "{item.image.src}", "alt": "{item.image.alt}"}
+    ]}
+  ]}
+}

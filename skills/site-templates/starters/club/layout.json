@@ -1,0 +1,195 @@
+{
+  "template": "club",
+  "why": "{{placeholder:Who the club is for and why people join, in one or two warm sentences: what members do together, where, and since when}}",
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "title": "{{placeholder:Your club's name}}",
+      "description": "{{placeholder:One line: who the club is for and what members do together}}",
+      "sections": [
+        {
+          "id": "hero",
+          "block": "hero@1",
+          "props": {
+            "heading": "{{placeholder:Your club's name}}",
+            "lead": "{{placeholder:One line on who you are and where you meet}}",
+            "image": {
+              "src": "/images/members.png",
+              "alt": "{{placeholder:What the photo of your members shows}}"
+            },
+            "cta": {
+              "text": "Membership",
+              "href": "/membership/"
+            }
+          }
+        },
+        {
+          "id": "together",
+          "block": "text@1",
+          "props": {
+            "heading": "What we do together",
+            "body": [
+              {
+                "subheading": "{{placeholder:Meetings}}",
+                "paragraph": "{{placeholder:When and where you meet, and what happens there}}"
+              },
+              {
+                "subheading": "{{placeholder:Sew days, outings or workshops}}",
+                "paragraph": "{{placeholder:The other things members do together}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "join",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line inviting people to join}}",
+            "button": {
+              "text": "Become a member",
+              "href": "/membership/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about/",
+      "type": "about",
+      "title": "About",
+      "description": "{{placeholder:One line on the club's story}}",
+      "sections": [
+        {
+          "id": "story",
+          "block": "about@1",
+          "props": {
+            "heading": "Our story",
+            "text": "{{placeholder:When the club started, who started it, and who it brings together}}",
+            "image": {
+              "src": "/images/about.png",
+              "alt": "{{placeholder:What this photo shows}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/membership/",
+      "type": "page",
+      "title": "Membership",
+      "description": "{{placeholder:One line on who can join and how}}",
+      "sections": [
+        {
+          "id": "members",
+          "block": "text@1",
+          "props": {
+            "body": [
+              {
+                "paragraph": "{{placeholder:Who can join, and what members get}}"
+              },
+              {
+                "subheading": "How to join",
+                "paragraph": "{{placeholder:The steps: a form, a first visit, dues}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "benefits",
+          "block": "list@1",
+          "props": {
+            "heading": "Members can",
+            "points": [
+              {
+                "point": "{{placeholder:A thing members can do}}"
+              },
+              {
+                "point": "{{placeholder:Another thing members can do}}"
+              },
+              {
+                "point": "{{placeholder:A third thing members can do}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "membership-contact",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line on who to ask about joining}}",
+            "button": {
+              "text": "Contact us",
+              "href": "/contact/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/meetings/",
+      "type": "page",
+      "title": "Meetings",
+      "description": "{{placeholder:One line on when and where the club meets}}",
+      "sections": [
+        {
+          "id": "next",
+          "block": "text@1",
+          "props": {
+            "heading": "Next meeting",
+            "body": [
+              {
+                "paragraph": "{{placeholder:The date and time\nThe place\nIts address}}"
+              },
+              {
+                "subheading": "On the agenda",
+                "paragraph": "{{placeholder:What the next meeting covers}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "questions",
+          "block": "faq@1",
+          "props": {
+            "heading": "Questions people ask",
+            "questions": [
+              {
+                "q": "{{placeholder:Can I visit before I join?}}",
+                "a": "{{placeholder:Your answer}}"
+              },
+              {
+                "q": "{{placeholder:What should I bring?}}",
+                "a": "{{placeholder:Your answer}}"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/contact/",
+      "type": "contact",
+      "title": "Contact",
+      "description": "{{placeholder:One line on how to reach the club}}",
+      "sections": [
+        {
+          "id": "reach",
+          "block": "contact@1",
+          "props": {
+            "heading": "Get in touch",
+            "address": "{{placeholder:Where you meet: the place and its address}}",
+            "reach": [
+              {
+                "button": {
+                  "text": "Email us",
+                  "href": "{{placeholder:mailto:your club's email}}"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

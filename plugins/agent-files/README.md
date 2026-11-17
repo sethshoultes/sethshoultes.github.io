@@ -41,6 +41,9 @@ The plugin only reads the site's own built files through `ASSETS`. It writes not
    if (answer) return answer;
    return vary(await context.next());
    ```
+   A site with the members gate passes `{ members: true }` (`agentFiles(context, { members: true })`, as site-templates'
+   recipe does). Then, if the gate's matcher is missing from `context.data`, `/mcp` and every markdown read answer 503
+   rather than serve a gated page's words (site-kit#418).
    If the site's `_routes.json` lists `include` paths, they must cover `/*`, so that every page can be negotiated.
 4. **Write the two cards** in the site's `public/.well-known/`, both served as `application/json`. Each carries the
    site's own why (rule 8):

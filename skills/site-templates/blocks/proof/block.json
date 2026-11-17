@@ -1,0 +1,22 @@
+{
+  "name": "proof",
+  "version": "1.1",
+  "title": "Proof: what customers said, in their words, with their names",
+  "props": {
+    "heading": {"type": "text", "required": true, "max": 90},
+    "reviews": {"type": "items", "required": true, "max": 12, "fields": {
+      "quote": {"type": "text", "required": true},
+      "name": {"type": "text", "required": true},
+      "stars": {"type": "count", "min": 1, "max": 5}
+    }},
+    "style": {"type": "choice", "values": ["quote"]}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "heading", "level": 2, "text": "{heading}"},
+    {"part": "columns", "children": [
+      {"part": "column", "each": "reviews", "children": [
+        {"part": "quote", "cite": "{item.name}", "children": [{"part": "paragraph", "text": "{item.quote}"}]}
+      ]}
+    ]}
+  ]}
+}

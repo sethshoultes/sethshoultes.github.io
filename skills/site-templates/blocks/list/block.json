@@ -1,0 +1,17 @@
+{
+  "name": "list",
+  "version": "1.0",
+  "title": "List: a bulleted list as its own section, with an optional heading",
+  "props": {
+    "heading": {"type": "text", "max": 90},
+    "points": {"type": "items", "required": true, "max": 40, "fields": {
+      "point": {"type": "text", "required": true, "max": 600}
+    }}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "heading", "level": 2, "text": "{heading}"},
+    {"part": "list", "children": [
+      {"part": "list-item", "each": "points", "text": "{item.point}"}
+    ]}
+  ]}
+}

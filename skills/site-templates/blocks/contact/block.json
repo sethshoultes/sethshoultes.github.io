@@ -1,0 +1,72 @@
+{
+  "name": "contact",
+  "version": "1.0",
+  "title": "Contact: how to reach you, with a call and an email button (no form: core blocks have none)",
+  "props": {
+    "heading": {
+      "type": "text",
+      "required": true,
+      "max": 90
+    },
+    "address": {
+      "type": "text",
+      "max": 300
+    },
+    "hours": {
+      "type": "text",
+      "max": 300
+    },
+    "reach": {
+      "type": "items",
+      "required": true, "max": 4,
+      "fields": {
+        "button": {
+          "type": "link",
+          "required": true
+        }
+      },
+      "needs": [
+        "tel:",
+        "mailto:"
+      ]
+    },
+    "directions": {
+      "type": "link"
+    }
+  },
+  "tree": {
+    "part": "group",
+    "tag": "section",
+    "children": [
+      {
+        "part": "heading",
+        "level": 2,
+        "text": "{heading}"
+      },
+      {
+        "part": "paragraph",
+        "text": "{address}"
+      },
+      {
+        "part": "paragraph",
+        "text": "{hours}"
+      },
+      {
+        "part": "buttons",
+        "children": [
+          {
+            "part": "button",
+            "each": "reach",
+            "text": "{item.button.text}",
+            "href": "{item.button.href}"
+          },
+          {
+            "part": "button",
+            "text": "{directions.text}",
+            "href": "{directions.href}"
+          }
+        ]
+      }
+    ]
+  }
+}

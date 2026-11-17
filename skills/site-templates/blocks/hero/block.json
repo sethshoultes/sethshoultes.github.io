@@ -1,0 +1,26 @@
+{
+  "name": "hero",
+  "version": "1.4",
+  "title": "Hero: the page's headline, a line under it, a picture and one button",
+  "props": {
+    "heading": {"type": "text", "required": true, "max": 90},
+    "lead": {"type": "text", "max": 240},
+    "image": {"type": "image"},
+    "cta": {"type": "link"},
+    "layout": {"type": "choice", "values": ["stacked"]},
+    "logo": {"type": "flag", "also": ["large"]},
+    "title_size": {"type": "choice", "values": ["small"]},
+    "cta_style": {"type": "choice", "values": ["link"]},
+    "menu": {"type": "flag"}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "columns", "children": [
+      {"part": "column", "children": [
+        {"part": "heading", "level": 1, "text": "{heading}"},
+        {"part": "paragraph", "text": "{lead}"},
+        {"part": "buttons", "children": [{"part": "button", "text": "{cta.text}", "href": "{cta.href}"}]}
+      ]},
+      {"part": "column", "children": [{"part": "image", "src": "{image.src}", "alt": "{image.alt}"}]}
+    ]}
+  ]}
+}

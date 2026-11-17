@@ -1,0 +1,14 @@
+{
+  "name": "cta",
+  "version": "1.2",
+  "title": "Call to action: one line and one button, to close a page",
+  "props": {
+    "heading": {"type": "text", "required": true, "max": 90},
+    "button": {"type": "link", "required": true},
+    "style": {"type": "choice", "values": ["link", "dark"]}
+  },
+  "tree": {"part": "group", "tag": "section", "children": [
+    {"part": "heading", "level": 2, "text": "{heading}"},
+    {"part": "buttons", "children": [{"part": "button", "text": "{button.text}", "href": "{button.href}"}]}
+  ]}
+}

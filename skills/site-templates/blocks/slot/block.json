@@ -1,0 +1,9 @@
+{
+  "name": "slot",
+  "version": "1.0",
+  "title": "Slot: a named place a plugin fills with its own output (a PayPal button, say); the record holds only the name",
+  "props": {
+    "name": {"type": "text", "required": true, "max": 40}
+  },
+  "tree": {"part": "group", "tag": "div", "slot": "{name}"}
+}

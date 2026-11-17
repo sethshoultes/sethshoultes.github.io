@@ -58,9 +58,13 @@ export function twinPath(pathname) {
   return pathname + "/index.md";
 }
 
+/** True when the site's members gate (site-kit#298) gates this path. The gate runs first and leaves its matcher on
+ * context.data, so the twins, /mcp and the sitemap list refuse exactly what it guards, even when the twin file exists. */
+const gated = (context, pathname) => !!context.data?.members?.gated(pathname);
+
 async function twin(context, pathname) {
   const p = twinPath(pathname);
-  if (!p) return null;
+  if (!p || gated(context, pathname) || gated(context, p)) return null;
   const origin = new URL(context.request.url).origin;
   const url = new URL(p, origin);
   if (url.origin !== origin || url.pathname !== p || url.search || url.hash) return null;   // the URL must be exactly the twin
@@ -124,7 +128,7 @@ function a2a(request, origin) {
     error ? rpcError(null, ...error) : rpcError(msg.id, -32004, words));   // -32004: A2A's UnsupportedOperationError
 }
 
-/** Same-origin page paths from /sitemap.xml or /sitemap-index.xml (one level of child sitemaps), sorted. */
+/** Same-origin page paths from /sitemap.xml or /sitemap-index.xml (one level of child sitemaps), sorted; none the members gate gates. */
 export async function sitemapPaths(context, origin) {
   const fetchText = async (path) => {
     const r = await context.env.ASSETS.fetch(new URL(path, origin));
@@ -147,7 +151,7 @@ export async function sitemapPaths(context, origin) {
   const pages = new Set();
   const children = /<sitemapindex/i.test(xml) ? locs(xml).map(local).filter(Boolean).slice(0, 50) : [];
   for (const body of children.length ? await Promise.all(children.map(fetchText)) : [xml])
-    for (const p of locs(body).map(local)) if (p && pages.size < MAX_PAGES) pages.add(p);
+    for (const p of locs(body).map(local)) if (p && !gated(context, p) && pages.size < MAX_PAGES) pages.add(p);
   return [...pages].sort();
 }
 
@@ -197,14 +201,20 @@ async function mcp(context, origin) {
   }
 }
 
-/** The plugin's answer for this request, or null to let the site serve it. */
-export async function agentFiles(context) {
+/** The plugin's answer for this request, or null to let the site serve it. `opts.members`: the site has a members gate (the
+ *  generated middleware says so), so when the gate's matcher is missing from context.data, /mcp and every markdown read
+ *  answer 503 rather than count every path as ungated (site-kit#418: fail closed). */
+export async function agentFiles(context, opts = {}) {
   const { request } = context;
   const url = new URL(request.url);
   const origin = url.origin;
   if (url.pathname === "/a2a") return a2a(request, origin);
+  const md = (request.method === "GET" || request.method === "HEAD") && wantsMarkdown(request.headers.get("Accept") || "");
+  if (opts.members && typeof context.data?.members?.gated !== "function" && (url.pathname === "/mcp" || md))
+    return new Response("The members gate isn't running, so agent reads are off until it is.\n", { status: 503, headers: {
+      "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", Vary: "Accept" } });
   if (url.pathname === "/mcp") return mcp(context, origin);
-  if ((request.method === "GET" || request.method === "HEAD") && wantsMarkdown(request.headers.get("Accept") || "")) {
+  if (md) {
     const body = await twin(context, url.pathname);
     if (body !== null)
       return new Response(request.method === "HEAD" ? null : body, { headers: {

@@ -1,0 +1,83 @@
+{
+  "name": "menu",
+  "version": "1.0",
+  "title": "Menu: one section of what you sell, each item with its name, its price and a line",
+  "props": {
+    "heading": {
+      "type": "text",
+      "required": true,
+      "max": 60
+    },
+    "intro": {
+      "type": "text",
+      "max": 240
+    },
+    "items": {
+      "type": "items",
+      "required": true, "max": 30,
+      "fields": {
+        "name": {
+          "type": "text",
+          "required": true,
+          "max": 60
+        },
+        "price": {
+          "type": "text",
+          "required": true,
+          "max": 20
+        },
+        "text": {
+          "type": "text",
+          "max": 160
+        }
+      }
+    },
+    "note": {
+      "type": "text",
+      "max": 240
+    }
+  },
+  "tree": {
+    "part": "group",
+    "tag": "section",
+    "children": [
+      {
+        "part": "heading",
+        "level": 2,
+        "text": "{heading}"
+      },
+      {
+        "part": "paragraph",
+        "text": "{intro}"
+      },
+      {
+        "part": "columns",
+        "children": [
+          {
+            "part": "column",
+            "each": "items",
+            "children": [
+              {
+                "part": "heading",
+                "level": 3,
+                "text": "{item.name}"
+              },
+              {
+                "part": "paragraph",
+                "text": "{item.price}"
+              },
+              {
+                "part": "paragraph",
+                "text": "{item.text}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "part": "paragraph",
+        "text": "{note}"
+      }
+    ]
+  }
+}

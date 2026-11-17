@@ -1,0 +1,228 @@
+{
+  "template": "product",
+  "why": "{{placeholder:Who the product is for and what it does for them, in one or two warm sentences: the problem it takes off their hands, and why they can trust it}}",
+  "menu": [
+    {
+      "label": "How it works",
+      "href": "/how-it-works/"
+    },
+    {
+      "label": "Pricing",
+      "href": "/pricing/"
+    },
+    {
+      "label": "FAQ",
+      "href": "/faq/"
+    },
+    {
+      "label": "Sign in",
+      "href": "{{placeholder:https://your app's sign-in page}}"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "title": "{{placeholder:Your product's name}}",
+      "description": "{{placeholder:One line: what the product does and who it is for}}",
+      "sections": [
+        {
+          "id": "hero",
+          "block": "hero@1",
+          "props": {
+            "heading": "{{placeholder:What the product does for people, in a few words}}",
+            "lead": "{{placeholder:One line on who it is for and what changes for them}}",
+            "cta": {
+              "text": "See how it works",
+              "href": "/how-it-works/"
+            }
+          }
+        },
+        {
+          "id": "what",
+          "block": "list@1",
+          "props": {
+            "heading": "What it does",
+            "points": [
+              {
+                "point": "{{placeholder:A thing it does for you}}"
+              },
+              {
+                "point": "{{placeholder:Another thing it does for you}}"
+              },
+              {
+                "point": "{{placeholder:A third thing it does for you}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "start",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line inviting people to try it}}",
+            "button": {
+              "text": "See pricing",
+              "href": "/pricing/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/how-it-works/",
+      "type": "page",
+      "title": "How it works",
+      "description": "{{placeholder:One line on what happens after someone signs up}}",
+      "sections": [
+        {
+          "id": "steps",
+          "block": "list@1",
+          "props": {
+            "heading": "How it works",
+            "points": [
+              {
+                "point": "{{placeholder:Step one: what the person does first}}"
+              },
+              {
+                "point": "{{placeholder:Step two: what the product does next}}"
+              },
+              {
+                "point": "{{placeholder:Step three: what the person gets}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "connections",
+          "block": "text@1",
+          "props": {
+            "heading": "What it connects to",
+            "body": [
+              {
+                "subheading": "{{placeholder:A service it connects to}}",
+                "paragraph": "{{placeholder:What it reads or writes there, in words, and what it never touches}}"
+              },
+              {
+                "subheading": "{{placeholder:Another service it connects to}}",
+                "paragraph": "{{placeholder:What it reads or writes there, in words, and what it never touches}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "next",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line on what it costs to start}}",
+            "button": {
+              "text": "See pricing",
+              "href": "/pricing/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/pricing/",
+      "type": "page",
+      "title": "Pricing",
+      "description": "{{placeholder:One line on what the plans cost}}",
+      "sections": [
+        {
+          "id": "plans",
+          "block": "text@1",
+          "props": {
+            "heading": "Pricing",
+            "body": [
+              {
+                "paragraph": "{{placeholder:A line on how the plans differ, and how billing works}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "plan-one",
+          "block": "list@1",
+          "props": {
+            "heading": "{{placeholder:First plan's name: its price}}",
+            "points": [
+              {
+                "point": "{{placeholder:What this plan includes}}"
+              },
+              {
+                "point": "{{placeholder:Something else it includes}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "plan-two",
+          "block": "list@1",
+          "props": {
+            "heading": "{{placeholder:Second plan's name: its price}}",
+            "points": [
+              {
+                "point": "{{placeholder:What this plan includes}}"
+              },
+              {
+                "point": "{{placeholder:Something else it includes}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sign-up",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line inviting people to start}}",
+            "button": {
+              "text": "Get started",
+              "href": "{{placeholder:https://your app's sign-up page}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/faq/",
+      "type": "page",
+      "title": "FAQ",
+      "description": "{{placeholder:One line on the questions people ask before signing up}}",
+      "sections": [
+        {
+          "id": "questions",
+          "block": "faq@1",
+          "props": {
+            "heading": "Questions people ask",
+            "questions": [
+              {
+                "q": "{{placeholder:Is there a free plan?}}",
+                "a": "{{placeholder:Your answer}}"
+              },
+              {
+                "q": "{{placeholder:Can I cancel any time?}}",
+                "a": "{{placeholder:Your answer}}"
+              },
+              {
+                "q": "{{placeholder:What do you do with my data?}}",
+                "a": "{{placeholder:Your answer}}"
+              }
+            ]
+          }
+        },
+        {
+          "id": "faq-start",
+          "block": "cta@1",
+          "props": {
+            "heading": "{{placeholder:A line inviting people to start}}",
+            "button": {
+              "text": "Get started",
+              "href": "{{placeholder:https://your app's sign-up page}}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

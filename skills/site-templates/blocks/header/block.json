@@ -1,0 +1,38 @@
+{
+  "name": "header",
+  "version": "1.1",
+  "title": "Header: the logo, the site's name and the menu of its pages (a template part on every page)",
+  "props": {},
+  "tree": {
+    "part": "group",
+    "tag": "header",
+    "children": [
+      {
+        "part": "columns",
+        "children": [
+          {
+            "part": "column",
+            "children": [
+              {
+                "part": "site-logo"
+              },
+              {
+                "part": "site-title"
+              }
+            ]
+          },
+          {
+            "part": "column",
+            "children": [
+              {
+                "part": "navigation",
+                "label": "Main",
+                "where": "header"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
