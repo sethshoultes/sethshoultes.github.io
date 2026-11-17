@@ -602,6 +602,7 @@
                 this.activePowerUps.clear();
                 this.shieldActive = false;
                 this.updateHUD();
+                this.updateActivePowerUps(); // the loop draws it, but the card after Main Menu shows no frame
                 document.getElementById('currentWord').textContent = '';
             }
 

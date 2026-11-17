@@ -102,7 +102,7 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
 });
 
 // The HUD's power-up label shows only while one is on, so a round after Main Menu reads like the first one.
-test('Typing Invaders: the HUD says "Active:" only while a power-up is on', () => {
+test('Typing Invaders: the HUD says "Active:" only while a power-up is on, and Main Menu clears it', () => {
   const { ctx, element } = invaders();
   element('startButton').click();
   ctx.game.activePowerUps.add('timeFreeze');
@@ -110,5 +110,9 @@ test('Typing Invaders: the HUD says "Active:" only while a power-up is on', () =
   assert.equal(element('powerUpStatus').textContent, ' | Active: ⏸️ ');
   ctx.game.activePowerUps.clear();
   ctx.game.updateActivePowerUps();
+  assert.equal(element('powerUpStatus').textContent, '');
+  ctx.game.activePowerUps.add('wordClear'); // 💥 never removes its own id, so a round that had one ends with it "active"
+  ctx.game.updateActivePowerUps();
+  ctx.game.showMainMenu(); // no frame runs behind the card, so reset() itself must clear the label
   assert.equal(element('powerUpStatus').textContent, '');
 });
