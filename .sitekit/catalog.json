@@ -762,9 +762,45 @@
       "readme": "plugins/radar/README.md",
       "hash": "5aabbd2b6da59b12066ce37e8de6c425117b3abcf9a778e03a0faf327a684c52",
       "used_by": {
+        "diecaststuntdad": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "fartranker": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "foo": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "foo-customer": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "key": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "mywebsitememory": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "redrockmqg": {
+          "version": "0.3.0",
+          "current": true
+        },
+        "sethshoultes-com": {
+          "version": "0.3.0",
+          "current": true
+        },
         "smores": {
-          "version": "0.1.2",
-          "current": false
+          "version": "0.3.0",
+          "current": true
+        },
+        "trenzbarbershop": {
+          "version": "0.3.0",
+          "current": true
         }
       }
     },
@@ -1327,7 +1363,9 @@
   "sites": {
     "diecaststuntdad": {
       "repo": "sethshoultes/diecaststuntdad-site",
-      "plugins": {},
+      "plugins": {
+        "radar": "0.3.0"
+      },
       "baseline": {
         "plugins": [],
         "functions": [],
@@ -1338,6 +1376,7 @@
     "fartranker": {
       "repo": "sethshoultes/fartranker-site",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.6",
         "preview-feedback": "0.5.4"
       },
@@ -1362,6 +1401,7 @@
     "foo": {
       "repo": "sethshoultes/superintelligentfoo",
       "plugins": {
+        "radar": "0.3.0",
         "hero-character": "0.4.0",
         "monthly-edition": "0.1.0",
         "preview-feedback": "0.5.3",
@@ -1386,6 +1426,7 @@
         "sethshoultes/foo-agent"
       ],
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.1"
       },
       "baseline": {
@@ -1404,6 +1445,7 @@
     "key": {
       "repo": "sethshoultes/key-site",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.8",
         "theme-picker": "0.2.0"
       },
@@ -1423,6 +1465,7 @@
     "mywebsitememory": {
       "repo": "sethshoultes/mywebsitememory",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.6"
       },
       "baseline": {
@@ -1441,6 +1484,7 @@
     "redrockmqg": {
       "repo": "sethshoultes/redrockmqg-site",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.8",
         "members": "0.1.1",
         "dues-admin": "0.1.1",
@@ -1464,6 +1508,7 @@
     "sethshoultes-com": {
       "repo": "sethshoultes/sethshoultes.github.io",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.6",
         "hero-scenes": "0.1.1",
         "sitemap-check": "0.1.0",
@@ -1491,7 +1536,7 @@
         "map": "0.2.0",
         "quickfind": "0.1.2",
         "preview-feedback": "0.5.3",
-        "radar": "0.1.2",
+        "radar": "0.3.0",
         "talk": "0.5.8"
       },
       "baseline": {
@@ -1528,6 +1573,7 @@
     "trenzbarbershop": {
       "repo": "sethshoultes/trenzbarbershop",
       "plugins": {
+        "radar": "0.3.0",
         "agent-files": "0.1.6",
         "map": "0.3.0",
         "preview-feedback": "0.10.8"
