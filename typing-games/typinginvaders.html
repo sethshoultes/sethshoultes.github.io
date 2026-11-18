@@ -68,7 +68,9 @@
             text-align: center;
             animation: fadeIn 0.5s;
             z-index: 1000;
-            min-width: 300px;
+            min-width: min(300px, calc(100vw - 32px));
+            max-width: calc(100vw - 32px); /* a long saved name wraps instead of pushing the box off a phone */
+            box-sizing: border-box;
         }
         #gameOverModal h2 {
             color: #ff4444;
@@ -92,6 +94,9 @@
         #gameOverModal .high-scores td {
             padding: 5px;
             border-bottom: 1px solid #333;
+        }
+        #gameOverModal .high-scores td:nth-child(2) {
+            overflow-wrap: anywhere;
         }
         #gameOverModal input {
             background: #333;
