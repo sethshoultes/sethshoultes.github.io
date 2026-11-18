@@ -116,3 +116,27 @@ test('Typing Invaders: the HUD says "Active:" only while a power-up is on, and M
   ctx.game.showMainMenu(); // no frame runs behind the card, so reset() itself must clear the label
   assert.equal(element('powerUpStatus').textContent, '');
 });
+
+// 💥 clears the board the moment it is collected, so it never shows as Active; a lasting one (🛡️) does.
+test('Typing Invaders: collecting 💥 clears the words and scores them, but only a lasting power-up shows as Active', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  const game = ctx.game;
+  const kind = (id) => ({ ...game.powerUpTypes[id], id });
+  game.words = [{ text: 'abc' }, { text: 'de' }];
+  game.powerUps = [{ type: kind('wordClear') }];
+  game.collectPowerUp(0);
+  assert.equal(game.words.length, 0);
+  assert.equal(game.score, 25); // 5 points a letter
+  assert.equal(String(element('score').textContent), '25'); // and the HUD shows them at once
+  assert.equal(game.activePowerUps.has('wordClear'), false);
+  game.updateActivePowerUps();
+  assert.equal(element('powerUpStatus').textContent, '');
+  game.powerUps = [{ type: kind('shield') }];
+  game.collectPowerUp(0);
+  assert.equal(game.activePowerUps.has('shield'), true);
+  game.powerUps = [{ type: kind('timeFreeze') }];
+  game.collectPowerUp(0);
+  assert.equal(game.activePowerUps.has('timeFreeze'), true); // ⏸️ lasts 5 s, so it shows too
+  assert.equal(game.powerUpsCollected, 3);
+});
