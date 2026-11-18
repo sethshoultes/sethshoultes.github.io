@@ -29,7 +29,7 @@ function fakePage(html, { innerWidth = 1280, innerHeight = 800, rects = {}, coar
     }
     return elements.get(id);
   };
-  Object.assign(doc, { getElementById: element, addEventListener: () => {}, createElement: () => sink(), querySelector: () => sink() });
+  Object.assign(doc, { getElementById: element, addEventListener: () => {}, createElement: () => sink(), querySelector: (sel) => element(sel) });
   const store = new Map();
   const ctx = {
     document: doc, console, Math, Date, JSON, Map, Set, Number, String, Array, Object, Promise,
@@ -115,4 +115,21 @@ test('Typing Invaders: the HUD says "Active:" only while a power-up is on, and M
   ctx.game.updateActivePowerUps();
   ctx.game.showMainMenu(); // no frame runs behind the card, so reset() itself must clear the label
   assert.equal(element('powerUpStatus').textContent, '');
+});
+
+// The game-over box: no "New High Score!" for a round that scored nothing, and no "High Scores" heading over an
+// empty table (the designer's read of #285).
+test('Typing Invaders: game over at 0 asks for no name and shows no empty High Scores heading; a scored round does', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  const game = ctx.game;
+  game.score = 0;
+  game.showGameOver();
+  assert.equal(element('nameInputContainer').style.display, 'none');
+  assert.equal(element('.high-scores').innerHTML, '');
+  game.score = 40;
+  game.showGameOver();
+  assert.equal(element('nameInputContainer').style.display, 'block');
+  game.saveHighScore('Ada');
+  assert.match(element('.high-scores').innerHTML, /<h3>High Scores<\/h3>[\s\S]*Ada[\s\S]*40/);
 });
