@@ -101,6 +101,9 @@
         #gameOverModal .high-scores td:nth-child(2) {
             overflow-wrap: anywhere;
         }
+        @media (max-width: 360px) {
+            #gameOverModal .high-scores td:nth-child(5) { display: none; } /* the date gives its width to the name */
+        }
         #gameOverModal input {
             background: #333;
             border: 1px solid #555;
