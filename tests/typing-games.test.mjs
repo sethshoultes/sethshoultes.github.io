@@ -128,11 +128,15 @@ test('Typing Invaders: collecting 💥 clears the words and scores them, but onl
   game.collectPowerUp(0);
   assert.equal(game.words.length, 0);
   assert.equal(game.score, 25); // 5 points a letter
+  assert.equal(String(element('score').textContent), '25'); // and the HUD shows them at once
   assert.equal(game.activePowerUps.has('wordClear'), false);
   game.updateActivePowerUps();
   assert.equal(element('powerUpStatus').textContent, '');
   game.powerUps = [{ type: kind('shield') }];
   game.collectPowerUp(0);
   assert.equal(game.activePowerUps.has('shield'), true);
-  assert.equal(game.powerUpsCollected, 2);
+  game.powerUps = [{ type: kind('timeFreeze') }];
+  game.collectPowerUp(0);
+  assert.equal(game.activePowerUps.has('timeFreeze'), true); // ⏸️ lasts 5 s, so it shows too
+  assert.equal(game.powerUpsCollected, 3);
 });

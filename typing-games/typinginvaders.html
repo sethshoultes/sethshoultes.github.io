@@ -403,6 +403,7 @@
                 if (powerUp.type.duration > 0) this.activePowerUps.add(powerUp.type.id);
                 powerUp.type.effect();
                 this.powerUpsCollected++;
+                this.updateHUD(); // 💥's points show the moment it scores them
             }
 
             checkPowerUpCollision(x, y) {
