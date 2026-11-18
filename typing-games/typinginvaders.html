@@ -68,7 +68,12 @@
             text-align: center;
             animation: fadeIn 0.5s;
             z-index: 1000;
-            min-width: 300px;
+            /* the screen less a 16px gutter each side, up to 420px: a long saved name wraps inside it, ordinary names
+               stay whole, and on a short screen the box scrolls so Try Again and Main Menu stay reachable */
+            width: min(420px, calc(100vw - 32px));
+            max-height: calc(100dvh - 32px);
+            overflow-y: auto;
+            box-sizing: border-box;
         }
         #gameOverModal h2 {
             color: #ff4444;
@@ -92,6 +97,9 @@
         #gameOverModal .high-scores td {
             padding: 5px;
             border-bottom: 1px solid #333;
+        }
+        #gameOverModal .high-scores td:nth-child(2) {
+            overflow-wrap: anywhere;
         }
         #gameOverModal input {
             background: #333;
@@ -577,14 +585,16 @@
                 const scores = this.highScoreManager.getTopScores();
                 if (!scores.length) { highScoresDiv.innerHTML = ''; return; } // no heading over an empty table
                 let html = '<h3>High Scores</h3><table>';
+                // A saved score is text from localStorage: written as text, never as markup.
+                const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
                 scores.forEach((score, index) => {
                     html += `
                         <tr>
                             <td>${index + 1}.</td>
-                            <td>${score.name}</td>
-                            <td>${score.score}</td>
-                            <td>Level ${score.level}</td>
-                            <td>${score.date}</td>
+                            <td>${esc(score.name)}</td>
+                            <td>${esc(score.score)}</td>
+                            <td>Level ${esc(score.level)}</td>
+                            <td>${esc(score.date)}</td>
                         </tr>
                     `;
                 });
