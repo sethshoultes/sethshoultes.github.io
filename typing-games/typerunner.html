@@ -2076,9 +2076,11 @@
                     // Merge saved state with default achievements
                     Object.keys(this.achievements).forEach(key => {
                         if (savedAchievements[key]) {
-                            this.achievements[key].unlocked = savedAchievements[key].unlocked;
-                            if (savedAchievements[key].progress !== undefined) {
-                                this.achievements[key].progress = savedAchievements[key].progress;
+                            // Saved state is data from localStorage: a flag and a count, never text for the page.
+                            this.achievements[key].unlocked = savedAchievements[key].unlocked === true;
+                            if (this.achievements[key].progress !== undefined) {
+                                const n = Number(savedAchievements[key].progress);
+                                this.achievements[key].progress = Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
                             }
                         }
                     });
