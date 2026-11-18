@@ -397,6 +397,14 @@
                 ));
             }
 
+            // Only a power-up that lasts shows as Active; 💥 (duration 0) is over the moment it clears the board.
+            collectPowerUp(i) {
+                const [powerUp] = this.powerUps.splice(i, 1);
+                if (powerUp.type.duration > 0) this.activePowerUps.add(powerUp.type.id);
+                powerUp.type.effect();
+                this.powerUpsCollected++;
+            }
+
             checkPowerUpCollision(x, y) {
                 const collisionRadius = 20;
                 return this.powerUps.findIndex(powerUp => {
@@ -488,11 +496,7 @@
                             const wordY = lastWord.y;
                             
                             if (this.checkPowerUpCollision(wordX, wordY) === i) {
-                                // Collect power-up
-                                this.powerUps.splice(i, 1);
-                                this.activePowerUps.add(powerUp.type.id);
-                                powerUp.type.effect();
-                                this.powerUpsCollected++;
+                                this.collectPowerUp(i);
                                 continue;
                             }
                         }
