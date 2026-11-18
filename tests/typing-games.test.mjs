@@ -21,7 +21,7 @@ function fakePage(html, { innerWidth = 1280, innerHeight = 800, rects = {}, coar
         click: () => (listeners.click ?? []).forEach((fn) => fn({ pointerType: 'mouse' })),
         focus: () => { doc.activeElement = el; },
         blur: () => { if (doc.activeElement === el) doc.activeElement = null; },
-        getContext: () => sink(), querySelector: () => sink(), querySelectorAll: () => [], appendChild: () => {},
+        getContext: () => sink(), querySelector: () => sink(), querySelectorAll: () => [], appendChild: () => {}, insertBefore: () => {},
         getBoundingClientRect: () => rects[id] ?? { left: 0, top: 0, width: 800, height: 600, bottom: 600 },
       };
       el.hidden = new RegExp(`<[^>]*\\bid="${id}"[^>]*\\shidden[\\s>=]`).test(html); // as the page's HTML sets it
@@ -99,6 +99,28 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
   assert.equal(starTopAfterAFrame(narrowMouse), 80 + 30); // a narrow desktop window: the word box is centred, only the board counts
   const desktop = typingStar({ rects: { scoreboard: { left: 979, width: 285, top: 16, bottom: 80 } } });
   assert.equal(starTopAfterAFrame(desktop), 30);
+});
+
+// TypeRunner's high scores: a saved player name is shown as text, not markup (the same fix as Typing Invaders').
+test('TypeRunner: a high score name is shown as text, not markup', () => {
+  const page = fakePage(readFileSync(new URL('../typing-games/typerunner.html', import.meta.url), 'utf8'));
+  page.ctx.localStorage.setItem('highScores', JSON.stringify([{ playerName: '<img src=x onerror=alert(1)>', score: 120, date: '2026-11-17T00:00:00Z' }]));
+  vm.runInContext('new HighScoreManager().displayScores()', page.ctx);
+  const html = page.element('highscores-list').innerHTML;
+  assert.ok(html.includes('&lt;img src=x onerror=alert(1)&gt;'), html);
+  assert.ok(!html.includes('<img'), html);
+  assert.ok(html.includes('120 points'), html);
+});
+
+test('TypeRunner: saved achievement progress is read as a number, so markup in storage never reaches the page', () => {
+  const page = fakePage(readFileSync(new URL('../typing-games/typerunner.html', import.meta.url), 'utf8'));
+  page.ctx.localStorage.setItem('achievements', JSON.stringify({ wordMaster: { unlocked: 'yes', progress: '<img src=x onerror=alert(1)>' }, firstWord: { unlocked: true } }));
+  vm.runInContext('globalThis.__a = new AchievementManager(); __a.updateAchievementDisplay()', page.ctx);
+  const html = page.element('achievement-list').innerHTML;
+  assert.ok(!html.includes('<img'), html);
+  assert.match(html, /Progress: 0\//);
+  assert.equal(vm.runInContext('__a.achievements.wordMaster.unlocked', page.ctx), false); // only a real true unlocks
+  assert.equal(vm.runInContext('__a.achievements.firstWord.unlocked', page.ctx), true);
 });
 
 // The game-over box: no "New High Score!" for a round that scored nothing, and no "High Scores" heading over an
