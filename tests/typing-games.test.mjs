@@ -140,3 +140,15 @@ test('Typing Invaders: collecting 💥 clears the words and scores them, but onl
   assert.equal(game.activePowerUps.has('timeFreeze'), true); // ⏸️ lasts 5 s, so it shows too
   assert.equal(game.powerUpsCollected, 3);
 });
+
+// At game over the HUD's lives go to 0, and "Lives:" with nothing after it reads as a glitch (designer's read of #289).
+test('Typing Invaders: the HUD shows hearts for lives left and 0 when none are', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  ctx.game.lives = 2;
+  ctx.game.updateHUD();
+  assert.equal(element('lives').textContent, '♥♥');
+  ctx.game.lives = 0;
+  ctx.game.updateHUD();
+  assert.equal(element('lives').textContent, '0');
+});

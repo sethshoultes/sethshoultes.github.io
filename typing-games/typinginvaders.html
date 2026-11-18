@@ -417,7 +417,7 @@
 
             updateHUD() {
                 document.getElementById('score').textContent = this.score;
-                document.getElementById('lives').textContent = '♥'.repeat(this.lives);
+                document.getElementById('lives').textContent = this.lives > 0 ? '♥'.repeat(this.lives) : '0'; // at game over the label is not left empty
                 document.getElementById('level').textContent = this.level;
             }
 
