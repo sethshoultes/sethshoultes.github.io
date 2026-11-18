@@ -68,8 +68,11 @@
             text-align: center;
             animation: fadeIn 0.5s;
             z-index: 1000;
-            min-width: min(300px, calc(100vw - 32px));
-            max-width: calc(100vw - 32px); /* a long saved name wraps instead of pushing the box off a phone */
+            /* the screen less a 16px gutter each side, up to 420px: a long saved name wraps inside it, ordinary names
+               stay whole, and on a short screen the box scrolls so Try Again and Main Menu stay reachable */
+            width: min(420px, calc(100vw - 32px));
+            max-height: calc(100dvh - 32px);
+            overflow-y: auto;
             box-sizing: border-box;
         }
         #gameOverModal h2 {
