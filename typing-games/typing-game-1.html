@@ -80,7 +80,7 @@
             const newBest = score > best;
             if (newBest) { best = score; try { localStorage.setItem('ai-typing-star-best', String(best)); } catch { /* not kept */ } }
             cardTitle.textContent = caught >= ROUND.goal ? 'You made it!' : 'Time!';
-            cardText.textContent = `${caught} words (goal: ${ROUND.goal}), ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to reach it next time.`}`;
+            cardText.textContent = `${caught} ${caught === 1 ? 'word' : 'words'} (goal: ${ROUND.goal}), ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to reach it next time.`}`;
             cardHow.textContent = newBest ? 'A new best!' : `Your best: ${best} points.`;
             cardButton.textContent = 'Play again';
             card.style.display = 'flex';

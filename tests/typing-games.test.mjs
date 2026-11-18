@@ -101,6 +101,15 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
   assert.equal(starTopAfterAFrame(desktop), 30);
 });
 
+test('AI Typing Star: the end card says "1 word" for one and "3 words" for three', () => {
+  const page = typingStar({});
+  page.element('cardButton').click(); // Start
+  vm.runInContext('caught = 1; score = 12; endRound();', page.ctx);
+  assert.match(page.element('cardText').textContent, /^1 word \(goal: 20\), 12 points\. 19 more/);
+  vm.runInContext('state = "playing"; caught = 3; score = 28; endRound();', page.ctx);
+  assert.match(page.element('cardText').textContent, /^3 words \(goal: 20\), 28 points\. 17 more/);
+});
+
 // TypeRunner's high scores: a saved player name is shown as text, not markup (the same fix as Typing Invaders').
 test('TypeRunner: a high score name is shown as text, not markup', () => {
   const page = fakePage(readFileSync(new URL('../typing-games/typerunner.html', import.meta.url), 'utf8'));
