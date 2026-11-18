@@ -185,7 +185,9 @@
         }
 
         .highscores-content {
-            min-width: 300px;
+            min-width: min(300px, calc(100vw - 32px));
+            max-width: calc(100vw - 32px); /* a 16px gutter each side on a phone */
+            box-sizing: border-box;
             max-height: 400px;
             overflow-y: auto;
             padding: 20px;
@@ -228,12 +230,13 @@
         .score-player {
             font-weight: bold;
             color: #4a90e2;
-            margin-right: 10px;
+            min-width: 0;
+            overflow-wrap: anywhere; /* a long saved name wraps in its own column instead of printing over the score */
         }
 
         .score-item {
             display: grid;
-            grid-template-columns: 50px 150px auto 100px;
+            grid-template-columns: 40px minmax(0, 1fr) auto auto; /* fits a phone; was 50px 150px auto 100px */
             gap: 10px;
             align-items: center;
         }
