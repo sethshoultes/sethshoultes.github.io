@@ -80,8 +80,9 @@
             const newBest = score > best;
             if (newBest) { best = score; try { localStorage.setItem('ai-typing-star-best', String(best)); } catch { /* not kept */ } }
             cardTitle.textContent = caught >= ROUND.goal ? 'You made it!' : 'Time!';
-            cardText.textContent = `${caught} ${caught === 1 ? 'word' : 'words'} (goal: ${ROUND.goal}), ${score} points.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to reach it next time.`}`;
-            cardHow.textContent = newBest ? 'A new best!' : `Your best: ${best} points.`;
+            const count = (n, one, many) => `${n} ${n === 1 ? one : many}`; // "1 word", "1 point": slow typing scores 1
+            cardText.textContent = `${count(caught, 'word', 'words')} (goal: ${ROUND.goal}), ${count(score, 'point', 'points')}.${caught >= ROUND.goal ? '' : ` ${ROUND.goal - caught} more to reach it next time.`}`;
+            cardHow.textContent = newBest ? 'A new best!' : `Your best: ${count(best, 'point', 'points')}.`;
             cardButton.textContent = 'Play again';
             card.style.display = 'flex';
             cardButton.focus(); // Enter or Space plays again, no mouse needed
