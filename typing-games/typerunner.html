@@ -240,6 +240,11 @@
             gap: 10px;
             align-items: center;
         }
+        /* on a phone the date gives its width to the name, so ordinary names stay whole */
+        @media (max-width: 420px) {
+            .score-date { display: none; }
+            .score-item { grid-template-columns: 40px minmax(0, 1fr) auto; }
+        }
 
         .stage-indicator {
             position: fixed;
