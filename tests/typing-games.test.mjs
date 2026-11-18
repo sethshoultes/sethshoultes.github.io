@@ -152,6 +152,15 @@ test('Typing Invaders: a high score name is shown as text, not markup', () => {
   assert.ok(!html.includes('<img'), html);
 });
 
+// On a phone the high scores table drops its date column, so a name has the width to stay whole (#293). Every phone
+// width up to 420 px is covered, not only 320; the vm fake cannot apply CSS, so the rule itself is held here.
+test('Typing Invaders: on a phone (420 px and under) the high scores table hides its date column', () => {
+  const html = readFileSync(new URL('../typing-games/typinginvaders.html', import.meta.url), 'utf8');
+  const rule = html.match(/@media \(max-width: (\d+)px\) \{\s*#gameOverModal \.high-scores td:nth-child\(5\) \{ display: none; \}/);
+  assert.ok(rule, 'no media rule hides the date column');
+  assert.equal(Number(rule[1]), 420);
+});
+
 // The HUD's power-up label shows only while one is on, so a round after Main Menu reads like the first one.
 test('Typing Invaders: the HUD says "Active:" only while a power-up is on, and Main Menu clears it', () => {
   const { ctx, element } = invaders();
