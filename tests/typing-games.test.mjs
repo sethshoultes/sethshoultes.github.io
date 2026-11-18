@@ -118,6 +118,18 @@ test('Typing Invaders: game over at 0 asks for no name and shows no empty High S
   assert.match(element('.high-scores').innerHTML, /<h3>High Scores<\/h3>[\s\S]*Ada[\s\S]*40/);
 });
 
+// A saved name is shown as text: one typed as markup must not become an element on every game over.
+test('Typing Invaders: a high score name is shown as text, not markup', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  ctx.game.score = 40;
+  ctx.game.showGameOver();
+  ctx.game.saveHighScore('<img src=x onerror=alert(1)>');
+  const html = element('.high-scores').innerHTML;
+  assert.ok(html.includes('&lt;img src=x onerror=alert(1)&gt;'), html);
+  assert.ok(!html.includes('<img'), html);
+});
+
 // The HUD's power-up label shows only while one is on, so a round after Main Menu reads like the first one.
 test('Typing Invaders: the HUD says "Active:" only while a power-up is on, and Main Menu clears it', () => {
   const { ctx, element } = invaders();

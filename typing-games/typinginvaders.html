@@ -577,14 +577,16 @@
                 const scores = this.highScoreManager.getTopScores();
                 if (!scores.length) { highScoresDiv.innerHTML = ''; return; } // no heading over an empty table
                 let html = '<h3>High Scores</h3><table>';
+                // A saved score is text from localStorage: written as text, never as markup.
+                const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
                 scores.forEach((score, index) => {
                     html += `
                         <tr>
                             <td>${index + 1}.</td>
-                            <td>${score.name}</td>
-                            <td>${score.score}</td>
-                            <td>Level ${score.level}</td>
-                            <td>${score.date}</td>
+                            <td>${esc(score.name)}</td>
+                            <td>${esc(score.score)}</td>
+                            <td>Level ${esc(score.level)}</td>
+                            <td>${esc(score.date)}</td>
                         </tr>
                     `;
                 });
