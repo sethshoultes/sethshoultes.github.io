@@ -16,8 +16,9 @@ concurrency:
 
 jobs:
   refresh:
-    # GitHub-hosted on purpose: this repo is public (a fork must never reach our runner), and the job pushes with the repo token.
-    runs-on: ubuntu-latest
+    # Our own runner, never GitHub-hosted (sethshoultes/herdos#3868). It holds no stored secret, only the job's own
+    # GITHUB_TOKEN, and it runs only on the schedule and by hand, never on a pull request, so a fork cannot reach the runner.
+    runs-on: [self-hosted, herdcloud]
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
