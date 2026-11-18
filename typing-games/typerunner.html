@@ -1889,12 +1889,14 @@
                     return;
                 }
 
+                // A saved score is text from localStorage: written as text, never as markup.
+                const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
                 scoresList.innerHTML = this.scores
                     .map((score, index) => `
                         <div class="score-item">
                             <span class="score-rank">#${index + 1}</span>
-                            <span class="score-player">${score.playerName}</span>
-                            <span class="score-value">${score.score} points</span>
+                            <span class="score-player">${esc(score.playerName)}</span>
+                            <span class="score-value">${esc(score.score)} points</span>
                             <span class="score-date">${new Date(score.date).toLocaleDateString()}</span>
                         </div>
                     `)

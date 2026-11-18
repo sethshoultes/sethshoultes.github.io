@@ -101,6 +101,17 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
   assert.equal(starTopAfterAFrame(desktop), 30);
 });
 
+// TypeRunner's high scores: a saved player name is shown as text, not markup (the same fix as Typing Invaders').
+test('TypeRunner: a high score name is shown as text, not markup', () => {
+  const page = fakePage(readFileSync(new URL('../typing-games/typerunner.html', import.meta.url), 'utf8'));
+  page.ctx.localStorage.setItem('highScores', JSON.stringify([{ playerName: '<img src=x onerror=alert(1)>', score: 120, date: '2026-11-17T00:00:00Z' }]));
+  vm.runInContext('new HighScoreManager().displayScores()', page.ctx);
+  const html = page.element('highscores-list').innerHTML;
+  assert.ok(html.includes('&lt;img src=x onerror=alert(1)&gt;'), html);
+  assert.ok(!html.includes('<img'), html);
+  assert.ok(html.includes('120 points'), html);
+});
+
 // The game-over box: no "New High Score!" for a round that scored nothing, and no "High Scores" heading over an
 // empty table (the designer's read of #285).
 test('Typing Invaders: game over at 0 asks for no name and shows no empty High Scores heading; a scored round does', () => {
