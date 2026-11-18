@@ -29,7 +29,7 @@ function fakePage(html, { innerWidth = 1280, innerHeight = 800, rects = {}, coar
     }
     return elements.get(id);
   };
-  Object.assign(doc, { getElementById: element, addEventListener: () => {}, createElement: () => sink(), querySelector: () => sink() });
+  Object.assign(doc, { getElementById: element, addEventListener: () => {}, createElement: () => sink(), querySelector: (sel) => element(sel) });
   const store = new Map();
   const ctx = {
     document: doc, console, Math, Date, JSON, Map, Set, Number, String, Array, Object, Promise,
@@ -99,6 +99,23 @@ test('AI Typing Star: on a phone the star stops below the scoreboard and the wor
   assert.equal(starTopAfterAFrame(narrowMouse), 80 + 30); // a narrow desktop window: the word box is centred, only the board counts
   const desktop = typingStar({ rects: { scoreboard: { left: 979, width: 285, top: 16, bottom: 80 } } });
   assert.equal(starTopAfterAFrame(desktop), 30);
+});
+
+// The game-over box: no "New High Score!" for a round that scored nothing, and no "High Scores" heading over an
+// empty table (the designer's read of #285).
+test('Typing Invaders: game over at 0 asks for no name and shows no empty High Scores heading; a scored round does', () => {
+  const { ctx, element } = invaders();
+  element('startButton').click();
+  const game = ctx.game;
+  game.score = 0;
+  game.showGameOver();
+  assert.equal(element('nameInputContainer').style.display, 'none');
+  assert.equal(element('.high-scores').innerHTML, '');
+  game.score = 40;
+  game.showGameOver();
+  assert.equal(element('nameInputContainer').style.display, 'block');
+  game.saveHighScore('Ada');
+  assert.match(element('.high-scores').innerHTML, /<h3>High Scores<\/h3>[\s\S]*Ada[\s\S]*40/);
 });
 
 // The HUD's power-up label shows only while one is on, so a round after Main Menu reads like the first one.

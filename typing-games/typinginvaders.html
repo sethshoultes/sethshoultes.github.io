@@ -61,7 +61,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
+            background: #111; /* solid: on a phone the type box under the board showed through */
             padding: 20px;
             border: 2px solid #333;
             border-radius: 10px;
@@ -220,6 +220,7 @@
 
             isHighScore(score) {
                 const scores = this.getScores();
+                if (score <= 0) return false; // no "New High Score!" for a round that scored nothing
                 return scores.length < this.maxEntries || score > scores[scores.length - 1]?.score;
             }
 
@@ -574,7 +575,7 @@
             updateHighScoreDisplay() {
                 const highScoresDiv = document.querySelector('.high-scores');
                 const scores = this.highScoreManager.getTopScores();
-                
+                if (!scores.length) { highScoresDiv.innerHTML = ''; return; } // no heading over an empty table
                 let html = '<h3>High Scores</h3><table>';
                 scores.forEach((score, index) => {
                     html += `
