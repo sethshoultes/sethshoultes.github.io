@@ -1,0 +1,58 @@
+---
+title: "My Cleanup Code Waited Forever and Never Said a Word"
+subtitle: "Kill asks a process to stop. It doesn't make it stop, so a plain wait inside a cleanup trap can quietly skip every cleanup step after it."
+date: 2026-11-20
+related:
+  - slug: the-override-flag-is-the-real-test
+    note: "Another path that only shows itself when something goes off the happy road. There a default did nothing until production; here a cleanup step never ran unless the proxy behaved."
+  - slug: merged-is-not-live
+    note: "The same habit of trusting what a line says over what it does. 'Merged' hides a check nobody ran, and 'kill' hides an exit nobody confirmed."
+---
+
+<picture><source srcset="/blog/images/the-trap-that-waited-forever-featured.webp" type="image/webp"><img src="/blog/images/the-trap-that-waited-forever-featured.png" alt="A brass hand bell resting on a closed shop door's threshold beside a neatly folded closing checklist with only its first line ticked, a key still hanging unturned in the lock above and a stopped pocket watch lying open on the floorboards nearby" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>The cleanup code looked right. I read it twice and would have approved it in review without thinking. It's the kind of code you trust because it's written in the careful order.</p>
+
+<p>Here's the setup. A shell script started <code>cloud-sql-proxy</code> in the background. That's a small program that opens a connection to a database in Google Cloud so the rest of the script can talk to it. "In the background" means the script starts it, keeps its process ID in a variable, and moves on while the proxy keeps running.</p>
+
+<p>When a script like that finishes, you want to shut the proxy down and clean up after it. Shell gives you a way to do that called a trap. A trap is a bit of code you register up front that runs when the script exits, whether it finished normally or failed partway. Mine looked roughly like this:</p>
+
+<p><code>trap 'kill "$pid"; wait "$pid"; rm -f "$logfile"' EXIT</code></p>
+
+<p>Stop the proxy. Wait for it to actually be gone. Then delete its log file, because you don't want to delete a file the proxy might still be writing to. That's the careful order. That's why it looks right.</p>
+
+<h2>What kill actually does</h2>
+
+<p>The word <code>kill</code> sounds final. It isn't. It sends a signal to the process, and by default that's SIGTERM, which is a polite request to shut down. The process gets to decide what to do with it. Most programs clean up and exit quickly. Some take their time. Some catch the signal and keep going.</p>
+
+<p><code>wait</code> does exactly what it says. It sits there until the process exits. It has no timeout. If the process is slow to exit, or never exits, <code>wait</code> never returns.</p>
+
+<p>Put those two together inside a trap and look at what happens on the bad day. The proxy gets the request, doesn't leave, and the trap sits on <code>wait</code>. The <code>rm</code> after it never runs. Nothing prints an error, because nothing failed. The script is just stuck, or whatever ran it eventually gives up on it from the outside, and the trap never gets the chance to finish what it was doing.</p>
+
+<p>And on every normal run, the proxy exits right away when asked. The <code>wait</code> returns in a blink and the log gets deleted. The happy path passes every single time. That's why it gets through review and through testing. The order is right. The thing it assumes, that the process will leave when asked, just isn't promised anywhere.</p>
+
+<p>The part that bugs me is where this lives. A trap is where you'd normally notice that something went wrong. It's the code that runs when things break. So when the trap itself hangs, the place you'd go looking for the problem is the place that's stuck.</p>
+
+<h2>The fix is giving up on purpose</h2>
+
+<p>The fix is to put a limit on the wait. Ask nicely, check for a few seconds whether the process is gone, and if it isn't, stop asking:</p>
+
+<p><code>kill "$pid" 2>/dev/null || true<br>for i in 1 2 3 4 5 6 7 8 9 10; do kill -0 "$pid" 2>/dev/null || break; sleep 0.5; done<br>kill -9 "$pid" 2>/dev/null || true<br>wait "$pid" 2>/dev/null || true<br>rm -f "$logfile"</code></p>
+
+<p><code>kill -0</code> sends no signal at all. It just asks whether the process still exists. After five seconds, <code>kill -9</code> sends SIGKILL, which the process can't catch or ignore. Then the cleanup runs, every time.</p>
+
+<h2>Its cousin in the same script</h2>
+
+<p>This showed up next to another line with the same personality. The script ran with <code>set -euo pipefail</code>, which is the common "be strict" setting. Among other things, it stops the script if any command fails, and it counts a pipeline as failed if any piece of it fails, not just the last piece.</p>
+
+<p>Then there was a line like <code>grep "ready" "$logfile" | tail -1</code>. If <code>grep</code> finds no match, it exits with a non-zero code. That's how it says "nothing found." <code>tail</code> is perfectly happy and exits zero. But under pipefail the whole line counts as a failure, and the script stops right there. The fix is to say out loud that no match is fine: <code>{ grep "ready" "$logfile" || true; } | tail -1</code>.</p>
+
+<p>Both lines read as correct. Both pass on a normal run. And both quietly change what the rest of the script does, one by never moving on, the other by stopping early. Neither tells you.</p>
+
+<p>The habit I took from this is simple. Anything that can block gets a time limit, and anything that can exit non-zero on purpose gets told that's okay. If you write cleanup code, assume the thing you're cleaning up won't cooperate.</p>
+
+<hr>
+
+<p><em>References: the <a href="https://www.gnu.org/software/bash/manual/bash.html">GNU Bash manual</a>, for <code>trap</code>, <code>wait</code>, <code>kill</code> and <code>set -o pipefail</code>.</em></p>
+
+<p class="post-bio"><em>Beckett wrote a whole play about two men who can't leave until someone shows up who never does. A <code>wait</code> with no timeout is the same play, just with nobody watching.</em></p>
