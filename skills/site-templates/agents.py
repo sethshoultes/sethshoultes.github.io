@@ -73,6 +73,15 @@ def _md(fragment):
     return MD_SPECIAL.sub(r"\\\1", _text(fragment))
 
 
+def _md_linked(fragment):
+    """A text paragraph's inline links (site-kit#526): each [words](<address>), the words around them as _md's. Only
+    the serializer's own links (class sk-text-link): a blog post's paragraphs keep the twin they always had."""
+    run = lambda s: MD_SPECIAL.sub(r"\\\1", html.unescape(re.sub(r"<[^>]+>", "", s)))   # noqa: E731
+    return re.sub(r'<a class="sk-text-link" href="([^"]*)">(.*?)</a>|((?:(?!<a class="sk-text-link" href=").)+)',
+                  lambda a: f"[{run(a[2]).strip()}](<{_dest(html.unescape(a[1]))}>)" if a[1] is not None else run(a[3]),
+                  fragment, flags=re.S).strip()
+
+
 def _dest(href):
     """A link address for markdown's <destination>: anything outside a URL's own characters is percent-encoded, so a
     '>', '<', '\\' or '`' in an address the serializer allowed can't end the link early (security review on #126)."""
@@ -90,10 +99,10 @@ def to_markdown(page_html):
             out.append("#" * int(h[1]) + " " + _md(htext))
         elif summary is not None:
             out.append("### " + _md(summary))
-        elif p is not None:
-            out.append(_md(p))
-        elif li is not None:
-            out.append("- " + _md(li))
+        elif p is not None:   # a paragraph's own links (site-kit#526) stay links; with none, exactly _md(p)
+            out.append(_md_linked(p) if '<a class="sk-text-link" href="' in p else _md(p))
+        elif li is not None:   # a list point's own links (site-kit#526) stay links too
+            out.append("- " + (_md_linked(li) if '<a class="sk-text-link" href="' in li else _md(li)))
         elif btn is not None:   # a safe scheme (the serializer checked), percent-encoded so it can't close the <link>
             out.append(f"[{_md(btn)}](<{_dest(html.unescape(href))}>)" if href else _md(btn))
         elif cite is not None:
@@ -131,9 +140,13 @@ def contact(record, brand_rec):
 
 
 def security_txt(record, brand_rec, origin, now):
+    """site-kit#528: the record's security contact, else its email as before, and a Policy line when it names one."""
+    sec = record.get("security") or {}
     expires = (now + datetime.timedelta(days=180)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    return (f"Contact: {contact(record, brand_rec)}\nExpires: {expires}\nPreferred-Languages: en\n"
-            f"Canonical: {origin}/.well-known/security.txt\n")
+    policy = sec.get("policy")
+    return (f"Contact: {sec.get('contact') or contact(record, brand_rec)}\nExpires: {expires}\nPreferred-Languages: en\n"
+            f"Canonical: {origin}/.well-known/security.txt\n"
+            + (f"Policy: {origin}{policy}\n" if policy else ""))   # a page path of the site (layout checks it)
 
 
 def _docs(record, origin):
@@ -160,9 +173,13 @@ def discovery_config(record, brand_rec, origin):
             # The skill names what a template site really has: its /a2a refuses until the site has chat (site-kit#338).
             "a2a": {"url": f"{origin}/a2a", "skills": [{"id": "read-the-site", "name": f"Read {brand_rec['name']}'s pages",
                                                       "description": f"There is no assistant here yet, so this endpoint refuses. The pages are at {origin}/llms.txt, and the read-only MCP at {origin}/mcp returns any one as Markdown.",
-                                                      "tags": ["site"]}]},
+                                                      "tags": ["site"]}],
+                    # doorman#192: the sign-up /auth.md describes, on the card (herdos's agent-auth check reads it)
+                    **({"security_schemes": record["security_schemes"]} if record.get("security_schemes") else {})},
             # A site's own skills (herdos#3873's agent-skills): each SKILL.md is read from the site's folder at build time.
-            **({"skills": record["skills"]} if record.get("skills") else {})}
+            **({"skills": record["skills"]} if record.get("skills") else {}),
+            # doorman#192: the site's own /auth.md, how an agent signs a person in here; discovery.py writes it as given
+            **({"auth_md": record["auth_md"]} if record.get("auth_md") else {})}
 
 
 def agent_card(record, brand_rec, origin):

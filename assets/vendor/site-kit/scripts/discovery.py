@@ -83,6 +83,16 @@ A2A_KEYS = {"url", "protocol_version", "version", "skills", "queries", "security
 # a2a.security_schemes (superintelligentfoo#1048): how an agent signs in to the site, as A2A 0.3's securitySchemes. Only for
 # a sign-up the site really has (herdos public-site.md's agent-auth rule reads it); OAuth 2.0 or OpenID Connect, https only.
 SCHEME_TYPES = {"oauth2", "openIdConnect"}
+# Only A2A 0.3's own keys reach the public card (0.3 exactly: deviceCode is newer, so it is refused) (mi-dev-3 on site-kit#568): any other key could carry a secret.
+SCHEME_KEYS = {"oauth2": {"type", "description", "flows", "oauth2MetadataUrl"}, "openIdConnect": {"type", "description", "openIdConnectUrl"}}
+FLOW_KEYS = {"authorizationCode": {"authorizationUrl", "tokenUrl", "refreshUrl", "scopes"},
+             "clientCredentials": {"tokenUrl", "refreshUrl", "scopes"}, "implicit": {"authorizationUrl", "refreshUrl", "scopes"},
+             "password": {"tokenUrl", "refreshUrl", "scopes"}}
+SCHEME_MAX = 4096   # bytes of one scheme as JSON; a card has at most 5
+# A value that looks like a key: a Stripe-style sk_/rk_/pk_ prefix anywhere, or, outside a URL, a run of 32+ letters and
+# digits holding both. A URL keeps its tenant GUIDs, key ids and base64url segments (mi-dev-3 on #568: Entra's issuer).
+SECRET_PREFIX = re.compile(r"(?<![A-Za-z0-9])(?:sk|rk|pk)_[A-Za-z0-9_]{8,}")
+SECRET_RUN = re.compile(r"(?=[A-Za-z0-9_-]{32,})(?=[A-Za-z_-]*[0-9])(?=[0-9_-]*[A-Za-z])[A-Za-z0-9_-]{32,}")
 SCHEME_NAME = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 # One document at both names, each with its own link relation (herdos#3873).
 CATALOGS = {".well-known/ard.json": "ard", ".well-known/ai-catalog.json": "ai-catalog"}
@@ -138,12 +148,11 @@ def problems(cfg):
         if not isinstance(a.get("skills"), list) or not a["skills"]:
             out.append("a2a.skills must list at least one skill")
         if "security_schemes" in a:
-            out += _scheme_problems(a["security_schemes"])
+            out += scheme_problems(a["security_schemes"])
         if "queries" in a and not _texts(a["queries"], 2, 5):
             out.append("a2a.queries lists 2 to 5 questions")
-    if "auth_md" in cfg and not (isinstance(cfg["auth_md"], str) and cfg["auth_md"].strip() and len(cfg["auth_md"]) <= 20000
-                                 and _utf8(cfg["auth_md"])):
-        out.append("auth_md must be text, at most 20000 characters")
+    if "auth_md" in cfg and not auth_md_ok(cfg["auth_md"]):
+        out.append(AUTH_MD_RULE)
     seen = set()
     for i, s in enumerate(cfg.get("skills") if isinstance(cfg.get("skills"), list) else []):
         w = f"skills[{i}]"
@@ -170,7 +179,7 @@ def problems(cfg):
     return out
 
 
-def _scheme_problems(ss):
+def scheme_problems(ss):
     if not (isinstance(ss, dict) and 1 <= len(ss) <= 5):
         return ["a2a.security_schemes is an object of 1 to 5 named schemes"]
     out = []
@@ -181,12 +190,44 @@ def _scheme_problems(ss):
         if not (isinstance(sc, dict) and sc.get("type") in SCHEME_TYPES):
             out.append(f"{w}: type is oauth2 or openIdConnect")
             continue
+        out += [f"{w}: {k} is not a key of an {sc['type']} scheme ({', '.join(sorted(SCHEME_KEYS[sc['type']]))})"
+                for k in sorted(set(sc) - SCHEME_KEYS[sc["type"]])]
+        if "description" in sc and not (isinstance(sc["description"], str) and sc["description"].strip()):
+            out.append(f"{w}: description is text")
         if sc["type"] == "oauth2" and not (isinstance(sc.get("flows"), dict) and sc["flows"]):
             out.append(f"{w}: an oauth2 scheme names its flows")
+        elif sc["type"] == "oauth2":
+            for flow, f in sc["flows"].items():
+                if flow not in FLOW_KEYS or not isinstance(f, dict):
+                    out.append(f"{w}.flows: {flow} is not a flow ({', '.join(sorted(FLOW_KEYS))})")
+                    continue
+                out += [f"{w}.flows.{flow}: {k} is not a key of the flow" for k in sorted(set(f) - FLOW_KEYS[flow])]
+                if not (isinstance(f.get("scopes"), dict) and all(isinstance(v, str) for v in f["scopes"].values())):
+                    out.append(f"{w}.flows.{flow}: scopes is an object of scope names and their descriptions")
+        if len(json.dumps(sc, ensure_ascii=False).encode()) > SCHEME_MAX:
+            out.append(f"{w}: a scheme is at most {SCHEME_MAX} bytes")
+        for s in _strings(sc):
+            if "{{" in s:
+                out.append(f"{w}: holds a {{{{...}}}}")
+            if SECRET_PREFIX.search(s) or (not s.startswith("https://") and SECRET_RUN.search(s)):
+                out.append(f"{w}: holds what looks like a secret key; a card is public")
         if sc["type"] == "openIdConnect" and not isinstance(sc.get("openIdConnectUrl"), str):
             out.append(f"{w}: an openIdConnect scheme names its openIdConnectUrl")
         out += [f"{w}: {k} must be an https URL" for k, v in _urls(sc) if not re.fullmatch(r"https://\S+", v)]
     return out
+
+
+def _strings(node):
+    """Every key and string value in a scheme, at any depth."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield k
+            yield from _strings(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _strings(v)
+    elif isinstance(node, str):
+        yield node
 
 
 def _urls(node):
@@ -287,6 +328,14 @@ def api_catalog(cfg, has):
                      "service-desc": [{"href": o + "/.well-known/agent-card.json", "type": "application/a2a-agent-card+json"}],
                      "service-doc": [{"href": _docs(cfg), "type": "text/html"}]})
     return {"linkset": [{"anchor": anchor, "item": items}] + meta}
+
+
+AUTH_MD_RULE = "auth_md must be text, at most 20000 characters"
+
+
+def auth_md_ok(value):
+    """The one rule for a site's auth.md text, here and in a template site's layout record (doorman#192)."""
+    return isinstance(value, str) and bool(value.strip()) and len(value) <= 20000 and _utf8(value)
 
 
 def _utf8(text):

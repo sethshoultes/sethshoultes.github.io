@@ -5,7 +5,7 @@ import assert from "node:assert";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { agentFiles, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths, discoveryHeaders, CATALOG_TYPE, HOME_LINK } from "../functions/agent-files.js";
+import { agentFiles, a2aRefusal, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths, discoveryHeaders, getPage, CATALOG_TYPE, HOME_LINK } from "../functions/agent-files.js";
 import { pageToMarkdown, writeTwins } from "../scripts/twins.mjs";
 
 const ORIGIN = "https://example.com";
@@ -79,6 +79,15 @@ test("/a2a refuses plainly, as JSON-RPC to a POST and as text to a GET", async (
   assert.equal(bad.error.code, -32700);
 });
 
+test("a2aRefusal is the same refusal, for a site that keeps its own /mcp and calls it on /a2a (site-kit#360)", async () => {
+  const post = await (await a2aRefusal(new Request(`${ORIGIN}/a2a`, rpc("message/send", { message: {} }, 9)), ORIGIN)).json();
+  assert.equal(post.id, 9);
+  assert.equal(post.error.code, -32004);
+  const get = a2aRefusal(new Request(`${ORIGIN}/a2a`), ORIGIN);
+  assert.equal(get.status, 200);
+  assert.equal(await get.text(), await (await agentFiles(ctx("/a2a"))).text());
+});
+
 test("/mcp: initialize, tools/list, and a notification", async () => {
   const init = await (await agentFiles(ctx("/mcp", rpc("initialize", {})))).json();
   assert.equal(init.result.protocolVersion, "2025-06-18");
@@ -127,6 +136,61 @@ test("/mcp get_page returns a twin and refuses anything else", async () => {
   assert.ok(pulled <= 6, `read ${pulled} chunks`);
   const lied = await (await agentFiles(ctx("/mcp", { method: "POST", body: "{}", headers: { "Content-Length": "999999" } }))).json();
   assert.equal(lied.error.code, -32600);
+});
+
+const PATHS = ["/about/", "/", "/missing/", "about", "//evil.test/", "/../etc/", "/.well-known/mcp.json", "/robots.txt?", "/llms.txt#",
+  "/notes.md#x", "/about/?x", "/\\evil.example/", "/%2e%2e/", "/a\tb/", "/about/%0a"];
+const askPage = (body, init = {}) => agentFiles(ctx("/api/page", { method: "POST", body: typeof body === "string" ? body : JSON.stringify(body), ...init }));
+
+test("site-kit#561: POST /api/page gets a page's twin as markdown, and refuses what get_page refuses", async () => {
+  const ok = await askPage({ path: "/about/" });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+  assert.equal(ok.headers.get("X-Robots-Tag"), "noindex");
+  assert.equal(await ok.text(), "# About\n\nus\n");
+  for (const h of ["Set-Cookie", "Access-Control-Allow-Origin"]) assert.equal(ok.headers.get(h), null, h);
+  const miss = await askPage({ path: "/missing/" });
+  assert.equal(miss.status, 404);
+  assert.equal(await miss.text(), "no markdown version of /missing/. The page may still exist as HTML; list_pages names the site's pages.\n");
+  assert.equal((await askPage({ path: "about" })).status, 400);
+  for (const p of PATHS.slice(2)) assert.notEqual((await askPage({ path: p })).status, 200, p);
+});
+
+test("site-kit#561: one gate: /api/page and /mcp get_page agree on every path, through the exported getPage", async () => {
+  const call = async (path) => (await (await agentFiles(ctx("/mcp", rpc("tools/call", { name: "get_page", arguments: { path } })))).json()).result;
+  for (const p of PATHS) {
+    const viaMcp = await call(p), viaApi = await askPage({ path: p }), direct = await getPage(ctx("/"), p);
+    assert.equal(viaApi.status === 200, viaMcp.isError === false, p);
+    assert.equal((await viaApi.text()).replace(/\n$/, viaMcp.isError ? "" : "\n"), viaMcp.content[0].text, p);
+    assert.equal(direct.text ?? direct.error, viaMcp.content[0].text, p);
+  }
+});
+
+test("site-kit#561: /api/page takes one short path field and nothing else, under /mcp's body cap", async () => {
+  for (const body of ['["/about/"]', "null", '"/about/"', "{}", '{"path": 7}', '{"path": "/about/", "x": 1}', '{"paths": "/about/"}',
+    JSON.stringify({ path: "/" + "a".repeat(600) + "/" }), "not json"])
+    assert.equal((await askPage(body)).status, 400, body);
+  assert.equal((await askPage("x".repeat(70000))).status, 413);
+  assert.equal((await askPage("{}", { headers: { "Content-Length": "999999" } })).status, 413);
+  let pulled = 0;
+  const stream = new ReadableStream({ pull(c) { pulled += 1; c.enqueue(new Uint8Array(16 * 1024).fill(120)); } });
+  assert.equal((await agentFiles(ctx("/api/page", { method: "POST", body: stream, duplex: "half" }))).status, 413);
+  assert.ok(pulled <= 6, `read ${pulled} chunks`);
+  const get = await agentFiles(ctx("/api/page"));
+  assert.equal(get.status, 405);
+  assert.equal(get.headers.get("Allow"), "POST");
+});
+
+test("site-kit#561: with a members gate, a missing matcher refuses /api/page (503), and a gated page is never served", async () => {
+  const withData = (c, data) => Object.assign(c, { data });
+  const off = await agentFiles(withData(ctx("/api/page", { method: "POST", body: '{"path": "/about/"}' }), {}), { members: true });
+  assert.equal(off.status, 503);
+  assert.doesNotMatch(await off.text(), /About/);
+  const gate = { members: { gated: (p) => p.startsWith("/about/") } };
+  const gated = await agentFiles(withData(ctx("/api/page", { method: "POST", body: '{"path": "/about/"}' }), gate), { members: true });
+  assert.equal(gated.status, 404);
+  const open = await agentFiles(withData(ctx("/api/page", { method: "POST", body: '{"path": "/"}' }), gate), { members: true });
+  assert.equal(await open.text(), "# Home\n\nhello\n");
 });
 
 test("site-kit#418: with a members gate, a missing matcher refuses /mcp and every twin (503); a present one gates as usual", async () => {

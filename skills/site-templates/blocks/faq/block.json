@@ -1,12 +1,12 @@
 {
   "name": "faq",
-  "version": "1.0",
+  "version": "1.1",
   "title": "FAQ: the questions people ask, each opening to its answer",
   "props": {
     "heading": {"type": "text", "required": true, "max": 90},
     "questions": {"type": "items", "required": true, "max": 20, "fields": {
       "q": {"type": "text", "required": true},
-      "a": {"type": "text", "required": true}
+      "a": {"type": "text", "required": true, "links": true}
     }}
   },
   "tree": {"part": "group", "tag": "section", "children": [

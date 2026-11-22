@@ -46,8 +46,10 @@ def files(root, functions):
     try:
         settings = json.loads((kit / "plugins.json").read_text(encoding="utf-8")) if (kit / "plugins.json").is_file() else {}
         chain = (kit / "chain.js").read_text(encoding="utf-8")
+        # The site's brand record, for a plugin that draws a page of its own in the site's look (forms 0.2.0); None without one.
+        brand = json.loads((kit / "brand.json").read_text(encoding="utf-8")) if (kit / "brand.json").is_file() else None
     except (OSError, ValueError) as e:
-        raise EdgeError(f".sitekit/plugins.json or .sitekit/chain.js can't be read ({type(e).__name__}): run site_sync.py sync") from None
+        raise EdgeError(f".sitekit/plugins.json, brand.json or chain.js can't be read ({type(e).__name__}): run site_sync.py sync") from None
     if not isinstance(settings, dict) or not all(isinstance(v, dict) for v in settings.values()):
         raise EdgeError('.sitekit/plugins.json must be {"<plugin>": {"<setting>": value}}')
     spec = importlib.util.spec_from_file_location("sitekit_theme", kit / "theme.py")
@@ -58,11 +60,15 @@ def files(root, functions):
     if "only" not in inspect.signature(theme.load).parameters:  # synced before site-kit#400 (site-kit#405)
         raise EdgeError(".sitekit/theme.py is older than the kit: run site_sync.py sync")
     try:
-        out = theme.load(root / "plugins", settings, only=edge_plugins(root / "plugins")).function_files(types.SimpleNamespace())
+        # A page plugin's settings (site-kit#478) are build.py's to use, so they are not a missing plugin here; a slot
+        # plugin's settings in plugins.json are still refused.
+        pages = page_plugins(root / "plugins")
+        edge_settings = {k: v for k, v in settings.items() if k not in pages}
+        out = theme.load(root / "plugins", edge_settings, only=edge_plugins(root / "plugins")).function_files(types.SimpleNamespace(brand=brand))
     except theme.ThemeError as e:
         raise EdgeError(str(e)) from None
     has_agent_files = (root / "plugins" / "agent-files" / "functions" / "agent-files.js").is_file()
-    unguarded = dues_admin_unguarded(out) or forms_unguarded(out)
+    unguarded = dues_admin_unguarded(out) or forms_unguarded(out) or scoreboard_unguarded(out)
     if unguarded:
         raise EdgeError(unguarded)
     out["_chain.js"] = chain
@@ -70,6 +76,28 @@ def files(root, functions):
     gate = ", { members: true }" if "plugins/members/members-data.json" in out else ""
     out["_middleware.js"] = HEAD + IMPORTS + (AGENT_FILES + WITH_AGENT_FILES.replace("{gate}", gate) if has_agent_files else WITHOUT)
     return out
+
+
+# what a page plugin may fill or filter in a site-templates build (site-kit#478); body.end for a plugin whose script goes at
+# the end of the page (posthog, site-kit#555: named on a static site, it was dropped without a word)
+PAGE_SPOTS = ("head.styles", "body.end")
+PAGE_FILTERS = ("page.html",)
+
+
+def page_plugins(plugins):
+    """The plugin folders a site-templates build runs on its pages (site-kit#478), by name: no "edge" block, and a
+    head.styles or body.end hook or a page.html filter (time-of-day, hero-character, posthog). A plugin.json that can't be
+    read is none."""
+    names = set()
+    for d in sorted(pathlib.Path(plugins).iterdir()) if pathlib.Path(plugins).is_dir() else []:
+        try:
+            m = json.loads((d / "plugin.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(m, dict) and not m.get("edge") and (set(m.get("hooks") or {}) & set(PAGE_SPOTS)
+                                                          or set(m.get("filters") or {}) & set(PAGE_FILTERS)):
+            names.add(d.name)
+    return names
 
 
 def edge_plugins(plugins):
@@ -113,6 +141,22 @@ def forms_unguarded(out):
     for f in json.loads(data)["config"]["forms"]:
         if not any(f["path"].startswith(r["prefix"]) for r in rules):
             return f'forms: its path {f["path"]} must sit under a members rule, e.g. "{f["path"]} signed-in"'
+    return ""
+
+
+def scoreboard_unguarded(out):
+    """Why a board's score path isn't gated, or "" (site-kit#467): each board's "<path>score/" must sit under a members rule, so
+    only a signed-in member can send a score. The board's own page may be ungated (the plugin is public). The edge refuses an
+    ungated score path too; this stops the build first."""
+    data = out.get("plugins/scoreboard/scoreboard-data.json")
+    if data is None:
+        return ""
+    members = out.get("plugins/members/members-data.json")
+    rules = json.loads(members)["config"]["rules"] if members else []
+    for b in json.loads(data)["config"]["boards"]:
+        scores = b["path"] + "score/"
+        if not any(scores.startswith(r["prefix"]) for r in rules):
+            return f'scoreboard: its score path {scores} must sit under a members rule, e.g. "{scores} signed-in"'
     return ""
 
 
