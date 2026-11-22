@@ -1,8 +1,9 @@
 # post: a blog post, written by one of the site's writers
 
 A shared page type (site-kit#153). This README is its one definition: every site that uses `post` builds its posts from the
-fields below and is checked by `page-types.json` next to it. The kit renders nothing; each site's own build renders its posts,
-its `/blog/` index and its feed. Posts are written with the `blog-writer` skill, by the writers in the site's own roster.
+fields below and is checked by `page-types.json` next to it. site-templates renders it for sites built from a layout; a site
+with its own build renders its own posts, `/blog/` index and feed (site-kit#321). Posts are written with the `blog-writer`
+skill, by the writers in the site's own roster.
 
 ## Fields
 
@@ -48,7 +49,9 @@ Entries in the site's `data/types.json` shape (a name ending in `?` is optional)
   "image_alt"`). A purely decorative picture has no place on a post, so there is no empty alt.
 
 The part kinds (`new-slug`, `text`, `date`, `writer`, `status`, `texts`, `image`) and the `image_alt` rule are the site build's own checks. Those field
-checks run in the site, so the kit cannot enforce them.
+checks run in the site's build. For a site built from a layout that build is site-templates' `build.py`, which stops on an
+author not in `data/writers.json`, a bad slug, a published image without `image_alt`, and a post without an image while
+`post_images` is on.
 
 ## The page
 
@@ -90,5 +93,6 @@ The kit does not check the order, so the site's own build tests it.
 2. The site re-syncs at that tag (`site_sync.py sync <tag>`, with `--skills=blog-writer` once that skill is released). In
    `.sitekit/features.json`, `page_types_file` names the file holding its types, and that file gets the `post` entry above.
    `post` is in the catalog, so the site does not list it under `site_only`.
-3. Its build renders the posts, the index and the feed from those fields. If the site runs kit-check, it merges `types.post`
+3. Its build renders the posts, the index and the feed from those fields (site-templates does it for a layout-built site,
+   with `--root` at the site's folder and the featured images in `--assets`). If the site runs kit-check, it merges `types.post`
    from `page-types.json` into its own page-type spec and points `reference` at its `/blog/`.

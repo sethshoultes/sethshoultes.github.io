@@ -7,11 +7,17 @@ rules 6 and 7 (site-kit#114):
   `<main>`, under its h1, its address and its description. A request with `Accept: text/markdown` gets the twin, with
   `Vary: Accept`; a browser gets the page as before.
 - **`/a2a`**, the `url` in the site's agent card, refuses plainly until the site has chat. A POST gets a JSON-RPC error
-  (`-32004`); a GET gets one line of text naming `/llms.txt` and `/mcp`.
+  (`-32004`); a GET gets one line of text naming `/llms.txt` and `/mcp`. A site that keeps its own `/mcp` and twins (S'mores)
+  imports `a2aRefusal(request, origin)` from `functions/agent-files.js` and calls it on `/a2a` itself (site-kit#360).
 - **`/mcp`** is a read-only MCP (protocol `2025-06-18`, streamable HTTP, JSON answers, no auth) with two tools:
   - `list_pages`: the site's own paths in `/sitemap.xml` or `/sitemap-index.xml` (its host with or without `www.`, same
     scheme and port), one level of child sitemaps, at most 2000;
   - `get_page {path}`: one page's twin. Paths with `..`, `//` or `/.well-known/` are refused.
+- **`POST /api/page`** (site-kit#561) is `get_page` as plain JSON, for a browser agent: send `{"path": "/a-page/"}` and nothing
+  else, and get the twin as `text/markdown`. Both call the one gate, `getPage(context, path)`, so they answer the same pages
+  and refuse the same paths (400). A page with no twin is 404, a body over 64 KB is 413, a GET is 405, and members pages get
+  the same 503 as `/mcp` when the site's gate isn't wired. No cookie, no CORS, no sign-in. A template site carrying webmcp
+  registers it as the WebMCP tool `get_page` on its home page (the site-templates build does it).
 
 The plugin only reads the site's own built files through `ASSETS`. It writes nothing and calls no other host.
 

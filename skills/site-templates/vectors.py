@@ -93,6 +93,15 @@ CASES = [
     ("a text item with nothing in it", [{"op": "add", "page": "/about/", "block": "text@1", "id": "empty-text",
         "props": {"body": [{"paragraph": "Kept"}, {"subheading": "  ", "image": {"src": "", "alt": ""}}]}}], True),
     ("a list with no points", [{"op": "add", "page": "/about/", "block": "list@1", "id": "empty-list", "props": {"points": []}}], True),
+    # ---- text@1.2 (site-kit#526): a paragraph may carry [words](href) links, held to a link's rule
+    ("a paragraph with a page link and a mailto link", [{"op": "add", "page": "/about/", "block": "text@1", "id": "links-1",
+        "props": {"body": [{"paragraph": "See [the home page](/) or write to [us](mailto:hello@example.com)."}]}}], True),
+    ("a paragraph link to javascript:", [{"op": "add", "page": "/about/", "block": "text@1", "id": "links-2",
+        "props": {"body": [{"paragraph": "Click [here](javascript:alert(1))"}]}}], True),
+    ("a paragraph link to a page that isn't there", [{"op": "add", "page": "/about/", "block": "text@1", "id": "links-3",
+        "props": {"body": [{"paragraph": "See [prices](/prices/)."}]}}], True),
+    ("a paragraph link with an empty address", [{"op": "add", "page": "/about/", "block": "text@1", "id": "links-4",
+        "props": {"body": [{"paragraph": "See [prices]()."}]}}], True),
     # ---- slot@1 (site-kit#223): a named place a plugin fills; the name is short, plain and once per page
     ("a slot no record mapping fills is refused (slots is set in the record, never by an op)", [{"op": "add", "page": "/about/", "block": "slot@1", "id": "pay-here", "props": {"name": "dues-2027"}}], True),
     ("a slot name with a space", [{"op": "add", "page": "/about/", "block": "slot@1", "id": "pay-here", "props": {"name": "dues 2027"}}], True),

@@ -5,6 +5,8 @@
 //   /a2a                    the agent card's url: a plain JSON-RPC refusal until the site has chat
 //   /mcp                    a read-only MCP (streamable HTTP, JSON answers, no auth): list_pages from the sitemap,
 //                           get_page for one twin. Public pages only, fetched from the site's own assets.
+//   POST /api/page          {"path": "/about/"} gets that page's twin as text/markdown (site-kit#561): get_page for a WebMCP
+//                           tool, which posts plain JSON. The same gate as /mcp's get_page (getPage), the same body cap.
 //
 //   /.well-known/api-catalog  served as application/linkset+json with its Link (RFC 9727), and the home page carries the
 //                           discovery Link header when the site has that catalog (site-kit#317: the kit is the host)
@@ -19,6 +21,7 @@ export const VERSION = "0.1.1";
 export const MCP_PROTOCOL = "2025-06-18";
 const MAX_PAGES = 2000;
 const MAX_BODY = 64 * 1024;
+const MAX_PATH = 512;   // /api/page's one field: a page path, never long
 const JSON_TYPE = "application/json; charset=utf-8";
 export const CATALOG_TYPE = 'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"';
 // The same value discovery.py's link_header() gives a site with an MCP server and an agent card (every template site).
@@ -120,7 +123,8 @@ async function readRpc(request) {
   }
 }
 
-function a2a(request, origin) {
+/** The /a2a refusal, exported for a site that keeps its own /mcp and twins and calls it on /a2a itself (site-kit#360). */
+export function a2aRefusal(request, origin) {
   const words = `This site has no assistant yet. Its pages are at ${origin}/llms.txt, and its read-only MCP is at ${origin}/mcp.`;
   if (request.method !== "POST")
     return new Response(words + "\n", { status: 200, headers: { "Content-Type": "text/plain; charset=utf-8" } });
@@ -155,7 +159,16 @@ export async function sitemapPaths(context, origin) {
   return [...pages].sort();
 }
 
-const TOOLS = [
+/** site-kit#561: the one gate for a page's markdown, called by /mcp's get_page and by POST /api/page alike, never copied.
+ *  {text} with the twin, or {error, missing} with the words to answer. The path is echoed as given, never made a link. */
+export async function getPage(context, path) {
+  if (typeof path !== "string" || !path.startsWith("/")) return { error: "path must start with /", missing: false };
+  const body = await twin(context, path);
+  // site-kit#197: a page built with --skip-no-main has no twin, so a miss is "no markdown version", not "no page".
+  return body ? { text: body } : { error: `no markdown version of ${path}. The page may still exist as HTML; list_pages names the site's pages.`, missing: true };
+}
+
+export const TOOLS = [
   { name: "list_pages", description: "List the site's public pages (from its sitemap), one path per line.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true } },
@@ -187,18 +200,34 @@ async function mcp(context, origin) {
       const { name, arguments: args = {} } = msg.params || {};
       if (name === "list_pages") return text((await sitemapPaths(context, origin)).join("\n"));
       if (name === "get_page") {
-        const path = typeof args.path === "string" ? args.path : "";
-        if (!path.startsWith("/")) return text("path must start with /", true);
-        const body = await twin(context, path);
-        // site-kit#197: a page built with --skip-no-main has no twin, so a miss is "no markdown version", not "no page".
-        // The path is echoed as given, never made into a link.
-        return body ? text(body) : text(`no markdown version of ${path}. The page may still exist as HTML; list_pages names the site's pages.`, true);
+        const page = await getPage(context, args.path);
+        return page.text !== undefined ? text(page.text) : text(page.error, true);
       }
       return rpcError(msg.id, -32602, `unknown tool ${JSON.stringify(name)}`);
     }
     default:
       return rpcError(msg.id, -32601, `unknown method ${JSON.stringify(msg.method)}`);
   }
+}
+
+const plain = (words, status, headers = {}) => new Response(words + "\n", { status, headers: {
+  "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex", ...headers } });
+
+// site-kit#561: POST {"path"} for a WebMCP tool. The same body cap as /mcp (readCapped), one short string field and nothing
+// else, no CORS, no cookie, no sign-in taken or passed on: it serves only what the twin and /mcp already serve.
+async function apiPage(context) {
+  const { request } = context;
+  if (request.method !== "POST") return plain('POST {"path": "/a-page/"} as JSON for that page as markdown.', 405, { Allow: "POST" });
+  const raw = await readCapped(request);
+  if (raw === null) return plain("the request is too large", 413);
+  let msg;
+  try { msg = JSON.parse(raw); } catch { return plain("the body is not JSON", 400); }
+  if (!msg || typeof msg !== "object" || Array.isArray(msg) || Object.keys(msg).join(",") !== "path" || typeof msg.path !== "string"
+    || msg.path.length > MAX_PATH)
+    return plain('send one JSON object, {"path": "/a-page/"}, and nothing else', 400);
+  const page = await getPage(context, msg.path);
+  if (page.text === undefined) return plain(page.error, page.missing ? 404 : 400);
+  return new Response(page.text, { headers: { "Content-Type": "text/markdown; charset=utf-8", "X-Robots-Tag": "noindex" } });
 }
 
 /** The plugin's answer for this request, or null to let the site serve it. `opts.members`: the site has a members gate (the
@@ -208,12 +237,13 @@ export async function agentFiles(context, opts = {}) {
   const { request } = context;
   const url = new URL(request.url);
   const origin = url.origin;
-  if (url.pathname === "/a2a") return a2a(request, origin);
+  if (url.pathname === "/a2a") return a2aRefusal(request, origin);
   const md = (request.method === "GET" || request.method === "HEAD") && wantsMarkdown(request.headers.get("Accept") || "");
-  if (opts.members && typeof context.data?.members?.gated !== "function" && (url.pathname === "/mcp" || md))
+  if (opts.members && typeof context.data?.members?.gated !== "function" && (url.pathname === "/mcp" || url.pathname === "/api/page" || md))
     return new Response("The members gate isn't running, so agent reads are off until it is.\n", { status: 503, headers: {
       "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", Vary: "Accept" } });
   if (url.pathname === "/mcp") return mcp(context, origin);
+  if (url.pathname === "/api/page") return apiPage(context);
   if (md) {
     const body = await twin(context, url.pathname);
     if (body !== null)

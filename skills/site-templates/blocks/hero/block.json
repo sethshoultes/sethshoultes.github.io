@@ -1,11 +1,14 @@
 {
   "name": "hero",
-  "version": "1.4",
-  "title": "Hero: the page's headline, a line under it, a picture and one button",
+  "version": "1.6",
+  "title": "Hero: the page's headline, a line under it, a picture with an optional caption and panel strip, and one button",
   "props": {
+    "kicker": {"type": "text", "max": 60},
     "heading": {"type": "text", "required": true, "max": 90},
     "lead": {"type": "text", "max": 240},
     "image": {"type": "image"},
+    "caption": {"type": "text", "max": 120},
+    "strip": {"type": "items", "min": 2, "max": 3, "fields": {"image": {"type": "image", "required": true}}},
     "cta": {"type": "link"},
     "layout": {"type": "choice", "values": ["stacked"]},
     "logo": {"type": "flag", "also": ["large"]},
@@ -16,11 +19,15 @@
   "tree": {"part": "group", "tag": "section", "children": [
     {"part": "columns", "children": [
       {"part": "column", "children": [
+        {"part": "paragraph", "text": "{kicker}"},
         {"part": "heading", "level": 1, "text": "{heading}"},
         {"part": "paragraph", "text": "{lead}"},
         {"part": "buttons", "children": [{"part": "button", "text": "{cta.text}", "href": "{cta.href}"}]}
       ]},
-      {"part": "column", "children": [{"part": "image", "src": "{image.src}", "alt": "{image.alt}"}]}
+      {"part": "column", "children": [
+        {"part": "image", "src": "{image.src}", "alt": "{image.alt}", "caption": "{caption}"},
+        {"part": "columns", "children": [{"part": "column", "each": "strip", "children": [{"part": "image", "src": "{item.image.src}", "alt": "{item.image.alt}"}]}]}
+      ]}
     ]}
   ]}
 }

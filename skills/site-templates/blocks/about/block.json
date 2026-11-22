@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "1.0",
+  "version": "1.1",
   "title": "About: who you are, in a few lines beside a picture",
   "props": {
     "heading": {"type": "text", "required": true, "max": 90},
-    "text": {"type": "text", "required": true, "max": 1200},
+    "text": {"type": "text", "required": true, "max": 1200, "links": true},
     "image": {"type": "image"}
   },
   "tree": {"part": "group", "tag": "section", "children": [
