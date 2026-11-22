@@ -9,6 +9,8 @@
 // Required plugins (plugin.json `"edge": {"required": true}`, site-kit#376) are not run here; runRequired runs them first. A
 // middleware whose runEdge lists a required plugin that runRequired never passed on this request gets a 503, never an
 // ungated page. Which plugins passed is kept beside the request, never written onto its context (a frozen one stays usable).
+// A required plugin may also decorate (plugin.json `"edge": {"required": true, "decorate": true}`, site-kit#602): runEdge calls
+// its decorate(context, data, newRewriter) last, only when it passed this request, to change the page it let through.
 const PASSED = new WeakMap();
 const unavailable = () => new Response("Service unavailable\n", { status: 503, headers: { "Cache-Control": "no-store", "Content-Type": "text/plain; charset=utf-8" } });
 
@@ -21,12 +23,26 @@ export async function runEdge(context, plugins, newRewriter = () => new HTMLRewr
   }
   let current = null;
   for (const plugin of plugins) {
-    if (plugin.required || plugin.behind) continue;
+    // A behind plugin runs here only when it is public (site-kit#467), and then with its gate's member set to null: an
+    // ungated path never has one, and nothing here can stand in for the gate's own check.
+    if (plugin.required || (plugin.behind && !plugin.public)) continue;
+    const ctx = plugin.behind ? { ...context, data: { ...context.data, [plugin.behind]: Object.freeze({ ...(context.data && context.data[plugin.behind]), member: null }) } } : context;
     try {
-      const answer = await plugin.handle({ ...context, next: (req) => (current ? Promise.resolve(current) : context.next(req)) }, plugin.data, newRewriter);
+      const answer = await plugin.handle({ ...ctx, next: (req) => (current ? Promise.resolve(current) : context.next(req)) }, plugin.data, newRewriter);
       if (answer) current = answer;
     } catch (err) {
       console.log(JSON.stringify({ plugin: plugin.name, error: String(err && err.message ? err.message : err) }));
+    }
+  }
+  // site-kit#602: a required plugin that passed this request may decorate the page it let through (members' profile menu),
+  // last, with the response so far as its next(). Null leaves the page alone; a throw is logged and the page served as it was.
+  for (const plugin of plugins) {
+    if (!plugin.required || !plugin.decorate || !passed?.has(plugin.name)) continue;
+    try {
+      const answer = await plugin.decorate({ ...context, next: (req) => (current ? Promise.resolve(current) : context.next(req)) }, plugin.data, newRewriter);
+      if (answer) current = answer;
+    } catch (err) {
+      console.log(JSON.stringify({ plugin: plugin.name, decorate: true, error: String(err && err.message ? err.message : err) }));
     }
   }
   return current;
@@ -43,7 +59,8 @@ export async function runEdge(context, plugins, newRewriter = () => new HTMLRewr
 // the gate is handed a next() that asks the plugins behind it first, then the page. So it never runs for a request the gate
 // refused or never saw, and runEdge never runs it. The first behind plugin to answer is served (through the gate, which adds
 // its no-store and noindex); a behind plugin that throws is a 503, never the page underneath. A behind plugin whose gate isn't
-// in the list never runs at all (and the build refuses that site).
+// in the list never runs at all (and the build refuses that site). A behind plugin that is also "public" (site-kit#467) runs
+// here for its gated paths as before, and in runEdge for ungated ones, with no member.
 export async function runRequired(context, plugins, newRewriter = () => new HTMLRewriter()) {
   const passed = new Set();
   for (const plugin of plugins) {

@@ -22,7 +22,10 @@ the owner's approval binding.
 .sitekit/features.json (in the site repo; every key but site_only, post_images and memory_lines is required):
   { "site": "smores", "soul": "SOUL.md", "style_guide": "canon/STYLEGUIDE.md", "plugins_dir": "plugins",
     "functions_dirs": ["functions"], "page_types_file": "data/types.json" | null, "post_images": true | false,
-    "memory_lines": true | false,
+    "memory_lines": true | false, "hero_every_page": "dist" (optional: the built folder; every page there opens with a hero, site-kit#519),
+    "cast_bylines": "dist", "cast_site": "key" (optional, site-kit#521: every built page's author is a cast author for the site,
+    and no cast name sits in a testimonial; the cast itself, .sitekit/cast.json from the kit's catalog/cast.json, is checked
+    whenever a family site has it),
     "site_only": [ {"kind": "plugin|function|page_type", "name": "...", "proposal": "site-kit#N|existing", "why": "..."} ] }
 
 Featured images (site-kit#214, Seth: "posts always need a featured image unless the site has them turned off"): a site with a
@@ -31,6 +34,7 @@ blog (data/blog.json) fails when a post in it has no "image" and "image_alt", un
 Memory lines (site-kit#255): the vendored site-memory workflow adds one line to .agent/memory/ after each merged pull request,
 unless "memory_lines" is false (a busy repo whose open pull requests must stay up to date with main)."""
 import hashlib
+import html.parser
 import json
 import os
 import pathlib
@@ -75,6 +79,20 @@ def plugin_hash(folder):
     return h.hexdigest()
 
 
+def _vendored_version(d):
+    """The version a vendored plugin folder says it is (its plugin.json), or None when that can't be read."""
+    try:
+        v = json.loads((d / "plugin.json").read_text()).get("version")
+    except (OSError, ValueError, AttributeError):
+        return None
+    return v if isinstance(v, str) else None
+
+
+def _release(v):
+    """True for a release version: dotted numbers only, like 0.4.1."""
+    return isinstance(v, str) and bool(re.fullmatch(r"[0-9]+(\.[0-9]+)*", v))
+
+
 def _hash_or_none(folder):
     try:
         return plugin_hash(folder)
@@ -114,6 +132,14 @@ def _features(root):
         bad.append('.sitekit/features.json "family" must be true or false (true: a family site with its own builder, site-kit#428)')
     if "memory_lines" in f and not isinstance(f["memory_lines"], bool):
         bad.append('.sitekit/features.json "memory_lines" must be true or false (false turns merged-PR memory lines off for this site)')
+    if "hero_every_page" in f and not (isinstance(f["hero_every_page"], str) and f["hero_every_page"] and not f["hero_every_page"].startswith(("/", ".."))
+                                       and ".." not in pathlib.PurePosixPath(f["hero_every_page"]).parts):
+        bad.append('.sitekit/features.json "hero_every_page" must be the built folder, relative to the site, like "dist" (site-kit#519)')
+    if "cast_bylines" in f and not (isinstance(f["cast_bylines"], str) and f["cast_bylines"] and not f["cast_bylines"].startswith("/")
+                                    and ".." not in pathlib.PurePosixPath(f["cast_bylines"]).parts):
+        bad.append('.sitekit/features.json "cast_bylines" must be the built folder, relative to the site, like "dist" (site-kit#521)')
+    if "cast_site" in f and f["cast_site"] not in CAST_SITES:
+        bad.append(f'.sitekit/features.json "cast_site" is one of the cast\'s sites: {", ".join(sorted(CAST_SITES))}')
     if "page_types_file" in f and not (f["page_types_file"] is None or (isinstance(f["page_types_file"], str) and f["page_types_file"])):
         bad.append('.sitekit/features.json "page_types_file" must be a path, or null for a site with none')
     entries = f.get("site_only", [])
@@ -152,6 +178,194 @@ def _post_images(root, f):
             '(site-kit#214); a site without post images sets "post_images": false in .sitekit/features.json'
             for p in posts if not (isinstance(p, dict) and isinstance(p.get("image"), str) and p["image"].strip()
                                    and isinstance(p.get("image_alt"), str) and p["image_alt"].strip())]
+
+
+class _HeroScan(html.parser.HTMLParser):
+    """What hero_every_page reads of one built page: main's first element, the hero's first img, its figcaption's text, and a
+    robots noindex meta."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth, self.main_at, self.first, self.hero_at, self.img, self.cap, self.in_cap, self.noindex = 0, None, None, None, None, None, False, False
+        self.in_hero = False
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag == "meta" and (a.get("name") or "").lower() == "robots" and "noindex" in (a.get("content") or "").lower():
+            self.noindex = True
+        if tag in ("img", "meta", "link", "br", "hr", "input", "source"):   # void: no depth change
+            if tag == "img" and self.in_hero and self.img is None:
+                self.img = a
+            if self.main_at is not None and self.depth == self.main_at + 1 and self.first is None:
+                self.first = (tag, a)
+            return
+        self.depth += 1
+        if tag == "main" and self.main_at is None:
+            self.main_at = self.depth
+        elif self.main_at is not None and self.depth == self.main_at + 1 and self.first is None:
+            self.first = (tag, a)
+            if tag == "section" and "hero" in (a.get("class") or "").split():
+                self.hero_at, self.in_hero = self.depth, True
+        if tag == "figcaption" and self.in_hero and self.cap is None:
+            self.in_cap, self.cap = True, ""
+
+    def handle_endtag(self, tag):
+        if tag in ("img", "meta", "link", "br", "hr", "input", "source"):
+            return
+        if tag == "figcaption":
+            self.in_cap = False
+        if self.in_hero and self.depth == self.hero_at:
+            self.in_hero = False   # the hero is closed: nothing after it counts as its art
+        self.depth -= 1
+
+    def handle_data(self, data):
+        if self.in_cap:
+            self.cap += data
+
+
+def _heroes(root, f):
+    """site-kit#519 (Seth's standing rule): with "hero_every_page" naming the built folder, every built page opens with a hero
+    that explains it: main's first element is a section.hero holding an img with alt, width and height, and a caption, when it
+    has one, of at most 120 characters. 404.html and a noindex page (a thank-you or utility page) are exempt."""
+    built = f.get("hero_every_page")
+    if not built:
+        return []
+    folder = root / built
+    if not folder.is_dir():
+        return [f'hero_every_page: {built}/ is missing; build the site first, so its pages can be read (site-kit#519)']
+    out = []
+    for page in sorted(folder.rglob("*.html")):
+        rel = page.relative_to(folder).as_posix()
+        if rel == "404.html" or page.is_symlink():
+            continue
+        scan = _HeroScan()
+        scan.feed(page.read_text(encoding="utf-8", errors="replace"))
+        if scan.noindex or scan.main_at is None:
+            continue
+        tag, attrs = scan.first or (None, {})
+        if not (tag == "section" and "hero" in (attrs.get("class") or "").split()):
+            out.append(f"{built}/{rel}: the page doesn't open with a hero (main's first element must be a section.hero), site-kit#519")
+            continue
+        img = scan.img or {}
+        if not ((img.get("alt") or "").strip() and (img.get("width") or "").isdigit() and (img.get("height") or "").isdigit()):
+            out.append(f"{built}/{rel}: the hero's art needs an img with alt text, width and height (site-kit#519)")
+        if scan.cap is not None and len(scan.cap.strip()) > 120:
+            out.append(f"{built}/{rel}: the hero's caption is {len(scan.cap.strip())} characters; at most 120 (site-kit#519)")
+    return out
+
+
+CAST_SITES = {"key", "foo", "memory", "academy", "hacker"}
+CAST_KNOWS = {"none", "some", "lots"}
+CAST_SLUG = re.compile(r"[a-z0-9][a-z0-9-]{0,39}")
+CAST_LINE = re.compile(r"[^\x00-\x1f\x7f\u2028\u2029]+")
+
+
+def cast_problems(text, where="catalog/cast.json"):
+    """site-kit#521: the family's cast, its shape held so it can't carry a quote, a rating, a result or a company: one entry per
+    slug, each field from the ruling and nothing else, every text one line within its cap. [] when it's right."""
+    out, keys = [], []
+    try:   # every object's keys, so a key written twice anywhere (an id above all) is refused, not silently the last one
+        d = json.loads(text, object_pairs_hook=lambda items: (keys.append([k for k, _ in items]), dict(items))[1])
+    except ValueError as e:
+        return [f"{where} is not valid JSON: {e}"]
+    if not (isinstance(d, dict) and set(d) == {"cast"} and isinstance(d["cast"], dict) and d["cast"]):
+        return [f'{where} must be {{"cast": {{"<id>": {{...}}}}}} with at least one entry']
+    if any(len(k) != len(set(k)) for k in keys):
+        out.append(f"{where}: a key is written twice")
+    def line(v, most):
+        return isinstance(v, str) and v.strip() == v and 0 < len(v) <= most and CAST_LINE.fullmatch(v) is not None
+    for cid, e in d["cast"].items():
+        w = f"{where}: {cid}"
+        if not CAST_SLUG.fullmatch(cid):
+            out.append(f"{w}: the id must be a slug (lowercase letters, digits and dashes)")
+        if not isinstance(e, dict):
+            out.append(f"{w}: must be an object")
+            continue
+        kind = e.get("kind")
+        allowed = {"name", "kind", "sites", "role", "wants", "worries", "knows", "words", "voice", "portrait"} | ({"byline", "bio"} if kind == "author" else set())
+        out += [f"{w}: unknown field {k!r} (the cast has no quote, rating, result or company)" for k in sorted(set(e) - allowed)]
+        out += [f"{w}: {k} is missing" for k in sorted(allowed - {"portrait"} - set(e))]
+        if kind not in ("author", "reader"):
+            out.append(f'{w}: kind is "author" or "reader"')
+        if not (isinstance(e.get("sites"), list) and e["sites"] and set(e["sites"]) <= CAST_SITES and len(e["sites"]) == len(set(e["sites"]))):
+            out.append(f"{w}: sites is one or more of {', '.join(sorted(CAST_SITES))}")
+        for k, most in (("name", 40), ("role", 120), ("wants", 160), ("worries", 160), ("voice", 140), ("byline", 40), ("bio", 300)):
+            if k in e and not line(e[k], most):
+                out.append(f"{w}: {k} is one line of at most {most} characters")
+        kn = e.get("knows")
+        if not (isinstance(kn, dict) and set(kn) == {"ai", "websites"} and set(kn.values()) <= CAST_KNOWS):
+            out.append(f'{w}: knows is {{"ai": ..., "websites": ...}}, each "none", "some" or "lots"')
+        words = e.get("words")
+        if not (isinstance(words, list) and 3 <= len(words) <= 8 and all(line(x, 40) for x in words)):
+            out.append(f"{w}: words is 3 to 8 short phrases, each at most 40 characters")
+        p = e.get("portrait")
+        if p is not None and not (isinstance(p, dict) and set(p) == {"alt"} and line(p["alt"], 160)):
+            out.append(f'{w}: portrait is null or {{"alt": one line of at most 160 characters}}')
+    return out
+
+
+def _cast(root, f):
+    """The synced cast, checked on every family site that has it; and with "cast_bylines" naming the built folder, every built
+    page's author meta is a cast author's byline for this site, and no cast name sits in a testimonial."""
+    path = root / ".sitekit" / "cast.json"
+    if not path.is_file():
+        return [] if not f.get("cast_bylines") else ['cast_bylines: .sitekit/cast.json is missing; run site_sync.py sync (site-kit#521)']
+    text, err = _text(path)
+    if err:
+        return [f".sitekit/cast.json {err}"]
+    out = cast_problems(text, ".sitekit/cast.json")
+    built = f.get("cast_bylines")
+    if out or not built:
+        return out
+    cast = json.loads(text)["cast"]
+    site = f.get("cast_site", f["site"])
+    bylines = {e["byline"] for e in cast.values() if e["kind"] == "author" and site in e["sites"]}
+    names = sorted({e["name"] for e in cast.values()}, key=len, reverse=True)
+    folder = root / built
+    if not folder.is_dir():
+        return [f"cast_bylines: {built}/ is missing; build the site first (site-kit#521)"]
+    for page in sorted(folder.rglob("*.html")):
+        if page.is_symlink():
+            continue
+        rel, scan = page.relative_to(folder).as_posix(), _CastScan()
+        scan.feed(page.read_text(encoding="utf-8", errors="replace"))
+        for a in scan.authors:
+            if a not in bylines:
+                out.append(f'{built}/{rel}: author "{a}" is not a cast author for {site} in .sitekit/cast.json (site-kit#521)')
+        for t in scan.quoted:
+            hit = next((n for n in names if n in t), None)
+            if hit:
+                out.append(f"{built}/{rel}: {hit} is a cast story character, never a testimonial or a cited quote (site-kit#521)")
+    return out
+
+
+class _CastScan(html.parser.HTMLParser):
+    """A built page's author metas, and the text inside testimonial sections (class proof) and cited blockquotes."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.authors, self.quoted, self.stack = [], [], []
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag == "meta" and (a.get("name") or "").lower() == "author" and a.get("content"):
+            self.authors.append(a["content"].strip())
+        if tag in ("meta", "img", "br", "hr", "link", "input", "source"):
+            return
+        quoting = (tag == "section" and "proof" in (a.get("class") or "").split()) or (tag == "blockquote" and "cite" in a)
+        self.stack.append(quoting)
+        if quoting:
+            self.quoted.append("")
+
+    def handle_endtag(self, tag):
+        if tag in ("meta", "img", "br", "hr", "link", "input", "source"):
+            return
+        if self.stack:
+            self.stack.pop()
+
+    def handle_data(self, data):
+        if any(self.stack) and self.quoted:
+            self.quoted[-1] += data
 
 
 def _links_to(section, target):
@@ -359,9 +573,12 @@ def _required_built(root, verified):
         return ["functions/_plugins.js isn't the build's own list (one `export const edge = [` ... `];`): rebuild it (site-kit#298)"]
     out = []
     for name in required:
-        entry = re.compile(r'  \{ name: "' + re.escape(name) + r'", handle: (h\d+)(?:, data: d\d+(?:\.[A-Za-z_]\w*)?)?, required: true \},?')
+        # site-kit#602: a gate that decorates lists its decorate last, and its import must name that same function
+        entry = re.compile(r'  \{ name: "' + re.escape(name) + r'", handle: (h\d+)(?:, data: d\d+(?:\.[A-Za-z_]\w*)?)?, required: true'
+                           r'(?:, decorate: (x\d+))? \},?')
         hits = [m for line in lines[starts[0] + 1:end] if (m := entry.fullmatch(line))]
-        imported = hits and any(re.fullmatch(r'import \{ handle as ' + hits[0].group(1) + r' \} from "\./plugins/' + re.escape(name) + r'/[^"]+";', line)
+        names = hits and r'handle as ' + hits[0].group(1) + (r', decorate as ' + hits[0].group(2) if hits[0].group(2) else "")
+        imported = hits and any(re.fullmatch(r'import \{ ' + names + r' \} from "\./plugins/' + re.escape(name) + r'/[^"]+";', line)
                                 for line in lines[:starts[0]])
         if len(hits) != 1 or not imported:
             out.append(f"functions/_plugins.js: required plugin {name} isn't in the built list with required: true, so its pages would "
@@ -404,9 +621,15 @@ def _members(root, verified, routes):
         prefix = r.get("prefix") if isinstance(r, dict) else None
         plans = r.get("plans") if isinstance(r, dict) else None
         ok_plans = plans is None or (isinstance(plans, list) and plans and all(isinstance(p, str) and MEMBERS_SLUG.fullmatch(p) for p in plans))
+        # Drip (doorman#136): a plans rule may carry after_days, a whole number of days from 1 to 3650, as the plugin writes it.
+        drip = isinstance(r, dict) and "after_days" in r
+        after = r["after_days"] if drip else None
+        ok_after = not drip or (plans is not None and type(after) is int and 1 <= after <= 3650)
+        keys = {"prefix", "plans", "after_days"} if drip else {"prefix", "plans"}
         if not (isinstance(prefix, str) and MEMBERS_PREFIX.fullmatch(prefix) and not prefix.startswith("/_doorman/")) or not ok_plans \
-                or set(r) != {"prefix", "plans"}:
-            out.append(f"{rel}: rule {json.dumps(r)} must be a lowercase directory ending in / with signed-in or plan slugs (site-kit#298)")
+                or not ok_after or set(r) != keys:
+            out.append(f"{rel}: rule {json.dumps(r)} must be a lowercase directory ending in / with signed-in or plan slugs, and a "
+                       f"drip rule's after_days 1 to 3650 on a plans rule (site-kit#298, doorman#136)")
     must = [r["prefix"] for r in rules if isinstance(r, dict) and isinstance(r.get("prefix"), str)] + ["/_doorman/"]
     for f in routes:
         text, err = _text(f)
@@ -553,6 +776,8 @@ def check(root, catalog, site=None):
     problems += _soul(root, f)
     problems += _memory(root)
     problems += _post_images(root, f)
+    problems += _heroes(root, f)
+    problems += _cast(root, f)
     baseline = reg.get("baseline") if isinstance(reg.get("baseline"), dict) else {}
     approved = {(a.get("ref"), a.get("kind"), a.get("name")) for a in (reg.get("approved") if isinstance(reg.get("approved"), list) else []) if isinstance(a, dict)}
     listed = {(e["kind"], e["name"]): e for e in f.get("site_only", [])}
@@ -595,12 +820,28 @@ def check(root, catalog, site=None):
                 verdict("plugin", d.name, False)
             elif d.name not in registered:
                 verdict("plugin", d.name, False, "is in the catalog but this site is not registered as using it: the owner adds it to this site's plugins in site-kit's catalog/sites.json")
+            elif _release(carried := _vendored_version(d)) and registered[d.name] != carried:
+                # site-kit#547 (mi-dev-3 on #556): the line is held to the version the site's own plugin.json names, older or
+                # current; a copy with no release version (none, or "9.0.0-fork") is caught by its hash below
+                # mi-dev-1 on #556: a shared registration (no repo of its own, like foo-customer) can't equal every site it
+                # covers, so that site syncs to the line; a site's own line moves to what the site carries.
+                fix = (f"kit-sync this site to {registered[d.name]}; the shared line stays" if not reg.get("repo")
+                       else "the site-kit owner moves the registration to what the site carries")
+                verdict("plugin", d.name, False, f"is registered as {registered[d.name]} in site-kit's catalog/sites.json ({site}) but this site "
+                        f"carries {carried}: {fix}")
             elif _hash_or_none(d) != cat.get("hash"):
                 verdict("plugin", d.name, False, "differs from the catalog's copy (edited, forked or out of date): run kit-sync for the current version, and change a plugin in site-kit, never in the site")
             else:
                 verdict("plugin", d.name, True)
                 if d.parent == root / "plugins":
                     verified.add(d.name)
+
+    carried_dirs = {d.name for pdir in pdirs if pdir.is_dir() for d in pdir.iterdir() if d.is_dir()}
+    # site-kit#547: a line for a plugin the site doesn't carry isn't true either. Only for a registration with its own repo: a
+    # shared one (foo-customer, every foo-* repo) lists what its sites may carry, and each carries its own subset.
+    for name in sorted(set(registered) - carried_dirs) if reg.get("repo") else []:
+        problems.append(f"plugin {name} is registered as {registered[name]} in site-kit's catalog/sites.json ({site}) but this site carries no "
+                        f"plugins/{name}: the site-kit owner removes the registration, or the site vendors the plugin")
 
     problems += _required_first(root, verified)
     problems += _required_built(root, verified)

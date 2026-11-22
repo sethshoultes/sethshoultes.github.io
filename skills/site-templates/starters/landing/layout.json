@@ -1,0 +1,90 @@
+{
+ "template": "landing",
+ "why": "{{placeholder:Who this page is for and what it offers them, in one or two warm sentences: what they get, and why they can trust it}}",
+ "menu": [
+  {
+   "label": "What it is",
+   "href": "/#what"
+  },
+  {
+   "label": "How it works",
+   "href": "/#how"
+  }
+ ],
+ "pages": [
+  {
+   "path": "/",
+   "type": "home",
+   "title": "{{placeholder:The name people know it by}}",
+   "description": "{{placeholder:One sentence for search results: who it is for and what it does}}",
+   "sections": [
+    {
+     "id": "hero",
+     "block": "hero@1",
+     "props": {
+      "kicker": "{{placeholder:A short line above the headline}}",
+      "heading": "{{placeholder:The one promise, in a few words}}",
+      "lead": "{{placeholder:One or two sentences: who it is for and what it does for them}}",
+      "cta": {
+       "text": "{{placeholder:The one thing to do next}}",
+       "href": "/#what"
+      }
+     }
+    },
+    {
+     "id": "what",
+     "block": "services@1",
+     "props": {
+      "heading": "{{placeholder:What it does for you}}",
+      "items": [
+       {
+        "name": "{{placeholder:The first thing it does}}",
+        "text": "{{placeholder:One or two sentences on it, plainly}}"
+       },
+       {
+        "name": "{{placeholder:The second thing it does}}",
+        "text": "{{placeholder:One or two sentences on it, plainly}}"
+       },
+       {
+        "name": "{{placeholder:The third thing it does}}",
+        "text": "{{placeholder:One or two sentences on it, plainly}}"
+       }
+      ]
+     }
+    },
+    {
+     "id": "how",
+     "block": "services@1",
+     "props": {
+      "heading": "{{placeholder:How it works}}",
+      "items": [
+       {
+        "name": "{{placeholder:1. The first step}}",
+        "text": "{{placeholder:What happens, in one sentence}}"
+       },
+       {
+        "name": "{{placeholder:2. The second step}}",
+        "text": "{{placeholder:What happens, in one sentence}}"
+       },
+       {
+        "name": "{{placeholder:3. The third step}}",
+        "text": "{{placeholder:What happens, in one sentence}}"
+       }
+      ]
+     }
+    },
+    {
+     "id": "next",
+     "block": "cta@1",
+     "props": {
+      "heading": "{{placeholder:The invitation, in a few words}}",
+      "button": {
+       "text": "{{placeholder:The one thing to do next}}",
+       "href": "{{placeholder:https://where that happens}}"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -4,7 +4,7 @@
  "blocks": {
   "about": {
    "name": "about",
-   "version": "1.0",
+   "version": "1.1",
    "title": "About: who you are, in a few lines beside a picture",
    "props": {
     "heading": {
@@ -15,7 +15,8 @@
     "text": {
      "type": "text",
      "required": true,
-     "max": 1200
+     "max": 1200,
+     "links": true
     },
     "image": {
      "type": "image"
@@ -176,7 +177,7 @@
   },
   "faq": {
    "name": "faq",
-   "version": "1.0",
+   "version": "1.1",
    "title": "FAQ: the questions people ask, each opening to its answer",
    "props": {
     "heading": {
@@ -195,7 +196,8 @@
       },
       "a": {
        "type": "text",
-       "required": true
+       "required": true,
+       "links": true
       }
      }
     }
@@ -283,9 +285,13 @@
   },
   "hero": {
    "name": "hero",
-   "version": "1.4",
-   "title": "Hero: the page's headline, a line under it, a picture and one button",
+   "version": "1.6",
+   "title": "Hero: the page's headline, a line under it, a picture with an optional caption and panel strip, and one button",
    "props": {
+    "kicker": {
+     "type": "text",
+     "max": 60
+    },
     "heading": {
      "type": "text",
      "required": true,
@@ -297,6 +303,21 @@
     },
     "image": {
      "type": "image"
+    },
+    "caption": {
+     "type": "text",
+     "max": 120
+    },
+    "strip": {
+     "type": "items",
+     "min": 2,
+     "max": 3,
+     "fields": {
+      "image": {
+       "type": "image",
+       "required": true
+      }
+     }
     },
     "cta": {
      "type": "link"
@@ -340,6 +361,10 @@
         "part": "column",
         "children": [
          {
+          "part": "paragraph",
+          "text": "{kicker}"
+         },
+         {
           "part": "heading",
           "level": 1,
           "text": "{heading}"
@@ -366,7 +391,24 @@
          {
           "part": "image",
           "src": "{image.src}",
-          "alt": "{image.alt}"
+          "alt": "{image.alt}",
+          "caption": "{caption}"
+         },
+         {
+          "part": "columns",
+          "children": [
+           {
+            "part": "column",
+            "each": "strip",
+            "children": [
+             {
+              "part": "image",
+              "src": "{item.image.src}",
+              "alt": "{item.image.alt}"
+             }
+            ]
+           }
+          ]
          }
         ]
        }
@@ -375,9 +417,65 @@
     ]
    }
   },
+  "launch-ai": {
+   "name": "launch-ai",
+   "version": "1.0",
+   "title": "Open Claude or ChatGPT with a request already typed in (site-kit#435)",
+   "props": {
+    "heading": {
+     "type": "text",
+     "max": 90
+    },
+    "intro": {
+     "type": "text",
+     "max": 300
+    },
+    "prompt": {
+     "type": "prefill",
+     "required": true,
+     "max": 600
+    }
+   },
+   "tree": {
+    "part": "group",
+    "tag": "section",
+    "children": [
+     {
+      "part": "heading",
+      "level": 2,
+      "text": "{heading}"
+     },
+     {
+      "part": "paragraph",
+      "text": "{intro}"
+     },
+     {
+      "part": "paragraph",
+      "text": "{prompt.text}"
+     },
+     {
+      "part": "buttons",
+      "children": [
+       {
+        "part": "button",
+        "text": "Open in Claude",
+        "href": "{prompt.claude}",
+        "newtab": true
+       },
+       {
+        "part": "button",
+        "text": "Open in ChatGPT",
+        "href": "{prompt.chatgpt}",
+        "newtab": true
+       }
+      ]
+     }
+    ]
+   }
+  },
   "list": {
    "name": "list",
-   "version": "1.0",
+   "version": "1.1",
    "title": "List: a bulleted list as its own section, with an optional heading",
    "props": {
     "heading": {
@@ -392,7 +490,8 @@
       "point": {
        "type": "text",
        "required": true,
-       "max": 600
+       "max": 600,
+       "links": true
       }
      }
     }
@@ -683,7 +782,7 @@
   },
   "text": {
    "name": "text",
-   "version": "1.1",
+   "version": "1.2",
    "title": "Text: running words, in parts that each may have a subheading, a paragraph and a picture",
    "props": {
     "heading": {
@@ -701,7 +800,8 @@
       },
       "paragraph": {
        "type": "text",
-       "max": 2000
+       "max": 2000,
+       "links": true
       },
       "image": {
        "type": "image"
@@ -913,6 +1013,13 @@
     "/contact/"
    ],
    "preview": "https://creator.site-templates-1xc.pages.dev/"
+  },
+  "landing": {
+   "name": "landing",
+   "title": "Landing: a single page that introduces a family of products or one product",
+   "require": [],
+   "preview": "https://landing.site-templates-1xc.pages.dev/",
+   "picker": false
   },
   "local-trades": {
    "name": "local-trades",
@@ -5235,6 +5342,302 @@
     }
    ],
    "error": "the result is not allowed, so nothing changed:\n  page /about/ empty-list (list).points: is required and empty"
+  },
+  {
+   "name": "a paragraph with a page link and a mailto link",
+   "ops": [
+    {
+     "op": "add",
+     "page": "/about/",
+     "block": "text@1",
+     "id": "links-1",
+     "props": {
+      "body": [
+       {
+        "paragraph": "See [the home page](/) or write to [us](mailto:hello@example.com)."
+       }
+      ]
+     }
+    }
+   ],
+   "result": {
+    "template": "local-trades",
+    "why": "{{placeholder:Who you help and why they call you, in one or two warm sentences: what you fix, where you work, and why people trust you with it}}",
+    "pages": [
+     {
+      "path": "/",
+      "type": "home",
+      "title": "{{placeholder:Business name}} in {{placeholder:your town}}",
+      "description": "{{placeholder:One line: what you do, where, and why people call you}}",
+      "sections": [
+       {
+        "id": "hero",
+        "block": "hero@1",
+        "props": {
+         "heading": "{{placeholder:What you fix}}, fixed {{placeholder:today}}",
+         "lead": "{{placeholder:One line on who you help and why they trust you}}",
+         "cta": {
+          "text": "Call {{placeholder:your phone}}",
+          "href": "{{placeholder:tel:+1...}}"
+         }
+        }
+       },
+       {
+        "id": "services",
+        "block": "services@1",
+        "props": {
+         "heading": "What we do",
+         "intro": "{{placeholder:A line on the kinds of jobs you take}}",
+         "items": [
+          {
+           "name": "{{placeholder:Service one}}",
+           "text": "{{placeholder:What it is, in a sentence}}"
+          },
+          {
+           "name": "{{placeholder:Service two}}",
+           "text": "{{placeholder:What it is, in a sentence}}"
+          },
+          {
+           "name": "{{placeholder:Service three}}",
+           "text": "{{placeholder:What it is, in a sentence}}"
+          }
+         ],
+         "more": {
+          "text": "All services",
+          "href": "/services/"
+         }
+        }
+       },
+       {
+        "id": "reviews",
+        "block": "proof@1",
+        "props": {
+         "heading": "What customers say",
+         "reviews": [
+          {
+           "quote": "{{placeholder:A real customer's words}}",
+           "name": "{{placeholder:Their name, and town}}"
+          },
+          {
+           "quote": "{{placeholder:A real customer's words}}",
+           "name": "{{placeholder:Their name, and town}}"
+          }
+         ]
+        }
+       },
+       {
+        "id": "questions",
+        "block": "faq@1",
+        "props": {
+         "heading": "Questions people ask",
+         "questions": [
+          {
+           "q": "{{placeholder:Do you come out the same day?}}",
+           "a": "{{placeholder:Your answer}}"
+          },
+          {
+           "q": "{{placeholder:What areas do you cover?}}",
+           "a": "{{placeholder:Your towns}}"
+          },
+          {
+           "q": "{{placeholder:How much does a visit cost?}}",
+           "a": "{{placeholder:Your answer, in plain numbers}}"
+          }
+         ]
+        }
+       },
+       {
+        "id": "call",
+        "block": "cta@1",
+        "props": {
+         "heading": "Need it fixed?",
+         "button": {
+          "text": "Get in touch",
+          "href": "/contact/#reach"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "path": "/services/",
+      "type": "service",
+      "title": "Services",
+      "description": "{{placeholder:One line on the jobs you take, and where}}",
+      "sections": [
+       {
+        "id": "services-hero",
+        "block": "hero@1",
+        "props": {
+         "heading": "{{placeholder:What you fix}}, done properly",
+         "lead": "{{placeholder:One line on how you work}}",
+         "cta": {
+          "text": "Ask for a quote",
+          "href": "/contact/#reach"
+         }
+        }
+       },
+       {
+        "id": "services-list",
+        "block": "services@1",
+        "props": {
+         "heading": "Our services",
+         "items": [
+          {
+           "name": "{{placeholder:Service one}}",
+           "text": "{{placeholder:Two or three sentences on it}}"
+          },
+          {
+           "name": "{{placeholder:Service two}}",
+           "text": "{{placeholder:Two or three sentences on it}}"
+          },
+          {
+           "name": "{{placeholder:Service three}}",
+           "text": "{{placeholder:Two or three sentences on it}}"
+          }
+         ]
+        }
+       },
+       {
+        "id": "services-call",
+        "block": "cta@1",
+        "props": {
+         "heading": "Not sure which you need?",
+         "button": {
+          "text": "Ask us",
+          "href": "/contact/#reach"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "path": "/about/",
+      "type": "about",
+      "title": "About",
+      "sections": [
+       {
+        "id": "about-us",
+        "block": "about@1",
+        "props": {
+         "heading": "Who we are",
+         "text": "{{placeholder:Who you are, how long you have done this, and what you care about}}"
+        }
+       },
+       {
+        "id": "about-call",
+        "block": "cta@1",
+        "props": {
+         "heading": "Need something fixed?",
+         "button": {
+          "text": "Get in touch",
+          "href": "/contact/#reach"
+         }
+        }
+       },
+       {
+        "id": "links-1",
+        "block": "text@1",
+        "props": {
+         "body": [
+          {
+           "paragraph": "See [the home page](/) or write to [us](mailto:hello@example.com)."
+          }
+         ]
+        }
+       }
+      ]
+     },
+     {
+      "path": "/contact/",
+      "type": "contact",
+      "title": "Contact",
+      "description": "{{placeholder:How to reach you, and when}}",
+      "sections": [
+       {
+        "id": "reach",
+        "block": "contact@1",
+        "props": {
+         "heading": "Call, email or stop by",
+         "address": "{{placeholder:Your address, or the towns you cover}}",
+         "hours": "{{placeholder:Your hours}}",
+         "reach": [
+          {
+           "button": {
+            "text": "Call {{placeholder:your phone}}",
+            "href": "{{placeholder:tel:+1...}}"
+           }
+          },
+          {
+           "button": {
+            "text": "Email us",
+            "href": "{{placeholder:mailto:you@yourbusiness.com}}"
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "a paragraph link to javascript:",
+   "ops": [
+    {
+     "op": "add",
+     "page": "/about/",
+     "block": "text@1",
+     "id": "links-2",
+     "props": {
+      "body": [
+       {
+        "paragraph": "Click [here](javascript:alert(1))"
+       }
+      ]
+     }
+    }
+   ],
+   "error": "the result is not allowed, so nothing changed:\n  page /about/ links-2 (text).body[0].paragraph: a link is written [words](address), with no space in the address and no [ inside the words"
+  },
+  {
+   "name": "a paragraph link to a page that isn't there",
+   "ops": [
+    {
+     "op": "add",
+     "page": "/about/",
+     "block": "text@1",
+     "id": "links-3",
+     "props": {
+      "body": [
+       {
+        "paragraph": "See [prices](/prices/)."
+       }
+      ]
+     }
+    }
+   ],
+   "error": "the result is not allowed, so nothing changed:\n  page /about/ links-3 (text): links to /prices/, which is not a page"
+  },
+  {
+   "name": "a paragraph link with an empty address",
+   "ops": [
+    {
+     "op": "add",
+     "page": "/about/",
+     "block": "text@1",
+     "id": "links-4",
+     "props": {
+      "body": [
+       {
+        "paragraph": "See [prices]()."
+       }
+      ]
+     }
+    }
+   ],
+   "error": "the result is not allowed, so nothing changed:\n  page /about/ links-4 (text).body[0].paragraph: a link is written [words](address), with no space in the address and no [ inside the words"
   },
   {
    "name": "a slot no record mapping fills is refused (slots is set in the record, never by an op)",

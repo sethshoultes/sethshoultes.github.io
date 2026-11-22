@@ -156,7 +156,20 @@ class Plugin:
             if behind is not None and (not isinstance(behind, str) or not NAME.fullmatch(behind) or behind == self.name or required):
                 raise ThemeError(f'plugin "{self.name}": edge behind must name another plugin, a required gate (e.g. "members"), '
                                  'and a required plugin runs behind nothing')
-            self.edge = {"module": module, "data": data, "key": key, "also": also, "required": required, "behind": behind}
+            # "public" (site-kit#467): a behind plugin that also answers ungated paths, from runEdge, where its gate hands on no
+            # member. Only a behind plugin may say it; on a gated path it still runs only inside the gate's pass.
+            public = edge.get("public", False)
+            if not isinstance(public, bool) or (public and behind is None):
+                raise ThemeError(f'plugin "{self.name}": edge public must be true or false, and only a plugin that runs behind a gate '
+                                 'may be public (it answers ungated paths too, with no member)')
+            # "decorate" (site-kit#602): a required plugin whose module also exports decorate(), which runEdge calls last, only
+            # when the plugin passed the request, to change the page it let through (members' profile menu).
+            decorate = edge.get("decorate", False)
+            if not isinstance(decorate, bool) or (decorate and not required):
+                raise ThemeError(f'plugin "{self.name}": edge decorate must be true or false, and only a required plugin may '
+                                 'decorate (it changes a page it let through)')
+            self.edge = {"module": module, "data": data, "key": key, "also": also, "required": required, "behind": behind, "public": public,
+                         "decorate": decorate}
         config = _shape(m.get("config"), dict, self.name, "config")
         self.fields = _shape(config.get("fields"), dict, self.name, "config fields")
         for key, field in self.fields.items():
@@ -348,7 +361,8 @@ class Theme:
             out[f"plugins/{p.name}/{module}"] = (p.folder / module).read_text()
             for extra in p.edge["also"]:
                 out[f"plugins/{p.name}/{extra}"] = (p.folder / extra).read_text()
-            imports.append(f'import {{ handle as h{i} }} from "./plugins/{p.name}/{module}";')
+            names = f"handle as h{i}" + (f", decorate as x{i}" if p.edge["decorate"] else "")
+            imports.append(f'import {{ {names} }} from "./plugins/{p.name}/{module}";')
             entry = f'name: "{p.name}", handle: h{i}'
             if data:
                 for rel, text in p.generated(ctx).items():
@@ -359,8 +373,12 @@ class Theme:
                 entry += f", data: d{i}" + (f".{key}" if key else "")
             if p.edge["required"]:
                 entry += ", required: true"
+            if p.edge["decorate"]:
+                entry += f", decorate: x{i}"
             if p.edge["behind"]:
                 entry += f', behind: "{p.edge["behind"]}"'
+            if p.edge["public"]:
+                entry += ", public: true"
             items.append("{ " + entry + " }")
         body = ("export const edge = [\n  " + ",\n  ".join(items) + ",\n];\n") if items else "export const edge = [];\n"
         out["_plugins.js"] = PLUGINS_JS_HEADER + "".join(i + "\n" for i in imports) + body

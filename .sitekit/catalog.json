@@ -62,12 +62,78 @@
         }
       },
       "readme": "plugins/address-intake/README.md",
-      "hash": "0e440f9abcc98a85d79769fb522ffc6211c291fc4a1a36a79008bb48f04efed2",
+      "hash": "561c5a8c98515eb580d9b15aedda5ddc92b71c0a2c3d2340f4e7005a94e97316",
       "used_by": {}
     },
     {
+      "name": "adventure",
+      "version": "0.1.6",
+      "about": "The family adventure (site-kit#577, superintelligentfoo#1234): a site's data/adventure.json (its fields: the README's Data section) becomes the chapters on its adventure page: comic panels with alt text, plain captions and choices as ordinary links, so the whole story reads and plays with no script, by keyboard and screen reader. Choices to another family site link to that site's adventure page. A small same-origin script shows one chapter at a time and keeps the items picked up in the visitor's browser only, carrying them to another family site in the link's # fragment; nothing is sent anywhere, no account, no cookie.",
+      "hooks": [
+        "head.styles"
+      ],
+      "filters": [
+        "page.html"
+      ],
+      "edge": false,
+      "assets": [
+        "assets/adventure.css",
+        "assets/adventure.js"
+      ],
+      "settings": {
+        "page": {
+          "type": "string",
+          "default": "/adventure/"
+        },
+        "slot": {
+          "type": "string",
+          "default": "adventure"
+        },
+        "foo_url": {
+          "type": "string",
+          "default": "https://superintelligentfoo.com"
+        },
+        "key_url": {
+          "type": "string",
+          "default": ""
+        },
+        "brain_url": {
+          "type": "string",
+          "default": ""
+        },
+        "image_base": {
+          "type": "string",
+          "default": "/"
+        },
+        "panel_width": {
+          "type": "integer",
+          "default": 1200
+        },
+        "panel_height": {
+          "type": "integer",
+          "default": 675
+        }
+      },
+      "readme": "plugins/adventure/README.md",
+      "hash": "4150da47b8bb3528172b1b0f40ed9b4c35db263030b021d9bddefd6e9419f4c0",
+      "used_by": {
+        "foo": {
+          "version": "0.1.6",
+          "current": true
+        },
+        "key": {
+          "version": "0.1.6",
+          "current": true
+        },
+        "mywebsitememory": {
+          "version": "0.1.6",
+          "current": true
+        }
+      }
+    },
+    {
       "name": "agent-files",
-      "version": "0.1.9",
+      "version": "0.1.11",
       "about": "What an agent reads on a Pages site (herdos public-site rules 6 and 7): a markdown twin of every page, built after the site's build and served on Accept: text/markdown; the agent card's /a2a endpoint, which refuses plainly until the site has chat; and a read-only MCP at /mcp that lists the sitemap's pages and returns one page's twin. Public pages only, no auth, no writes. The site writes its own agent-card.json and mcp.json, with the MCP server card, api-catalog, skills index, ard.json and ai-catalog.json, through site-templates' discovery.py (site-kit#314).",
       "hooks": [],
       "filters": [],
@@ -75,35 +141,90 @@
       "assets": [],
       "settings": {},
       "readme": "plugins/agent-files/README.md",
-      "hash": "dfdc9c59dfeff6bb5d1c3f761a63faba03de80de4e4b3605d384e7efa1dc4f73",
+      "hash": "93f0c9343d0ac594d02ec083f518ea237dab9050cb40f27721b58ccc5a2aa6a4",
       "used_by": {
         "fartranker": {
-          "version": "0.1.6",
-          "current": false
+          "version": "0.1.11",
+          "current": true
         },
         "foo-customer": {
-          "version": "0.1.1",
-          "current": false
+          "version": "0.1.11",
+          "current": true
         },
         "key": {
-          "version": "0.1.8",
-          "current": false
+          "version": "0.1.11",
+          "current": true
         },
         "mywebsitememory": {
-          "version": "0.1.6",
-          "current": false
+          "version": "0.1.11",
+          "current": true
         },
         "redrockmqg": {
-          "version": "0.1.8",
-          "current": false
+          "version": "0.1.11",
+          "current": true
         },
         "sethshoultes-com": {
-          "version": "0.1.6",
-          "current": false
+          "version": "0.1.11",
+          "current": true
+        },
+        "smores": {
+          "version": "0.1.11",
+          "current": true
+        },
+        "stampwithshelly": {
+          "version": "0.1.11",
+          "current": true
+        },
+        "superintelligentfamily": {
+          "version": "0.1.11",
+          "current": true
         },
         "trenzbarbershop": {
-          "version": "0.1.6",
-          "current": false
+          "version": "0.1.11",
+          "current": true
+        }
+      }
+    },
+    {
+      "name": "card-gallery",
+      "version": "0.1.0",
+      "about": "A site's own list of cards kept to one row however many there are. A <div data-card-gallery=\"<id>\"> around the list becomes a sideways row that snaps card by card: a swipe, a trackpad scroll and the keyboard work with no script at all. With the small script, labelled Previous and Next buttons (disabled at the ends, hidden when every card fits), the left and right arrow keys, and a polite \"Cards 1 to 3 of 9\" for what is in view. Never moves by itself, and a visitor who asks for reduced motion gets an instant move. Every card is the same width, so one card shows on a phone and as many as fit on a wide screen; the page never scrolls sideways. Settings only: the two button labels, the card width and the gap.",
+      "hooks": [
+        "body.end",
+        "head.styles"
+      ],
+      "filters": [
+        "page.html"
+      ],
+      "edge": false,
+      "assets": [
+        "assets/card-gallery.css",
+        "assets/card-gallery.js"
+      ],
+      "settings": {
+        "prev": {
+          "type": "string",
+          "default": "Previous cards"
+        },
+        "next": {
+          "type": "string",
+          "default": "Next cards"
+        },
+        "width": {
+          "type": "string",
+          "default": "18rem"
+        },
+        "gap": {
+          "type": "string",
+          "default": "1rem"
+        }
+      },
+      "readme": "plugins/card-gallery/README.md",
+      "hash": "d2a86742e109cbe637cb92407395d7475e1c5ad804b09e2891e7349b179bd9d3",
+      "used_by": {
+        "foo": {
+          "version": "0.1.0",
+          "current": true
         }
       }
     },
@@ -138,13 +259,17 @@
     },
     {
       "name": "dues-admin",
-      "version": "0.1.1",
-      "about": "A club's officers-only dues page, read from the club's Foo dues ledger. It runs behind the members gate, so only a member the gate lets in ever reaches it, and it refuses to serve (a 503) on a path the gate doesn't cover. The page and its CSV show each member's name, year, paid or lapsed, auto-renew and last payment date, and nothing else: no email address, amount, card, PayPal or transaction id. Never cached, never indexed, never a twin, sitemap entry or llms line. Holds no key: only the name of the Pages secret that holds Foo's scoped read token for the one ledger.",
+      "version": "0.2.0",
+      "about": "A club's officers-only dues page, read from the club's Foo dues ledger or, with source \"key\", from Key's dues (sethshoultes/doorman#148), where an officer also records a member's paid-through day. It runs behind the members gate, so only a member the gate lets in ever reaches it, and it refuses to serve (a 503) on a path the gate doesn't cover. The page and its CSV show each member's name and dues standing and nothing else: no email address, amount, card, PayPal or transaction id. Never cached, never indexed, never a twin, sitemap entry or llms line. Holds no key: only the names of the Pages secrets that hold Foo's scoped read token or the Key app's secret key.",
       "hooks": [],
       "filters": [],
       "edge": true,
       "assets": [],
       "settings": {
+        "source": {
+          "type": "string",
+          "default": "foo"
+        },
         "path": {
           "type": "string",
           "required": true
@@ -154,8 +279,7 @@
           "default": "https://api.superintelligentfoo.com"
         },
         "ledger": {
-          "type": "string",
-          "required": true
+          "type": "string"
         },
         "token_var": {
           "type": "string",
@@ -168,20 +292,92 @@
         "title": {
           "type": "string",
           "default": "Dues"
+        },
+        "app": {
+          "type": "string"
+        },
+        "key_api": {
+          "type": "string",
+          "default": "https://api.superintelligentkey.com"
+        },
+        "key_var": {
+          "type": "string",
+          "default": "DOORMAN_SECRET"
+        },
+        "plan": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
         }
       },
       "readme": "plugins/dues-admin/README.md",
-      "hash": "f14244301bef96779a09a29fe0f4fc4ac23326bc2ffc53c32bcb4b664d29de06",
+      "hash": "9bbbe887c30b5d927b8c206269b7daf611a1aff9afa254949fcd2522e4011e29",
       "used_by": {
+        "key": {
+          "version": "0.2.0",
+          "current": true
+        },
         "redrockmqg": {
-          "version": "0.1.1",
+          "version": "0.2.0",
           "current": true
         }
       }
     },
     {
-      "name": "forms",
+      "name": "event-wall",
       "version": "0.1.0",
+      "about": "A full-screen wall of a site's own posts for the screen at a live event, from its data/wall.json: one post at a time (the site's own picture, its alt text, the words, who posted it and a link), with Back, Pause, Next and Full screen buttons, progress bars, a ticker line and a QR code of the wall's own address drawn at build time. It moves on by itself every few seconds with a visible Pause, Space pauses and the arrow keys step, and a visitor who asks for reduced motion gets no timer and no moving ticker. The wall's page is the site's own, never in search or the menu, since it shows people's names and photos. A small worker keeps a copy of the wall alone for a venue with bad Wi-Fi. On any other page the same posts can show as a card-gallery row. Nothing is sent anywhere.",
+      "hooks": [],
+      "filters": [
+        "page.html"
+      ],
+      "edge": false,
+      "assets": [
+        "assets/event-wall.css",
+        "assets/event-wall.js"
+      ],
+      "settings": {
+        "path": {
+          "type": "string",
+          "default": "/wall/"
+        },
+        "seconds": {
+          "type": "integer",
+          "default": 10
+        },
+        "label": {
+          "type": "string",
+          "default": "The wall"
+        },
+        "ticker": {
+          "type": "string",
+          "default": ""
+        },
+        "qr_line": {
+          "type": "string",
+          "default": ""
+        },
+        "link_hosts": {
+          "type": "string",
+          "default": ""
+        },
+        "wall_slot": {
+          "type": "string",
+          "default": "wall"
+        },
+        "cards_slot": {
+          "type": "string",
+          "default": "wall-cards"
+        }
+      },
+      "readme": "plugins/event-wall/README.md",
+      "hash": "bc32098fe5dfe5494b2de7d5247f04338f1a1c5f2087c1c61bba41d975ba3d4f",
+      "used_by": {}
+    },
+    {
+      "name": "forms",
+      "version": "0.2.0",
       "about": "A form the site's owner defines once on Key, shown on any page under the members gate and saved for the signed-in member (sethshoultes/doorman#130). It runs behind the members gate, so only a member the gate lets in ever reaches it, and it refuses to serve (a 503) on a path the gate doesn't cover. It keeps nothing itself: Key holds the form and each member's answer, sealed, and checks the member's token again on every read and save. A plain HTML form that works with no JavaScript. Never cached, never indexed, never a twin, sitemap entry or llms line. Holds no key: only the name of the Pages secret that holds the app's secret key.",
       "hooks": [],
       "filters": [],
@@ -206,10 +402,10 @@
         }
       },
       "readme": "plugins/forms/README.md",
-      "hash": "0c8f5531a1445847afcf88b19766f783d355506778515756d102e9c5069b1f26",
+      "hash": "8961961075b000ff927dbbd345eb861d682fe82631da307a153ef6226161a4b9",
       "used_by": {
         "redrockmqg": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         }
       }
@@ -336,6 +532,14 @@
         "foo": {
           "version": "0.4.0",
           "current": true
+        },
+        "key": {
+          "version": "0.4.0",
+          "current": true
+        },
+        "mywebsitememory": {
+          "version": "0.4.0",
+          "current": true
         }
       }
     },
@@ -455,7 +659,7 @@
     },
     {
       "name": "map",
-      "version": "0.3.4",
+      "version": "0.3.5",
       "about": "A real, zoomable map for a site's own places (site-kit#64): pan and zoom, pins that group when they crowd and split as you zoom in, a card for each pin that links to its page, and a layer filter. The page marks where it goes with <!--site-kit:map--> and the site hands the plugin its pins (each page's lat and lng) as ctx.map. Tiles are vector tiles from OpenFreeMap (free, no key, no cookies, public sites allowed), drawn by MapLibre GL JS 5.24.0 vendored in the plugin and never loaded from a CDN, and recoloured to the site's own colours. The pins are real buttons, MapLibre's keyboard pan and zoom stay on, and a plain list of every place sits under the map, so a screen reader, a search engine and a browser with no JavaScript get everything. The library loads only on a page with the map, once the map is near the screen.",
       "hooks": [],
       "filters": [
@@ -506,22 +710,22 @@
         }
       },
       "readme": "plugins/map/README.md",
-      "hash": "54f69e3f429b40112ffe8a0e6503f10f0cd65d9456a3c0264c6a6d904aa78915",
+      "hash": "2d8d86738c5719739051298eaa84c792ad3230310f829cddd919ea74162482ed",
       "used_by": {
         "smores": {
-          "version": "0.2.0",
-          "current": false
+          "version": "0.3.5",
+          "current": true
         },
         "trenzbarbershop": {
-          "version": "0.3.0",
-          "current": false
+          "version": "0.3.5",
+          "current": true
         }
       }
     },
     {
       "name": "members",
-      "version": "0.1.2",
-      "about": "A members gate for a static site, signing in with OpenID Connect against the issuer the site names (Key by default). Pages under a rule's directory are served only to a signed-in member, or only to one holding a named plan; anyone else is sent to sign in, or gets a 401, a 403 or, when the issuer can't be reached, a 503. It never serves a gated page on a failure. The session is the issuer's short access token in a __Host- cookie, checked on every gated request with @doorman/verify and its revocation marker. It runs first in the middleware (runRequired), so agent-files and the other plugins never see a gated page, and agent-files refuses gated paths in its twins, /mcp and sitemap list. Holds no key: only the name of the Pages secret that holds the app's secret key.",
+      "version": "0.3.0",
+      "about": "A members gate for a static site, signing in with OpenID Connect against the issuer the site names (Key by default). Pages under a rule's directory are served only to a signed-in member, or only to one holding a named plan; anyone else is sent to sign in, or gets a 401, a 403 or, when the issuer can't be reached, a 503. It never serves a gated page on a failure. The session is the issuer's short access token in a __Host- cookie, checked on every gated request with @doorman/verify and its revocation marker. It runs first in the middleware (runRequired), so agent-files and the other plugins never see a gated page, and agent-files refuses gated paths in its twins, /mcp and sitemap list. Holds no key: only the name of the Pages secret that holds the app's secret key. Since 0.3.0 a signed-in visitor sees a profile menu in place of the header's Sign in link (their name, email, account page and a POST Sign out), drawn at the edge from a sealed profile cookie; a signed-out page is served as built.",
       "hooks": [],
       "filters": [],
       "edge": true,
@@ -553,17 +757,25 @@
         }
       },
       "readme": "plugins/members/README.md",
-      "hash": "321f92535a7915e89298c0658f41bd9a3623ae60c0ceb1b9d9df0b767bd43bd4",
+      "hash": "26943220fc5270bd087765238a634429d2d9cc2caed4ba6d3236ad89e9acc933",
       "used_by": {
+        "key": {
+          "version": "0.3.0",
+          "current": true
+        },
         "redrockmqg": {
-          "version": "0.1.2",
+          "version": "0.3.0",
+          "current": true
+        },
+        "stampwithshelly": {
+          "version": "0.3.0",
           "current": true
         }
       }
     },
     {
       "name": "monthly-edition",
-      "version": "0.1.0",
+      "version": "0.4.1",
       "about": "A masthead that turns over on the 1st by itself, like a monthly comic: \"Vol. 1, Issue #2 · December 2026\", that month's cover line and its palette, from the site's own data/editions.json. The build bakes in the month it runs, so a page with no script reads right as of its build; a small same-origin script in the head picks the visitor's local month from the entries the build embedded, so the 1st turns it over with no redeploy. A month with no entry keeps the latest one before it. It reads the local clock only and sends nothing anywhere.",
       "hooks": [
         "head.styles"
@@ -579,44 +791,78 @@
         "volume": {
           "type": "integer",
           "default": 1
+        },
+        "after_header": {
+          "type": "boolean",
+          "default": false
+        },
+        "menu": {
+          "type": "string",
+          "default": ""
         }
       },
       "readme": "plugins/monthly-edition/README.md",
-      "hash": "f507b071ea616e9b504cc2c4019e19e93cbb47f9fa5d3e157769233542ba9e00",
+      "hash": "5795fbd6c8c87143995ea88d35e8a583f3bf4966a7eb70c341b1ce91ac0fee02",
       "used_by": {
         "foo": {
-          "version": "0.1.0",
+          "version": "0.4.1",
+          "current": true
+        },
+        "key": {
+          "version": "0.4.1",
+          "current": true
+        },
+        "mywebsitememory": {
+          "version": "0.4.1",
           "current": true
         }
       }
     },
     {
       "name": "official-embed",
-      "version": "0.1.1",
-      "about": "A platform's own embed in a site-templates slot (site-kit#380): Instagram first, a profile or a post, as the markup Instagram gives (its blockquote and embed.js), with a plain link inside the blockquote that shows when the script can't load. The URL is checked to the platform's own host and paths, every value is attribute-escaped, and there is no inline script. The README gives the exact _headers block that scopes the page's CSP to the platform's hosts.",
+      "version": "0.2.0",
+      "about": "A platform's own embed in a site-templates slot (site-kit#380): Instagram first, a profile or a post, as the markup Instagram gives (its blockquote and embed.js), with a plain link inside the blockquote that shows when the script can't load. The URL is checked to the platform's own host and paths, every value is attribute-escaped, and there is no inline script. The README gives the exact _headers block that scopes the page's CSP to the platform's hosts. YouTube (site-kit#573): a facade of a site-local poster, a play button and a plain link; nothing goes to YouTube until the click, which swaps in a youtube-nocookie.com iframe.",
       "hooks": [],
       "filters": [],
       "edge": false,
-      "assets": [],
+      "assets": [
+        "assets/official-embed.css",
+        "assets/official-embed.js"
+      ],
       "settings": {
         "platform": {
           "type": "string",
           "required": true
         },
         "url": {
-          "type": "string",
-          "required": true
+          "type": "string"
+        },
+        "video_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "poster": {
+          "type": "string"
         },
         "link_text": {
           "type": "string",
           "required": true
+        },
+        "priority": {
+          "type": "boolean"
         }
       },
       "readme": "plugins/official-embed/README.md",
-      "hash": "ea6a048753ebc121c49c1aab3534a7a9855238e9d87fa6e832c8809235d3f3c9",
+      "hash": "e88ad17066e0c6d91286f4b4b2d6f06788c445092bedc0ed139f816faecccc26",
       "used_by": {
+        "key": {
+          "version": "0.2.0",
+          "current": true
+        },
         "redrockmqg": {
-          "version": "0.1.1",
+          "version": "0.2.0",
           "current": true
         }
       }
@@ -689,18 +935,101 @@
         }
       },
       "readme": "plugins/paypal-button/README.md",
-      "hash": "73d766f85ad7a9ed2a299d0795d90bd99a31758735a21e4276494e5fcc72d95a",
+      "hash": "ffc454220ccad086c44ed4a7dd24eb688631cab35821b3d24c7ffb84b4e9071f",
       "used_by": {
         "redrockmqg": {
-          "version": "0.4.0",
-          "current": false
+          "version": "0.4.1",
+          "current": true
         }
       }
     },
     {
+      "name": "post-nav",
+      "version": "0.2.0",
+      "about": "Previous and next on every blog post: the next older post and the next newer one, each with its title, from the posts the site's build already passes. It fills an empty marker on a post, so a build without it keeps the post's own fallback. Static HTML, no script.",
+      "hooks": [
+        "head.styles"
+      ],
+      "filters": [
+        "page.html"
+      ],
+      "edge": false,
+      "assets": [
+        "assets/post-nav.css"
+      ],
+      "settings": {
+        "base": {
+          "type": "string",
+          "default": "/blog/"
+        },
+        "prev_label": {
+          "type": "string",
+          "default": "Previous post"
+        },
+        "next_label": {
+          "type": "string",
+          "default": "Next post"
+        },
+        "scope": {
+          "type": "string",
+          "default": ""
+        }
+      },
+      "readme": "plugins/post-nav/README.md",
+      "hash": "a7e67b5d44abf89080b1954eb14f3dd4b771e6462d417a1b2f4fba3a2b535207",
+      "used_by": {
+        "foo": {
+          "version": "0.2.0",
+          "current": true
+        }
+      }
+    },
+    {
+      "name": "posthog",
+      "version": "0.1.1",
+      "about": "PostHog product analytics for the family sites (site-kit#555): one project for all of them, the sites told apart by $host. Every page gets an inert JSON config and one script from the site's own origin, which sends nothing under Global Privacy Control or Do Not Track and otherwise loads PostHog's library from PostHog's assets host. By default nothing is kept on the visitor's device (persistence memory, no cookies), a visitor nobody identified gets no person profile, and session replay masks every input. The token is the project's public, write-only key.",
+      "hooks": [
+        "body.end"
+      ],
+      "filters": [],
+      "edge": false,
+      "assets": [
+        "assets/posthog.js"
+      ],
+      "settings": {
+        "token": {
+          "type": "string",
+          "required": true
+        },
+        "api_host": {
+          "type": "string",
+          "default": "https://us.i.posthog.com"
+        },
+        "autocapture": {
+          "type": "boolean",
+          "default": true
+        },
+        "session_replay": {
+          "type": "boolean",
+          "default": true
+        },
+        "web_vitals": {
+          "type": "boolean",
+          "default": true
+        },
+        "persistence": {
+          "type": "string",
+          "default": "memory"
+        }
+      },
+      "readme": "plugins/posthog/README.md",
+      "hash": "4cdfbb50fad500e3ff47b78445195b37f7eabe814fe588a8709887a022cd6e43",
+      "used_by": {}
+    },
+    {
       "name": "preview-feedback",
-      "version": "0.10.8",
-      "about": "Click-to-comment pins on a site's branch preview deploys: a reviewer signs in through the site agent, each pin is kept in D1 and the agent posts it on the branch's open pull request, naming the person, with the page, the element and a screenshot link. It does nothing on production.",
+      "version": "0.11.0",
+      "about": "A Feedback button on a site's preview links, its review links and the site agent's Studio. The person clicks Feedback, clicks the spot that needs work and types what should change. On a preview, the note is saved as a pin and posted on the branch's pull request with the page, the element and a picture of the spot; in the Studio, it goes into the chat with the element named, ready to send. It does nothing on the live site. A site turns it on with plugin-sync and its FEEDBACK_* settings (README).",
       "hooks": [],
       "filters": [],
       "edge": true,
@@ -711,26 +1040,34 @@
       ],
       "settings": {},
       "readme": "plugins/preview-feedback/README.md",
-      "hash": "6c62c6ed449a5e394fd2bb7b1545aef449ab3c0103f7967de21c8c4aa9367d1e",
+      "hash": "73498847a8fe73bea6732d5dad885dfa5691e3c9b742e4a086fabe0125799cef",
       "used_by": {
         "fartranker": {
-          "version": "0.5.4",
-          "current": false
+          "version": "0.11.0",
+          "current": true
         },
         "foo": {
-          "version": "0.5.3",
-          "current": false
+          "version": "0.11.0",
+          "current": true
+        },
+        "foo-customer": {
+          "version": "0.11.0",
+          "current": true
         },
         "redrockmqg": {
-          "version": "0.10.5",
-          "current": false
+          "version": "0.11.0",
+          "current": true
         },
         "smores": {
-          "version": "0.5.3",
-          "current": false
+          "version": "0.11.0",
+          "current": true
+        },
+        "stampwithshelly": {
+          "version": "0.11.0",
+          "current": true
         },
         "trenzbarbershop": {
-          "version": "0.10.8",
+          "version": "0.11.0",
           "current": true
         }
       }
@@ -760,7 +1097,7 @@
         }
       },
       "readme": "plugins/quickfind/README.md",
-      "hash": "678c8cae43542824514b81b653dcb1ca42d33468cb03f9fcbe46651e23d51110",
+      "hash": "3e22a5fff9ce82f9553a18befbbef9d2289995aa1ebb49d24d0ef87796c78461",
       "used_by": {
         "smores": {
           "version": "0.1.2",
@@ -817,10 +1154,6 @@
           "version": "0.3.0",
           "current": true
         },
-        "mywebsitememory": {
-          "version": "0.3.0",
-          "current": true
-        },
         "redrockmqg": {
           "version": "0.3.0",
           "current": true
@@ -833,8 +1166,76 @@
           "version": "0.3.0",
           "current": true
         },
+        "stampwithshelly": {
+          "version": "0.3.0",
+          "current": true
+        },
         "trenzbarbershop": {
           "version": "0.3.0",
+          "current": true
+        }
+      }
+    },
+    {
+      "name": "scoreboard",
+      "version": "0.1.1",
+      "about": "A Key scoreboard on a game page (sethshoultes/doorman#139): the board's best scores, filled at the edge into the page's data-scoreboard element (on a site-templates site, a slot@1 this plugin fills) for anyone, signed in or not, with each name escaped; and a score sent from the page's game for the signed-in member. Scores post to <path>score/, which must sit under a members rule, so only a member the gate lets in can send one, and Key checks the member's token again. It keeps nothing itself: Key holds the boards and scores. Holds no key: only the name of the Pages secret that holds the app's secret key.",
+      "hooks": [],
+      "filters": [],
+      "edge": true,
+      "assets": [],
+      "settings": {
+        "boards": {
+          "type": "string",
+          "required": true
+        },
+        "app": {
+          "type": "string",
+          "required": true
+        },
+        "api": {
+          "type": "string",
+          "default": "https://api.superintelligentkey.com"
+        },
+        "key_var": {
+          "type": "string",
+          "default": "DOORMAN_SECRET"
+        }
+      },
+      "readme": "plugins/scoreboard/README.md",
+      "hash": "b0509d0103dafb17c24e025488207dd9c8397f59d28e2e0646b75ad8696f672f",
+      "used_by": {
+        "key": {
+          "version": "0.1.1",
+          "current": true
+        }
+      }
+    },
+    {
+      "name": "series",
+      "version": "0.2.0",
+      "about": "A named run of posts a reader finds as one: on each post, a line with the series' title (linking its hub), its place (\"3 of 10\") and Previous and Next; on the blog's index, a strip with the series' title, one line about it and its posts in order. It reads the site's data/series.json and fills marked elements, so a build without it keeps the marker's own text. Static HTML, no script.",
+      "hooks": [
+        "head.styles"
+      ],
+      "filters": [
+        "page.html"
+      ],
+      "edge": false,
+      "assets": [
+        "assets/series.css"
+      ],
+      "settings": {
+        "hub": {
+          "type": "string",
+          "default": "/blog/"
+        }
+      },
+      "readme": "plugins/series/README.md",
+      "hash": "4906ae1604952ff7b915fee1474e00255c6acb1ec03318a099f3bcd7e055b052",
+      "used_by": {
+        "foo": {
+          "version": "0.2.0",
           "current": true
         }
       }
@@ -959,13 +1360,17 @@
         }
       },
       "readme": "plugins/theme-picker/README.md",
-      "hash": "815d30d19e74b934b16e425d45a6233afba42324a03aa138cbb649e06895afaf",
+      "hash": "1740eeec18b426ad893ca32f21bbeff68eade738b5821557b4923b0f800de516",
       "used_by": {
         "foo": {
           "version": "0.2.0",
           "current": true
         },
         "key": {
+          "version": "0.2.0",
+          "current": true
+        },
+        "mywebsitememory": {
           "version": "0.2.0",
           "current": true
         }
@@ -1039,9 +1444,17 @@
         }
       },
       "readme": "plugins/time-of-day/README.md",
-      "hash": "1430a6daa768f5d7310b6a396c0baa4967e930c062060f641bb8e6e78161464b",
+      "hash": "f203ba3f503a1f2cfc80851379138543d3a67926f5963112bd23bc1ed43eba42",
       "used_by": {
         "foo": {
+          "version": "0.1.1",
+          "current": true
+        },
+        "key": {
+          "version": "0.1.1",
+          "current": true
+        },
+        "mywebsitememory": {
           "version": "0.1.1",
           "current": true
         }
@@ -1111,6 +1524,10 @@
         "sethshoultes-com": {
           "version": "0.1.0",
           "current": true
+        },
+        "stampwithshelly": {
+          "version": "0.1.0",
+          "current": true
         }
       }
     }
@@ -1136,7 +1553,7 @@
     },
     {
       "name": "site-templates",
-      "description": "Build a site from a template, a layout record of blocks made only of WordPress core-block parts, checked whole by layout.py, so one source renders as a static site and exports as a block theme. Includes a design gallery (site-kit#387): candidate homepages at /designs/, hidden from search, and the owner's pick through the site agent (promote-page). A brand's looks give the site a style switch through theme-picker, the plugin Foo's era picker uses (site-kit#413).",
+      "description": "Build a site from a template, a layout record of blocks made only of WordPress core-block parts, checked whole by layout.py, so one source renders as a static site and exports as a block theme. Includes a design gallery (site-kit#387): candidate homepages at /designs/, hidden from search, and the owner's pick through the site agent (promote-page). A brand's looks give the site a style switch through theme-picker, the plugin Foo's era picker uses (site-kit#413). A site's own events (site-kit#532) become /events/, a page per event and a month calendar from its data/events.json, in each venue's time zone, with a hand-off to its ticket host and a demo-only guard that keeps a test site's pretend events out of search. A docs page may carry figures (site-kit#516): a WebP under /docs-img/ with required alt text, sized and lazy-loaded.",
       "scope": "shared",
       "path": "skills/site-templates/SKILL.md"
     },
@@ -1148,6 +1565,16 @@
     }
   ],
   "recipes": [
+    {
+      "kind": "comic",
+      "name": "foo-vs-bar",
+      "scope": "shared",
+      "scope_reason": "",
+      "used_for": "the live comic \"Foo and the $12,000 Website\" (Foo vs Bar) on superintelligentfoo.com: six 4:3 painted panels at /comics/foo-vs-bar/, panel 4 as the home-page teaser (the \"$12,000 Website\" strip on the landing page), superintelligentfoo#149 (drawn), #225 (page). Seth, 2026-11-19: this comic and its film are THE standard for every family site (Key, MyWebsiteMemory, the family adventure, daily episodes, monthly editions), site-kit#489.",
+      "result": "https://superintelligentfoo.com/comics/foo-vs-bar/ (the live strip and film); https://superintelligentfoo.com/#comic (the home-page teaser, panel 4); the contact sheet of the six finals is `comic/final/strip-contact.jpg` in the media folder; the re-run proof is linked from site-kit#489.",
+      "score": "panels 1, 2, 3 (re-rolled twice), 4 (a signature paint-out) and 6 at 8/8/8 or better; panel 5 re-rolled once and retouched. First read: panel 1 design 8 message 9 craft 8, panel 2 8/8/8. Gate for any new strip: 8 or better on design, message and craft, per picture, plus a set check (one lighting palette, same faces in every panel).",
+      "path": "recipes/comic/foo-vs-bar.md"
+    },
     {
       "kind": "image",
       "name": "character-in-era",
@@ -1197,6 +1624,16 @@
       "result": "the storyboard and prompts are in `stories/scenes.md` (media folder); live pages: https://garagedoorsmores.com/the-door-that-went-thump/ once the slideshow ships",
       "score": "pending (the scenes are being made); per picture 8+ and a consistency check across each story's set",
       "path": "recipes/image/story-scene.md"
+    },
+    {
+      "kind": "video",
+      "name": "comic-film",
+      "scope": "shared",
+      "scope_reason": "",
+      "used_for": "the 40-second film \"Foo and the $12,000 Website\" (Foo vs Bar) that plays above the panels at superintelligentfoo.com/comics/foo-vs-bar/, superintelligentfoo#229 (made), #235 (on the page), #462 (transcript and duration). The standard for every family site's comic film (site-kit#489). Pairs with recipes/comic/foo-vs-bar.",
+      "result": "https://superintelligentfoo.com/comics/foo-vs-bar/ (the film is the first thing on the page); the 16:9 master and the 9:16 cut were reviewed at https://previews.caseproofagent.com/sif-foo-vs-bar-video/ (Access-protected); the re-run proof is linked from site-kit#489.",
+      "score": "8/8/8 on both the 16:9 and the 9:16 after three rounds (round 1 CHANGE: jittery push-ins, craft 6; round 2 CHANGE: 9:16 hid Foo at his own arrival; round 3 close; final APPROVE 8/8/8). Poster title card 8/8/8 (APPROVE). Voice-director: CHANGE with a beat-level fix list on the v2 re-read (below); the film shipped with a human-ear caveat. Gate for any new film: designer 8 or better on design, message and craft, measured (see checks), plus a human listen, because neither reviewer can hear audio.",
+      "path": "recipes/video/comic-film.md"
     }
   ],
   "services": [
@@ -1230,6 +1667,14 @@
       "preview": "https://creator.site-templates-1xc.pages.dev/",
       "picker": true,
       "path": "skills/site-templates/starters/creator/"
+    },
+    {
+      "name": "landing",
+      "title": "Landing: a single page that introduces a family of products or one product",
+      "require": [],
+      "preview": "https://landing.site-templates-1xc.pages.dev/",
+      "picker": false,
+      "path": "skills/site-templates/starters/landing/"
     },
     {
       "name": "local-trades",
@@ -1406,14 +1851,20 @@
         "functions": [],
         "page_types": []
       },
-      "approved": []
+      "approved": [
+        {
+          "ref": "site-kit#114",
+          "kind": "function",
+          "name": "functions/_middleware.js"
+        }
+      ]
     },
     "fartranker": {
       "repo": "sethshoultes/fartranker-site",
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.6",
-        "preview-feedback": "0.5.4"
+        "agent-files": "0.1.11",
+        "preview-feedback": "0.11.0"
       },
       "baseline": {
         "plugins": [],
@@ -1431,15 +1882,24 @@
           "kind": "function",
           "name": "functions/_middleware.js"
         }
-      ]
+      ],
+      "studio": {
+        "platform": "foo",
+        "live": "https://fartranker.com",
+        "pagesProject": "fartranker-site"
+      }
     },
     "foo": {
       "repo": "sethshoultes/superintelligentfoo",
       "plugins": {
+        "adventure": "0.1.6",
+        "card-gallery": "0.1.0",
         "radar": "0.3.0",
         "hero-character": "0.4.0",
-        "monthly-edition": "0.1.0",
-        "preview-feedback": "0.5.3",
+        "monthly-edition": "0.4.1",
+        "post-nav": "0.2.0",
+        "preview-feedback": "0.11.0",
+        "series": "0.2.0",
         "theme-picker": "0.2.0",
         "time-of-day": "0.1.1",
         "webmcp": "0.1.0"
@@ -1453,16 +1913,30 @@
         ],
         "page_types": []
       },
-      "approved": []
+      "approved": [
+        {
+          "ref": "site-kit#577",
+          "kind": "plugin",
+          "name": "adventure"
+        }
+      ],
+      "studio": {
+        "platform": "foo",
+        "live": "https://superintelligentfoo.pages.dev",
+        "pagesProject": "superintelligentfoo"
+      }
     },
     "foo-customer": {
       "repo_pattern": "sethshoultes/foo-*",
       "repo_exclude": [
-        "sethshoultes/foo-agent"
+        "sethshoultes/foo-academy",
+        "sethshoultes/foo-agent",
+        "sethshoultes/foo-test-gone"
       ],
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.1"
+        "agent-files": "0.1.11",
+        "preview-feedback": "0.11.0"
       },
       "baseline": {
         "plugins": [],
@@ -1481,8 +1955,16 @@
       "repo": "sethshoultes/key-site",
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.8",
-        "theme-picker": "0.2.0"
+        "agent-files": "0.1.11",
+        "theme-picker": "0.2.0",
+        "members": "0.3.0",
+        "scoreboard": "0.1.1",
+        "dues-admin": "0.2.0",
+        "hero-character": "0.4.0",
+        "monthly-edition": "0.4.1",
+        "time-of-day": "0.1.1",
+        "adventure": "0.1.6",
+        "official-embed": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -1494,14 +1976,23 @@
           "ref": "site-kit#114",
           "kind": "function",
           "name": "functions/_middleware.js"
+        },
+        {
+          "ref": "site-kit#577",
+          "kind": "plugin",
+          "name": "adventure"
         }
       ]
     },
     "mywebsitememory": {
       "repo": "sethshoultes/mywebsitememory",
       "plugins": {
-        "radar": "0.3.0",
-        "agent-files": "0.1.6"
+        "agent-files": "0.1.11",
+        "hero-character": "0.4.0",
+        "monthly-edition": "0.4.1",
+        "theme-picker": "0.2.0",
+        "time-of-day": "0.1.1",
+        "adventure": "0.1.6"
       },
       "baseline": {
         "plugins": [],
@@ -1513,6 +2004,11 @@
           "ref": "site-kit#114",
           "kind": "function",
           "name": "functions/_middleware.js"
+        },
+        {
+          "ref": "site-kit#577",
+          "kind": "plugin",
+          "name": "adventure"
         }
       ]
     },
@@ -1520,13 +2016,13 @@
       "repo": "sethshoultes/redrockmqg-site",
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.8",
-        "members": "0.1.2",
-        "forms": "0.1.0",
-        "dues-admin": "0.1.1",
-        "preview-feedback": "0.10.5",
-        "paypal-button": "0.4.0",
-        "official-embed": "0.1.1"
+        "agent-files": "0.1.11",
+        "members": "0.3.0",
+        "forms": "0.2.0",
+        "dues-admin": "0.2.0",
+        "preview-feedback": "0.11.0",
+        "paypal-button": "0.4.1",
+        "official-embed": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -1539,13 +2035,18 @@
           "kind": "function",
           "name": "functions/_middleware.js"
         }
-      ]
+      ],
+      "studio": {
+        "platform": "sws",
+        "live": "https://redrockmqg.pages.dev",
+        "pagesProject": "redrockmqg"
+      }
     },
     "sethshoultes-com": {
       "repo": "sethshoultes/sethshoultes.github.io",
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.6",
+        "agent-files": "0.1.11",
         "hero-scenes": "0.1.1",
         "sitemap-check": "0.1.0",
         "webmcp": "0.1.0"
@@ -1566,12 +2067,13 @@
     "smores": {
       "repo": "sethshoultes/garage-door-smores",
       "plugins": {
+        "agent-files": "0.1.11",
         "content-blocks": "0.2.1",
         "link-rotator": "0.1.1",
         "location-picker": "1.0.3",
-        "map": "0.2.0",
+        "map": "0.3.5",
         "quickfind": "0.1.2",
-        "preview-feedback": "0.5.3",
+        "preview-feedback": "0.11.0",
         "radar": "0.3.0",
         "talk": "0.5.8"
       },
@@ -1604,15 +2106,44 @@
           "tradition"
         ]
       },
-      "approved": []
+      "approved": [],
+      "studio": {
+        "platform": "foo",
+        "live": "https://garage-door-smores.pages.dev",
+        "pagesProject": "garage-door-smores"
+      }
     },
-    "trenzbarbershop": {
-      "repo": "sethshoultes/trenzbarbershop",
+    "stampwithshelly": {
+      "repo": "sethshoultes/stampwithshelly",
       "plugins": {
         "radar": "0.3.0",
-        "agent-files": "0.1.6",
-        "map": "0.3.0",
-        "preview-feedback": "0.10.8"
+        "agent-files": "0.1.11",
+        "members": "0.3.0",
+        "preview-feedback": "0.11.0",
+        "webmcp": "0.1.0"
+      },
+      "baseline": {
+        "plugins": [],
+        "functions": [],
+        "page_types": []
+      },
+      "approved": [
+        {
+          "ref": "site-kit#114",
+          "kind": "function",
+          "name": "functions/_middleware.js"
+        }
+      ],
+      "studio": {
+        "platform": "foo",
+        "live": "https://stampwithshelly.com",
+        "pagesProject": "stampwithshelly"
+      }
+    },
+    "superintelligentfamily": {
+      "repo": "sethshoultes/superintelligentfamily",
+      "plugins": {
+        "agent-files": "0.1.11"
       },
       "baseline": {
         "plugins": [],
@@ -1626,6 +2157,32 @@
           "name": "functions/_middleware.js"
         }
       ]
+    },
+    "trenzbarbershop": {
+      "repo": "sethshoultes/trenzbarbershop",
+      "plugins": {
+        "radar": "0.3.0",
+        "agent-files": "0.1.11",
+        "map": "0.3.5",
+        "preview-feedback": "0.11.0"
+      },
+      "baseline": {
+        "plugins": [],
+        "functions": [],
+        "page_types": []
+      },
+      "approved": [
+        {
+          "ref": "site-kit#114",
+          "kind": "function",
+          "name": "functions/_middleware.js"
+        }
+      ],
+      "studio": {
+        "platform": "sws",
+        "live": "https://trenzbarbershop.com",
+        "pagesProject": "trenzbarbershop"
+      }
     }
   }
 }
