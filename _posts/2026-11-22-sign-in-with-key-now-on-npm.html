@@ -6,14 +6,14 @@ date: 2026-11-22
 
 <p>Say you run a small site with one members-only page. Someone has to be able to log in, and that someone is not going to remember another password. You can build the password part yourself, with a database to keep safe and a reset email that has to work every time. Or you can skip it.</p>
 
-<p>Skipping it is what Key is for. A person types their email, gets a code or a link, and they are in. There is no password to forget or leak. I have been building Key for a while, and it has run on my own sites in early use. This week the pieces went up on npm so you can add it to yours.</p>
+<p>Skipping it is what Key is for. A person types their email, gets a code or a link, and they are in. There is no password to forget or leak. Key is new: I started it this month, and it runs on my own sites in early use. This week the pieces went up on npm so you can add it to yours.</p>
 
-<p>The quickest way in is one command, run from your site's folder:</p>
+<p>The quickest way in is one command, run from your site's folder. It works out what kind of site you have: a site-kit site, a static site on Cloudflare Pages, or a Cloudflare Worker. For anything else, it shows you the steps by hand and changes nothing.</p>
 
 <pre><code>npx @superintelligentfamily/key-install</code></pre>
 
 <p>It shows you each change before it makes it and asks first. It puts your secret key straight into your host's secret store, so the key is never printed or written into a file. If it stops partway, nothing is left half done.</p>
 
-<p>If you write your own code and want sign-in inside it, there are four more packages, each doing one job. <strong>key-handler</strong> runs on your server and handles the sign-in. <strong>key-react</strong> gives a React app a sign-in button and a way to show one thing to signed-in visitors and another to everyone else. <strong>key-verify</strong> checks, on your server, that a request really comes from a signed-in person and which plans they have. <strong>key-js</strong> lets a plain web page show who is signed in. Each has a short quickstart on its npm page you can paste.</p>
+<p>If you write your own code and want sign-in inside it, there are four more packages, each doing one job. <a href="https://www.npmjs.com/package/@superintelligentfamily/key-handler"><strong>key-handler</strong></a> runs on your server and handles the sign-in. <a href="https://www.npmjs.com/package/@superintelligentfamily/key-react"><strong>key-react</strong></a> gives a React app a sign-in button and a way to show one thing to signed-in visitors and another to everyone else. <a href="https://www.npmjs.com/package/@superintelligentfamily/key-verify"><strong>key-verify</strong></a> checks, on your server, that a request really comes from a signed-in person and which plans they have. <a href="https://www.npmjs.com/package/@superintelligentfamily/key-js"><strong>key-js</strong></a> lets a page on a site that already runs Key's members plugin show who is signed in. All five live under @superintelligentfamily/ on npm. Each has a short quickstart on its npm page you can paste.</p>
 
 <p>Key is still young. It is in early use on my own sites, and there is no price yet. If you want to try it, start at <a href="https://superintelligentkey.com/docs/">superintelligentkey.com/docs</a>.</p>
