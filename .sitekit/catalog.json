@@ -724,7 +724,7 @@
     },
     {
       "name": "members",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "about": "A members gate for a static site, signing in with OpenID Connect against the issuer the site names (Key by default). Pages under a rule's directory are served only to a signed-in member, or only to one holding a named plan; anyone else is sent to sign in, or gets a 401, a 403 or, when the issuer can't be reached, a 503. It never serves a gated page on a failure. The session is the issuer's short access token in a __Host- cookie, checked on every gated request with @doorman/verify and its revocation marker. It runs first in the middleware (runRequired), so agent-files and the other plugins never see a gated page, and agent-files refuses gated paths in its twins, /mcp and sitemap list. Holds no key: only the name of the Pages secret that holds the app's secret key. Since 0.3.0 a signed-in visitor sees a profile menu in place of the header's Sign in link (their name, email, account page and a POST Sign out), drawn at the edge from a sealed profile cookie; a signed-out page is served as built.",
       "hooks": [],
       "filters": [],
@@ -757,19 +757,19 @@
         }
       },
       "readme": "plugins/members/README.md",
-      "hash": "26943220fc5270bd087765238a634429d2d9cc2caed4ba6d3236ad89e9acc933",
+      "hash": "c55d5a72c07f6c12105e017658ef2614199283f45cca3903e686a4fc8503e719",
       "used_by": {
         "key": {
           "version": "0.3.0",
-          "current": true
+          "current": false
         },
         "redrockmqg": {
           "version": "0.3.0",
-          "current": true
+          "current": false
         },
         "stampwithshelly": {
           "version": "0.3.0",
-          "current": true
+          "current": false
         }
       }
     },
@@ -1024,7 +1024,16 @@
       },
       "readme": "plugins/posthog/README.md",
       "hash": "4cdfbb50fad500e3ff47b78445195b37f7eabe814fe588a8709887a022cd6e43",
-      "used_by": {}
+      "used_by": {
+        "mywebsitememory": {
+          "version": "0.1.1",
+          "current": true
+        },
+        "stampwithshelly": {
+          "version": "0.1.1",
+          "current": true
+        }
+      }
     },
     {
       "name": "preview-feedback",
@@ -1987,6 +1996,7 @@
     "mywebsitememory": {
       "repo": "sethshoultes/mywebsitememory",
       "plugins": {
+        "posthog": "0.1.1",
         "agent-files": "0.1.11",
         "hero-character": "0.4.0",
         "monthly-edition": "0.4.1",
@@ -2120,7 +2130,8 @@
         "agent-files": "0.1.11",
         "members": "0.3.0",
         "preview-feedback": "0.11.0",
-        "webmcp": "0.1.0"
+        "webmcp": "0.1.0",
+        "posthog": "0.1.1"
       },
       "baseline": {
         "plugins": [],

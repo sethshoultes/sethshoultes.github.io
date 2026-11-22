@@ -125,6 +125,8 @@ a.skip-link.screen-reader-text:focus { position: absolute; top: .5rem; left: .5r
 .text > .wp-block-group + .wp-block-group { margin-top: 1.25rem; }
 .text img { max-width: 100%; height: auto; }
 .list .wp-block-list li + li { margin-top: 0.35rem; }
+.list .wp-block-list li { overflow-wrap: anywhere; }   /* a long address in a point breaks, so a phone never scrolls sideways (mi-dev-3 on #637) */
 .text + .text, .text + .list, .list + .text, .list + .list { padding-top: 0; }   /* running words read as one piece, as .menu + .menu */
+.text:has(+ .list > .wp-block-list:first-child) { padding-bottom: 0; }   /* a list with no heading of its own (the list is its first child) is the words' list: no section gap from its intro (site-kit#636) */
 /* slot@1 (site-kit#223): a plugin's submit button in a slot (a PayPal button) looks like the site's own buttons */
 .slot button[type="submit"] { border: 0; font: inherit; font-weight: 700; cursor: pointer; }
