@@ -21,7 +21,8 @@ Entries in the site's `data/types.json` shape (as S'mores declares its types; a 
     "status": "status",
     "body": "sections",
     "related?": "slugs",
-    "faq?": "faqs"
+    "faq?": "faqs",
+    "video?": "video"
   },
   "min": { "body": 1 }
 }
@@ -36,6 +37,13 @@ Entries in the site's `data/types.json` shape (as S'mores declares its types; a 
 - `body`: one or more sections, each headed by a question a person asks ("Who can read my feedback?"), answered below it.
 - `related` (optional): the slugs of other docs, linked at the end of the page.
 - `faq` (optional): question and answer pairs; when there is one, it is the last section in `<main>`.
+- `video` (optional): the doc told as a short film, the same shape as the comic type's `video` (superintelligentfoo#126, #229):
+  `{"file": "<path>.mp4", "captions": "<path>.vtt", "poster": "<path>", "duration": "PT85S"}` and an optional `"ratio": "16x9"`,
+  all paths inside the site:
+  - `file`: an H.264/AAC `.mp4` sized for the page (a 720p copy, not the master), with its index at the front so it streams;
+  - `captions`: a WebVTT file of every spoken line. Captions are a track the viewer turns on, never burned into the picture;
+  - `poster`: the still shown before it plays, the same aspect as the video;
+  - `duration`: the film's length as an ISO 8601 duration, for the `VideoObject`.
 
 The part kinds (`new-slug`, `text`, `date`, `number`, `status`, `sections`, `slugs`, `faqs`) are the site build's own checks.
 Those field checks run in the site, so the kit cannot enforce them.
@@ -44,7 +52,10 @@ Those field checks run in the site, so the kit cannot enforce them.
 
 Each doc page is built at `/docs/<slug>/` with `<body data-page-type="doc">`, and it has:
 
-- its markdown twin at `/docs/<slug>.md`;
+- with a `video`, a `<video controls preload="none" poster width height>` below the lead, holding a `<source type="video/mp4">` and a
+  `<track kind="captions" srclang="en" label="English" default>`. It never autoplays, and a `VideoObject` (`name`, `description`,
+  `contentUrl`, `thumbnailUrl` from the poster, `uploadDate` from `updated`, `duration`) is in the page's JSON-LD graph;
+- its markdown twin at `/docs/<slug>.md` (with a `video`, its spoken lines from the captions file as a transcript);
 - a line in `llms.txt` and in `sitemap.xml`;
 - a link from the `/docs/` index.
 

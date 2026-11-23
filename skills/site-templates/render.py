@@ -357,8 +357,9 @@ def look(brand_rec, bands_used=(), uses=()):
                 f"header .variant-picker ul{{border:3px solid var(--st-ink);border-radius:10px;box-shadow:6px 6px 0 {shadow}}}"
                 # members' profile menu (site-kit#601, designer): its summary a pill like the menu's, its panel boxed like
                 # theme-picker's list; with Sign in in the menu, the menu's column takes the room the logo doesn't use, so
-                # five items stay on one row; on a phone the menu fills its row like every other item, the name shown
-                "header .sk-account>summary{box-sizing:border-box;min-height:48px;padding:.2em .8em .2em .3em;"
+                # five items stay on one row; on a phone the menu fills its row like every other item, the name shown;
+                # wider, the initials alone with even padding (stampwithshelly#21)
+                "header .sk-account>summary{box-sizing:border-box;min-height:48px;padding:.2em;"
                 f"font-family:var(--sk-font-display,inherit);letter-spacing:.03em;background:var(--st-ground);color:var(--st-ink);"
                 f"border:4px solid var(--st-ink);border-radius:10px;box-shadow:4px 4px 0 {shadow}}}"
                 "header .sk-account-avatar{width:1.9rem;height:1.9rem}"
@@ -519,7 +520,10 @@ def look(brand_rec, bands_used=(), uses=()):
     if headings.get("case") == "upper":
         rules.append(".wp-block-heading,.wp-block-post-title{text-transform:uppercase}")
     if brand_rec.get("text_align") == "center":
-        rules.append("main{text-align:center}main .wp-block-buttons{justify-content:center}.wp-block-quote{border-left:0;padding-left:0}")
+        rules.append("main{text-align:center}main .wp-block-buttons{justify-content:center}.wp-block-quote{border-left:0;padding-left:0}"
+                     # site-kit#636: a list is a centred block as wide as its words, its items left-aligned after their bullets
+                     # (centring each item left short ones far from their dots and wrapped lines under nothing)
+                     "main .list .wp-block-list{display:table;margin-inline:auto;text-align:left}main .list .wp-block-list li{margin-inline:0}")
     if "sk-layout-stacked" in uses:
         rules.append(".sk-layout-stacked .wp-block-columns{flex-direction:column;align-items:center;text-align:center}"
                      ".sk-layout-stacked .wp-block-column{flex:0 0 auto!important;flex-basis:auto!important;width:100%}"

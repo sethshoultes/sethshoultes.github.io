@@ -9,6 +9,12 @@
         { "id": "llms", "need": "llms", "why": "llms.txt lists every published doc" },
         { "id": "sitemap", "need": "sitemap", "why": "sitemap.xml lists every published doc" },
         { "id": "index", "need": "linked_from", "value": "/docs/", "why": "the /docs/ index links every published doc" }
+      ],
+      "banned": [
+        {
+          "id": "video-without-captions",
+          "regex": "<video\\b(?:(?!<track(?=(?:\\s+[\\w:-]+(?:\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s\"'>]+))?)*?\\s+src=\"[^\"\\s]+\")(?:\\s+[\\w:-]+(?:\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s\"'>]+))?)*?\\s+kind=\"captions\\\"|</video>)[\\s\\S])*</video>"
+        }
       ]
     }
   }
