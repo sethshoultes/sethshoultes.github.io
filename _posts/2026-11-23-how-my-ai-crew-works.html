@@ -1,0 +1,86 @@
+---
+title: "How My AI Crew Actually Works"
+subtitle: "About thirty-five AI agents build and run my projects around the clock. Here's how the work moves, who checks it, and what still comes to me."
+date: 2026-11-23
+related:
+  - slug: agentic-economy-three-sessions-running
+    note: "Where this started: three agent sessions running side by side, before there were lanes, reviewers or a lead."
+  - slug: two-agents-one-deploy-doc
+    note: "What happens when two agents write in the same file at once, and why giving each item its own place fixes it."
+  - slug: the-agent-that-woke-up-without-its-brain
+    note: "Why every agent here reads its notes before it works, and what it should do when the notes aren't there."
+---
+
+<picture><source srcset="/blog/images/how-my-ai-crew-works-featured.webp" type="image/webp"><img width="1536" height="1024" src="/blog/images/how-my-ai-crew-works-featured.png" alt="A sepia pencil drawing at night: in the foreground a hand with a pencil ticks the last box on a short checklist under a brass desk lamp, and behind it a long workbench runs into the dark, with a row of small robot arms each working at its own station under its own little lamp" class="post-img post-img-lead" /></picture>
+
+<p>People ask me how I keep so many projects moving at once. The honest answer is that I don't do most of the typing anymore. A crew of AI agents does. On a busy night there are about thirty-five of them, some on the computer on my desk and some on a rented server, and they work while I sleep.</p>
+
+<p>That sounds like chaos. It mostly isn't, because the crew runs on a few plain rules. This post walks through them. I've left out the names of the individual projects on purpose. The point is how the work moves, not what it's moving.</p>
+
+<h2>Everyone has a lane</h2>
+
+<p>Each agent owns one area of work, and I call that area its lane. One looks after a single product. Another owns a group of small websites. Another looks after the servers themselves. When work comes in, it goes to whoever owns that lane.</p>
+
+<p>Two agents don't own the same thing. I learned that the hard way. When two of them worked in the same folder, they quietly undid each other's changes and both reported success. Now every agent works in its own copy of the code, and nobody touches another lane's files.</p>
+
+<p>Above the lanes there are two coordinating roles. One I call the orchestrator. It hands out work, routes reviews, and notices when something has stalled. The other is the lead. It makes the calls the lanes can't make alone, folds finished work into the real project (that step is called a merge), does the jobs that need full access to a server, and writes me a short update every hour.</p>
+
+<h2>How one change gets from idea to live</h2>
+
+<p>Almost every change takes the same path.</p>
+
+<p>First, the agent that owns the work makes the change and proposes it. A proposed change is a small, self-contained package: what changed, why, and the tests that prove it works.</p>
+
+<p>Second, at least one other agent reads it. It's never the one that wrote it, and it runs under a different account. The good reads don't stop at reading. They break the code on purpose. They flip a comparison, delete a safety check, or swap two steps, then run the tests to make sure the tests catch it. If a test still passes with the safety check deleted, the test isn't protecting anything, and the reviewer sends it back. This one habit has caught more real problems than anything else the crew does.</p>
+
+<p>Third, if the change touches something where a mistake really costs, it gets one more read from a slower, more careful model. That covers signing in, money, deleting people's data, and passwords and keys. It runs the same break-it-on-purpose test, only deeper. Recently that deeper read caught a change that could, in a rare failure, have locked someone out of their account. It also caught a gap in a test meant to guard data deletion. Both got fixed before they shipped.</p>
+
+<p>Fourth, the change merges only when every automated check passes and the approval is for the exact version being merged. If anyone adds even one line after a reviewer approved, that approval no longer counts and it gets read again. On the bigger projects, a record is written at that moment of who approved what, so there's no "I thought someone checked that."</p>
+
+<p>Last, on most projects, approving the change is what puts it live, through the same automated steps every time.</p>
+
+<h2>Rules that keep it honest</h2>
+
+<p>A few rules do a lot of the work.</p>
+
+<p><strong>Real data or nothing.</strong> If a number isn't real, the page shows a dash and the actual error. The rule is that it never shows a believable fake. A blank you can see beats a made-up figure you trust.</p>
+
+<p><strong>A failing test is guilty until you read it.</strong> Recently a check failed and the lead agent called it a glitch after skimming the noise around it. It hadn't read the test that actually failed. It was a real bug, it shipped, and it stopped one project from updating for half an hour. Now the rule is simple: read the line that failed before you call anything a fluke. When a check failed again an hour later, the failure got its own investigation instead of a shrug.</p>
+
+<p><strong>Don't overrule a reviewer.</strong> If a reviewer says "change this," that stands until the reviewer says otherwise. More than once, waiting would have cost another hour of testing. Even then, the reviewer decided whether a follow-up was good enough. Nobody quietly dismissed it.</p>
+
+<p><strong>Fix the cause, not just the one case.</strong> When a tool was loading on pages where it didn't belong, the first fix tried to switch it off at the right moment. A reviewer showed it could restart itself before the switch took effect. So the crew rebuilt those pages so the tool never loads on them at all. If something can't happen by design, it doesn't need a guard.</p>
+
+<p><strong>Clean up after yourself.</strong> Every test run has a memory limit now, because one runaway run froze a whole server three times in a night. And a task is supposed to stop everything it started before it reports done.</p>
+
+<h2>What still comes to me</h2>
+
+<p>The crew decides almost everything on its own and tells me afterward. A short list always comes to me first:</p>
+
+<ul>
+<li>passwords, keys and access to accounts;</li>
+<li>anything that spends money;</li>
+<li>legal questions and pricing;</li>
+<li>changes to account or security settings;</li>
+<li>facts only I know.</li>
+</ul>
+
+<p>One recent night that list was two things. Where should a new contact email address forward to? And who else should be allowed to sign off on certain changes? Everything else, the agents handled and reported.</p>
+
+<p>Keeping that list short matters. Before it existed, I spent my days answering "is this okay?" questions about things that weren't risky at all. Now the agents decide anything that's easy to undo, and save my attention for the things that aren't.</p>
+
+<h2>It works for small jobs too</h2>
+
+<p>The same setup handles things that aren't products at all. A family member needed a game server set up on one of my machines. The crew read his code before running anything. It built the program from his source, never from a download it couldn't check. It ran the server in its own locked-down account, capped how much memory it can use, and opened exactly one network port. It gave the server a proper web address and tested it from outside. Then it told him it was live.</p>
+
+<p>Now when he needs something, he asks, and the routine requests get handled. Anything that touches passwords, network access, or the rest of the machine comes to me first.</p>
+
+<h2>What I'd tell you if you're starting</h2>
+
+<p>You don't need thirty-five agents. You need the habits. Give each agent one area and don't let two share it. Have someone other than the author read every change, and have them try to break it. Merge only what was actually approved, in the exact form it was approved. Show real data or an honest blank. Write down the short list of things a human must decide, and let the machines decide the rest.</p>
+
+<p>Do those things and adding more agents gets you more done, not more mess.</p>
+
+<hr>
+
+<p class="post-bio"><em>Seth Shoultes builds at <a href="https://garagedoorscience.com">garagedoorscience.com</a> and writes here when the building produces something worth saying.</em></p>
