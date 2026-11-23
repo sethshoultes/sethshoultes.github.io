@@ -765,7 +765,7 @@
         }
       },
       "readme": "plugins/members/README.md",
-      "hash": "bc643e237da19b50818df47c3292d0239efeebd434d87e7217f0bec525db76f5",
+      "hash": "f8d94ec189e02c620a2b8d02c3c0e816802c05d41326b8a2eceb12225b68e809",
       "used_by": {
         "key": {
           "version": "0.4.0",
@@ -1285,7 +1285,7 @@
     },
     {
       "name": "talk",
-      "version": "0.5.8",
+      "version": "0.5.9",
       "about": "A host a visitor can talk to, by text or voice, answering only from the site's own data. A campfire bubble, bottom-right, opens a chat panel (text first, a voice button inside); it shows only when GET /api/talk-status says Talk is on. The edge: a short-lived ElevenLabs session, a text chat through a provider fallback chain (Ollama, Gemini after a credit failure, Workers AI, OpenRouter, then a visible retry, never a canned answer) and a per-visitor limit in KV. Holds no key: only the names of the settings and bindings.",
       "hooks": [
         "body.end",
@@ -1356,10 +1356,10 @@
         }
       },
       "readme": "plugins/talk/README.md",
-      "hash": "79b057ebed37070deb125a308f8a5e26b57ae8912840b658a6267f00a1eea9ab",
+      "hash": "88a46f4f502adc399be2503eb463a411b98a22f68a2a5c7bcc5bae6c6a7b2fe4",
       "used_by": {
         "smores": {
-          "version": "0.5.8",
+          "version": "0.5.9",
           "current": true
         }
       }
@@ -2102,7 +2102,7 @@
         "quickfind": "0.1.2",
         "preview-feedback": "0.11.0",
         "radar": "0.3.0",
-        "talk": "0.5.8"
+        "talk": "0.5.9"
       },
       "baseline": {
         "plugins": [],
