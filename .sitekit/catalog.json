@@ -132,6 +132,83 @@
       }
     },
     {
+      "name": "agent-checkout",
+      "version": "0.1.0",
+      "about": "A test-mode-only MCP checkout for a site's configured Stripe prices. The checkout tool creates a Stripe Checkout Session and returns its approval URL; it never charges. Its D1 ledger caps each MCP client by UTC day, a verified Stripe webhook records paid sessions, and the receipt tool returns Stripe's own receipt URL with the site's refund path. Key plans hand off to Key and never create a Stripe session or local record.",
+      "hooks": [],
+      "filters": [],
+      "edge": true,
+      "assets": [],
+      "settings": {
+        "origin": {
+          "type": "string",
+          "required": true
+        },
+        "items": {
+          "type": "string",
+          "required": true
+        },
+        "secret_var": {
+          "type": "string",
+          "default": "STRIPE_TEST_SECRET"
+        },
+        "webhook_var": {
+          "type": "string",
+          "default": "STRIPE_TEST_WEBHOOK"
+        },
+        "d1_var": {
+          "type": "string",
+          "default": "AGENT_CHECKOUT"
+        },
+        "success_url": {
+          "type": "string",
+          "required": true
+        },
+        "cancel_url": {
+          "type": "string",
+          "required": true
+        },
+        "daily_sessions": {
+          "type": "integer",
+          "default": 3
+        },
+        "daily_amount": {
+          "type": "integer",
+          "default": 5000
+        },
+        "site_daily_sessions": {
+          "type": "integer",
+          "required": true
+        },
+        "site_daily_amount": {
+          "type": "integer",
+          "required": true
+        },
+        "contact": {
+          "type": "string",
+          "required": true
+        },
+        "portal_url": {
+          "type": "string"
+        },
+        "live": {
+          "type": "boolean",
+          "default": false
+        },
+        "mcp_path": {
+          "type": "string",
+          "default": "/agent-checkout/mcp"
+        },
+        "webhook_path": {
+          "type": "string",
+          "default": "/agent-checkout/webhook"
+        }
+      },
+      "readme": "plugins/agent-checkout/README.md",
+      "hash": "78e346edec076e0367e0e5d4ce96e46663b36e363a9e629d738dd586da012d76",
+      "used_by": {}
+    },
+    {
       "name": "agent-files",
       "version": "0.1.11",
       "about": "What an agent reads on a Pages site (herdos public-site rules 6 and 7): a markdown twin of every page, built after the site's build and served on Accept: text/markdown; the agent card's /a2a endpoint, which refuses plainly until the site has chat; and a read-only MCP at /mcp that lists the sitemap's pages and returns one page's twin. Public pages only, no auth, no writes. The site writes its own agent-card.json and mcp.json, with the MCP server card, api-catalog, skills index, ard.json and ai-catalog.json, through site-templates' discovery.py (site-kit#314).",
@@ -1053,8 +1130,8 @@
     },
     {
       "name": "preview-feedback",
-      "version": "0.11.0",
-      "about": "A Feedback button on a site's preview links, its review links and the site agent's Studio. The person clicks Feedback, clicks the spot that needs work and types what should change. On a preview, the note is saved as a pin and posted on the branch's pull request with the page, the element and a picture of the spot; in the Studio, it goes into the chat with the element named, ready to send. It does nothing on the live site. A site turns it on with plugin-sync and its FEEDBACK_* settings (README).",
+      "version": "0.12.0",
+      "about": "A Feedback button on a site's preview links, its review links and the site agent's Studio. The person clicks Feedback, clicks the spot that needs work and types what should change. On a preview, the note is saved as a pin and posted on the branch's pull request with the page, the element and a picture of the spot; in the Studio, it tells the Studio which element was clicked, and the Studio opens its own conversation card over that spot. It does nothing on the live site. A site turns it on with plugin-sync and its FEEDBACK_* settings (README).",
       "hooks": [],
       "filters": [],
       "edge": true,
@@ -1065,34 +1142,34 @@
       ],
       "settings": {},
       "readme": "plugins/preview-feedback/README.md",
-      "hash": "73498847a8fe73bea6732d5dad885dfa5691e3c9b742e4a086fabe0125799cef",
+      "hash": "6fc64346466ecea92a7ea5e8002cce30bade9dde24fc697d2e8abce12a918eb1",
       "used_by": {
         "fartranker": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "foo": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "foo-customer": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "redrockmqg": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "smores": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "stampwithshelly": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         },
         "trenzbarbershop": {
-          "version": "0.11.0",
+          "version": "0.12.0",
           "current": true
         }
       }
@@ -1889,7 +1966,7 @@
       "plugins": {
         "radar": "0.3.0",
         "agent-files": "0.1.11",
-        "preview-feedback": "0.11.0"
+        "preview-feedback": "0.12.0"
       },
       "baseline": {
         "plugins": [],
@@ -1923,7 +2000,7 @@
         "hero-character": "0.4.0",
         "monthly-edition": "0.4.1",
         "post-nav": "0.2.0",
-        "preview-feedback": "0.11.0",
+        "preview-feedback": "0.12.0",
         "series": "0.2.0",
         "theme-picker": "0.2.0",
         "time-of-day": "0.1.1",
@@ -1961,7 +2038,7 @@
       "plugins": {
         "radar": "0.3.0",
         "agent-files": "0.1.11",
-        "preview-feedback": "0.11.0"
+        "preview-feedback": "0.12.0"
       },
       "baseline": {
         "plugins": [],
@@ -2047,7 +2124,7 @@
         "members": "0.4.0",
         "forms": "0.2.0",
         "dues-admin": "0.2.0",
-        "preview-feedback": "0.11.0",
+        "preview-feedback": "0.12.0",
         "paypal-button": "0.4.1",
         "official-embed": "0.2.0"
       },
@@ -2100,7 +2177,7 @@
         "location-picker": "1.0.3",
         "map": "0.3.5",
         "quickfind": "0.1.2",
-        "preview-feedback": "0.11.0",
+        "preview-feedback": "0.12.0",
         "radar": "0.3.0",
         "talk": "0.5.9"
       },
@@ -2146,7 +2223,7 @@
         "radar": "0.3.0",
         "agent-files": "0.1.11",
         "members": "0.4.0",
-        "preview-feedback": "0.11.0",
+        "preview-feedback": "0.12.0",
         "webmcp": "0.1.0",
         "posthog": "0.1.1"
       },
@@ -2211,7 +2288,7 @@
         "radar": "0.3.0",
         "agent-files": "0.1.11",
         "map": "0.3.5",
-        "preview-feedback": "0.11.0"
+        "preview-feedback": "0.12.0"
       },
       "baseline": {
         "plugins": [],
