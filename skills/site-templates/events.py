@@ -221,6 +221,29 @@ def local_time(ev, at):
     return f"{DAYS[t.weekday()][:3]} {t.day} {MONTHS[t.month - 1]} {t.year}, {hour}:{t.minute:02d} {'am' if t.hour < 12 else 'pm'} {t.tzname()}"
 
 
+def _clock(t):
+    return f"{t.hour % 12 or 12}:{t.minute:02d} {'am' if t.hour < 12 else 'pm'}"
+
+
+def span(ev):
+    """(start text, end text): an end on the start's local day, in the same zone name, gives its time only, so a morning
+    class reads 'Tue 1 December 2026, 10:00 am' to '1:00 pm MST' (the designer on #532), not the whole date twice."""
+    a, b = ev["starts"].astimezone(ev["zone"]), ev["ends"].astimezone(ev["zone"])
+    if a.date() == b.date() and a.tzname() == b.tzname():
+        return f"{DAYS[a.weekday()][:3]} {a.day} {MONTHS[a.month - 1]} {a.year}, {_clock(a)}", f"{_clock(b)} {b.tzname()}"
+    return local_time(ev, ev["starts"]), local_time(ev, ev["ends"])
+
+
+def brief(ev):
+    """The hero caption beside an event's title: 'Tue 1 Dec, 10:00 am to 1:00 pm MST · The craft room' (120 at most)."""
+    a = ev["starts"].astimezone(ev["zone"])
+    start, end = span(ev)
+    day = f"{DAYS[a.weekday()][:3]} {a.day} {MONTHS[a.month - 1][:3]}"
+    when = f"{day}, {_clock(a)} to {end}" if not end[0].isalpha() else f"{start} to {end}"
+    line = f"{when} · {ev['venue']['name']}"
+    return line if len(line) <= 120 else when   # a long venue name drops; the when is never near 120
+
+
 def stamp(at):
     return at.astimezone(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -259,7 +282,7 @@ def with_pages(record, lib):
                       "sections": page_hero(cfg["title"], cfg["notice"], "events-index")})
     for ev in lib["events"]:
         pages.append({"path": url(ev), "type": "page", "title": ev["title"], "description": ev["summary"], "menu": "none", **hide,
-                      "sections": _hero(ev["title"], ev["summary"], ev["image"], ev["image_alt"], "", f"event-{ev['slug']}")})
+                      "sections": _hero(ev["title"], ev["summary"], ev["image"], ev["image_alt"], brief(ev), f"event-{ev['slug']}")})
     for y, m in months(lib):
         title = f"{MONTHS[m - 1]} {y}"
         pages.append({"path": month_url(y, m), "type": "page", "title": f"{cfg['title']}: {title}", "menu": "none", **hide,
@@ -268,8 +291,9 @@ def with_pages(record, lib):
 
 
 def _notice(lib):
+    """The site's notice, with the DEMO stamp in it on a demo_only site (which must have a notice): said once, not twice."""
     cfg, e = lib["config"], serialize.escape
-    return f'<p class="events-notice">{e(cfg["notice"])}</p>' if cfg["notice"] else ""
+    return f'<p class="events-notice">{_demo(lib)}{e(cfg["notice"])}</p>' if cfg["notice"] else ""
 
 
 def _demo(lib):
@@ -278,33 +302,46 @@ def _demo(lib):
 
 def _card(lib, ev):
     e = serialize.escape
-    return (f'<li class="events-card"><h3 class="wp-block-heading">{_demo(lib)}<a href="{url(ev)}">{e(ev["title"])}</a></h3>'
+    full = ' <span class="events-state">Full</span>' if ev["status"] == "full" and not ev["past"] else ""
+    return (f'<li class="events-card"><h3 class="wp-block-heading">{_demo(lib)}<a href="{url(ev)}">{e(ev["title"])}</a>{full}</h3>'
             f'<p><time datetime="{stamp(ev["starts"])}">{e(local_time(ev, ev["starts"]))}</time><br>{e(ev["venue"]["name"])}</p></li>')
+
+
+def _cta(href, words):
+    """The site's own button markup, so the theme's button rules dress it (the designer on #532: a bare link read as text)."""
+    e = serialize.escape
+    return (f'<div class="wp-block-buttons"><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" '
+            f'href="{e(href)}">{words}</a></div></div>')
 
 
 def _button(lib, ev):
     """The hand-off: a past event has none; a full one says so, with the site's waitlist if it has one; else the ticket host."""
-    e = serialize.escape
     if ev["past"]:
-        return '<p class="events-state">This event has ended.</p>'
+        return '<p class="events-state">This event has ended</p>'
     if ev["status"] == "full":
         wait = lib["config"]["waitlist_url"]
-        return '<p class="events-state">Full.</p>' + (f'<p><a class="wp-element-button" href="{e(wait)}">Join the waitlist</a></p>' if wait else "")
+        return '<p class="events-state">Full</p>' + (_cta(wait, "Join the waitlist") if wait else "")
     if not ev["ticket_url"]:
         return ""
-    return f'<p><a class="wp-element-button" href="{e(ev["ticket_url"])}">{"Sign up" if ev["rsvp"] else "Get tickets"}</a></p>'
+    return _cta(ev["ticket_url"], "Sign up" if ev["rsvp"] else "Get tickets")
 
 
 def _event_main(lib, ev):
+    """When, where, the price and the button first, then the notice (the designer on #532: the date sat below the fold).
+    A past event shows no prices, so nothing reads as on sale."""
     e = serialize.escape
-    tickets = ("<ul class=\"events-tickets\">" + "".join(f"<li>{e(t['name'])}: {e(t['price'])}</li>" for t in ev["tickets"]) + "</ul>"
-               if ev["tickets"] else "<p>Free, with a sign-up.</p>")
-    demo = f'<p>{_demo(lib)}event: made up, for trying the site</p>' if lib["config"]["demo_only"] else ""
-    return (f'<article class="wp-block-group events-event">{_notice(lib)}{demo}'
-            f'<ul class="events-facts"><li><strong>When:</strong> <time datetime="{stamp(ev["starts"])}">{e(local_time(ev, ev["starts"]))}</time>'
-            f' to <time datetime="{stamp(ev["ends"])}">{e(local_time(ev, ev["ends"]))}</time></li>'
+    start, end = span(ev)
+    if ev["past"]:
+        tickets = ""
+    elif ev["tickets"]:
+        tickets = "<ul class=\"events-tickets\">" + "".join(f"<li>{e(t['name'])}: {e(t['price'])}</li>" for t in ev["tickets"]) + "</ul>"
+    else:
+        tickets = "<p>Free, with a sign-up.</p>"
+    return (f'<article class="wp-block-group events-event">'
+            f'<ul class="events-facts"><li><strong>When:</strong> <time datetime="{stamp(ev["starts"])}">{e(start)}</time>'
+            f' to <time datetime="{stamp(ev["ends"])}">{e(end)}</time></li>'
             f'<li><strong>Where:</strong> {e(ev["venue"]["name"])}, {e(ev["venue"]["address"])}</li>'
-            f'<li><strong>Host:</strong> {e(ev["host"])}</li></ul>{tickets}{_button(lib, ev)}'
+            f'<li><strong>Host:</strong> {e(ev["host"])}</li></ul>{tickets}{_button(lib, ev)}{_notice(lib)}'
             f'<p><a href="{INDEX}">All the events</a></p></article>')
 
 
@@ -322,14 +359,17 @@ def _month_main(lib, y, m, all_months):
     cells = "".join(f'<li class="events-wd" aria-hidden="true">{DAYS[d][:3]}</li>' for d in order)
     cells += '<li class="events-blank" aria-hidden="true"></li>' * lead
     for d in range(1, days + 1):
-        evs = "".join(f'<a href="{url(ev)}">{e(ev["title"])}</a>' for ev in on.get(d, []))
+        evs = "".join(f'<a href="{url(ev)}"><span>{e(ev["title"])}</span></a>' for ev in on.get(d, []))
         cells += f'<li class="events-day{" events-on" if d in on else ""}"><span>{d}</span>{evs}</li>'
     i = all_months.index((y, m))
     prev = all_months[i - 1] if i else None
     nxt = all_months[i + 1] if i + 1 < len(all_months) else None
     pager = "".join([f'<a href="{month_url(*prev)}">Earlier: {MONTHS[prev[1] - 1]} {prev[0]}</a>' if prev else "",
                      f'<a href="{month_url(*nxt)}">Later: {MONTHS[nxt[1] - 1]} {nxt[0]}</a>' if nxt else ""])
+    listed = "".join(_card(lib, ev) for d in sorted(on) for ev in on[d])
     return (f'<section class="wp-block-group events-month">{_notice(lib)}<ol class="events-grid">{cells}</ol>'
+            # the month's events in full under the grid, where a phone's narrow cells can only mark the day (designer on #532)
+            + f'<h2 class="wp-block-heading">In {MONTHS[m - 1]}</h2><ul class="events-cards">{listed}</ul>'
             + (f'<nav class="events-pager" aria-label="Other months">{pager}</nav>' if pager else "")
             + f'<p><a href="{INDEX}">All the events</a></p></section>')
 
@@ -366,15 +406,28 @@ def main(lib, home=True):
 
 
 STYLE = """/* Events (site-kit#532): linked only from the events pages and the home page that shows the upcoming row. */
-.events-notice { font-weight: 700; padding: .5rem .75rem; border: 2px solid var(--st-ink); background: var(--st-ground); }
-.events-stamp { display: inline-block; font-size: .8em; padding: 0 .35rem; border: 2px solid currentColor; transform: rotate(-4deg); }
-.events-list ul, .events-cards, .events-facts, .events-months ul { list-style: none; padding: 0; }
-.events-card { margin-bottom: 1rem; }
+.events-notice { font-weight: 700; padding: .5rem .75rem; border: 2px solid var(--st-ink); background: var(--st-ground); margin-block: 1rem 2rem; }
+.events-stamp, .events-state { display: inline-block; font-size: .8em; font-weight: 700; padding: 0 .35rem; border: 2px solid currentColor; transform: rotate(-4deg); }
+.events-state { color: var(--st-accent); font-size: 1rem; margin-inline: 0; }
+.events-card .events-state { font-size: .7em; margin-left: .5rem; vertical-align: middle; }
+.events-list ul, .events-cards, .events-facts, .events-months ul, .events-tickets { list-style: none; padding: 0; }
+.events-card { margin: 0 0 1.25rem; max-width: none; padding: 1rem 1.25rem; border: 3px solid var(--st-ink); border-radius: 12px; background: var(--st-ground); box-shadow: 4px 4px 0 var(--st-ink); }
+.events-card h3 { margin-top: 0; }
+.events-card > :last-child { margin-bottom: 0; }
+.events-list ul, .events-cards { max-width: 40rem; margin-inline: auto; }   /* sized to their few lines, not the column */
 .events-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); list-style: none; padding: 0; border: 2px solid var(--st-ink); }
-.events-grid li { min-height: 3.5rem; padding: .25rem; border: 1px solid var(--st-ink); min-width: 0; overflow-wrap: anywhere; }
+.events-grid li { margin: 0; max-width: none; min-height: 3.5rem; padding: .25rem; border: 1px solid var(--st-ink); min-width: 0; overflow-wrap: anywhere; }
 .events-grid .events-wd { min-height: 0; font-weight: 700; text-align: center; }
+.events-grid .events-blank { border: 0; }
+.events-grid .events-on { background: var(--st-ground); }
 .events-grid .events-on a { display: block; font-size: .8rem; }
 .events-pager { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.events-pager a:last-child { margin-left: auto; }
+@media (max-width: 600px) {
+  /* a cell too narrow for a title marks the day; the titles are listed in full under the grid */
+  .events-grid .events-on a span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .events-grid .events-on a::before { content: ""; display: block; width: .7rem; height: .7rem; margin: .2rem auto 0; border-radius: 50%; background: var(--st-accent); }
+}
 """
 
 
