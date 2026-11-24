@@ -1,0 +1,50 @@
+---
+title: "I let an AI buy things on three of my sites. Here's what happened."
+subtitle: "Builder's notes from wiring agent checkout into a dessert site, a garage door site and Foo this week."
+date: 2026-11-24
+description: "Seth Shoultes on wiring agent checkout into three of his sites this week, in Stripe's test mode: the rule that the assistant never holds a card, what worked on S'mores, Garage Door Science and Foo, and what surprised him."
+hero_image:
+  src: /blog/images/agent-checkout-hero.webp
+  width: 1200
+  height: 630
+  alt: "Four monitors on a desk, each showing a request and an approve button: S'mores, Order me a holiday pack; Garage Door Science, One spring snapped; Foo, Move me to Pro; and Membership MCP, dimmed and dashed, Find the cheapest plan"
+---
+
+<p>I listened to a Stripe discussion last week about AI agents that pay. I didn't want to just write about it, so this week I tried it on the sites I already run.</p>
+
+<h2>The rule I started with</h2>
+
+<img class="post-img" src="/blog/images/agent-checkout-slide-1.webp" width="1080" height="1080" alt="The assistant never holds a card. Three steps: the assistant makes a Stripe Checkout, you see the price on Stripe&#x27;s page, you pay there. The price comes from the site&#x27;s own settings, never from what the assistant typed." loading="lazy">
+
+<p>The assistant never holds a card. Ever. When it wants to buy something, it creates a Stripe Checkout session on the server and hands the person the link. The person sees the price on Stripe's page and pays there. The price comes from the site's own settings, never from whatever the assistant typed. That one rule made everything else simpler, and it meant I could test with real people in the loop from day one.</p>
+
+<h2>What I built, and what's proven</h2>
+
+<img class="post-img" src="/blog/images/agent-checkout-slide-2.webp" width="1080" height="1080" alt="Three worked and one isn&#x27;t built yet. S&#x27;mores, a holiday pack paid with a test card; Garage Door Science, a diagnosis that became a $49 test deposit; Foo, ask your assistant to upgrade to Pro; Membership MCP, not built yet." loading="lazy">
+
+<p>Everything below ran in Stripe's test mode. No real money has moved yet.</p>
+
+<ul>
+  <li><strong>Garage Door S'mores.</strong> It's my practice dessert site. I built a small checkout add-on I share across my sites, so any of them can offer an agent purchase. An assistant asked for a holiday pack, got a Stripe approval page, and I paid it with the 4242 test card. The receipt only came back after Stripe's signed webhook confirmed the payment, not when the assistant asked for it.</li>
+  <li><strong>Garage Door Science.</strong> This one surprised me most. The site already diagnoses garage doors through its AI connection, so the assistant shows up holding the diagnosis. "A loud bang, one spring snapped" became a broken-spring call with a local pro and a $49 test deposit. Before I paid, the receipt check said unpaid. After, it said paid.</li>
+  <li><strong>Super Intelligent Foo.</strong> Foo users can ask their assistant to upgrade to Pro. Foo also tells the assistant when someone hits a free limit, so the offer arrives at the moment it's useful.</li>
+  <li><strong>Membership MCP.</strong> This is the MemberPress one, and it isn't built yet. I wrote about how we're thinking about it on the Membership MCP blog.</li>
+</ul>
+
+<h2>What surprised me</h2>
+
+<img class="post-img" src="/blog/images/agent-checkout-slide-3.webp" width="1080" height="1080" alt="The hard part wasn&#x27;t payments. It was everything around checkout: an assistant can&#x27;t invent a price, a receipt can&#x27;t be faked by asking twice, and a refund has a human path." loading="lazy">
+
+<p>The hard part wasn't payments. Stripe's hosted checkout does the heavy lifting. The hard part was everything around it: making sure an assistant can't invent a price, that a receipt can't be faked by asking twice, and that a refund has a human path.</p>
+
+<p>Some chat apps can't show a payment link at all yet, so the flow only works where the assistant can hand you a URL. That's a real limit, and I'm not going to paper over it.</p>
+
+<p>And the sites that worked best were the ones that were already easy for an assistant to read. Clear names, prices in text, one obvious next step. That part you can do today without writing any code.</p>
+
+<h2>Where I think it goes</h2>
+
+<img class="post-img" src="/blog/images/agent-checkout-slide-4.webp" width="1080" height="1080" alt="Where it goes next: add-ons and domains on Foo, and a spending cap you set for an assistant that works while you sleep, drawn as a progress bar with a limit mark." loading="lazy">
+
+<p>Next up are add-ons and domains on Foo, then a spending cap you set for an assistant that works while you sleep. Down the road, small payments for content and APIs might replace a lot of what ads do now. I'm not sure yet. I'll keep testing in the open and write up what breaks.</p>
+
+<p>If you're building something similar, I'd like to compare notes.</p>
