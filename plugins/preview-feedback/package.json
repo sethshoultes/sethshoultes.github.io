@@ -1,0 +1,6 @@
+{
+  "name": "site-kit-preview-feedback",
+  "private": true,
+  "description": "Pins the screenshot library preview-feedback vendors (scripts/vendor.sh); nothing here runs on a site.",
+  "devDependencies": { "modern-screenshot": "4.7.0" }
+}
