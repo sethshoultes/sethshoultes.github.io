@@ -1,0 +1,8 @@
+{
+  "config": {
+    "site": "sethshoultes-com",
+    "pages_project": "foo-sethshoultes",
+    "agent": "https://agent.smartwebutah.com",
+    "studio": "https://agent.smartwebutah.com https://agent.superintelligentfoo.com"
+  }
+}

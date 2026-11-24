@@ -1,4 +1,5 @@
 {
+  "preview-feedback": {},
   "radar": {
     "ingest_url": "https://radar-api.seth-c28.workers.dev/v1/ingest"
   }
