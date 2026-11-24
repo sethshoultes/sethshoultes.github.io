@@ -34,6 +34,15 @@ jobs:
       # .well-known/agent-skills/index.json match (herdos#3873).
       - name: Agent Skills, byte for byte
         run: cp -R .well-known/agent-skills/. _site/.well-known/agent-skills/
+      # Each vendored plugin's assets/ are served from /assets/plugins/<name>/assets/, where its edge code points (radar's
+      # script, preview-feedback's client). Jekyll leaves plugins/ out (_config.yml), so the step copies them (site-agent#259).
+      - name: Plugin assets
+        run: |
+          for dir in plugins/*/assets; do
+            name=$(basename "$(dirname "$dir")")
+            mkdir -p "_site/assets/plugins/$name"
+            cp -R "$dir" "_site/assets/plugins/$name/"
+          done
       - name: Markdown twins for agents
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
