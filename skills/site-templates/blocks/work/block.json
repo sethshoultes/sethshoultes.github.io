@@ -1,6 +1,6 @@
 {
   "name": "work",
-  "version": "1.1",
+  "version": "1.2",
   "title": "Work: pieces you've made, each a picture, a title, a line and an optional link",
   "props": {
     "heading": {
@@ -40,7 +40,10 @@
     },
     "more": {
       "type": "link"
-    }
+    },
+    "columns": {"type": "choice", "values": ["two", "three"]},
+    "lone": {"type": "choice", "values": ["wide"]},
+    "link_style": {"type": "choice", "values": ["link"]}
   },
   "tree": {
     "part": "group",
