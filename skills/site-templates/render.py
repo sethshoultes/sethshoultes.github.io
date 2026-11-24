@@ -118,7 +118,7 @@ def font_names(brand_rec):
     return out
 
 
-USES = ("sk-layout-stacked", "sk-logo", "sk-logo-large", "sk-style-link", "sk-title_size-small", "sk-size-small", "sk-size-medium", "sk-cta_style-link", "sk-style-dark", "sk-style-quote", "sk-stars", "sk-menu", "sk-footer-columns", "sk-footer-row", "/img/hero/", "wp-element-caption")   # the classes a section of this page may carry, each with its rule in look()
+USES = ("sk-layout-stacked", "sk-logo", "sk-logo-large", "sk-style-link", "sk-title_size-small", "sk-size-small", "sk-size-medium", "sk-cta_style-link", "sk-columns-two", "sk-columns-three", "sk-lone-wide", "sk-link_style-link", "sk-style-dark", "sk-style-quote", "sk-stars", "sk-menu", "sk-footer-columns", "sk-footer-row", "/img/hero/", "wp-element-caption")   # the classes a section of this page may carry, each with its rule in look()
 
 
 def hero_then_text(sections):
@@ -150,10 +150,11 @@ def contrast(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
-def band_accent(name, band):
+def band_accent(name, band, on_accent=None):
     """The declaration a band's own `accent` adds (";--st-accent:<hex>"), or "" without one. A band whose ground the page
     accent can't sit on (a dark footer under a looks variant whose accent is dark) names the accent its links, rings and
-    marks use inside it, where it wins over the page's and every variant's. Refused under 4.5:1 on the band's ground."""
+    marks use inside it, where it wins over the page's and every variant's. Refused under 4.5:1 on the band's ground, and
+    (site-kit#673) under 4.5:1 with `on_accent`, the page's button text, since a section's buttons fill with the band's accent."""
     accent = band.get("accent")
     if accent is None:
         return ""
@@ -162,6 +163,9 @@ def band_accent(name, band):
     if contrast(accent, band["ground"]) < 4.5:
         raise layout.LayoutError(f"bands.{name}.accent {accent} is {contrast(accent, band['ground']):.2f}:1 on its ground "
                                  f"{band['ground']}: a link needs 4.5:1")
+    if on_accent is not None and contrast(accent, on_accent) < 4.5:
+        raise layout.LayoutError(f"bands.{name}.accent {accent} is {contrast(accent, on_accent):.2f}:1 under the buttons' text "
+                                 f"{on_accent} (colours.on-accent): a button needs 4.5:1")
     return f";--st-accent:{accent}"
 
 
@@ -595,6 +599,19 @@ def look(brand_rec, bands_used=(), uses=()):
                      ".sk-footer-family p{margin:0;opacity:.8}.sk-footer-family ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;"
                      "list-style:none;margin:0;padding:0}.sk-footer-family [aria-current]{font-weight:700}"
                      "footer:has(.sk-footer-row) .sk-footer-family{justify-content:center}")
+    for word, n in (("two", 2), ("three", 3)):   # site-kit#674: work@1's columns, every card the same width, the last row too
+        if f"sk-columns-{word}" in uses:
+            rules.append(f"@media(min-width:782px){{.sk-columns-{word}>.wp-block-columns{{display:grid!important;"
+                         f"grid-template-columns:repeat({n},minmax(0,1fr))}}.sk-columns-{word}>.wp-block-columns>.wp-block-column:only-child{{margin-inline:0}}}}")
+    if "sk-lone-wide" in uses:   # site-kit#674: a work@1 section's lone piece as one wide card, its picture left and its words right
+        rules.append(".sk-lone-wide .wp-block-column:only-child{flex:1 1 100%!important}"
+                     "@media(min-width:782px){.sk-lone-wide .wp-block-column:only-child{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);"
+                     "column-gap:2rem;align-content:center}.sk-lone-wide .wp-block-column:only-child>.wp-block-image{grid-column:1;grid-row:1/span 4;margin:0}"
+                     ".sk-lone-wide .wp-block-column:only-child>:not(.wp-block-image){grid-column:2}"
+                     ".sk-lone-wide .wp-block-column:only-child>.wp-block-buttons{margin-top:.75rem}}")
+    if "sk-link_style-link" in uses:   # site-kit#674: work@1's card links as accent underlined words, so the pictures lead
+        rules.append(".sk-link_style-link .wp-block-column .wp-block-button__link{background:none;color:var(--st-accent);min-height:0;"
+                     "padding:0;border-radius:0;font-weight:700;text-decoration:underline}")
     link_sels = [f".{c} .wp-block-button__link" for c in ("sk-style-link", "sk-cta_style-link") if c in uses]
     if link_sels:
         rules.append(",".join(link_sels) + "{background:none;color:var(--st-accent);min-height:0;padding:0;border-radius:0;"
@@ -627,7 +644,7 @@ def look(brand_rec, bands_used=(), uses=()):
             if not isinstance(band["font"], str) or band["font"] not in (brand_rec.get("fonts") or {}) or not ROLE.fullmatch(band["font"]):
                 raise layout.LayoutError(f"bands.{name}.font {band['font']!r} is not a role of the brand's fonts")
             face = f";font-family:var(--sk-font-{band['font']})"
-        rules.append(f".sk-band-{name}{{background:{band['ground']};color:{band['ink']}{band_accent(name, band)}{band_focus(name, band, band['ground'])}}}"
+        rules.append(f".sk-band-{name}{{background:{band['ground']};color:{band['ink']}{band_accent(name, band, (brand_rec.get('colours') or {}).get('on-accent'))}{band_focus(name, band, band['ground'])}}}"
                      f".sk-band-{name} :is(h1,h2,h3,h4,h5,h6){{color:inherit{face}}}")
     return [f"<style>{''.join(rules)}</style>"] if rules else []
 

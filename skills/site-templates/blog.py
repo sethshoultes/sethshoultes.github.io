@@ -104,6 +104,9 @@ def problems(p, roster, images):
     else:
         out += bw.body_links(p)[1]   # blog-writer's gate: only its inline tags and http(s), /path and #anchor links
     out += bw.image_problems(p)
+    out += bw.slides_problems(p)
+    out += [f"slides.items {i}: image must be a path inside the site with a plain name" for i, x in enumerate((p.get('slides') or {}).get('items') or [], 1)
+            if isinstance(x, dict) and isinstance(x.get('image'), str) and not layout.SAFE_SRC.fullmatch('/' + x['image'])]
     if isinstance(p.get("image"), str) and not layout.SAFE_SRC.fullmatch("/" + p["image"]):
         out.append("image must be a path inside the site with a plain name, like assets/blog/my-first-post.webp")
     if images and not p.get("image"):
@@ -157,6 +160,19 @@ def paragraph(text):
                               else f'<a href="{m.group(2)}">{m.group(1)}</a>', text)
 
 
+def body_html(p):
+    """A post's body: each paragraph, a line that starts "## " as a section heading (site-kit#679), and the post's slides,
+    if it has any, after the paragraph they follow."""
+    e = serialize.escape
+    parts = [f'<h2 class="wp-block-heading">{e(x[3:].strip())}</h2>' if x.startswith("## ") else f"<p>{paragraph(x)}</p>" for x in p["body"]]
+    s = p.get("slides")
+    if s:
+        items = "".join(f'<li><figure class="wp-block-image"><img src="/{e(x["image"])}" alt="{e(x["image_alt"])}" loading="lazy"/></figure>'
+                        f'<h3 class="wp-block-heading">{e(x["title"])}</h3><p>{e(x["text"])}</p></li>' for x in s["items"])
+        parts.insert(s["after"], f'<section class="post-slides"><h2 class="wp-block-heading">{e(s["title"])}</h2><ol>{items}</ol></section>')
+    return "".join(parts)
+
+
 def main(blog):
     """{page path: the HTML the blog adds to that page's main}: each post's byline, picture, body and a link back to /blog/,
     and /blog/'s list."""
@@ -168,7 +184,7 @@ def main(blog):
         w = writers[p["author"]]
         picture = f'<figure class="wp-block-image"><img src="/{e(p["image"])}" alt="{e(p["image_alt"])}"/></figure>' if p.get("image") else ""
         out[url(p)] = (f'<article class="wp-block-group post"><p><span class="{BYLINE}">By <a href="{bio(w)}">{e(w["name"])}</a> · {day(p["date"])}</span></p>'
-                       + picture + "".join(f"<p>{paragraph(x)}</p>" for x in p["body"])
+                       + picture + body_html(p)
                        + f'<p><a href="{INDEX}">Back to the blog</a></p></article>')   # a plain link, so it takes the site's link style
     cards = "".join(f'<div class="wp-block-group post-card"><h2 class="wp-block-heading"><a href="{url(p)}">{e(p["title"])}</a></h2>'
                     f'<p><span class="{BYLINE}">{day(p["date"])} · {e(writers[p["author"]]["name"])}</span></p><p>{e(p["description"])}</p></div>'

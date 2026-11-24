@@ -26,6 +26,8 @@ the owner's approval binding.
     "cast_bylines": "dist", "cast_site": "key" (optional, site-kit#521: every built page's author is a cast author for the site,
     and no cast name sits in a testimonial; the cast itself, .sitekit/cast.json from the kit's catalog/cast.json, is checked
     whenever a family site has it),
+    "committed_build": "python3 scripts/build.py" (optional, site-kit#657: the site commits its build; a release that changes
+    one of its plugins is labelled needs-build for its owner to rebuild),
     "site_only": [ {"kind": "plugin|function|page_type", "name": "...", "proposal": "site-kit#N|existing", "why": "..."} ] }
 
 Featured images (site-kit#214, Seth: "posts always need a featured image unless the site has them turned off"): a site with a
@@ -140,6 +142,8 @@ def _features(root):
         bad.append('.sitekit/features.json "cast_bylines" must be the built folder, relative to the site, like "dist" (site-kit#521)')
     if "cast_site" in f and f["cast_site"] not in CAST_SITES:
         bad.append(f'.sitekit/features.json "cast_site" is one of the cast\'s sites: {", ".join(sorted(CAST_SITES))}')
+    if "committed_build" in f and not (isinstance(f["committed_build"], str) and f["committed_build"].strip()):
+        bad.append('.sitekit/features.json "committed_build" must be the build command, like "python3 scripts/build.py" (site-kit#657)')
     if "page_types_file" in f and not (f["page_types_file"] is None or (isinstance(f["page_types_file"], str) and f["page_types_file"])):
         bad.append('.sitekit/features.json "page_types_file" must be a path, or null for a site with none')
     entries = f.get("site_only", [])

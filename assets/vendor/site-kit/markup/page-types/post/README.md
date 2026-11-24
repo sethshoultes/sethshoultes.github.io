@@ -23,7 +23,8 @@ Entries in the site's `data/types.json` shape (a name ending in `?` is optional)
     "status": "status",
     "body": "texts",
     "image?": "image",
-    "image_alt?": "text"
+    "image_alt?": "text",
+    "slides?": "slides"
   },
   "min": { "body": 1 }
 }
@@ -36,7 +37,7 @@ Entries in the site's `data/types.json` shape (a name ending in `?` is optional)
 - `author`: a writer's `id` from the site's roster (`data/writers.json`, written for the `blog-writer` skill). The site's build
   refuses an id the roster doesn't have.
 - `status`: `draft` or `published`. A draft is never built.
-- `body`: one or more paragraphs or sections.
+- `body`: one or more paragraphs or sections. A line that starts `## ` is a section heading, not a paragraph, and is plain words with no tags or links (site-kit#679).
 - `image`: the post's featured image, the path of a picture inside the site (no scheme, no leading `//`, no `..`), shown at
   the top of the post and used as the `BlogPosting`'s `image` and the page's `og:image`. **Every post has one, unless the site
   turns featured images off** (site-kit#214, Seth: "posts always need a featured image unless the site has them turned off"):
@@ -48,7 +49,14 @@ Entries in the site's `data/types.json` shape (a name ending in `?` is optional)
   have one; the site's build refuses it otherwise, as S'mores' build does for its own pages (`part "image" needs
   "image_alt"`). A purely decorative picture has no place on a post, so there is no empty alt.
 
-The part kinds (`new-slug`, `text`, `date`, `writer`, `status`, `texts`, `image`) and the `image_alt` rule are the site build's own checks. Those field
+- `slides` (optional, site-kit#679): a numbered strip of pictures with words, for a post that walks through steps.
+  `{"title": "How it works, in five steps", "after": 4, "items": [{"image", "image_alt", "title", "text"}, ...]}`: `after` is
+  how many body lines, paragraphs and `## ` headings alike, come before it (0 puts it first), 2 to 8 items, each picture a path inside the site with its
+  `image_alt`, a one-line `title` and a one-line `text` of 200 characters or fewer. It is shown as an ordered list under its
+  own heading, and the markdown twin lists the steps in order with each picture's words. Its words are published text, so
+  blog-writer's gate holds them to the same deny-list, authorship-label and price checks as the body.
+
+The part kinds (`new-slug`, `text`, `date`, `writer`, `status`, `texts`, `image`, `slides`) and the `image_alt` rule are the site build's own checks. Those field
 checks run in the site's build. For a site built from a layout that build is site-templates' `build.py`, which stops on an
 author not in `data/writers.json`, a bad slug, a published image without `image_alt`, and a post without an image while
 `post_images` is on.
