@@ -1,0 +1,52 @@
+---
+title: "The Merge Never Read the Parts of the PR That Mattered"
+subtitle: "A merge is only safe if it targets main, its approval matches the code being merged, and every hold line in the description is met. Green checks don't tell you any of that."
+date: 2026-11-24
+related:
+  - slug: merged-is-not-live
+    note: "The same trap one step later. That post is about 'merged' hiding whether anyone can use the work. This one is about 'merged' hiding where the work actually went."
+  - slug: how-my-ai-crew-works
+    note: "The lead and the merge train that come up here, and the review rules this precheck now sits in front of."
+  - slug: the-trap-that-waited-forever
+    note: "Another case where a word that sounds final, there 'kill', here 'merged', reports something narrower than what you needed to know."
+---
+
+<picture><source srcset="/blog/images/the-merge-reads-none-of-the-pr-featured.webp" type="image/webp"><img src="/blog/images/the-merge-reads-none-of-the-pr-featured.png" alt="A brass-hinged wooden ledger lying open on a desk beside a rubber stamp, with three small paper tags tied by string to the spine, one reading a branch name, one bearing a handwritten date that doesn't match the page, and one marked &quot;only after…&quot;, while a lone checkmark sits stamped in the margin, untouched by any of them" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>On November 5th, eventpresser#299 had a <a href="/blog/merged-is-not-live.html">purple "merged" badge</a> on it. Everything about it looked finished. None of its work ever reached main.</p>
+
+<p>A pull request, or PR, is a proposed change waiting to be accepted. Main is the copy of the code that everything ships from. Usually a PR asks to be merged into main. This one asked to be merged into something else.</p>
+
+<p>#299 was stacked. That means it was built on top of another PR that hadn't been merged yet, so its target was that other PR's branch instead of main. The target is called the base. When #299 got merged, GitHub did exactly what it was asked and merged it into the parent branch. The badge was telling the truth. It just answered a smaller question than the one I cared about. The same day, arcade#262 went the same way. Two "merged" badges, and nothing new in main.</p>
+
+<h2>"Approved, waiting" was hiding something</h2>
+
+<p><a href="/blog/how-my-ai-crew-works.html">My crew</a> has a set of checks every PR passes before it joins the merge train, which is the queue that lands PRs into main one at a time. The first check, which I call gate0, looks at the base. A stacked PR fails it and never gets on the train.</p>
+
+<p>From the outside, that PR just reads "approved, waiting." That sounds patient and harmless. What it's really waiting on is two things nothing will do for it: the parent PR has to merge, and then someone has to point this one back at main. Until both happen, merging it does nothing useful.</p>
+
+<p>Also on the 5th, the lead merged eventpresser#298. The lead is the agent that coordinates the others. The checks were green and the review was approved. Nothing turned red. But the PR's description had a line saying it should only merge after something was true in production, and that thing wasn't true yet.</p>
+
+<p>That line was in the right place. I have a standing rule that a decision goes in the PR's description and not in a comment, because comments get missed. Putting the hold line in the description was correct. The merge just never read the description.</p>
+
+<h2>The third fact lives somewhere else again</h2>
+
+<p>There's a third way this goes wrong, and it's the same blind spot. A review is given on one exact version of the code. Every version has a commit ID, a fingerprint for that exact snapshot. If someone pushes a new commit after the approval, the approval is about code that's no longer the code you're merging. A summary view still shows "approved" with a green tick, and nothing in it tells you the approval is out of date.</p>
+
+<p>That one didn't bite me on the 5th. But once I lined up the three, I could see they're one problem. Each fact lives somewhere different. The base is a field on the PR. The review's commit ID sits on the review, and you have to compare it to the PR's newest commit yourself. The hold line is plain English in the description. No single field pulls them together, and none of them is in the list of checks. So <a href="/blog/the-deploy-told-you-nothing.html">a wall of green</a> tells you the tests passed. It tells you nothing about any of the three things that decide whether the merge is safe.</p>
+
+<p>So the precheck before any merge now reads each one on purpose. It's three assertions, and the merge stops if any of them fails:</p>
+
+<p><strong>One:</strong> the base is main. Not a branch that should reach main later. Main.</p>
+
+<p><strong>Two:</strong> the newest review was given on the exact commit being merged. The review's commit ID matches the PR's current head character for character, or the approval doesn't count.</p>
+
+<p><strong>Three:</strong> every "merge only after…" line in the description has been met. If the precheck can't tell, it stops and asks a person instead of guessing.</p>
+
+<p>None of these is clever. They're three questions a careful person would ask out loud before pressing the button. The mistake was assuming the button already asked them.</p>
+
+<p>Green means the tests passed. It doesn't mean the merge is safe, so ask the three questions yourself.</p>
+
+<hr>
+
+<p class="post-bio"><em>Seth Shoultes builds AI agent teams for small businesses at <a href="https://sethshoultes.com/consulting/">sethshoultes.com</a> and writes here when the building produces something worth saying.</em></p>
