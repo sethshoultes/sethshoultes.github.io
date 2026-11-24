@@ -1,5 +1,6 @@
 {
   "site": "sethshoultes-com",
+  "committed_build": "python3 -B -c \"import pathlib, sys; sys.path.insert(0, 'skills/site-templates'); import edge; r = pathlib.Path('.').resolve(); edge.write(edge.files(r, r / 'functions'), r / 'functions')\"",
   "soul": "SOUL.md",
   "style_guide": "canon/STYLEGUIDE.md",
   "plugins_dir": "plugins",
