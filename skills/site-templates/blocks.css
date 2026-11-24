@@ -103,6 +103,10 @@ p { margin: 0 0 1em; }
 a.skip-link.screen-reader-text:focus { position: absolute; top: .5rem; left: .5rem; z-index: 100; padding: .6rem 1rem; background: var(--st-accent); color: var(--st-on-accent); font-weight: 600; border-radius: 0.375rem; box-shadow: none; }
 /* work (the creator starter): the picture leads each piece, at one shape so the grid reads as a set */
 .work .wp-block-column { flex-basis: 16rem !important; }
+.work .wp-block-columns { align-items: stretch; }   /* equal-height cards, so the buttons below have room to sit on the bottom edge (the base rule is flex-start) */
+.work .wp-block-column { display: flex; flex-direction: column; }
+.work .wp-block-column > .wp-block-buttons { margin-top: auto; }   /* each card's button on its bottom edge, however long its words (superintelligentfamily#10) */
+.work .wp-block-column:only-child { flex: 0 1 22rem !important; margin-inline: auto; }   /* a lone piece stays one card wide, centred, never a full-width box */
 .work .wp-block-image img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.5rem; }
 .work .wp-block-column .wp-block-heading { margin: 0.75rem 0 0.25rem; }
 .work .wp-block-column > :last-child { margin-bottom: 0; }

@@ -150,10 +150,11 @@ def contrast(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
-def band_accent(name, band):
+def band_accent(name, band, on_accent=None):
     """The declaration a band's own `accent` adds (";--st-accent:<hex>"), or "" without one. A band whose ground the page
     accent can't sit on (a dark footer under a looks variant whose accent is dark) names the accent its links, rings and
-    marks use inside it, where it wins over the page's and every variant's. Refused under 4.5:1 on the band's ground."""
+    marks use inside it, where it wins over the page's and every variant's. Refused under 4.5:1 on the band's ground, and
+    (site-kit#673) under 4.5:1 with `on_accent`, the page's button text, since a section's buttons fill with the band's accent."""
     accent = band.get("accent")
     if accent is None:
         return ""
@@ -162,6 +163,9 @@ def band_accent(name, band):
     if contrast(accent, band["ground"]) < 4.5:
         raise layout.LayoutError(f"bands.{name}.accent {accent} is {contrast(accent, band['ground']):.2f}:1 on its ground "
                                  f"{band['ground']}: a link needs 4.5:1")
+    if on_accent is not None and contrast(accent, on_accent) < 4.5:
+        raise layout.LayoutError(f"bands.{name}.accent {accent} is {contrast(accent, on_accent):.2f}:1 under the buttons' text "
+                                 f"{on_accent} (colours.on-accent): a button needs 4.5:1")
     return f";--st-accent:{accent}"
 
 
@@ -627,7 +631,7 @@ def look(brand_rec, bands_used=(), uses=()):
             if not isinstance(band["font"], str) or band["font"] not in (brand_rec.get("fonts") or {}) or not ROLE.fullmatch(band["font"]):
                 raise layout.LayoutError(f"bands.{name}.font {band['font']!r} is not a role of the brand's fonts")
             face = f";font-family:var(--sk-font-{band['font']})"
-        rules.append(f".sk-band-{name}{{background:{band['ground']};color:{band['ink']}{band_accent(name, band)}{band_focus(name, band, band['ground'])}}}"
+        rules.append(f".sk-band-{name}{{background:{band['ground']};color:{band['ink']}{band_accent(name, band, (brand_rec.get('colours') or {}).get('on-accent'))}{band_focus(name, band, band['ground'])}}}"
                      f".sk-band-{name} :is(h1,h2,h3,h4,h5,h6){{color:inherit{face}}}")
     return [f"<style>{''.join(rules)}</style>"] if rules else []
 
