@@ -5,6 +5,8 @@
     python3 -I .sitekit/site_sync.py verify         run in CI (templates/site-check.yml) before the check itself
 
 `sync` copies the check (`.sitekit/site_check.py`), the catalog (`.sitekit/catalog.json`), this script (`.sitekit/site_sync.py`),
+the rules any coding agent follows here (`.sitekit/AGENTS.md`, site-kit#484; a site with no root `AGENTS.md` or `CLAUDE.md`
+gets one pointing at it, written once and never over the site's own, and a central site gets neither),
 the CI workflow (`.github/workflows/site-check.yml`) and the merged-PR memory workflow with its script (`.github/workflows/site-memory.yml`,
 `.sitekit/memory_line.py`, site-kit#255), and on a family site (layout.json's footer or features.json "family": true, site-kit#428)
 the family list `.sitekit/family.json` and its check `.sitekit/family.py` (deleted again at the next sync once the site turns
@@ -48,6 +50,8 @@ FILES = {                       # path in the site -> path in site-kit
     ".sitekit/site_check.py": "scripts/site_check.py",
     ".sitekit/catalog.json": "catalog.json",
     ".sitekit/site_sync.py": "scripts/site_sync.py",
+    # site-kit#484 layer 2: the rules any coding agent in the repo follows (read the brain first, remember a decision).
+    ".sitekit/AGENTS.md": "templates/AGENTS.md",
     ".github/workflows/site-check.yml": "templates/site-check.yml",
     # site-kit#255: one memory line per merged pull request, in the site's brain.
     ".sitekit/memory_line.py": "scripts/memory_line.py",
@@ -67,6 +71,14 @@ FILES = {                       # path in the site -> path in site-kit
 }
 FAMILY = (".sitekit/family.json", ".sitekit/family.py", ".sitekit/editions.json", ".sitekit/cast.json")
 LOCK = ".sitekit/kit.lock"
+# site-kit#484 layer 2: a site with no instruction file of its own gets these two at its root, once. They point at the kit's
+# rules in .sitekit/AGENTS.md (Claude Code follows the @ import; other agents read the line). They are the site's from then on,
+# so sync never writes over one, never follows a link, and never writes them on a central site (a customer's repo root).
+ROOT_FILES = {
+    "AGENTS.md": b"# Agent instructions for this site\n\nThe rules every site-kit site shares are in .sitekit/AGENTS.md: read it first.\n"
+                 b"This file is the site's own; add notes for this site below.\n\n@.sitekit/AGENTS.md\n",
+    "CLAUDE.md": b"@AGENTS.md\n",
+}
 # The site's own records: brand.json (skills/brand, #108), layout.json (skills/site-templates, #136) and its plugins'
 # settings, plugins.json (site-templates' --functions, #298). The docs library's config and the lock docs_sync writes
 # (site-kit#485): the build checks the lock against data/docs, so verify only lets them be there.
@@ -303,6 +315,12 @@ def sync(ref, root=".", kit=None, skills=None, check=None, memory=None):
         for dest in gone:
             if os.path.lexists(root / dest):
                 (root / dest).unlink()
+        if check != "central":
+            for name, data in ROOT_FILES.items():
+                if not os.path.lexists(root / name):   # the site's own file, or a link, is left exactly as it is
+                    fd = os.open(root / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o644)
+                    with os.fdopen(fd, "wb") as f:
+                        f.write(data)
         for name in skills + dropped:   # anything else in the folder goes, so it is exactly the release (os.walk follows no links)
             for top, dirs, names in os.walk(root / "skills" / name, topdown=False):
                 for n in names + [d for d in dirs if os.path.islink(os.path.join(top, d))]:   # a linked folder: the link goes
