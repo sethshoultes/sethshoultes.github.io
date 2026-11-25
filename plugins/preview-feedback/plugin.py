@@ -52,20 +52,35 @@ def repo(root):
     return m.group(1).lower() if out.returncode == 0 and m else None
 
 
+def site_name(root):
+    """The site's own name, "site" in its .sitekit/features.json, or None. A build with no GitHub origin remote (Cloudflare
+    Pages' own builder) finds its registry row by this, since a site's name is its row's key (site-agent#259, Key)."""
+    try:
+        name = json.loads((root / ".sitekit" / "features.json").read_text()).get("site")
+    except (OSError, ValueError, AttributeError):
+        return None
+    return name if isinstance(name, str) and SLUG.match(name) else None
+
+
 def registry(root=None):
-    """The four settings the registry gives this site, or {} when it gives none."""
+    """The four settings the registry gives this site, or {} when it gives none. The row is the one its GitHub origin names;
+    with no such remote, the row whose key is the site's own name. A remote that names no row never falls back."""
     root = pathlib.Path(root or ROOT)
     try:
         catalog = json.loads((root / ".sitekit" / "catalog.json").read_text())
     except (OSError, ValueError):
         return {}
-    name = repo(root)
-    if not name or not isinstance(catalog, dict):
+    if not isinstance(catalog, dict):
         return {}
     sites, platforms = catalog.get("sites"), catalog.get("platforms")
     sites = sites if isinstance(sites, dict) else {}
     platforms = platforms if isinstance(platforms, dict) else {}
-    rows = [(k, v) for k, v in sites.items() if isinstance(v, dict) and str(v.get("repo", "")).lower() == name]
+    name = repo(root)
+    if name:
+        rows = [(k, v) for k, v in sites.items() if isinstance(v, dict) and str(v.get("repo", "")).lower() == name]
+    else:
+        own = site_name(root)
+        rows = [(k, v) for k, v in sites.items() if own and k == own and isinstance(v, dict)]
     if len(rows) != 1 or not isinstance(rows[0][1].get("studio"), dict):
         return {}
     key, studio = rows[0][0], rows[0][1]["studio"]
