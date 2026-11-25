@@ -1,11 +1,11 @@
 {
-  "ref": "v0.96.221",
-  "commit": "c61e3f78687a4c058b7c9ebe8a38af94a447b97c",
+  "ref": "v0.96.222",
+  "commit": "18716bfdbb51b94cfeeead37b91bb3edf814d269",
   "check": "workflow",
   "files": {
     ".github/workflows/site-check.yml": "76a017822abb7e31e3f501b700c07df4089b058773a00253498b1fbc23943fdd",
     ".github/workflows/site-memory.yml": "e02116fd8e60b11c80bc8970ebbec17c3b4531c24171032dc6016fd17b4ea680",
-    ".sitekit/catalog.json": "dd885e14e88b867de0ca557a717b437f3e72cde8d0c3ff9478e05cecc419fb8a",
+    ".sitekit/catalog.json": "75ec9f52c9228fc4648a46a6f3966dc95bd664a7ee338bc558d445539fd508b2",
     ".sitekit/chain.js": "6c997bba982c441f872845d8c3dcde9d51b2f232422c32493c489f341e734fb8",
     ".sitekit/memory_line.py": "aef53a971531dccc89c4a14b93764a7f99df86c999fd5669c2882f3db8f36180",
     ".sitekit/site_check.py": "46759fc2c63bcad1ab6f1fce01490b4fd8abe3c157fb1d6e8108ebc808f74bf9",
