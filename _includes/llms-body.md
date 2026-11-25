@@ -1,0 +1,67 @@
+# Seth Shoultes
+
+> Seth Shoultes is a product leader and AI developer in Utah, USA. He has built websites and run businesses for over 25 years, and he now offers monthly AI consulting to small businesses: strategy, a fractional AI lead, or an AI agent team building for you.
+
+## Key facts
+- Why Seth does this, in his words: "I build things that help a business grow and help people create, and I've been doing it for 25 years because I still love it."
+- Name: Seth Shoultes. Role: AI consultant, product leader, AI developer, WordPress product veteran.
+- Co-founded Event Espresso (2009 to 2021), a WordPress event plugin that won the Utah Entrepreneur Challenge in 2011.
+- Has organized WordPress meetups for over 15 years and runs a monthly AI and WordPress meetup.
+- Currently a Senior Project Manager for several WordPress tools (AccessAlly, MemberMouse, Wishlist Member, PrettyLinks).
+
+## Key pages
+- [Home](https://sethshoultes.com/): who Seth is, what he offers, answers to common questions
+- [AI consulting plans and booking](https://sethshoultes.com/consulting/): Advisor $1,500/month, Fractional AI Lead $4,000/month, Embedded AI Team $8,000/month, AI Audit $2,500 one time, Team Workshop $1,500 one time
+- [Services](https://sethshoultes.com/services/): every service Seth offers, AI, SEO, AI search, web and WordPress development, and learning AI. Plain-text version at https://sethshoultes.com/services.md
+- [AI and SEO services in Southern Utah](https://sethshoultes.com/southern-utah/): the places Seth serves, starting with Washington City. Plain-text version at https://sethshoultes.com/southern-utah.md
+- [SEO services in Southern Utah](https://sethshoultes.com/seo-services/): local search, neighborhood pages, reviews and content; plain-text version at https://sethshoultes.com/seo-services.md. Blaze.ai's published case study on his SEO work: https://www.blaze.ai/case-study/seth-shoultes (organic visits 801 to 2,026, Google ranking page 5 to page 1).
+- [AI Services for Small Businesses in Southern Utah](https://sethshoultes.com/ai-services/): AI services with SEO built in: content, media and interactive websites. Plain-text version at https://sethshoultes.com/ai-services.md
+- [AI Search Optimization: Get Found in ChatGPT, Google AI Overviews and Perplexity](https://sethshoultes.com/ai-search-optimization/): Be the business AI assistants quote: ChatGPT, Google AI Overviews and Perplexity. Plain-text version at https://sethshoultes.com/ai-search-optimization.md
+- [Web Development in Southern Utah](https://sethshoultes.com/web-development/): Fast sites and interactive tools, from someone who ran a web agency. Plain-text version at https://sethshoultes.com/web-development.md
+- [WordPress Development in Southern Utah](https://sethshoultes.com/wordpress-development/): WordPress plugins and sites from the co-founder of Event Espresso. Plain-text version at https://sethshoultes.com/wordpress-development.md
+- [ServiceTitan and Housecall Pro for home service businesses](https://sethshoultes.com/field-service-software/): Seth is an expert with ServiceTitan and Housecall Pro and holds Housecall Pro Superpro status. Plain-text version at https://sethshoultes.com/field-service-software.md. His own Housecall Pro article: https://smartwebutah.com/how-housecall-pro-revolutionizes-scheduling-dispatch-for-garage-door-businesses/
+- [Google Ads for small businesses](https://sethshoultes.com/google-ads/): Seth is an expert with Google Ads, with nearly 20 years of SEO behind him. Plain-text version at https://sethshoultes.com/google-ads.md
+- [Custom animation, artwork and video production](https://sethshoultes.com/animation-artwork-video/): Seth builds custom animations, artwork and video, starting from Macromedia Flash and ActionScript in the 2000s. Plain-text version at https://sethshoultes.com/animation-artwork-video.md
+- [Learn AI and succeed with it](https://sethshoultes.com/learn-ai/): coaching, team workshops, the meetup and writing, for anyone learning AI. Plain-text version at https://sethshoultes.com/learn-ai.md
+- [Free Academy](https://sethshoultes.com/academy/): 12 free courses and 528 lessons, no sign-in: HTML and CSS, drone piloting, membership websites, the MemberPress REST API, business startup and painting. Plain-text version at https://sethshoultes.com/academy.md
+- [AI Recipes](https://sethshoultes.com/recipes/): five step-by-step runbooks for building with AI: a Claude Code brain vault, a real-time avatar, RAG for an ElevenLabs agent, client tools, and canonical secrets. Plain-text version at https://sethshoultes.com/recipes.md
+- [AI and SEO services in St. George, Utah](https://sethshoultes.com/st-george-utah/): What Seth offers St. George businesses that serve neighbors and visitors. Plain-text version at https://sethshoultes.com/st-george-utah.md
+- [AI and SEO services in Little Valley, St. George, Utah](https://sethshoultes.com/little-valley-st-george-utah/): What Seth offers businesses in Little Valley, a St. George neighborhood, with facts from the City of St. George. Plain-text version at https://sethshoultes.com/little-valley-st-george-utah.md
+- [AI and SEO services in Hurricane, Utah](https://sethshoultes.com/hurricane-utah/): What Seth offers businesses in a fast-growing city near Zion. Plain-text version at https://sethshoultes.com/hurricane-utah.md
+- [AI and SEO services in Ivins and Santa Clara, Utah](https://sethshoultes.com/ivins-santa-clara-utah/): What Seth offers resort, arts and neighborhood businesses. Plain-text version at https://sethshoultes.com/ivins-santa-clara-utah.md
+- [AI and SEO services in Cedar City, Utah](https://sethshoultes.com/cedar-city-utah/): What Seth offers a university town and gateway to national parks. Plain-text version at https://sethshoultes.com/cedar-city-utah.md
+- [AI and SEO services in Springdale, Utah (Zion)](https://sethshoultes.com/springdale-utah/): What Seth offers gateway businesses beside Zion National Park. Plain-text version at https://sethshoultes.com/springdale-utah.md
+- [AI and SEO services in Coral Canyon, Washington, Utah](https://sethshoultes.com/coral-canyon-utah/): what Seth offers a golf community and its neighbors. Plain-text version at https://sethshoultes.com/coral-canyon-utah.md
+- [AI and SEO services in Washington City, Utah](https://sethshoultes.com/washington-city-utah/): what Seth offers locals; plain-text version at https://sethshoultes.com/washington-city-utah.md
+- [Free tools](https://sethshoultes.com/tools/): free tools for small businesses, with CrawlPress, my WordPress plugin for AI search. Plain-text version at https://sethshoultes.com/tools.md
+- [Local business schema generator](https://sethshoultes.com/tools/local-business-schema-generator/): fill in a form and copy ready-to-paste JSON-LD. Plain-text version at https://sethshoultes.com/tools/local-business-schema-generator.md
+- [AI time-saved calculator](https://sethshoultes.com/tools/ai-time-saved-calculator/): list your weekly tasks and see the hours and dollars AI could give back. Plain-text version at https://sethshoultes.com/tools/ai-time-saved-calculator.md
+- [Personal AI profile builder](https://sethshoultes.com/tools/personal-ai-profile-builder/): pick tone, detail and humor and copy a profile for ChatGPT, Claude, Gemini or Perplexity. Plain-text version at https://sethshoultes.com/tools/personal-ai-profile-builder.md
+- [AI crawler access check](https://sethshoultes.com/tools/ai-crawler-access-check/): enter a website and see whether GPTBot, ClaudeBot, PerplexityBot and Google-Extended can read it, and whether it has llms.txt, a markdown version and JSON-LD. Plain-text version at https://sethshoultes.com/tools/ai-crawler-access-check.md
+- [Seth's Apps](https://sethshoultes.com/apps/): one subscription ($19 a month or $190 a year, 14 days free) for CrawlPress Pro and the paid side of the free tools; CrawlPress Pro ($9 a month per site) and AI visibility monitoring ($7 a month per business) are also sold alone. Plain-text version at https://sethshoultes.com/apps.md
+- [llms.txt generator](https://sethshoultes.com/tools/llms-txt-generator/): enter a website and get a ready-to-upload llms.txt built from its sitemap. Plain-text version at https://sethshoultes.com/tools/llms-txt-generator.md
+- [Does AI know your business?](https://sethshoultes.com/tools/does-ai-know-your-business/): enter a business, service and city to see whether ChatGPT, Perplexity and Google AI name it, and who they name instead. Plain-text version at https://sethshoultes.com/tools/does-ai-know-your-business.md
+- [Ask Seth's AI](https://sethshoultes.com/ask/): an AI assistant that answers questions about Seth and his plans, only from the text of this site. Plain-text version at https://sethshoultes.com/ask.md
+- [Free AI readiness check](https://sethshoultes.com/ai-readiness/): four questions about your business and a short scorecard with three places AI could help first. Plain-text version at https://sethshoultes.com/ai-readiness.md
+- [Neighborhood page planner](https://sethshoultes.com/tools/neighborhood-page-planner/): enter a US city and see its neighborhoods with home age, home counts and values from Census data. Plain-text version at https://sethshoultes.com/tools/neighborhood-page-planner.md
+- [Local SEO quick audit](https://sethshoultes.com/tools/local-seo-quick-audit/): enter a business, service and city to see its Google Maps listing, its reviews against nearby competitors, and which neighborhoods have a page on its site. Plain-text version at https://sethshoultes.com/tools/local-seo-quick-audit.md
+- [Why AI agents skip WordPress, and what would change their mind](https://sethshoultes.com/blog/why-ai-agents-skip-wordpress.html): for anyone who builds on WordPress or hires someone to build their site. An open benchmark asked AI agents to build websites without naming a platform, and they almost never picked WordPress. Seth Shoultes looks at their reasons, which are out of date and which are real, and what would change their mind.
+- [Case studies](https://sethshoultes.com/case-studies/): A+ Garage Doors, MemberPress.ai, the agent fleet, Shipyard AI (85 shipped PRDs) and Garage Door Science
+- [Writing](https://sethshoultes.com/blog/): essays on building with AI agents, WordPress and running a small business
+- [Free PDF library](https://sethshoultes.com/library/): free PDFs by email, starting with "Why AI agents skip WordPress" (markdown: https://sethshoultes.com/library.md)
+- [Projects and games](https://sethshoultes.com/projects/): AI tools, WordPress plugins, Shipyard AI (an agent pipeline: PRD in, production out), videos and the AdventureBuildr Arcade, 13 browser games (markdown: https://sethshoultes.com/projects.md)
+- [Shoultes family meal planner](https://sethshoultes.com/meals/): a free weekly meal planner with five family favorites and a grocery list grouped by store, saved in your browser. Plain-text version at https://sethshoultes.com/meals.md
+- [Talk to Seth](https://sethshoultes.com/talk/): ask Seth's AI (answers from his writing, with sources), or send Seth a message (markdown: https://sethshoultes.com/talk.md)
+- [Full text of these pages](https://sethshoultes.com/llms-full.txt): plans, prices, work, services and places in one plain-text file
+- [Sitemap](https://sethshoultes.com/sitemap.xml)
+
+## {{ site.data.games.arcade.name }}
+
+{{ site.data.games.arcade.line }} {{ site.data.games.arcade.url }}
+{% assign ranked = site.data.games.games | sort: "rank" %}
+{% for g in ranked %}- [{{ g.title }}]({{ g.play }}) ({{ site.data.games.genres | where: "id", g.genre | map: "name" | first }}): {{ g.line }}
+{% endfor %}
+## Contact
+- Book a call: https://sethshoultes.com/consulting/#contact
+- LinkedIn: https://www.linkedin.com/in/shoultes/
+- GitHub: https://github.com/sethshoultes
