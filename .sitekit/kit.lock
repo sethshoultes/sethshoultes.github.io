@@ -1,11 +1,11 @@
 {
-  "ref": "v0.96.223",
-  "commit": "431b3a076cfbba039a47d24db3e86af95f0458fb",
+  "ref": "v0.96.225",
+  "commit": "05dd171ad7c746be655449103e141c9a58e90079",
   "check": "workflow",
   "files": {
     ".github/workflows/site-check.yml": "76a017822abb7e31e3f501b700c07df4089b058773a00253498b1fbc23943fdd",
     ".github/workflows/site-memory.yml": "e02116fd8e60b11c80bc8970ebbec17c3b4531c24171032dc6016fd17b4ea680",
-    ".sitekit/catalog.json": "1323faf15bbaea5ee79deb8ed56c33fadfc1ee961746fbd26ff0249a89a3fd8a",
+    ".sitekit/catalog.json": "5277943673af720fb00bf4d4a72abc4eef210802a4e2178ebd8419e5b3e04186",
     ".sitekit/chain.js": "6c997bba982c441f872845d8c3dcde9d51b2f232422c32493c489f341e734fb8",
     ".sitekit/memory_line.py": "aef53a971531dccc89c4a14b93764a7f99df86c999fd5669c2882f3db8f36180",
     ".sitekit/site_check.py": "46759fc2c63bcad1ab6f1fce01490b4fd8abe3c157fb1d6e8108ebc808f74bf9",
@@ -33,7 +33,7 @@
     "skills/site-templates/build.py": "10f3a6c9f2b5f6fa569aa0b1b578bdbb477a8ee582ed29b091f328335d0da5ce",
     "skills/site-templates/discovery.py": "0ee433deee9f046dcdcc1c87410f9fb7d6d71c7a76deac0858252c769af94933",
     "skills/site-templates/docs.py": "94c7e2d1a185e58134af364afcea01dffb8af70bba024ed4b5ce6312d6c6230d",
-    "skills/site-templates/edge.py": "1eab57a691d75bbb8afc870b7200ae50cfcb816f21db6523ac88c6b0ec0fd47a",
+    "skills/site-templates/edge.py": "ec5a3c44e5e2672b9d4683b798651dfbc82ecc6d9d3fbcd9063878de3f492168",
     "skills/site-templates/events.py": "1b96693e73137a9a0d9f6aa1b2541640b6446ae87d71d8e7940801c75109f553",
     "skills/site-templates/export.py": "de6769ce71c1240894682841c382157b57a9fbb8a1f1a65920e160083ad1af86",
     "skills/site-templates/family.py": "9abbe6620778648d5de37c4c5261012747da5895f24e39e383820fcdd17a0f44",

@@ -7,6 +7,10 @@
 //                           get_page for one twin. Public pages only, fetched from the site's own assets.
 //   POST /api/page          {"path": "/about/"} gets that page's twin as text/markdown (site-kit#561): get_page for a WebMCP
 //                           tool, which posts plain JSON. The same gate as /mcp's get_page (getPage), the same body cap.
+//   /.well-known/search     GET ?q=words (site-kit#715, Cloudflare's "Search for Agents"): the site's own pages that match, as
+//                           Markdown, best first, read from its /llms-full.txt (the twins joined), so there is no second index.
+//                           The members gate drops a gated page, as it does for the twins. No query is kept or logged.
+//                           Every twin served on Accept: text/markdown opens with the agent: front-matter that advertises it.
 //
 //   /.well-known/api-catalog  served as application/linkset+json with its Link (RFC 9727), and the home page carries the
 //                           discovery Link header when the site has that catalog (site-kit#317: the kit is the host)
@@ -29,6 +33,86 @@ export const HOME_LINK = '</.well-known/api-catalog>; rel="api-catalog", </.well
   'type="application/json", </llms.txt>; rel="describedby"; type="text/markdown", </.well-known/ard.json>; rel="ard"; ' +
   'type="application/json", </.well-known/ai-catalog.json>; rel="ai-catalog"; type="application/json"';
 const CATALOG_PATHS = ["/.well-known/ard.json", "/.well-known/ai-catalog.json"];
+export const SEARCH_PATH = "/.well-known/search";
+export const SEARCH_DOC = "https://developers.cloudflare.com/ai-search/how-to/search-for-agents/";
+const SEARCH_SOURCE = "/llms-full.txt";
+const MAX_QUERY = 200, MAX_WORDS = 12, MAX_HITS = 10, EXCERPT = 280;
+const MD_TYPE = "text/markdown; charset=utf-8";
+const SEARCH_WORDS = "Use this search API to find relevant content across this site with keywords or natural-language queries, " +
+  "instead of crawling individual pages. Results are returned in Markdown.";
+
+/** The YAML front-matter that tells an agent where this site's search is (Cloudflare's agent: block). */
+export function agentFrontMatter(origin) {
+  return `---\nagent:\n  instructions: "${SEARCH_WORDS}"\n  endpoint: "${origin}${SEARCH_PATH}?q={query}"\n  method: "GET"\n` +
+    `  documentation: "${SEARCH_DOC}"\n---\n\n`;
+}
+
+/** The site's pages from its llms-full.txt: [{url, path, title, text}], one per "<!-- url -->" section on this origin. */
+export function searchPages(full, origin) {
+  const out = [];
+  const marks = [...full.matchAll(/^<!-- (https:\/\/[^\s>]+) -->$/gm)];
+  marks.forEach((m, i) => {
+    const url = m[1];
+    if (!(url === origin || url.startsWith(origin + "/"))) return;
+    const body = full.slice(m.index + m[0].length, i + 1 < marks.length ? marks[i + 1].index : full.length).replace(/\n---\s*$/, "").trim();
+    const title = (body.match(/^# (.+)$/m)?.[1] ?? url).trim();
+    out.push({ url, path: new URL(url).pathname, title, text: body });
+  });
+  return out;
+}
+
+/** A query's words: letters and digits, lower case, each once, at most MAX_WORDS. */
+export const queryWords = (q) => [...new Set((q.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []))].slice(0, MAX_WORDS);
+
+/** The pages that match, best first: a word in the title counts 3, in the text 1 for each time (at most 5), scaled so the
+ *  best is 1. A page matching no word is left out. */
+export function rank(pages, words) {
+  const scored = pages.map((p) => {
+    const title = p.title.toLowerCase(), text = p.text.toLowerCase();
+    let s = 0;
+    for (const w of words) {
+      if (title.includes(w)) s += 3;
+      let n = 0, at = text.indexOf(w);
+      while (at !== -1 && n < 5) { n += 1; at = text.indexOf(w, at + w.length); }
+      s += n;
+    }
+    return { ...p, raw: s };
+  }).filter((p) => p.raw > 0).sort((a, b) => b.raw - a.raw || a.path.localeCompare(b.path)).slice(0, MAX_HITS);
+  const top = scored[0]?.raw || 1;
+  return scored.map((p) => ({ ...p, score: p.raw / top }));
+}
+
+// A few lines of the page around the first word it matches, on one line.
+function excerpt(text, words) {
+  // without the twin's heading, its address line and its --- rules: the result's own heading carries the address
+  const flat = text.replace(/^# .+$/m, "").replace(/^https:\/\/\S+$/gm, "").replace(/^-{3,}$/gm, "").replace(/\s+/g, " ").trim();
+  const low = flat.toLowerCase();
+  const at = Math.min(...words.map((w) => low.indexOf(w)).filter((i) => i >= 0), flat.length);
+  const from = Math.max(0, at - 60);
+  return (from ? "..." : "") + flat.slice(from, from + EXCERPT).trim() + (from + EXCERPT < flat.length ? "..." : "");
+}
+
+async function search(context, url) {
+  const { request } = context;
+  if (request.method !== "GET" && request.method !== "HEAD") return plain("GET /.well-known/search?q=your words", 405, { Allow: "GET, HEAD" });
+  const words = queryWords((url.searchParams.get("q") ?? "").slice(0, MAX_QUERY));
+  const md = (body) => new Response(request.method === "HEAD" ? null : body, { headers: {
+    "Content-Type": MD_TYPE, "X-Robots-Tag": "noindex", "Cache-Control": "no-store" } });
+  if (!words.length)
+    return md(`# Search ${url.host}\n\nAsk with ?q= and your words, for example ${url.origin}${SEARCH_PATH}?q=pricing. ` +
+      "The answer lists this site's own pages that match, best first, in Markdown.\n");
+  const res = await context.env.ASSETS.fetch(new URL(SEARCH_SOURCE, url.origin));
+  const full = res.status === 200 ? await res.text() : "";
+  const all = full.startsWith("# ") ? searchPages(full, url.origin) : [];
+  // A site whose llms-full.txt isn't the kit's joined twins (no "<!-- address -->" sections) can't name a result's page.
+  if (!all.length) return plain("this site has no page list to search yet", 404);
+  const pages = all.filter((p) => !gated(context, p.path));
+  const hits = rank(pages, words);
+  const head = `# Search results for: "${words.join(" ")}"\n\n`;
+  if (!hits.length) return md(head + "No page on this site matches those words. Every page is listed at " + url.origin + "/llms.txt.\n");
+  return md(head + hits.map((h) => `## ${h.url} (score: ${h.score.toFixed(3)})\n\n# ${h.title}\n\n${excerpt(h.text, words)}\n`)
+    .join("\n---\n\n"));
+}
 
 // q of the first range in Accept that matches `type` (exact, type/*, or */*), the most specific winning; 0 if none.
 function quality(accept, type) {
@@ -239,15 +323,16 @@ export async function agentFiles(context, opts = {}) {
   const origin = url.origin;
   if (url.pathname === "/a2a") return a2aRefusal(request, origin);
   const md = (request.method === "GET" || request.method === "HEAD") && wantsMarkdown(request.headers.get("Accept") || "");
-  if (opts.members && typeof context.data?.members?.gated !== "function" && (url.pathname === "/mcp" || url.pathname === "/api/page" || md))
+  if (opts.members && typeof context.data?.members?.gated !== "function" && (url.pathname === "/mcp" || url.pathname === "/api/page" || url.pathname === SEARCH_PATH || md))
     return new Response("The members gate isn't running, so agent reads are off until it is.\n", { status: 503, headers: {
       "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", Vary: "Accept" } });
   if (url.pathname === "/mcp") return mcp(context, origin);
   if (url.pathname === "/api/page") return apiPage(context);
+  if (url.pathname === SEARCH_PATH) return search(context, url);
   if (md) {
     const body = await twin(context, url.pathname);
     if (body !== null)
-      return new Response(request.method === "HEAD" ? null : body, { headers: {
+      return new Response(request.method === "HEAD" ? null : agentFrontMatter(origin) + body, { headers: {
         "Content-Type": "text/markdown; charset=utf-8", Vary: "Accept", "X-Robots-Tag": "noindex" } });
   }
   return null;

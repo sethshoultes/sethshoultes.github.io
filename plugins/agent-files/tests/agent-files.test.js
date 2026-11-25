@@ -5,7 +5,8 @@ import assert from "node:assert";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { agentFiles, a2aRefusal, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths, discoveryHeaders, getPage, CATALOG_TYPE, HOME_LINK } from "../functions/agent-files.js";
+import { agentFiles, a2aRefusal, onRequest, wantsMarkdown, twinPath, vary, sitemapPaths, discoveryHeaders, getPage, CATALOG_TYPE, HOME_LINK,
+  agentFrontMatter, searchPages, queryWords, rank, SEARCH_PATH, SEARCH_DOC } from "../functions/agent-files.js";
 import { pageToMarkdown, writeTwins } from "../scripts/twins.mjs";
 
 const ORIGIN = "https://example.com";
@@ -51,7 +52,7 @@ test("a page asked for as markdown gets its twin; a browser gets the site's page
   const md = await onRequest(ctx("/about/", { headers: { Accept: "text/markdown" } }));
   assert.equal(md.headers.get("Content-Type"), "text/markdown; charset=utf-8");
   assert.equal(md.headers.get("Vary"), "Accept");
-  assert.equal(await md.text(), "# About\n\nus\n");
+  assert.equal(await md.text(), agentFrontMatter(ORIGIN) + "# About\n\nus\n");
   const html = await onRequest(ctx("/about/", { headers: { Accept: "text/html" } }));
   assert.equal(await html.text(), "<html>");
   assert.equal(html.headers.get("Vary"), "Accept");
@@ -213,9 +214,9 @@ test("site-kit#418: with a members gate, a missing matcher refuses /mcp and ever
   // The matcher present: an ungated page's twin is served, a gated one's is not.
   const gate = { members: { gated: (p) => p.startsWith("/about/") } };
   assert.equal(await agentFiles(withData(ctx("/about/", md), gate), { members: true }), null);
-  assert.equal(await (await agentFiles(withData(ctx("/", md), gate), { members: true })).text(), "# Home\n\nhello\n");
+  assert.equal(await (await agentFiles(withData(ctx("/", md), gate), { members: true })).text(), agentFrontMatter(ORIGIN) + "# Home\n\nhello\n");
   // No members gate on the site: unchanged.
-  assert.equal(await (await agentFiles(ctx("/about/", md))).text(), "# About\n\nus\n");
+  assert.equal(await (await agentFiles(ctx("/about/", md))).text(), agentFrontMatter(ORIGIN) + "# About\n\nus\n");
 });
 
 // The twin builder, with a stand-in converter: the kit's CI installs no turndown, and the sites run the real one.
@@ -308,4 +309,69 @@ test("ard.json and ai-catalog.json are each served as JSON that any origin may r
     const err = await discoveryHeaders(ctx(p), new Response("x", { status: 404 }));
     assert.equal(err.headers.get("Access-Control-Allow-Origin"), null, p);
   }
+});
+
+// site-kit#715: GET /.well-known/search reads the site's llms-full.txt (its twins joined), so there is no second index.
+const LLMS_FULL = `# Example: every page\n\nEach section is one page.\n\n---\n\n<!-- ${ORIGIN}/ -->\n\n# Home\n\n${ORIGIN}/\n\nhello and welcome\n\n---\n\n` +
+  `<!-- ${ORIGIN}/pricing/ -->\n\n# Pricing\n\n${ORIGIN}/pricing/\n\nPlans and prices. A rule follows.\n\n---\n\nStill pricing: the yearly plan.\n\n---\n\n` +
+  `<!-- ${ORIGIN}/members/guide/ -->\n\n# Members guide to pricing\n\nOnly for members: pricing secrets.\n\n---\n\n` +
+  `<!-- https://other.test/x/ -->\n\n# Pricing elsewhere\n\npricing pricing pricing\n`;
+FILES.set("/llms-full.txt", LLMS_FULL);
+const searchCtx = (q, init = {}, data) => { const c = ctx(SEARCH_PATH + (q === null ? "" : "?q=" + encodeURIComponent(q)), init); if (data) c.data = data; return c; };
+
+test("site-kit#715: searchPages reads each of this origin's sections, keeping a page's own --- rules", () => {
+  const pages = searchPages(LLMS_FULL, ORIGIN);
+  assert.deepEqual(pages.map((p) => [p.path, p.title]), [["/", "Home"], ["/pricing/", "Pricing"], ["/members/guide/", "Members guide to pricing"]]);
+  assert.match(pages[1].text, /Still pricing: the yearly plan\./, "a --- inside a page is not a page break");
+  assert.deepEqual(queryWords('Pricing, "plans"! pricing\n## injected'), ["pricing", "plans", "injected"]);
+});
+
+test("site-kit#715: a search answers Markdown, best first, with Cloudflare's result shape", async () => {
+  const res = await agentFiles(searchCtx("pricing plans"));
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+  assert.equal(res.headers.get("Cache-Control"), "no-store");
+  const body = await res.text();
+  assert.ok(body.startsWith('# Search results for: "pricing plans"\n\n'));
+  const hits = [...body.matchAll(/^## (\S+) \(score: ([\d.]+)\)$/gm)].map((m) => [m[1], m[2]]);
+  assert.deepEqual(hits[0], [`${ORIGIN}/pricing/`, "1.000"]);
+  assert.ok(!body.includes("other.test"), "another origin's section is never a result");
+  assert.match(body, /# Pricing\n\nPlans and prices/);
+  const none = await (await agentFiles(searchCtx("zebra"))).text();
+  assert.match(none, /No page on this site matches/);
+});
+
+test("site-kit#715: no query gets a how-to, a POST is refused, and no page list is a 404", async () => {
+  for (const q of [null, "", "  !! "]) {
+    const res = await agentFiles(searchCtx(q));
+    assert.equal(res.status, 200);
+    assert.match(await res.text(), /Ask with \?q= and your words/);
+  }
+  const post = await agentFiles(searchCtx("pricing", { method: "POST", body: "x" }));
+  assert.equal(post.status, 405);
+  assert.equal(post.headers.get("Allow"), "GET, HEAD");
+  FILES.delete("/llms-full.txt");
+  try { assert.equal((await agentFiles(searchCtx("pricing"))).status, 404); } finally { FILES.set("/llms-full.txt", LLMS_FULL); }
+  // An llms-full.txt from a site's own builder, with no "<!-- address -->" sections, can't name a page: 404, not "no match".
+  FILES.set("/llms-full.txt", "# Example\n\n---\n\n# Pricing\n\n> Plans and prices.\n");
+  try { assert.equal((await agentFiles(searchCtx("pricing"))).status, 404); } finally { FILES.set("/llms-full.txt", LLMS_FULL); }
+});
+
+test("site-kit#715: the members gate drops a gated page from search, with the same gate the twins use", async () => {
+  const gate = { members: { gated: (p) => p.startsWith("/members/") } };
+  const open = await (await agentFiles(searchCtx("pricing", {}, gate), { members: true })).text();
+  assert.ok(!open.includes("/members/guide/") && !open.includes("pricing secrets"), "a gated page is never a result");
+  const ungated = await (await agentFiles(searchCtx("pricing"))).text();
+  assert.ok(ungated.includes("/members/guide/"), "without a gate the page is public");
+  const off = await agentFiles(searchCtx("pricing", {}, {}), { members: true });
+  assert.equal(off.status, 503, "a missing gate matcher turns search off, as it does the twins");
+});
+
+test("site-kit#715: a twin asked for as Markdown advertises the search in its front-matter", async () => {
+  const fm = agentFrontMatter(ORIGIN);
+  assert.ok(fm.startsWith("---\nagent:\n") && fm.endsWith("---\n\n"));
+  assert.match(fm, new RegExp(`endpoint: "${ORIGIN}/\\.well-known/search\\?q=\\{query\\}"`));
+  assert.match(fm, /method: "GET"/);
+  assert.ok(fm.includes(SEARCH_DOC));
+  assert.equal(rank([{ path: "/a/", title: "A", text: "x" }], ["zzz"]).length, 0);
 });

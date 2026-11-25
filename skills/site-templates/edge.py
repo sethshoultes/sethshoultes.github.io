@@ -63,7 +63,7 @@ def files(root, functions):
         # A page plugin's settings (site-kit#478) are build.py's to use, so they are not a missing plugin here; a slot
         # plugin's settings in plugins.json are still refused.
         pages = page_plugins(root / "plugins")
-        edge_settings = {k: v for k, v in settings.items() if k not in pages}
+        edge_settings = {k: v for k, v in settings.items() if k not in pages and k not in BUILD_SETTINGS}
         out = theme.load(root / "plugins", edge_settings, only=edge_plugins(root / "plugins")).function_files(types.SimpleNamespace(brand=brand))
     except theme.ThemeError as e:
         raise EdgeError(str(e)) from None
@@ -82,6 +82,11 @@ def files(root, functions):
 # the end of the page (posthog, site-kit#555: named on a static site, it was dropped without a word)
 PAGE_SPOTS = ("head.styles", "body.end")
 PAGE_FILTERS = ("page.html",)
+
+
+#: site-kit#710: plugins whose .sitekit/plugins.json settings build.py reads itself (webmcp's originTrial, build.trial_token),
+#: so the edge build leaves them alone, as it leaves a page plugin's.
+BUILD_SETTINGS = frozenset({"webmcp"})
 
 
 def page_plugins(plugins):
