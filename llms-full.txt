@@ -4,10 +4,11 @@ sitemap: false
 ---
 {%- comment -%}
 The full text of the pages that describe Seth and his work, as plain text for AI assistants. Each page's section opens with
-"<!-- its address -->", so agent-files' /.well-known/search can name the page a result came from (site-kit#715).
+"<!-- its address -->", so agent-files' /.well-known/search can name the page a result came from (site-kit#715). It opens
+with llms.txt's body from _includes/llms-body.md, not include_relative llms.txt, which pasted that file's front matter in.
 Ask Seth's AI (workers/ask) answers only from this file, so it can say nothing the site does not.
 {%- endcomment -%}
-{% include_relative llms.txt %}
+{% include llms-body.md %}
 
 <!-- {{ site.url }}/consulting/ -->
 
