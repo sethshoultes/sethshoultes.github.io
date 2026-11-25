@@ -8,7 +8,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { SRC, TAG, endpointUrl, plan, problems } from "../scripts/webmcp.mjs";
+import { SRC, TAG, endpointUrl, plan, problems, trialMeta } from "../scripts/webmcp.mjs";
 
 const SCRIPT = fileURLToPath(new URL("../scripts/webmcp.mjs", import.meta.url));
 const PAGE_JS = fileURLToPath(new URL("../page/webmcp.js", import.meta.url));
@@ -27,9 +27,9 @@ function site(files = { "index.html": PAGE, "tools/a/index.html": PAGE }) {
   return d;
 }
 const listing = (d) => readdirSync(d, { recursive: true }).sort();
-const LLMS = { name: "llms_txt", description: "Write a site's llms.txt", endpoint: "/api/llms-txt",
+const LLMS = { name: "llms_txt", description: "Write a site's llms.txt", endpoint: "/api/llms-txt", annotations: { readOnlyHint: true },
   inputSchema: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } };
-const AUDIT = { name: "audit", description: "Audit a business", endpoint: "https://api.example.net/audit",
+const AUDIT = { name: "audit", description: "Audit a business", endpoint: "https://api.example.net/audit", annotations: { consequentialHint: true },
   inputSchema: { type: "object", properties: { city: { type: "string" } } } };
 const cfg = (webmcp, extra = {}) => ({ origin: ORIGIN, name: "x", description: "x", ...extra, ...(webmcp === undefined ? {} : { webmcp }) });
 const BLOCK = { pages: ["/", "/tools/a/"], tools: [LLMS, AUDIT] };
@@ -44,7 +44,7 @@ test("no webmcp block, or one with no tools, writes nothing", async () => {
   for (const c of [cfg(undefined), cfg({ pages: ["/"], tools: [] }), cfg({ tools: [] })]) {
     const d = site();
     const before = listing(d);
-    assert.deepEqual(await plan(d, c, { fetcher: answers(200) }), { errors: [], files: {} });
+    assert.deepEqual(await plan(d, c, { fetcher: answers(200) }), { errors: [], warnings: [], files: {} });
     const r = cli(d, c);
     assert.equal(r.status, 0, r.stderr);
     assert.match(r.stdout, /nothing written/);
@@ -172,8 +172,8 @@ function recordingFetch(status, text) {
 test("headless: the script registers exactly the configured tools", async () => {
   const doc = stubContext();
   await load(built(), doc, recordingFetch(200, "{}"));
-  assert.deepEqual(doc.registered.map(({ tool }) => ({ name: tool.name, description: tool.description, inputSchema: tool.inputSchema })),
-    [LLMS, AUDIT].map(({ name, description, inputSchema }) => ({ name, description, inputSchema })));
+  assert.deepEqual(doc.registered.map(({ tool }) => ({ name: tool.name, description: tool.description, inputSchema: tool.inputSchema, annotations: tool.annotations })),
+    [LLMS, AUDIT].map(({ name, description, inputSchema, annotations }) => ({ name, description, inputSchema, annotations })));
   assert.ok(doc.registered.every(({ tool }) => typeof tool.execute === "function"));
 });
 
@@ -183,7 +183,7 @@ test("a path endpoint joins an origin with or without a trailing slash as one ad
 });
 
 test("headless: a $ in tool text is kept as written, never read as a replacement pattern (mi-dev-2 on #331)", async () => {
-  const DOLLAR = { name: "dollar", description: "costs $5: a $& b $' c $` d $$ e", endpoint: "https://api.example.net/price$&x",
+  const DOLLAR = { name: "dollar", description: "costs $5: a $& b $' c $` d $$ e", endpoint: "https://api.example.net/price$&x", annotations: { readOnlyHint: true },
     inputSchema: { type: "object", properties: { q: { type: "string", description: "a $' quote" } } } };
   const d = site();
   const r = cli(d, cfg({ pages: ["/"], tools: [DOLLAR] }), "--offline");
@@ -251,4 +251,51 @@ test("headless: the unbuilt page script registers nothing", async () => {
   const doc = stubContext();
   await load(PAGE_JS, doc, recordingFetch(200, "{}"));
   assert.deepEqual(doc.registered, []);
+});
+
+// site-kit#710: annotations on every tool, and the origin-trial token from the site's config.
+test("a tool without readOnlyHint or consequentialHint true is refused, and so is a bad annotation", () => {
+  const at = (annotations) => problems({ pages: ["/"], tools: [{ ...LLMS, annotations }] }, ORIGIN);
+  const missing = { ...LLMS }; delete missing.annotations;
+  assert.deepEqual(problems({ pages: ["/"], tools: [missing] }, ORIGIN),
+    ["webmcp.tools[0] (llms_txt) has no annotations: readOnlyHint true if it only reads, consequentialHint true if it writes or sends"]);
+  for (const a of [{}, { readOnlyHint: false }, { untrustedContentHint: true }, { consequentialHint: false }])
+    assert.deepEqual(at(a), ["webmcp.tools[0] (llms_txt) writes (readOnlyHint isn't true) without consequentialHint: true"], JSON.stringify(a));
+  assert.deepEqual(at({ readOnlyHint: true, consequentialHint: true }), ["webmcp.tools[0] (llms_txt): readOnlyHint and consequentialHint can't both be true"]);
+  assert.deepEqual(at({ readOnlyHint: true, destructiveHint: true }), ["webmcp.tools[0] (llms_txt): unknown annotation \"destructiveHint\""]);
+  assert.deepEqual(at({ readOnlyHint: "yes" }), ["webmcp.tools[0] (llms_txt): annotations.readOnlyHint is true or false",
+    "webmcp.tools[0] (llms_txt) writes (readOnlyHint isn't true) without consequentialHint: true"]);
+  assert.deepEqual(at([]), ["webmcp.tools[0] (llms_txt): annotations is an object"]);
+  assert.deepEqual(at({ readOnlyHint: true, untrustedContentHint: true }), []);
+  assert.deepEqual(at({ consequentialHint: true }), []);
+});
+
+const TOKEN = "A".repeat(40) + "+/" + "b".repeat(20) + "==";
+test("a malformed originTrial is refused; no token builds with a visible warning", async () => {
+  for (const bad of ["", "has space ok!", 12, "<script>", "x".repeat(10)])
+    assert.deepEqual(problems({ ...BLOCK, originTrial: bad }, ORIGIN), ["webmcp.originTrial is the site's origin-trial token, as Chrome's console gives it"], String(bad));
+  const d = site();
+  const r = cli(d, cfg(BLOCK), "--offline");
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /webmcp: warning: no originTrial token/);
+  assert.ok(!readFileSync(path.join(d, "index.html"), "utf8").includes("origin-trial"));
+});
+
+test("the token goes in one meta tag before </head> on each named page, and only those", () => {
+  const d = site({ "index.html": PAGE, "tools/a/index.html": PAGE.replace("</head>", "</HEAD>"), "about/index.html": PAGE });
+  const r = cli(d, cfg({ ...BLOCK, originTrial: TOKEN }), "--offline");
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.stderr, "");
+  const meta = trialMeta(TOKEN);
+  assert.equal(readFileSync(path.join(d, "index.html"), "utf8"), PAGE.replace("</head>", `${meta}\n</head>`).replace("</body>", `${TAG}\n</body>`));
+  assert.equal(readFileSync(path.join(d, "tools/a/index.html"), "utf8"), PAGE.replace("</head>", `${meta}\n</HEAD>`).replace("</body>", `${TAG}\n</body>`));
+  assert.equal(readFileSync(path.join(d, "about/index.html"), "utf8"), PAGE);
+  assert.ok(!readFileSync(path.join(d, SRC), "utf8").includes(TOKEN), "the token is not in the script");
+});
+
+test("with a token, a named page without one </head> is refused and nothing is written", async () => {
+  const d = site({ "index.html": PAGE.replace("</head>", ""), "tools/a/index.html": PAGE });
+  const r = await plan(d, cfg({ ...BLOCK, originTrial: TOKEN }), { offline: true });
+  assert.deepEqual(r.errors, ["/ has 0 </head> tags; the origin-trial meta goes before the one"]);
+  assert.deepEqual(r.files, {});
 });

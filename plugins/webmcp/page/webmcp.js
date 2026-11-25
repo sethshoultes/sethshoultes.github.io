@@ -13,6 +13,7 @@ if (typeof context?.registerTool === "function") {
       name: tool.name,
       description: tool.description,
       inputSchema: tool.inputSchema,
+      annotations: tool.annotations,
       async execute(input, options) {
         const res = await fetch(tool.endpoint, {
           method: "POST",

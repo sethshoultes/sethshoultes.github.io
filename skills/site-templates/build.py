@@ -228,14 +228,27 @@ def redirects(record, root):
 GET_PAGE_TOOL = {"name": "get_page", "description": "Get one public page of this site as markdown, by its path (for example /about/).",
                  "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "The page's path, starting with /"}},
                                  "required": ["path"], "additionalProperties": False},
+                 "annotations": {"readOnlyHint": True},   # site-kit#710: it only reads
                  "endpoint": "/api/page"}
+
+
+def trial_token(root):
+    """site-kit#710: the site's WebMCP origin-trial token, from .sitekit/plugins.json's webmcp.originTrial; None when unset."""
+    conf = pathlib.Path(root) / ".sitekit" / "plugins.json"
+    try:
+        settings = json.loads(conf.read_text(encoding="utf-8")) if conf.is_file() else {}
+    except (OSError, ValueError) as e:
+        raise layout.LayoutError(f".sitekit/plugins.json can't be read ({type(e).__name__}); nothing was built") from None
+    webmcp = settings.get("webmcp") if isinstance(settings, dict) else None
+    return webmcp.get("originTrial") if isinstance(webmcp, dict) else None
 
 
 def webmcp_tool(stage, origin, root, plugins_root):
     """site-kit#561: a site that carries both agent-files (POST /api/page) and webmcp (its plugins.lock) gets the get_page tool
     registered on its home page. The site's own vendored webmcp.mjs does the writing, so there is one way to make the page
     script: it inlines the tool into /assets/plugins/webmcp/webmcp.js and adds its script tag before </body> on /. --offline,
-    because /api/page is an edge route a static build can't ask. Any other site: nothing. Returns the paths it added."""
+    because /api/page is an edge route a static build can't ask. The site's origin-trial token (trial_token) goes with it;
+    webmcp.mjs's warnings, like a missing token, are printed. Any other site: nothing. Returns the paths it added."""
     if not {"agent-files", "webmcp"} <= carried(root):
         return []
     base = pathlib.Path(plugins_root).resolve()
@@ -245,7 +258,9 @@ def webmcp_tool(stage, origin, root, plugins_root):
                                  "(plugin-sync.sh webmcp <tag>); nothing was built")
     with tempfile.TemporaryDirectory() as d:
         cfg = pathlib.Path(d) / "webmcp.json"
-        cfg.write_text(json.dumps({"origin": origin, "webmcp": {"pages": ["/"], "tools": [GET_PAGE_TOOL]}}), encoding="utf-8")
+        token = trial_token(root)
+        block = {"pages": ["/"], "tools": [GET_PAGE_TOOL], **({"originTrial": token} if token is not None else {})}
+        cfg.write_text(json.dumps({"origin": origin, "webmcp": block}), encoding="utf-8")
         try:
             done = subprocess.run(["node", str(script.resolve()), str(stage), "--config", str(cfg), "--offline"],
                                   capture_output=True, text=True, timeout=60)
@@ -256,6 +271,9 @@ def webmcp_tool(stage, origin, root, plugins_root):
         raise layout.LayoutError(f"webmcp couldn't register get_page: {why}; nothing was built")
     if not (stage / "assets/plugins/webmcp/webmcp.js").is_file():
         raise layout.LayoutError("webmcp ran but wrote no page script, so get_page isn't registered; nothing was built")
+    for line in (done.stderr or "").splitlines():
+        if line.strip():
+            print(f"build: {line.strip()}", file=sys.stderr)
     return ["assets/plugins/webmcp/webmcp.js"]
 
 

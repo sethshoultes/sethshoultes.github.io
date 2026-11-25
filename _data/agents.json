@@ -94,6 +94,10 @@
           "required": [
             "url"
           ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "untrustedContentHint": true
         }
       },
       {
@@ -111,6 +115,10 @@
           "required": [
             "url"
           ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "untrustedContentHint": true
         }
       },
       {
@@ -138,6 +146,10 @@
             "service",
             "city"
           ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "untrustedContentHint": true
         }
       },
       {
@@ -165,6 +177,10 @@
             "service",
             "city"
           ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "untrustedContentHint": true
         }
       },
       {
@@ -182,8 +198,13 @@
           "required": [
             "city"
           ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "untrustedContentHint": true
         }
       }
-    ]
+    ],
+    "originTrial": "AttrPH1ZYnuvzDZg+W6l0FVM0abUlnOFvp4HKfEWqaXOEd/tHtNJgc3x1/Jfzzsjt2YQsvQRJNlWujEFP+S2qAkAAABQeyJvcmlnaW4iOiJodHRwczovL3NldGhzaG91bHRlcy5jb206NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTgwNjM2NDgwMH0="
   }
 }

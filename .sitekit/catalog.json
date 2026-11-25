@@ -1658,42 +1658,46 @@
     },
     {
       "name": "webmcp",
-      "version": "0.1.0",
-      "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. A tool with no endpoint, name, description or object inputSchema, or an endpoint that does not answer, stops the build.",
+      "version": "0.2.0",
+      "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. Every tool carries annotations (readOnlyHint for a reader, consequentialHint for one that writes or sends), and the site's Chrome origin-trial token from the same block goes in a meta tag, so ordinary Chrome 149+ lists the tools. A tool with no endpoint, name, description, object inputSchema or honest annotations, or an endpoint that does not answer, stops the build; a missing token is a warning.",
       "hooks": [],
       "filters": [],
       "edge": false,
       "assets": [],
-      "settings": {},
+      "settings": {
+        "originTrial": {
+          "type": "string"
+        }
+      },
       "readme": "plugins/webmcp/README.md",
-      "hash": "bed2dee373840ffc2925d1360c7cfd6db18ef4905e3409eb8dd4ed79f409d384",
+      "hash": "5dd7aa4e115cf036ce75fcdbf49ccabcbd4bb70b038ea2e3e6fd86a6952cd1d7",
       "used_by": {
         "foo": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "key": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "mywebsitememory": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "sethshoultes-com": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "stampwithshelly": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "superintelligentfamily": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         },
         "superintelligenthacker": {
-          "version": "0.1.0",
+          "version": "0.2.0",
           "current": true
         }
       }
@@ -2090,7 +2094,7 @@
         "series": "0.2.0",
         "theme-picker": "0.2.0",
         "time-of-day": "0.1.1",
-        "webmcp": "0.1.0"
+        "webmcp": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -2154,7 +2158,7 @@
         "adventure": "0.1.6",
         "official-embed": "0.2.0",
         "preview-feedback": "0.20.3",
-        "webmcp": "0.1.0"
+        "webmcp": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -2192,7 +2196,7 @@
         "adventure": "0.1.6",
         "official-embed": "0.2.0",
         "preview-feedback": "0.20.3",
-        "webmcp": "0.1.0"
+        "webmcp": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -2254,7 +2258,7 @@
         "agent-files": "0.1.11",
         "hero-scenes": "0.1.1",
         "sitemap-check": "0.1.0",
-        "webmcp": "0.1.0",
+        "webmcp": "0.2.0",
         "preview-feedback": "0.20.3"
       },
       "baseline": {
@@ -2334,7 +2338,7 @@
         "agent-files": "0.1.11",
         "members": "0.4.0",
         "preview-feedback": "0.20.3",
-        "webmcp": "0.1.0",
+        "webmcp": "0.2.0",
         "posthog": "0.1.1"
       },
       "baseline": {
@@ -2360,7 +2364,7 @@
       "plugins": {
         "agent-files": "0.1.11",
         "preview-feedback": "0.20.3",
-        "webmcp": "0.1.0"
+        "webmcp": "0.2.0"
       },
       "baseline": {
         "plugins": [],
@@ -2386,7 +2390,7 @@
         "agent-files": "0.1.11",
         "official-embed": "0.2.0",
         "preview-feedback": "0.20.3",
-        "webmcp": "0.1.0"
+        "webmcp": "0.2.0"
       },
       "baseline": {
         "plugins": [],

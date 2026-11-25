@@ -5,7 +5,7 @@ herdos#3873). It covers the webMcp check on isitagentready. It follows the
 [WebMCP explainer](https://github.com/webmachinelearning/webmcp):
 
 ```js
-document.modelContext.registerTool({ name, description, inputSchema, execute })
+document.modelContext.registerTool({ name, description, inputSchema, annotations, execute })
 ```
 
 - **Feature check.** The page script checks for `document.modelContext.registerTool` and does nothing without it. There's
@@ -25,8 +25,10 @@ reads (on a Jekyll site, `_data/agents.json`), so a site keeps one agent config.
 ```json
 {"origin": "https://example.com",
  "webmcp": {"pages": ["/", "/tools/llms-txt/"],
+            "originTrial": "<the site's WebMCP origin-trial token>",
             "tools": [{"name": "llms_txt", "description": "Write a site's llms.txt from its sitemap",
                        "endpoint": "/api/llms-txt",
+                       "annotations": {"readOnlyHint": true},
                        "inputSchema": {"type": "object",
                                        "properties": {"url": {"type": "string", "description": "The site's address"}},
                                        "required": ["url"]}}]}}
@@ -34,11 +36,21 @@ reads (on a Jekyll site, `_data/agents.json`), so a site keeps one agent config.
 
 - `pages`: the pages that get the script. Each is a path ending in `/`, served as `<dir>/<path>/index.html`. List the home
   page, so a scanner sees the script on load, and each tool's own page.
-- `tools`: each tool needs four things.
+- `originTrial`: the site's token for Chrome's WebMCP origin trial (site-kit#710), from the origin-trials console,
+  registered for the site's own origin. The build puts it in `<meta http-equiv="origin-trial" content="...">` before
+  `</head>` on each listed page, so ordinary Chrome 149+ lists the tools with no flag. The token is public (it ships in
+  the page), so it lives in this config, never in the kit. Without one, the build still runs but prints
+  `webmcp: warning: no originTrial token`, and only a Chrome with `chrome://flags/#enable-webmcp-testing` on sees the tools.
+  A token expires with the trial; note its expiry on the site's issue.
+- `tools`: each tool needs five things.
   - `name`: 1 to 128 letters, digits, `_`, `.` or `-`, and each name only once.
   - `description`: what the tool does, for the agent.
   - `inputSchema`: a JSON Schema object with `"type": "object"`. Put a `description` on each property.
   - `endpoint`: a path on `origin`, or an `https://` address. The tool posts its input there as JSON.
+  - `annotations`: Chrome's hints, booleans. `readOnlyHint: true` for a tool that only reads, like `get_page`.
+    `consequentialHint: true` for one that writes or sends anything (a form, a message, an order), so the browser can ask
+    the person first. Exactly one of the two is true. `untrustedContentHint: true` may be added when the answer carries
+    text other people wrote.
 
 With no block, or a block with no tools, the step writes nothing.
 
@@ -54,7 +66,10 @@ With no block, or a block with no tools, the step writes nothing.
    It writes `_site/assets/plugins/webmcp/webmcp.js` with the tools inlined. On each listed page it adds
    `<script type="module" src="/assets/plugins/webmcp/webmcp.js"></script>` just before `</body>`. It refuses, and
    writes nothing, when any of these is true:
-   - a tool has no name, description, endpoint or inputSchema;
+   - a tool has no name, description, endpoint, inputSchema or annotations;
+   - a tool's annotations don't set exactly one of `readOnlyHint` and `consequentialHint` true, so a tool that writes
+     can't ship without `consequentialHint`;
+   - `originTrial` isn't a token, or a listed page has no single `</head>` for its meta tag;
    - an inputSchema isn't an object with `"type": "object"`;
    - an endpoint is neither a path on `origin` nor an https address;
    - the block has a key the plugin doesn't know, or a page path is malformed;
@@ -91,6 +106,7 @@ Nothing in `plugin.json`. There's no binding, variable or secret, and the config
 - each refusal;
 - the endpoint check, and `--offline`;
 - the tag goes on the listed pages, and only those;
+- the annotation refusals, and the origin-trial meta (on listed pages only, and the warning without a token);
 - the built script, run headless in Node with a stub `document.modelContext`:
   - it registers exactly the configured tools;
   - `execute` posts to the endpoint and passes the signal;
