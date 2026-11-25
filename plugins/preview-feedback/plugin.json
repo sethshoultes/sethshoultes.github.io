@@ -1,6 +1,6 @@
 {
   "name": "preview-feedback",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "about": "A Feedback button on a site's preview links, its review links and the site agent's Studio. The person clicks Feedback, clicks the spot that needs work and types what should change. On a preview, the note is saved as a pin and posted on the branch's pull request with the page, the element and a picture of the spot; in the Studio, it tells the Studio which element was clicked, and the Studio opens its own conversation card over that spot. On the live site it loads only for a review link, for ?preview=true (a note then needs the site agent's sign-in, by a person with a grant), or inside the Studio's frame, where it shows nothing until the Studio greets it. A site turns it on with plugin-sync; its settings (site, agent, studio, pages_project) come from its plugin config, which site_sync fills from the registry, and a FEEDBACK_* variable that is set overrides each (README).",
   "hooks": {},
   "filters": {},
