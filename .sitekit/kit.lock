@@ -1,6 +1,6 @@
 {
-  "ref": "v0.96.223",
-  "commit": "431b3a076cfbba039a47d24db3e86af95f0458fb",
+  "ref": "v0.96.224",
+  "commit": "824b3ba7a0877c4d6c6517f609ef941c3fb8fb80",
   "check": "workflow",
   "files": {
     ".github/workflows/site-check.yml": "76a017822abb7e31e3f501b700c07df4089b058773a00253498b1fbc23943fdd",
@@ -33,7 +33,7 @@
     "skills/site-templates/build.py": "10f3a6c9f2b5f6fa569aa0b1b578bdbb477a8ee582ed29b091f328335d0da5ce",
     "skills/site-templates/discovery.py": "0ee433deee9f046dcdcc1c87410f9fb7d6d71c7a76deac0858252c769af94933",
     "skills/site-templates/docs.py": "94c7e2d1a185e58134af364afcea01dffb8af70bba024ed4b5ce6312d6c6230d",
-    "skills/site-templates/edge.py": "1eab57a691d75bbb8afc870b7200ae50cfcb816f21db6523ac88c6b0ec0fd47a",
+    "skills/site-templates/edge.py": "ec5a3c44e5e2672b9d4683b798651dfbc82ecc6d9d3fbcd9063878de3f492168",
     "skills/site-templates/events.py": "1b96693e73137a9a0d9f6aa1b2541640b6446ae87d71d8e7940801c75109f553",
     "skills/site-templates/export.py": "de6769ce71c1240894682841c382157b57a9fbb8a1f1a65920e160083ad1af86",
     "skills/site-templates/family.py": "9abbe6620778648d5de37c4c5261012747da5895f24e39e383820fcdd17a0f44",
