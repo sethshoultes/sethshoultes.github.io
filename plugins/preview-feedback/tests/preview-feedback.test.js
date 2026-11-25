@@ -7,7 +7,7 @@ import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { previewAlias, branchAlias, previewFeedback, commentBody, handle, settings, reviewName, SLOT, fillSlot, studioOrigins } from "../functions/preview-feedback.js";
-import { previewFlag, previewState, takePreview, exitPreview, savePin, signInUrl, newNonce, takeCode, startState, swapCode, PREVIEW_COOKIE, acceptSession, acceptStudio, holding, showChange, clientConfig, pinTarget, takeReviewToken, frameMessage, framePins, frameContext, studioPoint, postNote, TEXT_CAP, byline, closeOn, frameHeight, cardSpot, cardCandidates, pickSpot, pfColours, labelFor, PHONE, HINT_MS, frameBlocked, frameTrouble, FRAME_WAIT_MS, sheetScroll, footColour, liftFor, shortLabel, LABEL_CAP } from "../assets/client.js";
+import { previewFlag, previewState, takePreview, exitPreview, savePin, sentText, signInUrl, newNonce, takeCode, startState, swapCode, PREVIEW_COOKIE, acceptSession, acceptStudio, holding, showChange, clientConfig, pinTarget, takeReviewToken, frameMessage, framePins, frameContext, studioPoint, postNote, TEXT_CAP, byline, closeOn, frameHeight, cardSpot, cardCandidates, pickSpot, pfColours, labelFor, PHONE, HINT_MS, frameBlocked, frameTrouble, FRAME_WAIT_MS, sheetScroll, footColour, liftFor, shortLabel, LABEL_CAP } from "../assets/client.js";
 import { existsSync } from "node:fs";
 
 // site-kit#155: the site agent's origin is the site's FEEDBACK_AGENT, never a constant. The tests use a host of their own,
@@ -1456,8 +1456,8 @@ test("site-kit#689: a saved note closes its card and ends comment mode; a refuse
     });
     return { ok, ...seen };
   };
-  const saved = await run(async () => ({ pin: { id: "p1" }, posted: true }), true);
-  assert.deepStrictEqual([saved.ok, saved.closed, saved.marked, saved.said], [true, 1, [{ id: "p1" }], ["Sent to the team. Thank you."]]);
+  const saved = await run(async () => ({ pin: { id: "p1" }, posted: true, job: "27966543" }), true);
+  assert.deepStrictEqual([saved.ok, saved.closed, saved.marked, saved.said], [true, 1, [{ id: "p1" }], ["Sent to the team as job 27966543. Thank you."]]);
   assert.strictEqual(saved.sent.p, "pins");
   assert.deepStrictEqual(saved.sent.body, { path: "/", selector: "main h1", text: "Desserts from Around the World", x: 1, y: 2, vw: 390, vh: 844, note: "Warmer.", shot: null });
   const refused = await run(async () => { throw new Error("send it from the page itself"); }, true);
@@ -1546,4 +1546,12 @@ test("0.20.1 (the S'mores guard on the v0.96.217 sync): the client makes one net
   assert.ok(src.includes('const send = (path, init) => fetch(API + path, { credentials: "same-origin", ...init });'));
   assert.ok(src.includes("const res = await send(path, { ...init, headers });"), "api() sends");
   assert.ok(src.includes('post = (body) => send("code", '), "the code swap sends");
+});
+
+test("site-kit#701: a saved live note says its job, only when it is a plain short id", () => {
+  assert.strictEqual(sentText({ posted: true, job: "0932ee34" }), "Sent to the team as job 0932ee34. Thank you.");
+  for (const job of [null, undefined, "", 42, "a b", "<b>x</b>", "x".repeat(41)]) {
+    assert.strictEqual(sentText({ posted: true, job }), "Sent to the team. Thank you.", String(job));
+  }
+  assert.strictEqual(sentText({ posted: false, why: "this review link has ended" }), "Not sent: this review link has ended.");
 });
