@@ -1,14 +1,14 @@
 {
-  "ref": "v0.96.215",
-  "commit": "f86f654fa94f190abc5590b5ae54dd0afdfcfe15",
+  "ref": "v0.96.218",
+  "commit": "fd99238e86e2a021e8226ae29152d3d48062845d",
   "check": "workflow",
   "files": {
     ".github/workflows/site-check.yml": "76a017822abb7e31e3f501b700c07df4089b058773a00253498b1fbc23943fdd",
     ".github/workflows/site-memory.yml": "e02116fd8e60b11c80bc8970ebbec17c3b4531c24171032dc6016fd17b4ea680",
-    ".sitekit/catalog.json": "860a6f2ab7ac85678bd18e790144197b6e9556824b87402c6d2814e5b9bacd91",
+    ".sitekit/catalog.json": "9ebce8d7730e6d9d34c7c290eabfc469b36eb92781623e1d074955669319968b",
     ".sitekit/chain.js": "6c997bba982c441f872845d8c3dcde9d51b2f232422c32493c489f341e734fb8",
     ".sitekit/memory_line.py": "aef53a971531dccc89c4a14b93764a7f99df86c999fd5669c2882f3db8f36180",
-    ".sitekit/site_check.py": "bff201e65db43ccd38fcd506c3086e310c133b4b34ad882a1a11adc8feb35b20",
+    ".sitekit/site_check.py": "a0858065fa37b6edbbd0656fc788d0e77a8993ccfae1e0b3ad070b025fa9862d",
     ".sitekit/site_sync.py": "615ce0a76d4b1cb884a513c7046182c11dc8cd195ca66120c979305d346598f9",
     ".sitekit/theme.py": "92adb43e98b75ef7126e6b480459f71dda3a98859385960fd0a3e4432ecfb970",
     "skills/site-templates/SKILL.md": "ff4deab3c2ac76c8249c7da2d6b3b6bc1c403751dc81ed3e352900740acb905a",

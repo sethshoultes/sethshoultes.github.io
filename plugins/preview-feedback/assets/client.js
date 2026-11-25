@@ -178,12 +178,15 @@ function status(text) {
   ui.status.hidden = !text;   // an empty pill is a stray blob beside the button
 }
 
+// The client's one network call, to this site's own routes; a site's guard may allow exactly this line (S'mores' does).
+const send = (path, init) => fetch(API + path, { credentials: "same-origin", ...init });
+
 async function api(path, init = {}) {
   const auth = review
     ? { Authorization: `Review ${review}`, "X-Review-Name": encodeURIComponent(reviewer) }
     : signedIn() ? { Authorization: `Bearer ${session.token}` } : {};
   const headers = { ...(init.headers || {}), ...auth };
-  const res = await fetch(API + path, { credentials: "same-origin", ...init, headers });
+  const res = await send(path, { ...init, headers });
   const body = await res.json().catch(() => ({}));
   if (res.status === 410) {
     endReview("This review link has ended. Ask for a new one.");
@@ -194,10 +197,52 @@ async function api(path, init = {}) {
   return body;
 }
 
+// The sign-in opens in a popup that hands the session back. A blocked popup opens it in this tab instead (site-agent#302),
+// with `return` (this page) and `nonce`: the agent then mints no session, only a one-time code, and sends the person back
+// here with it, which takeCode picks up. The code is swapped only with the nonce this tab keeps, so a code from someone
+// else's sign-in signs nobody in.
+export function signInUrl(agent, site, href, nonce = "") {
+  const u = new URL(href);
+  const back = nonce ? `&return=${encodeURIComponent(u.pathname + u.search)}&nonce=${encodeURIComponent(nonce)}` : "";
+  return `${agent}/comment-sign-in?site=${encodeURIComponent(site)}&origin=${encodeURIComponent(u.origin)}${back}`;
+}
+// It is kept in this tab's sessionStorage, which the same-tab sign-in comes back to; with no storage the popup still works.
+export function newNonce() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+// The kept nonce, once: it is removed as it is read.
+function takeNonce() {
+  const nonce = store.get("pf-nonce") || "";
+  store.drop("pf-nonce");
+  return nonce;
+}
 function signIn() {
-  const url = `${AGENT}/comment-sign-in?site=${encodeURIComponent(SITE)}&origin=${encodeURIComponent(location.origin)}`;
-  window.open(url, "preview-feedback-sign-in", "width=480,height=640");
-  status("Finish signing in in the window that just opened.");
+  if (window.open(signInUrl(AGENT, SITE, location.href), "preview-feedback-sign-in", "width=480,height=640")) return status("Finish signing in in the window that just opened.");
+  const nonce = newNonce();
+  store.set("pf-nonce", nonce);
+  location.assign(signInUrl(AGENT, SITE, location.href, nonce));
+}
+
+// site-agent#302: the agent's way back puts a one-time code in the fragment, "#pf-code=<code>". It is taken once: the
+// address is cleaned of it before anything else runs, and only then swapped. { code, clean } or null.
+export function takeCode(href) {
+  const u = new URL(href);
+  const m = /^#pf-code=([A-Za-z0-9_-]{16,200})$/.exec(u.hash);
+  if (!m) return null;
+  u.hash = "";
+  return { code: m[1], clean: u.href };   // the whole URL, as exitPreview: a path like //x stays on this origin
+}
+// The page's own edge swaps the code for a session (POST /__feedback/code); the session stays in this page's memory only.
+export async function swapCode(code, nonce, post = (body) => send("code", { method: "POST", headers: { "Content-Type": "application/json" }, body })) {
+  try {
+    if (!nonce) return null;
+    const res = await post(JSON.stringify({ code, nonce }));
+    const d = res.ok ? await res.json() : null;
+    return d && typeof d.token === "string" && d.token ? { token: d.token, expires: typeof d.expires === "string" ? d.expires : null } : null;
+  } catch {
+    return null;
+  }
 }
 
 function signedOut() {
@@ -862,6 +907,15 @@ function exitControl() {
   return x;
 }
 
+// What the button starts as on a load: "Feedback" for a review link or the agent's frame; on the live site, the sign-in
+// and the exit control only when this visit opened Feedback with ?preview=true, else hidden (nothing to comment with).
+// A code return (site-agent#302) and the agent's messages change it after.
+export function startState({ review = false, framed = false, live = false, previewing = false, signedIn = false } = {}) {
+  if (review || framed) return { text: "Feedback", hidden: false, exit: false };
+  if (live && previewing) return { text: signedIn ? "Feedback" : "Sign in to comment", hidden: false, exit: true };
+  return { text: "Sign in to comment", hidden: live, exit: false };
+}
+
 async function start() {
   focusRing();
   takeReview();
@@ -889,20 +943,27 @@ async function start() {
     else if (review || signedIn() || FRAMED || studio) toggle();
     else signIn();
   });
-  if (review) {
-    ui.button.textContent = "Feedback";
-    loadPins();
-  } else if (FRAMED) {
-    ui.button.textContent = "Feedback";
-    window.addEventListener("message", onFrame);
-  } else if (LIVE && previewing) {
-    // site-agent#259 part 2: Feedback through the agent's sign-in; a session kept from an earlier page of the visit works at once.
-    if (signedIn()) ui.button.textContent = "Feedback";
+  const first = startState({ review: Boolean(review), framed: FRAMED, live: LIVE, previewing, signedIn: signedIn() });
+  ui.button.textContent = first.text;
+  ui.button.hidden = first.hidden;
+  if (first.exit) {
     ui.exit = exitControl();
     ui.bar.append(ui.exit);
-  } else if (LIVE) {
-    // The cookie came back without the tab's token (a new tab, say): nothing to comment with here.
-    ui.button.hidden = true;
+  }
+  if (review) loadPins();
+  else if (FRAMED) window.addEventListener("message", onFrame);
+  // site-agent#302: back from a sign-in that had no opener: clean the address, swap the code, and open Feedback.
+  const back = !review && !FRAMED ? takeCode(location.href) : null;
+  if (back) {
+    history.replaceState(history.state, "", back.clean);
+    swapCode(back.code, takeNonce()).then((s) => {
+      if (!s) return status("That sign-in didn't finish. Click Feedback to sign in again.");
+      session = s;
+      ui.button.hidden = false;
+      ui.button.textContent = "Feedback";
+      loadPins();
+      if (!commenting) toggle();
+    });
   }
   window.addEventListener("message", (e) => {
     const w = acceptStudio(e);

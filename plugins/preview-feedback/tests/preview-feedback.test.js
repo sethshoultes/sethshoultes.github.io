@@ -7,7 +7,7 @@ import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { previewAlias, branchAlias, previewFeedback, commentBody, handle, settings, reviewName, SLOT, fillSlot, studioOrigins } from "../functions/preview-feedback.js";
-import { previewFlag, previewState, takePreview, exitPreview, savePin, PREVIEW_COOKIE, acceptSession, acceptStudio, holding, showChange, clientConfig, pinTarget, takeReviewToken, frameMessage, framePins, frameContext, studioPoint, postNote, TEXT_CAP, byline, closeOn, frameHeight, cardSpot, cardCandidates, pickSpot, pfColours, labelFor, PHONE, HINT_MS, frameBlocked, frameTrouble, FRAME_WAIT_MS, sheetScroll, footColour, liftFor, shortLabel, LABEL_CAP } from "../assets/client.js";
+import { previewFlag, previewState, takePreview, exitPreview, savePin, signInUrl, newNonce, takeCode, startState, swapCode, PREVIEW_COOKIE, acceptSession, acceptStudio, holding, showChange, clientConfig, pinTarget, takeReviewToken, frameMessage, framePins, frameContext, studioPoint, postNote, TEXT_CAP, byline, closeOn, frameHeight, cardSpot, cardCandidates, pickSpot, pfColours, labelFor, PHONE, HINT_MS, frameBlocked, frameTrouble, FRAME_WAIT_MS, sheetScroll, footColour, liftFor, shortLabel, LABEL_CAP } from "../assets/client.js";
 import { existsSync } from "node:fs";
 
 // site-kit#155: the site agent's origin is the site's FEEDBACK_AGENT, never a constant. The tests use a host of their own,
@@ -72,6 +72,10 @@ function net({ sessions = SESSIONS, comment = 200, down = false, reviews = REVIE
       const name = u.searchParams.get("name");
       const named = team && name !== null ? { name_ok: !team.includes(name.trim().toLowerCase()) } : {};
       return new Response(JSON.stringify(status === 200 ? { expires: "2026-11-13T00:00:00Z", cap_left: 50, ...named } : {}), { status });
+    }
+    if (String(url) === `${AGENT}/sites/smores/comment-code`) {   // site-agent#302: the agent swaps a good code once
+      const { code, nonce } = JSON.parse(init.body || "{}");
+      return code === "c".repeat(43) && nonce === "n".repeat(43) ? new Response(JSON.stringify({ token: "tok-code-0000000009", expires: "2026-11-25T03:00:00Z" })) : new Response("{}", { status: 404 });
     }
     if (String(url) === `${AGENT}/sites/smores/review-idea`) {
       return new Response(JSON.stringify(idea === 201 ? { id: 42 } : {}), { status: idea });
@@ -305,7 +309,7 @@ test("site-agent#259 (the lead's ruling): Exit feedback clears the cookie and re
   assert.strictEqual(new URL(went[1], "https://garagedoorsmores.com/").host, "garagedoorsmores.com");
   // The page wires it: the control shows on a ?preview=true visit, and its click calls exitPreview.
   const src = readFileSync(new URL("../assets/client.js", import.meta.url), "utf8");
-  assert.match(src, /\} else if \(LIVE && previewing\) \{[^}]*ui\.exit = exitControl\(\);\s*ui\.bar\.append\(ui\.exit\);/);
+  assert.match(src, /if \(first\.exit\) \{\s*ui\.exit = exitControl\(\);\s*ui\.bar\.append\(ui\.exit\);/);   // when: startState
   assert.match(src, /function exitControl\(\) \{[^]*?x\.addEventListener\("click", \(e\) => \{ e\.stopPropagation\(\); exitPreview\(location\.href\); \}\);/);
   assert.match(src, /x\.setAttribute\("aria-label", "Exit feedback"\);/);
 });
@@ -1463,4 +1467,83 @@ test("site-kit#689: a saved note closes its card and ends comment mode; a refuse
   // The page wires it: ask() saves through savePin with the clicked element's frameContext.
   const src = readFileSync(new URL("../assets/client.js", import.meta.url), "utf8");
   assert.match(src, /function ask\([^]*?return savePin\(note, frameContext\(target, x, y\), shot, LIVE, \{\s*api, closeCard, status,/);
+});
+
+test("site-agent#302: a blocked popup signs in in the same tab and comes back to this page with a one-time code", async () => {
+  // The popup's sign-in carries no way back; only the same-tab one does, with this tab's nonce.
+  assert.strictEqual(signInUrl("https://agent.example", "smores", "https://garagedoorsmores.com/recipes/baklava/?preview=true#x"),
+    "https://agent.example/comment-sign-in?site=smores&origin=https%3A%2F%2Fgaragedoorsmores.com");
+  assert.strictEqual(signInUrl("https://agent.example", "smores", "https://garagedoorsmores.com/recipes/baklava/?preview=true#x", "n".repeat(43)),
+    `https://agent.example/comment-sign-in?site=smores&origin=https%3A%2F%2Fgaragedoorsmores.com&return=%2Frecipes%2Fbaklava%2F%3Fpreview%3Dtrue&nonce=${"n".repeat(43)}`);
+  // The nonce: 43 URL-safe characters, new each time.
+  const a = newNonce();
+  assert.match(a, /^[A-Za-z0-9_-]{43}$/);
+  assert.notStrictEqual(newNonce(), a);
+  const code = "c".repeat(43);
+  assert.deepStrictEqual(takeCode(`https://garagedoorsmores.com/recipes/?preview=true#pf-code=${code}`), { code, clean: "https://garagedoorsmores.com/recipes/?preview=true" });
+  // A path that starts // stays a whole URL on this origin, so replaceState can't throw and leave the code in the bar.
+  assert.strictEqual(takeCode(`https://garagedoorsmores.com//x?a=1#pf-code=${code}`).clean, "https://garagedoorsmores.com//x?a=1");
+  for (const href of ["https://garagedoorsmores.com/", "https://garagedoorsmores.com/#pf-code=short", "https://garagedoorsmores.com/#steps",
+    `https://garagedoorsmores.com/#pf-code=${code}&x=1`, `https://garagedoorsmores.com/#pf-code=${"c".repeat(201)}`, "https://garagedoorsmores.com/#pf-code=a<b>cdefghijklmnopq"]) {
+    assert.strictEqual(takeCode(href), null, href);
+  }
+  // The swap: a session on 200, nothing on a refusal, a bad body, a network failure, or no kept nonce (nothing is sent).
+  const sent = [];
+  const ok = (status, body) => async (b) => { sent.push(JSON.parse(b)); return new Response(JSON.stringify(body), { status }); };
+  const nonce = "n".repeat(43);
+  assert.deepStrictEqual(await swapCode(code, nonce, ok(200, { token: "t", expires: "x" })), { token: "t", expires: "x" });
+  assert.deepStrictEqual(sent[0], { code, nonce }, "the code goes with this page's nonce");
+  assert.strictEqual(await swapCode(code, nonce, ok(401, { error: "sign in again" })), null);
+  assert.strictEqual(await swapCode(code, nonce, ok(200, { token: "" })), null);
+  assert.strictEqual(await swapCode(code, nonce, async () => { throw new TypeError("offline"); }), null);
+  const before = sent.length;
+  assert.strictEqual(await swapCode(code, "", ok(200, { token: "t", expires: "x" })), null, "a page that kept no nonce");
+  assert.strictEqual(sent.length, before, "nothing sent without a nonce");
+  // The page wires it: a blocked popup goes in this tab; the address is cleaned before the swap, and Feedback opens.
+  const src = readFileSync(new URL("../assets/client.js", import.meta.url), "utf8");
+  assert.match(src, /if \(window\.open\(signInUrl\(AGENT, SITE, location\.href\), "preview-feedback-sign-in", "width=480,height=640"\)\) return status\([^)]*\);\n  const nonce = newNonce\(\);\n  store\.set\("pf-nonce", nonce\);\n  location\.assign\(signInUrl\(AGENT, SITE, location\.href, nonce\)\);/);
+  assert.match(src, /const nonce = store\.get\("pf-nonce"\) \|\| "";\n  store\.drop\("pf-nonce"\);/);
+  assert.match(src, /const back = !review && !FRAMED \? takeCode\(location\.href\) : null;\n  if \(back\) \{\n    history\.replaceState\(history\.state, "", back\.clean\);\n    swapCode\(back\.code, takeNonce\(\)\)/);
+  assert.match(src, /session = s;[^]*?if \(!commenting\) toggle\(\);/);
+});
+
+test("site-agent#302: the edge swaps a code for this page only, and anything but a fresh session is 'sign in again'", async () => {
+  const calls = net();
+  const host = LIVE_SITE;
+  const send = (body, origin = host) => call("/__feedback/code", { host, method: "POST", origin, body, env: LIVE_ENV() });
+  const nonce = "n".repeat(43);
+  const good = await send({ code: "c".repeat(43), nonce });
+  assert.strictEqual(good.res.status, 200);
+  assert.deepStrictEqual(await good.res.json(), { token: "tok-code-0000000009", expires: "2026-11-25T03:00:00Z" });
+  const sent = calls.find((c) => c.url === `${AGENT}/sites/smores/comment-code`);
+  assert.deepStrictEqual(JSON.parse(sent.init.body), { code: "c".repeat(43), nonce, origin: host }, "the agent is told this page's own origin and nonce");
+  assert.strictEqual((await send({ code: "x".repeat(43), nonce })).res.status, 401, "a code the agent refuses");
+  assert.strictEqual((await send({ code: "c".repeat(43), nonce: "x".repeat(43) })).res.status, 401, "another page's nonce");
+  assert.strictEqual((await send({ code: "c".repeat(43), nonce }, "https://evil.example")).res.status, 403, "another origin can't ask");
+  assert.strictEqual((await send({})).res.status, 400);
+  assert.strictEqual((await send({ code: "c".repeat(43) })).res.status, 400, "no nonce");
+  assert.strictEqual((await send({ code: "c".repeat(201), nonce })).res.status, 400, "at most 200 characters");
+  assert.strictEqual((await send({ code: "c".repeat(43), nonce: "n".repeat(201) })).res.status, 400, "a nonce of at most 200");
+  const before = calls.length;
+  assert.strictEqual((await call("/__feedback/code", { host, method: "GET", origin: host, env: LIVE_ENV() })).res.status, 405);
+  assert.strictEqual(calls.length, before, "nothing sent to the agent for a GET");
+});
+
+test("site-agent#302 (Fable on site-kit#699): the button a load starts with; a live ?preview=true visit and a live review link keep it", () => {
+  const signIn = { text: "Sign in to comment", hidden: false, exit: false };
+  assert.deepStrictEqual(startState({}), signIn, "a preview: sign in");
+  assert.deepStrictEqual(startState({ live: true, previewing: true }), { text: "Sign in to comment", hidden: false, exit: true }, "live with ?preview=true: sign in, and the exit");
+  assert.deepStrictEqual(startState({ live: true, previewing: true, signedIn: true }), { text: "Feedback", hidden: false, exit: true });
+  assert.deepStrictEqual(startState({ live: true, review: true }), { text: "Feedback", hidden: false, exit: false }, "a live review link");
+  assert.deepStrictEqual(startState({ review: true }), { text: "Feedback", hidden: false, exit: false });
+  assert.deepStrictEqual(startState({ framed: true }), { text: "Feedback", hidden: false, exit: false });
+  assert.deepStrictEqual(startState({ live: true }), { text: "Sign in to comment", hidden: true, exit: false }, "live, not opened: nothing to comment with");
+});
+
+test("0.20.1 (the S'mores guard on the v0.96.217 sync): the client makes one network call, send(), and every route goes through it", () => {
+  const src = readFileSync(new URL("../assets/client.js", import.meta.url), "utf8");
+  assert.deepStrictEqual(src.match(/\bfetch\b/g), ["fetch"], "one fetch in the whole client");
+  assert.ok(src.includes('const send = (path, init) => fetch(API + path, { credentials: "same-origin", ...init });'));
+  assert.ok(src.includes("const res = await send(path, { ...init, headers });"), "api() sends");
+  assert.ok(src.includes('post = (body) => send("code", '), "the code swap sends");
 });
