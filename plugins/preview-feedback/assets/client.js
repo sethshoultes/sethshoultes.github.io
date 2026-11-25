@@ -424,6 +424,12 @@ function noteCard(pageX, pageY, label, send) {
 // and the note go up as a pin. A saved note closes its card and ends comment mode, so the next click follows the link
 // (site-kit#689); a refused one keeps the card, words and all, and comment mode, so nothing typed is lost. io holds the
 // page's own api, closeCard, mark and status, so the test passes stand-ins (the same pattern as exitPreview).
+// The job a live note became, as the edge returns it (site-kit#701): shown only when it is a plain short id.
+export const JOB_ID = /^[A-Za-z0-9_-]{1,40}$/;
+export function sentText(out) {
+  if (!out.posted) return `Not sent: ${out.why}.`;
+  return typeof out.job === "string" && JOB_ID.test(out.job) ? `Sent to the team as job ${out.job}. Thank you.` : "Sent to the team. Thank you.";
+}
 export async function savePin(note, spot, shot, live, io) {
   try {
     const out = await io.api("pins", {
@@ -433,7 +439,7 @@ export async function savePin(note, spot, shot, live, io) {
     });
     io.closeCard();
     io.mark(out.pin);
-    if (live) io.status(out.posted ? "Sent to the team. Thank you." : `Not sent: ${out.why}.`);
+    if (live) io.status(sentText(out));
     else io.status(out.posted ? "Saved and posted on the pull request." : `Saved here, not posted: ${out.why}.`);
     return true;
   } catch (e) {

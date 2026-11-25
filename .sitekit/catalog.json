@@ -1138,7 +1138,7 @@
     },
     {
       "name": "preview-feedback",
-      "version": "0.20.1",
+      "version": "0.20.2",
       "about": "A Feedback button on a site's preview links, its review links and the site agent's Studio. The person clicks Feedback, clicks the spot that needs work and types what should change. On a preview, the note is saved as a pin and posted on the branch's pull request with the page, the element and a picture of the spot; in the Studio, it tells the Studio which element was clicked, and the Studio opens its own conversation card over that spot. On the live site it loads only for a review link, for ?preview=true (a note then needs the site agent's sign-in, by a person with a grant), or inside the Studio's frame, where it shows nothing until the Studio greets it. A site turns it on with plugin-sync; its settings (site, agent, studio, pages_project) come from its plugin config, which site_sync fills from the registry, and a FEEDBACK_* variable that is set overrides each (README).",
       "hooks": [],
       "filters": [],
@@ -1163,62 +1163,62 @@
         }
       },
       "readme": "plugins/preview-feedback/README.md",
-      "hash": "d38b79cb7a48c71f6415ad9dd03272f16b9d74ee5ed6375d00603cc55f84489a",
+      "hash": "4969d0a7a69191b2b0fa9ba7a79151eedd14f2d81b1a1d2034d3034e540d4d87",
       "used_by": {
         "diecaststuntdad": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "fartranker": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "foo": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "foo-customer": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "key": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "mywebsitememory": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "redrockmqg": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "sethshoultes-com": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "smores": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "stampwithshelly": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "superintelligentfamily": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "superintelligenthacker": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "swsmanagementservices": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         },
         "trenzbarbershop": {
-          "version": "0.20.1",
+          "version": "0.20.2",
           "current": true
         }
       }
@@ -2011,7 +2011,7 @@
       "repo": "sethshoultes/diecaststuntdad-site",
       "plugins": {
         "radar": "0.3.0",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2036,7 +2036,7 @@
       "plugins": {
         "radar": "0.3.0",
         "agent-files": "0.1.11",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2070,7 +2070,7 @@
         "hero-character": "0.4.0",
         "monthly-edition": "0.4.1",
         "post-nav": "0.2.0",
-        "preview-feedback": "0.20.1",
+        "preview-feedback": "0.20.2",
         "series": "0.2.0",
         "theme-picker": "0.2.0",
         "time-of-day": "0.1.1",
@@ -2108,7 +2108,7 @@
       "plugins": {
         "radar": "0.3.0",
         "agent-files": "0.1.11",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2137,7 +2137,7 @@
         "time-of-day": "0.1.1",
         "adventure": "0.1.6",
         "official-embed": "0.2.0",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2174,7 +2174,7 @@
         "time-of-day": "0.1.1",
         "adventure": "0.1.6",
         "official-embed": "0.2.0",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2207,7 +2207,7 @@
         "members": "0.4.0",
         "forms": "0.2.0",
         "dues-admin": "0.2.0",
-        "preview-feedback": "0.20.1",
+        "preview-feedback": "0.20.2",
         "paypal-button": "0.4.1",
         "official-embed": "0.2.0"
       },
@@ -2237,7 +2237,7 @@
         "hero-scenes": "0.1.1",
         "sitemap-check": "0.1.0",
         "webmcp": "0.1.0",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2266,7 +2266,7 @@
         "location-picker": "1.0.3",
         "map": "0.3.5",
         "quickfind": "0.1.2",
-        "preview-feedback": "0.20.1",
+        "preview-feedback": "0.20.2",
         "radar": "0.3.0",
         "talk": "0.5.9"
       },
@@ -2315,7 +2315,7 @@
         "radar": "0.3.0",
         "agent-files": "0.1.11",
         "members": "0.4.0",
-        "preview-feedback": "0.20.1",
+        "preview-feedback": "0.20.2",
         "webmcp": "0.1.0",
         "posthog": "0.1.1"
       },
@@ -2341,7 +2341,7 @@
       "repo": "sethshoultes/superintelligentfamily",
       "plugins": {
         "agent-files": "0.1.11",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2366,7 +2366,7 @@
       "plugins": {
         "agent-files": "0.1.11",
         "official-embed": "0.2.0",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2391,7 +2391,7 @@
       "plugins": {
         "agent-files": "0.1.11",
         "posthog": "0.1.1",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
@@ -2417,7 +2417,7 @@
         "radar": "0.3.0",
         "agent-files": "0.1.11",
         "map": "0.3.5",
-        "preview-feedback": "0.20.1"
+        "preview-feedback": "0.20.2"
       },
       "baseline": {
         "plugins": [],
