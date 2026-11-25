@@ -432,6 +432,7 @@ export async function previewFeedback(context, newRewriter = () => new HTMLRewri
   if (!ready) return alias === LIVE ? null : json(503, { error: "preview feedback isn't set up on this site" });
   const rest = url.pathname.slice(ROUTE.length);
   const db = env.FEEDBACK_DB;
+  if (rest === "code") return swapCode(request, env, url);
   if (alias === LIVE) return live(request, env, rest);
   // The screenshot is linked from the PR comment, where the reader has no session here: it is served to anyone with
   // its id (a random UUID), on this branch's preview only.
@@ -466,6 +467,32 @@ export async function previewFeedback(context, newRewriter = () => new HTMLRewri
     return json(r.meta.changes === 1 ? 200 : 404, { resolved: r.meta.changes === 1 });
   }
   return json(404, { error: "no such feedback route" });
+}
+
+// site-agent#302: a sign-in with no opener sends the person back here with a one-time code in the fragment; the page
+// posts it with the nonce it kept to its own edge, which asks the agent to swap it for a comment session for this origin.
+// Only the page itself may ask, code and nonce are at most 200 characters, and anything but a fresh session is the same
+// "sign in again".
+export const CODE_CAP = 200;
+async function swapCode(request, env, url) {
+  if (request.method !== "POST") return json(405, { error: "POST only" });
+  if (request.headers.get("Origin") !== url.origin) return json(403, { error: "send it from the page itself" });
+  const input = await readJson(request);
+  const text = (v) => (typeof v === "string" && v.length <= CODE_CAP ? v : "");
+  const code = text(input?.code);
+  const nonce = text(input?.nonce);
+  if (!code || !nonce) return json(400, { error: "send the code" });
+  let res;
+  try {
+    res = await fetch(`${env.FEEDBACK_AGENT}/sites/${env.FEEDBACK_SITE}/comment-code`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code, nonce, origin: url.origin }),
+    });
+  } catch {
+    return json(502, { error: "the site agent could not be reached" });
+  }
+  const out = res.status === 200 ? await res.json().catch(() => null) : null;
+  if (!out || typeof out.token !== "string" || !out.token) return json(401, { error: "that sign-in didn't finish: sign in again" });
+  return json(200, { token: out.token, expires: typeof out.expires === "string" ? out.expires : null });
 }
 
 // The live site's routes: a review link may post a pin (it becomes an idea job) and nothing else. It keeps no pins, so
