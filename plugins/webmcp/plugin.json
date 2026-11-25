@@ -1,11 +1,15 @@
 {
   "name": "webmcp",
-  "version": "0.1.0",
-  "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. A tool with no endpoint, name, description or object inputSchema, or an endpoint that does not answer, stops the build.",
+  "version": "0.2.0",
+  "about": "A site's real tools, registered with the browser's WebMCP API (document.modelContext.registerTool) so an agent in the browser can call them. Each tool posts its input as JSON to the endpoint its form already uses and returns the answer as text content. Only where the browser has the API: no polyfill, nothing new server-side. The tools come from a webmcp block in the site's agent config (the file discovery.py reads); a build step after the site's build writes the one script with the tools inlined and adds it to the pages the block names. Every tool carries annotations (readOnlyHint for a reader, consequentialHint for one that writes or sends), and the site's Chrome origin-trial token from the same block goes in a meta tag, so ordinary Chrome 149+ lists the tools. A tool with no endpoint, name, description, object inputSchema or honest annotations, or an endpoint that does not answer, stops the build; a missing token is a warning.",
   "hooks": {},
   "filters": {},
   "assets": [],
   "config": {
-    "fields": {}
+    "fields": {
+      "originTrial": {
+        "type": "string"
+      }
+    }
   }
 }

@@ -5,9 +5,15 @@
 //   node plugins/webmcp/scripts/webmcp.mjs <built-dir> --config <agents.json> [--offline]
 //
 //   {"origin": "https://example.com", ...,
-//    "webmcp": {"pages": ["/", "/tools/llms-txt/"],
+//    "webmcp": {"pages": ["/", "/tools/llms-txt/"], "originTrial": "<the site's WebMCP origin-trial token>",
 //               "tools": [{"name": "llms_txt", "description": "...", "endpoint": "/api/llms-txt",
+//                          "annotations": {"readOnlyHint": true},
 //                          "inputSchema": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}]}}
+//
+// Every tool carries annotations (site-kit#710): readOnlyHint true for a tool that only reads, consequentialHint true for one
+// that writes or sends, never both. A tool with neither is refused, so a writing tool can't ship without consequentialHint.
+// originTrial is the site's token from Chrome's origin-trials console; it goes in a meta tag in <head> on each listed page.
+// No token is a warning, not a refusal: the tools still register where the browser has WebMCP on by flag.
 //
 // No block, or one with no tools, writes nothing. Anything wrong writes nothing either: one line per problem and exit 1. An
 // endpoint is a path on the site's origin or an https address; each is asked with a GET (unless --offline), and only no
@@ -23,8 +29,11 @@ const PAGE_SCRIPT = fileURLToPath(new URL("../page/webmcp.js", import.meta.url))
 const SLOT = "const TOOLS = [];";
 const NAME = /^[A-Za-z0-9_.-]{1,128}$/;   // an MCP tool name
 const PAGE = /^\/(?:(?!\.\.?\/)[A-Za-z0-9._~-]+\/)*$/;   // "/" or "/a/b/" (no . or .. segment): a page served as <dir>/a/b/index.html
-const BLOCK_KEYS = new Set(["pages", "tools"]);
-const TOOL_KEYS = new Set(["name", "description", "inputSchema", "endpoint"]);
+const BLOCK_KEYS = new Set(["pages", "tools", "originTrial"]);
+const TOOL_KEYS = new Set(["name", "description", "inputSchema", "endpoint", "annotations"]);
+const HINTS = new Set(["readOnlyHint", "consequentialHint", "untrustedContentHint"]);   // Chrome's WebMCP tool annotations
+const TOKEN = /^[A-Za-z0-9+/]{16,4096}={0,2}$/;   // an origin-trial token is base64
+export const trialMeta = (token) => `<meta http-equiv="origin-trial" content="${token}">`;
 
 const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 const isText = (v) => typeof v === "string" && v.trim() !== "";
@@ -40,6 +49,7 @@ export function endpointUrl(endpoint, origin) {
 export function problems(block, origin) {
   if (!isObject(block)) return ["webmcp is an object"];
   const out = [...Object.keys(block)].filter((k) => !BLOCK_KEYS.has(k)).sort().map((k) => `webmcp: unknown key "${k}"`);
+  if ("originTrial" in block && !(typeof block.originTrial === "string" && TOKEN.test(block.originTrial))) out.push("webmcp.originTrial is the site's origin-trial token, as Chrome's console gives it");
   if (!Array.isArray(block.tools)) return [...out, "webmcp.tools is a list"];
   if (!Array.isArray(block.pages) || block.pages.length === 0) out.push("webmcp.pages lists the pages that get the script, like \"/\"");
   else for (const p of block.pages) if (typeof p !== "string" || !PAGE.test(p)) out.push(`webmcp.pages: ${JSON.stringify(p)} is not a page path like "/" or "/tools/x/"`);
@@ -55,9 +65,21 @@ export function problems(block, origin) {
     if (!isText(t.description)) out.push(`${at} has no description`);
     if (!("inputSchema" in t)) out.push(`${at} has no inputSchema`);
     else if (!isObject(t.inputSchema) || t.inputSchema.type !== "object") out.push(`${at}: the inputSchema is a JSON Schema object with "type": "object"`);
+    out.push(...hintProblems(t.annotations, at));
     if (!isText(t.endpoint)) out.push(`${at} has no endpoint`);
     else if (!endpointUrl(t.endpoint, origin)) out.push(`${at}: the endpoint is a path on the site's origin (with "origin" set) or an https address`);
   });
+  return out;
+}
+
+// A tool's annotations: an object of boolean hints Chrome knows, with readOnlyHint or consequentialHint true, not both.
+function hintProblems(a, at) {
+  if (a === undefined) return [`${at} has no annotations: readOnlyHint true if it only reads, consequentialHint true if it writes or sends`];
+  if (!isObject(a)) return [`${at}: annotations is an object`];
+  const out = Object.keys(a).filter((k) => !HINTS.has(k)).sort().map((k) => `${at}: unknown annotation "${k}"`);
+  for (const k of Object.keys(a).filter((k) => HINTS.has(k)).sort()) if (typeof a[k] !== "boolean") out.push(`${at}: annotations.${k} is true or false`);
+  if (a.readOnlyHint === true && a.consequentialHint === true) out.push(`${at}: readOnlyHint and consequentialHint can't both be true`);
+  else if (a.readOnlyHint !== true && a.consequentialHint !== true) out.push(`${at} writes (readOnlyHint isn't true) without consequentialHint: true`);
   return out;
 }
 
@@ -75,19 +97,21 @@ export async function dead(url, fetcher = fetch) {
 export function pageScript(tools) {
   const source = readFileSync(PAGE_SCRIPT, "utf8");
   if (source.split(SLOT).length !== 2) throw new Error(`page/webmcp.js must hold "${SLOT}" exactly once`);
-  const list = tools.map(({ name, description, inputSchema, endpoint }) => ({ name, description, inputSchema, endpoint }));
+  const list = tools.map(({ name, description, inputSchema, annotations, endpoint }) => ({ name, description, inputSchema, annotations, endpoint }));
   // A function replacer: a string one would read $&, $' and $` in tool text as replacement patterns (mi-dev-2 on #331).
   return source.replace(SLOT, () => `const TOOLS = ${JSON.stringify(list, null, 2)};`);
 }
 
 const pageFile = (dir, page) => path.join(dir, ...page.split("/").filter(Boolean), "index.html");
 
-// {errors, files}: the files to write ({path: text}), or the reasons nothing may be written. Writes nothing itself.
+// {errors, warnings, files}: the files to write ({path: text}), or the reasons nothing may be written. Writes nothing itself.
 export async function plan(dir, cfg, { offline = false, fetcher = fetch } = {}) {
   const block = isObject(cfg) ? cfg.webmcp : undefined;
-  if (block === undefined || (isObject(block) && Array.isArray(block.tools) && block.tools.length === 0)) return { errors: [], files: {} };
+  if (block === undefined || (isObject(block) && Array.isArray(block.tools) && block.tools.length === 0)) return { errors: [], warnings: [], files: {} };
   const errors = problems(block, cfg.origin);
-  if (errors.length) return { errors, files: {} };
+  if (errors.length) return { errors, warnings: [], files: {} };
+  const token = block.originTrial;
+  const warnings = token ? [] : ["no originTrial token: only a Chrome with WebMCP on by flag lists these tools (site-kit#710)"];
   if (!offline) for (const t of block.tools) { const why = await dead(endpointUrl(t.endpoint, cfg.origin), fetcher); if (why) errors.push(`${t.name}: ${why}`); }
   const files = { [path.join(dir, ...SRC.split("/").filter(Boolean))]: pageScript(block.tools) };
   for (const page of new Set(block.pages)) {
@@ -97,10 +121,17 @@ export async function plan(dir, cfg, { offline = false, fetcher = fetch } = {}) 
     if (html.includes(SRC)) { errors.push(`${page} already has the webmcp script`); continue; }
     const ends = html.match(/<\/body>/gi) ?? [];
     if (ends.length !== 1) { errors.push(`${page} has ${ends.length} </body> tags; the script goes before the one`); continue; }
-    const at = html.search(/<\/body>/i);
-    files[f] = html.slice(0, at) + TAG + "\n" + html.slice(at);
+    let out = html;
+    if (token) {
+      const heads = html.match(/<\/head>/gi) ?? [];
+      if (heads.length !== 1) { errors.push(`${page} has ${heads.length} </head> tags; the origin-trial meta goes before the one`); continue; }
+      const h = out.search(/<\/head>/i);
+      out = out.slice(0, h) + trialMeta(token) + "\n" + out.slice(h);
+    }
+    const at = out.search(/<\/body>/i);
+    files[f] = out.slice(0, at) + TAG + "\n" + out.slice(at);
   }
-  return errors.length ? { errors, files: {} } : { errors, files };
+  return errors.length ? { errors, warnings, files: {} } : { errors, warnings, files };
 }
 
 export async function main(argv, { fetcher = fetch, log = console.log, warn = console.error } = {}) {
@@ -111,8 +142,9 @@ export async function main(argv, { fetcher = fetch, log = console.log, warn = co
   const offline = argv.includes("--offline");
   let cfg;
   try { cfg = JSON.parse(readFileSync(config, "utf8")); } catch (err) { warn(`webmcp: ${config} cannot be read: ${err.message}`); return 1; }
-  const { errors, files } = await plan(dir, cfg, { offline, fetcher });
+  const { errors, warnings, files } = await plan(dir, cfg, { offline, fetcher });
   for (const e of errors) warn(`webmcp: ${e}`);
+  for (const w of warnings) warn(`webmcp: warning: ${w}`);
   if (errors.length) return 1;
   for (const [f, text] of Object.entries(files)) { mkdirSync(path.dirname(f), { recursive: true }); writeFileSync(f, text); }
   const pages = Object.keys(files).length - 1;
