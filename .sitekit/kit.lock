@@ -1,6 +1,6 @@
 {
-  "ref": "v0.96.219",
-  "commit": "ce31acbc4f5d4c4f54c73e30138317a32a559571",
+  "ref": "v0.96.220",
+  "commit": "23b3a475c40642019c0aad232d089ad82c0382a0",
   "check": "workflow",
   "files": {
     ".github/workflows/site-check.yml": "76a017822abb7e31e3f501b700c07df4089b058773a00253498b1fbc23943fdd",
@@ -8,7 +8,7 @@
     ".sitekit/catalog.json": "5989c9570b31a410af4f91f6dbf3fdf0367980797a08855155d518addf062f15",
     ".sitekit/chain.js": "6c997bba982c441f872845d8c3dcde9d51b2f232422c32493c489f341e734fb8",
     ".sitekit/memory_line.py": "aef53a971531dccc89c4a14b93764a7f99df86c999fd5669c2882f3db8f36180",
-    ".sitekit/site_check.py": "a0858065fa37b6edbbd0656fc788d0e77a8993ccfae1e0b3ad070b025fa9862d",
+    ".sitekit/site_check.py": "46759fc2c63bcad1ab6f1fce01490b4fd8abe3c157fb1d6e8108ebc808f74bf9",
     ".sitekit/site_sync.py": "615ce0a76d4b1cb884a513c7046182c11dc8cd195ca66120c979305d346598f9",
     ".sitekit/theme.py": "92adb43e98b75ef7126e6b480459f71dda3a98859385960fd0a3e4432ecfb970",
     "skills/site-templates/SKILL.md": "ff4deab3c2ac76c8249c7da2d6b3b6bc1c403751dc81ed3e352900740acb905a",

@@ -67,7 +67,7 @@ def label(kind):
 def hashed(rel):
     """Whether a file at this path (parts) inside a plugin folder is part of the plugin's fingerprint. Anything else (tests, hidden
     folders, caches) is NOT covered by the hash, so a copy of it under functions/plugins/ is never trusted as generated."""
-    return not (rel[0] == "tests" or any(x.startswith(".") or x == "__pycache__" for x in rel))
+    return not (rel[0] == "tests" or any(x.startswith(".") or x in ("__pycache__", "node_modules") for x in rel))
 
 
 def plugin_hash(folder):
