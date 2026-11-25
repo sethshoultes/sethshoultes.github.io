@@ -19,6 +19,20 @@ rules 6 and 7 (site-kit#114):
   the same 503 as `/mcp` when the site's gate isn't wired. No cookie, no CORS, no sign-in. A template site carrying webmcp
   registers it as the WebMCP tool `get_page` on its home page (the site-templates build does it).
 
+- **`GET /.well-known/search?q=`** (site-kit#715) is Cloudflare's [Search for Agents](https://developers.cloudflare.com/ai-search/how-to/search-for-agents/)
+  for the site's own pages. It reads `/llms-full.txt` (the twins joined, each section opened by `<!-- <address> -->`), so
+  there is no second index to build. It returns `text/markdown`: `# Search results for: "<words>"`, then up to 10
+  `## <address> (score: <n>)` sections, best first, each with the page's title and a short excerpt. A word in the title
+  counts 3, each time it appears in the text counts 1 (at most 5), and the best result scores 1.
+  - With no `q`, it returns a short how-to. A POST is 405.
+  - A site whose `llms-full.txt` has no `<!-- <address> -->` sections (its own builder, not the twins) gets 404. Foo's www and
+    S'mores do today.
+  - The members gate drops a gated page, through the same `gated()` the twins use. A missing gate matcher is a 503, as for `/mcp`.
+  - No query is kept or logged, and the answer is `Cache-Control: no-store`.
+  - Every twin served on `Accept: text/markdown` opens with the `agent:` front-matter (instructions, the endpoint with
+    `{query}`, `GET` and the documentation link) that advertises the search. `/mcp`'s `get_page` and `/api/page` return the
+    twin without it.
+
 The plugin only reads the site's own built files through `ASSETS`. It writes nothing and calls no other host.
 
 ## Turning it on in a site
