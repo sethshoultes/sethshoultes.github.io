@@ -232,6 +232,11 @@
       "voice": "seth",
       "slug": "the-merge-reads-none-of-the-pr",
       "date": "2026-11-24"
+    },
+    {
+      "voice": "seth",
+      "slug": "the-callback-that-fired-once",
+      "date": "2026-11-27"
     }
   ]
 }

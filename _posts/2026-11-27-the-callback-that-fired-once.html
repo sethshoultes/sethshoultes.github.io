@@ -1,0 +1,54 @@
+---
+title: "The Form Worked the First Time and Never Again"
+subtitle: "A third-party script's ready callback tells you the script loaded, not that your form showed up, so the second time the form appears, nothing sets it up."
+date: 2026-11-27
+related:
+  - slug: the-collapsed-section-was-not-silent
+    note: "The mirror image of this bug. There, a hidden section was still running. Here, a visible form was never set up. In both, what you can see and what has started are two different clocks."
+  - slug: the-trap-that-waited-forever
+    note: "Another failure with no error and no log line, where everything did exactly what it was told and the result was still dead."
+  - slug: merged-is-not-live
+    note: "The same kind of trap in a different word. 'Merged' hid whether anyone could use the work. 'Ready' hid whether the form on screen was the one that got set up."
+---
+
+<picture><source srcset="/blog/images/the-callback-that-fired-once-featured.webp" type="image/webp"><img src="/blog/images/the-callback-that-fired-once-featured.png" alt="A brass hotel service bell on a wooden reception desk, its plunger pressed down once beside a small card reading &quot;ring for service,&quot; while a second, untouched card waits propped against it and no one answers" width="1536" height="1024" class="post-img post-img-lead" /></picture>
+
+<p>Picture someone reading a lab page on a garage door site. They tap the button to ask for help, and a little window pops up with a form. They close it because they want to read one more paragraph. Then they open it again and type their name, their email and their question. The submit button is grey, and it stays grey. They can click it all day and nothing happens.</p>
+
+<p>That was going to happen on <a href="https://garagedoorscience.com">garagedoorscience.com</a>, a site whose whole job is getting people to ask for help. We caught it in code review before it went out. I still think about it, because nothing in the tooling would have caught it.</p>
+
+<p>The form is called <code>&lt;LeadCaptureForm&gt;</code>, and it lives in two places. One copy sits right on a page. The other sits inside a pop-up window you can close, which developers call a modal, on the lab pages. On the form there's a Turnstile widget. Turnstile is Cloudflare's check that you're a person and not a bot. Until it says yes, the submit button stays off.</p>
+
+<p>We set up Turnstile the way Cloudflare's quickstart shows you. You load their script, and when the script says it's ready, you draw the widget. In code that looked like <code>&lt;Script onReady={render}&gt;</code>. A callback like <code>onReady</code> is a piece of code you hand to something else and say "run this when you're done."</p>
+
+<p>On the first open, that works perfectly. The script loads for the first time, it says ready, the widget gets drawn, and the button turns on.</p>
+
+<p>Then you close the modal and open it again. By now the script is already on the page. It isn't loading again, so it has nothing new to announce, and <code>onReady</code> never fires a second time. The form comes back but the widget doesn't, so the submit button can never turn on.</p>
+
+<p>There was no console error and no failed request. Every piece did exactly what it was told. The only symptom was a form that did nothing.</p>
+
+<h2>Three clocks that look like one</h2>
+
+<p>Three separate things happen here, and on a normal page they happen together, so you never learn to tell them apart.</p>
+
+<p>The first is the script loading. That happens once per visit. The second is the form being put on the page, which developers call mounting. With a modal, that happens every time it opens. The third is you actually seeing it on screen.</p>
+
+<p>On the page where the form sits inline, all three land at the same moment. The script loads, the form mounts and you see it, so tying the setup to "the script is ready" happens to work. The modal pulls those moments apart. The script loads once, but the form mounts again on every open. The quickstart ties the setup to the clock that only ticks once.</p>
+
+<p>That's also why a test wouldn't have saved us. The obvious one is "open the modal, check the widget shows up," and it passes every time. The first open is the case the quickstart was written for, so it can't fail. The case that matters is the second open. If you only test one thing, test the reopen.</p>
+
+<p>I've hit this shape before, just turned around. <a href="/blog/the-collapsed-section-was-not-silent.html">I wrote about an iframe inside a collapsed section</a> that was hidden but still running, and spoke up when nobody could see it. On another project, a Svelte modal had a piece of code that kept running after the modal had closed. Both times, "I can see it" and "it's running" had come apart. Turnstile was the same split the other way: you could see the form, but nobody had set it up.</p>
+
+<h2>The rule we use now</h2>
+
+<p>Set things up when the form mounts, not when the script loads. When the form mounts, first check whether Turnstile is already on the page. If it is, draw the widget right then. If it isn't, wait for the script to say ready, and draw it then. Either way the widget gets drawn every time the form appears, whether it's the first open or the tenth.</p>
+
+<p>It's a few extra lines, and the dead button is gone.</p>
+
+<p>A ready callback tells you the script showed up once. Your form can show up many times, so set it up every time it does.</p>
+
+<hr>
+
+<p><em>References: Cloudflare's <a href="https://developers.cloudflare.com/turnstile/">Turnstile documentation</a>, and the lab pages on <a href="https://garagedoorscience.com">garagedoorscience.com</a> where the modal lives.</em></p>
+
+<p class="post-bio"><em>Heraclitus said you can't step into the same river twice. You can't open the same modal twice either, though it took a grey button to remind me.</em></p>
