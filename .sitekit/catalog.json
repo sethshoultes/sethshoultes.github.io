@@ -133,8 +133,8 @@
     },
     {
       "name": "agent-checkout",
-      "version": "0.1.1",
-      "about": "A test-mode-only MCP checkout for a site's configured Stripe prices. The checkout tool creates a Stripe Checkout Session and returns its approval URL; it never charges. Its D1 ledger caps each MCP client by UTC day, a verified Stripe webhook records paid sessions, and the receipt tool returns Stripe's own receipt URL with the site's refund path. Key plans hand off to Key and never create a Stripe session or local record.",
+      "version": "0.2.0",
+      "about": "An MCP checkout for a site's configured Stripe prices: test mode everywhere, and live mode only on the one Cloudflare Pages branch alias its config names. The checkout tool creates a Stripe Checkout Session and returns its approval URL; it never charges. Its D1 ledger caps each MCP client by UTC day, a verified Stripe webhook records paid sessions, and the receipt tool returns Stripe's own receipt URL with the site's refund path. Key plans hand off to Key and never create a Stripe session or local record.",
       "hooks": [],
       "filters": [],
       "edge": true,
@@ -205,7 +205,7 @@
         }
       },
       "readme": "plugins/agent-checkout/README.md",
-      "hash": "cd53385033dd55146166b2accdf3af22d8f4e6628275e3525b4721aba5d4cab8",
+      "hash": "e7fa724f1b292bfb6fb4fab8ff8515955104197ffc820bcb4cb848e1cbb3ed80",
       "used_by": {}
     },
     {
